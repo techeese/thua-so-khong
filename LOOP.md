@@ -37,4 +37,4 @@
 - anything outward-facing beyond this repo/Pages site.
 
 ## Compass pointer
-- next cycle: **YEAR CARDS** (the deferred headline: ~4 authored year-conditions — flood/strict/market-road/quiet-hands — that change WHICH LEVER IS SCARCE; card id in chronicle so consecutive runs differ; mirror in check.js) + any owner feedback. After that: fresh review round. *(v0.10 hardening · v0.11 late-game · v0.12 run-2 & voice · v0.13 balance overhaul + scene cleanup done)*
+- next cycle: **fresh review round**, rotated lenses (suggest: year-cards-in-play balance · a true cold player on the CURRENT build · code health/perf after 14 versions of accretion). *(v0.10 hardening · v0.11 late-game · v0.12 run-2 & voice · v0.13 balance overhaul · v0.14 Year Cards done)*

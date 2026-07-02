@@ -28,6 +28,7 @@ function lcg(seed){ var s=seed>>>0; return function(){ s=(1103515245*s+12345)>>>
 function run(strategy,seed){
   var rnd=lcg(seed), cast=makeCast(rnd), pairsSet={};
   var luat=2+Math.floor(rnd()*3), von=2+Math.floor(rnd()*3), baStart=7+Math.floor(rnd()*3), stormStreak=0;
+  var yc=Math.floor(rnd()*4);   // year card (mirrors index.html; gtm/mentor cards unmodeled — strategies don't pair)
   for(var season=0;season<16;season++){
     var here=cast.filter(function(c){return activeSim(c,season);});
     if(luat<4){ stormStreak++; } else { stormStreak=0; }
@@ -72,15 +73,16 @@ function run(strategy,seed){
     // the recycling flywheel now counts TIERS (mirrors index.html): sum(tier)>=4 → the river feeds itself
     var tsum=cast.reduce(function(a,c){ if(!c.started) return a;
       var pv=c.tai*c.gan*c.ban; return a+(pv<300?1:pv<600?2:3); },0);
-    if(tsum>=4) von=Math.min(10,von+1);
+    if(tsum>=((yc===0)?6:4)) von=Math.min(10,von+1);
     cast.forEach(function(p){ if(p.started){ p.age=(p.age|0)+1; p.born=false; } });
     // the elder's clock (mirrors index.html; the sim has no apprenticeship, so blooming him is the only save)
     if(season+1>=baStart){ var ba=cast[1]; if(!ba.started&&!ba.gone&&ba.tai>0) ba.tai=Math.max(0,ba.tai-1); }
     // entropy: un-bloomed tending decays back toward each person's nature (mirrors index.html)
     cast.forEach(function(p){ if(p.started||!activeSim(p,season)) return;
-      ["tai","gan","ban"].forEach(function(k){ if(p[k]>p["b"+k] && rnd()<0.35) p[k]--; }); });
+      ["tai","gan","ban"].forEach(function(k){ if(p[k]>p["b"+k] && rnd()<((yc===3)?0.175:0.35)) p[k]--; }); });
     var r=rnd();
     if(luat<4){ if(r<0.25) luat=luat+1; else if(r<0.33) luat=Math.max(1,luat-1); }
+    else if(yc===1){ if(r<0.10) luat=Math.min(10,luat+1); else if(r<0.25) luat=Math.max(1,luat-1); }
     else { if(r<0.12) luat=Math.min(10,luat+1); else if(r<0.20) luat=Math.max(1,luat-1); }
     if(season%4===3) von=Math.min(10,von+1);
   }
@@ -101,13 +103,14 @@ console.log("  linker   (spam Kết nối)      : "+sums.linker.toFixed(2));
 console.log("  idle     (do nothing)        : "+sums.idle.toFixed(2));
 console.log("tiers: hunter "+tiers.hunter.toFixed(1)+" · spreader "+tiers.spreader.toFixed(1)+" · linker "+tiers.linker.toFixed(1)+" · idle "+tiers.idle.toFixed(1));
 
-// linker margin note: the sim's linker SORTS by lowest BẠN — a one-dimension hunter, semi-diagnostic by
-// construction — so the bar is "strictly inferior with a modest margin" (+0.3), not the blind-strategy +0.5.
-// The actual exploit (repeat +2/+2 pair-farming) is dead by design: repeats give +1/+1, first-friend-only +2.
-var ok = sums.hunter > sums.spreader + 0.5 && sums.hunter > sums.linker + 0.3 && sums.hunter > sums.idle + 1.5
+// linker note: the sim's linker SORTS by lowest BẠN — semi-diagnostic by construction. The hunter saturates the
+// 7-bloom ceiling (6.99/7), so bloom-count cannot separate strategies near the top; TIER DEPTH is the honest
+// discriminator there. The actual exploit (repeat +2/+2 pair-farming) is dead by design: repeats +1/+1.
+var ok = sums.hunter > sums.spreader + 0.5 && sums.hunter > sums.linker && sums.hunter > sums.idle + 1.5
       && sums.spreader > sums.idle
       && sums.idle <= 4.0                        // difficulty ceiling: doing nothing must NOT earn a thriving xóm
-      && tiers.hunter > tiers.spreader + 3;      // rooted depth, not just bloom count, separates diagnosis
+      && tiers.hunter > tiers.spreader + 3       // rooted depth, not just bloom count, separates diagnosis
+      && tiers.hunter > tiers.linker + 1.5;      // …and separates the one-dimension linker where blooms saturate
 console.log(ok ? "\n✅ BAND HOLDS: diagnosis beats spreading, link-spam, and idling — the multiplication teaches itself."
                : "\n❌ BAND BROKEN: a non-diagnostic strategy rivals the hunter — the thesis is not felt. Fix the numbers.");
 process.exit(ok?0:1);

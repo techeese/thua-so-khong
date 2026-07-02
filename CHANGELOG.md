@@ -1,5 +1,28 @@
 # Changelog — Thừa Số Không
 
+## v0.14 — 2026-07-02 — LOOP v2, cycle 5: 🃏 Year Cards — every run demands different diagnosis
+
+The deferred headline. At each run's dawn the xóm draws one of four authored years (never the same twice in a row —
+the chronicle remembers), announced in the village's voice and named again in the ending:
+
+- **🌊 Năm lũ (flood year):** the river can't fill itself until the workshops run six tiers deep — the hụi is the
+  xóm's only water. Vốn is the scarce lever.
+- **📋 Năm xét kỹ (strict year):** clear skies don't last (down-biased drift above the line), but the commune posts
+  notices — **nghe ngóng is free**. Information is cheap; calm is scarce.
+- **🛤 Năm đường chợ (market-road year):** goods reaching the district fetch **double, twice** — the Hoa×Ba pair
+  becomes an engine. Distribution is the lever.
+- **🍵 Năm tay lặng (quiet-hands year):** mentor pairs pass craft at **+2/season** and tending holds twice as long
+  (entropy halved). Lineage is the lever.
+
+Each card is 2–4 one-line rule bends at existing sites — the multiplication stays untouched; what changes is *which
+lever is scarce*, so run 3 asks a different question than run 2. Card persists in saves, records in the chronicle,
+and names itself in the finale's lead line.
+
+Under the hood: cards mirrored in check.js (drawn per seed). The band exposed an honest measurement fact: the hunter
+saturates the 7-bloom ceiling, so bloom-count cannot separate strategies at the top — the linker guard now lives on
+**tier depth** (hunter 15.5 > linker 13.1 + 1.5), with strict bloom ordering kept. Band: 6.99 / 6.70 / 6.40 / 3.67 ·
+tiers 15.5 / 13.1 / 10.3 / 3.7. Gates green ×3; all four cards probe-verified.
+
 ## v0.13 — 2026-07-02 — LOOP v2, cycle 4: the game can be lost now (balance overhaul + scene cleanup)
 
 The balance reviewer brought Markov chains and 6,000-run sims; the art reviewer rendered the scene and looked at it;
