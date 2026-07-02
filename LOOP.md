@@ -47,4 +47,4 @@
 - [x] One full 16-season headless run each in VI and EN with zero console errors (Gate 5, v0.19)
 
 ## Compass pointer
-- next cycle: fresh review round on v0.19, rotated lenses (suggest: the SCHOOL system in play [balance + legibility of Lớp Cô Mai, one cycle after shipping] · replay depth across year cards [do 3 consecutive runs feel different in practice?] · soundscape/gong quality). The two human 1.0 boxes (device install/share check + owner feel-gate) remain with the owner — do not nag. *(…v0.17 OWNER school+de-lecture · v0.18 felt-feedback+mobile+1.0-kit · v0.19 Gate-5 full-runs + polish done)*
+- next cycle: v0.21 = the cycle-10 review batch (soundscape pentatonic unification + school-in-play + replay-depth findings, reviews already in/landing). OWNER DIRECTIVES standing: less narration · simple opening (max 2 people, xóm gathers). *(…v0.18 felt-feedback+mobile+1.0-kit · v0.19 Gate-5 · v0.20 OWNER two-person opening done)*

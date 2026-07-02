@@ -29,9 +29,11 @@ window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
 setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-v1");
   document.getElementById("startBtn").click();
-  selectPerson(0); actNerve();
-  selectPerson(1); actLink(); completeLink(0);   // the apprenticeship beat
-  nextSeason(); nextSeason(); nextSeason(); nextSeason();
+  selectPerson(0); actNerve();                    // the opening is two people now
+  selectPerson(2);
+  S.nudged=true; nextSeason(); nextSeason();      // Chú Ba walks in at season 2
+  selectPerson(1); actLink(); completeLink(0);    // the apprenticeship beat
+  nextSeason(); nextSeason();
   // deterministic wiring only — stats are year-variant-jittered and entropy-decayed by design, so don't assert values
   var ok = S.season===4 && S.apprentice===true && S.cast[0].known && S.cast[1].known && S.un.link===true;
   document.title=(ok?"GATE_OK":"GATE_BAD")+" s="+S.season+" appr="+S.apprentice+" nganTai="+S.cast[0].tai+" link="+S.un.link;

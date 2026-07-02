@@ -128,7 +128,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.19</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.20</span></div>
 </div>
 
 <!-- intro -->
@@ -361,6 +361,8 @@ function fresh(){
     p.btai=p.tai; p.bgan=p.gan; p.bban=p.ban;             // their nature — un-bloomed tending decays back toward it
     p.x=p.hx; p.y=p.hy; p.tx=p.hx; p.ty=p.hy; p.ph=Math.random()*6.28; });
   S.cast[6].arrives=5+Math.floor(Math.random()*4);        // the sampan comes when it comes (5–8)
+  // the opening is TWO people — Bé Ngân and Cô Mai. The rest of the xóm gathers one per season.
+  S.cast[3].arrives=1; S.cast[1].arrives=2; S.cast[4].arrives=3; S.cast[5].arrives=4;
   S.baFadeStart=7+Math.floor(Math.random()*3);            // the elder's clock starts 7–9
   S.luat=2+Math.floor(Math.random()*3); S.von=2+Math.floor(Math.random()*3);
   // 🃏 draw this year's card — never the same card twice in a row
@@ -775,7 +777,9 @@ function person(p,now){
       p.tx=Math.max(40,Math.min(W-40,p.tx)); p.ty=Math.max(230,Math.min(H-70,p.ty)); } }
   else { p.x+=dx/d*0.45; p.y+=dy/d*0.45; }
   var bob=Math.sin(now*0.006+p.ph)*(d>2?2.2:0.8);
-  var x=p.x, y=p.y+bob, sc=p.young?0.85:1;
+  var awk=p.arriveT?Math.min(1,(now-p.arriveT)/1800):1;
+  if(awk>=1) p.arriveT=0;
+  var x=p.x+(1-awk)*(W+70-p.x), y=p.y+bob+(awk<1?Math.abs(Math.sin(now*0.02))*2:0), sc=p.young?0.85:1;
   // shadow — flat and light (a print barely casts one)
   ctx.fillStyle="rgba(43,35,32,.10)"; ctx.beginPath(); ctx.ellipse(x,p.y+22,15,4.4,0,0,6.28); ctx.fill();
   ctx.save(); ctx.translate(x,y); ctx.scale(sc,sc);
@@ -963,6 +967,7 @@ function nextSeason(){
   if(S.over) return;
   S.linking=null;
   flushPend(true);   // any pending lessons land BEFORE this season's burst, not inside it
+  var _preActive=S.cast.filter(active).map(function(p){return p.id;});
   // one gentle first-turn nudge: don't let a new player skip past their whole hand
   if(S.season===0 && S.acts===3 && !S.nudged){ S.nudged=true;
     bubble(S.cast[0],t("nudge")); beep(500,0.07); return; }
@@ -1069,6 +1074,12 @@ function nextSeason(){
     logMsg("☁️ Mùa giông — ai cũng bận chống nhà (chỉ còn 2⚡).","☁️ Storm season — everyone is bracing their homes (only 2⚡)."); }
   if(S.luat<4&&S.stormStreak===3){ logMsg("Nhà đã chằng néo xong — xóm quen giông rồi (3⚡).","The roofs are braced — the xóm is used to storms now (3⚡)."); }
   if(S.season>=16){ startFinale(); return; }
+  // 🚶 the xóm gathers: whoever's season this is walks in and speaks their own trouble — no narrator
+  S.cast.forEach(function(p){
+    if(p.id===6) return;   // the sampan has its own beat below
+    if(active(p)&&_preActive.indexOf(p.id)<0){ p.arriveT=performance.now();
+      bubble(p,quoteFor(p)); beep(523,0.08); }
+  });
   unlockCheck();
   // 🛶 the returnee — arrives by sampan; stays only if the xóm gives her roots
   var lien=S.cast[6];

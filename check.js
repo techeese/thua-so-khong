@@ -18,6 +18,7 @@ function makeCast(rnd){ return [
     o[k]=Math.max(1,Math.min(10,o[k]+(rnd()<0.5?-1:1))); });
   o.btai=o.tai; o.bgan=o.gan; o.bban=o.ban;
   if(idx===6) o.arrives=5+Math.floor(rnd()*4);
+  if(idx===3) o.arrives=1; if(idx===1) o.arrives=2; if(idx===4) o.arrives=3; if(idx===5) o.arrives=4;   // the xóm gathers (mirrors index.html)
   return o; }); }
 function activeSim(c,season){ return !c.gone && (c.arrives===undefined||season>=c.arrives); }
 
@@ -47,9 +48,12 @@ function run(strategy,seed){
       } else if(strategy==="spreader"){           // effort everywhere, no diagnosis
         var c2=here[Math.floor(rnd()*here.length)], k=["tai","gan","ban"][Math.floor(rnd()*3)];
         if(c2&&!c2.started){ c2[k]=Math.min(10,c2[k]+2); if(k==="gan") communal(c2); }
-      } else if(strategy==="linker"){             // spam Kết nối on the two lowest-BẠN people (first friend +2, later +1 — mirrors index.html)
-        var un=here.filter(function(c){return !c.started;}).sort(function(a,b){return a.ban-b.ban;});
-        if(un.length>=2){ var A=un[0],B=un[1];
+      } else if(strategy==="linker"){             // spam Kết nối BLINDLY — random pairs, no diagnosis.
+        // (was lowest-BẠN-sorted "semi-diagnostic"; with the v0.20 two-person opening that became near-optimal
+        //  play and stopped measuring link-SPAM. Random pairing is the honest non-diagnostic strategy.)
+        var un=here.filter(function(c){return !c.started;});
+        if(un.length>=2){ var iA2=Math.floor(rnd()*un.length), iB2=(iA2+1+Math.floor(rnd()*(un.length-1)))%un.length;
+          var A=un[iA2],B=un[iB2];
           var gA2=(A.links|0)===0?2:1, gB2=(B.links|0)===0?2:1;
           var iA=cast.indexOf(A),iB=cast.indexOf(B);
           var ky=Math.min(iA,iB)+"-"+Math.max(iA,iB);

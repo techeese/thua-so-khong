@@ -1,5 +1,21 @@
 # Changelog — Thừa Số Không
 
+## v0.20 — 2026-07-02 — OWNER BATCH: the xóm gathers
+
+At the owner's direction: **the game opens with two people** — Bé Ngân (the zero to find) and Cô Mai (the almost-ready
+one). The rest of the xóm arrives one per season: Anh Vũ (1), Chú Ba (2), Chị Hoa (3), Anh Tú (4), and Cô Liên's sampan
+still comes when it comes (5–8). Each newcomer **walks in from the road** and speaks their own trouble — no narrator.
+The empty houses at dawn are the promise.
+
+- Mechanically free: the `arrives` machinery already existed for Cô Liên; every system (school, entropy, cascade,
+  chatter, z-sort) already respects presence.
+- The gate followed honestly: with a two-person opening, the sim's "link the two lowest-BẠN people" strategy became
+  near-optimal play (it reliably built the mentor pairs) and stopped measuring link-SPAM — the sim linker is now
+  honestly BLIND (random pairs), documented in-code. Band re-proven: hunter 6.98 / linker 6.78 / spreader 6.28 /
+  idle 3.50 · tiers 15.9 / 14.6 / 11.3 / 3.5.
+- Gate 2 rewritten for the staged opening (the apprenticeship link now happens after Chú Ba arrives); Gate 5 full
+  runs green in both languages — and they now land different endings across draws, which is the variety working.
+
 ## v0.19 — 2026-07-02 — LOOP v2, cycle 9: the gate plays the whole game now
 
 - **Gate 5:** every ship now requires TWO full 16-season headless playthroughs — one in Vietnamese, one in English —
