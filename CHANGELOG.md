@@ -1,5 +1,43 @@
 # Changelog — Thừa Số Không
 
+## v0.13 — 2026-07-02 — LOOP v2, cycle 4: the game can be lost now (balance overhaul + scene cleanup)
+
+The balance reviewer brought Markov chains and 6,000-run sims; the art reviewer rendered the scene and looked at it;
+the replay reviewer played run 2 cold. Sixteen changes:
+
+**Balance — stakes exist now:**
+- **Idle no longer wins.** Blooms inspire only people you've MET (+1 GAN to known villagers only) — doing nothing
+  drops from 4.5 blooms (earning the #2 ending) to 3.7 with tierSum 3.7 vs the hunter's 15.5. The gate now enforces a
+  difficulty ceiling (idle ≤ 4.0) and a tier-separation band (hunter > spreader + 3 tiers).
+- **Endings re-keyed to tierSum** — rooted depth, not cheap bloom count: Mùa vàng needs 5 blooms + your build +
+  12 tiers; Xóm đã thức needs 8 tiers. Every rung is now reachable: title 4 = built + almost nothing else bloomed;
+  title 5 = nothing grew past a stall; NEW title 6 **"Mùa giông vẫn nở"** — six storm seasons endured, three blooms held.
+- **Storms are arcs, not identities:** below the tax line the sky recovers 25%/8% (was a near-absorbing 12%/8% —
+  ⅓ of runs were whole-game 2⚡ marches, E[escape] 31 seasons). And **the xóm adapts**: after two braced seasons,
+  hands return to 3⚡ (*"Nhà đã chằng néo xong — xóm quen giông rồi"*). Crush risk stays.
+- **Shelter finally pays:** appears whenever a storm is VISIBLE (current sky, or paid forecast — no more paying 1⚡
+  to confirm a foregone conclusion before being allowed to act), and one hand now tarps EVERY exposed young roof.
+- check.js: elder-clock off-by-one fixed; band re-proven — hunter 6.99 > linker 6.68 > spreader 6.35 > idle 3.73.
+
+**Run 2 — the chronicle finally shows up where it matters:**
+- **The 🏮 endings-seen row (now /6) + one hint for the nearest unseen title live ON THE ENDING CARD** — the flagship
+  replay feature was previously invisible on the Play-again path. "Chơi lại" also opens run 2 with the village book's
+  recap as its first log line.
+- **The finale clears the save** — no more resuming a ghost season 15 and double-writing the chronicle (real bug).
+- **The xóm talks twice as much:** every villager has 2 idle lines + a storm-season line; every special pair has a
+  second exchange. (*Chú Ba: "Đất sét năm nay mịn. Người thì chưa biết."*)
+
+**Scene — the print reads again (reviewer rendered and looked):**
+- Workshops **pick clear ground** (reserved rects for market/houses/đình/trees + spacing from other workshops) —
+  no more tier-3 buildings swallowing the market.
+- **Labels de-cluttered:** workshop labels show the tier word only (full name when selected/yours), all canvas text
+  gets a paper halo, and label sizes compensate on phones (were ~5px fuzz at 390px).
+- **One depth pass** for people + workshops (no more walking on roofs); finale lanterns hang **off the eave on a
+  string** (were blotting the pennants red-on-red), smaller glow.
+
+Deferred to next cycle (headline feature, deserves its own batch against this new balance): **YEAR CARDS** — 4 authored
+year-conditions that change which lever is scarce, so run 3+ demands different diagnosis, not different arithmetic.
+
 ## v0.12 — 2026-07-02 — LOOP v2, cycle 3: run 2 & the village's voice (3 reviewers → 18 shipped)
 
 **Replayability (run 2 is now a different year, and pulls you in):**

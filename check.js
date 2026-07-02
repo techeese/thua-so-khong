@@ -27,10 +27,11 @@ function lcg(seed){ var s=seed>>>0; return function(){ s=(1103515245*s+12345)>>>
 
 function run(strategy,seed){
   var rnd=lcg(seed), cast=makeCast(rnd), pairsSet={};
-  var luat=2+Math.floor(rnd()*3), von=2+Math.floor(rnd()*3), baStart=7+Math.floor(rnd()*3);
+  var luat=2+Math.floor(rnd()*3), von=2+Math.floor(rnd()*3), baStart=7+Math.floor(rnd()*3), stormStreak=0;
   for(var season=0;season<16;season++){
     var here=cast.filter(function(c){return activeSim(c,season);});
-    var actsN=(season>0&&luat<4)?2:3;   // storm tax (mirrors index.html)
+    if(luat<4){ stormStreak++; } else { stormStreak=0; }
+    var actsN=(season>0&&luat<4&&stormStreak<=2)?2:3;   // storm tax + adaptation (mirrors index.html)
     for(var a=0;a<actsN;a++){
       function communal(target){                  // failure night lifts everyone crushed (mirrors index.html actNerve)
         cast.forEach(function(o){ if(o!==target&&activeSim(o,season)&&o.crushedOnce&&!o.started) o.gan=Math.min(10,o.gan+1); });
@@ -56,7 +57,8 @@ function run(strategy,seed){
     cast.forEach(function(p){
       if(p.started||!activeSim(p,season)) return;
       if(rnd()<chance(p,von)){ p.started=true; p.age=0; p.born=true; p.mom=0;
-        cast.forEach(function(o){ if(o!==p) o.gan=Math.min(10,o.gan+1); }); }
+        // inspiration reaches only people you've met — active strategies know everyone, idle knows no one
+        if(strategy!=="idle") cast.forEach(function(o){ if(o!==p) o.gan=Math.min(10,o.gan+1); }); }
       else if(p.tai*p.gan*p.ban>=100){ p.mom=Math.min(0.09,(p.mom||0)+0.03); }
     });
     // the returnee leaves if unrooted (mirrors index.html: season>=13, ban<4, not bloomed)
@@ -73,32 +75,39 @@ function run(strategy,seed){
     if(tsum>=4) von=Math.min(10,von+1);
     cast.forEach(function(p){ if(p.started){ p.age=(p.age|0)+1; p.born=false; } });
     // the elder's clock (mirrors index.html; the sim has no apprenticeship, so blooming him is the only save)
-    if(season>=baStart){ var ba=cast[1]; if(!ba.started&&!ba.gone&&ba.tai>0) ba.tai=Math.max(0,ba.tai-1); }
+    if(season+1>=baStart){ var ba=cast[1]; if(!ba.started&&!ba.gone&&ba.tai>0) ba.tai=Math.max(0,ba.tai-1); }
     // entropy: un-bloomed tending decays back toward each person's nature (mirrors index.html)
     cast.forEach(function(p){ if(p.started||!activeSim(p,season)) return;
       ["tai","gan","ban"].forEach(function(k){ if(p[k]>p["b"+k] && rnd()<0.35) p[k]--; }); });
-    var r=rnd(); if(r<0.12) luat=Math.min(10,luat+1); else if(r<0.20) luat=Math.max(1,luat-1);
+    var r=rnd();
+    if(luat<4){ if(r<0.25) luat=luat+1; else if(r<0.33) luat=Math.max(1,luat-1); }
+    else { if(r<0.12) luat=Math.min(10,luat+1); else if(r<0.20) luat=Math.max(1,luat-1); }
     if(season%4===3) von=Math.min(10,von+1);
   }
-  return cast.filter(function(p){return p.started;}).length;
+  var tsum=cast.reduce(function(a,c){ if(!c.started) return a;
+    var pv=c.tai*c.gan*c.ban; return a+(pv<300?1:pv<600?2:3); },0);
+  return {n:cast.filter(function(p){return p.started;}).length, ts:tsum};
 }
 
-var N=1200, sums={hunter:0,spreader:0,linker:0,idle:0};
+var N=1200, sums={hunter:0,spreader:0,linker:0,idle:0}, tiers={hunter:0,spreader:0,linker:0,idle:0};
 ["hunter","spreader","linker","idle"].forEach(function(st){
-  for(var i=0;i<N;i++) sums[st]+=run(st,1009+i*53);
-  sums[st]/=N;
+  for(var i=0;i<N;i++){ var r2=run(st,1009+i*53); sums[st]+=r2.n; tiers[st]+=r2.ts; }
+  sums[st]/=N; tiers[st]/=N;
 });
 console.log("standing workshops after 16 seasons (avg of "+N+" runs):");
 console.log("  hunter   (diagnose the zero) : "+sums.hunter.toFixed(2));
 console.log("  spreader (effort everywhere) : "+sums.spreader.toFixed(2));
 console.log("  linker   (spam Kết nối)      : "+sums.linker.toFixed(2));
 console.log("  idle     (do nothing)        : "+sums.idle.toFixed(2));
+console.log("tiers: hunter "+tiers.hunter.toFixed(1)+" · spreader "+tiers.spreader.toFixed(1)+" · linker "+tiers.linker.toFixed(1)+" · idle "+tiers.idle.toFixed(1));
 
 // linker margin note: the sim's linker SORTS by lowest BẠN — a one-dimension hunter, semi-diagnostic by
 // construction — so the bar is "strictly inferior with a modest margin" (+0.3), not the blind-strategy +0.5.
 // The actual exploit (repeat +2/+2 pair-farming) is dead by design: repeats give +1/+1, first-friend-only +2.
 var ok = sums.hunter > sums.spreader + 0.5 && sums.hunter > sums.linker + 0.3 && sums.hunter > sums.idle + 1.5
-      && sums.spreader > sums.idle;
+      && sums.spreader > sums.idle
+      && sums.idle <= 4.0                        // difficulty ceiling: doing nothing must NOT earn a thriving xóm
+      && tiers.hunter > tiers.spreader + 3;      // rooted depth, not just bloom count, separates diagnosis
 console.log(ok ? "\n✅ BAND HOLDS: diagnosis beats spreading, link-spam, and idling — the multiplication teaches itself."
                : "\n❌ BAND BROKEN: a non-diagnostic strategy rivals the hunter — the thesis is not felt. Fix the numbers.");
 process.exit(ok?0:1);

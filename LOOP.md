@@ -37,4 +37,4 @@
 - anything outward-facing beyond this repo/Pages site.
 
 ## Compass pointer
-- next cycle: review round again, rotate lenses (suggest: balance-of-the-new-systems [storm tax + tiers + variants together] · art/scene composition · a full cold replay for run-2 feel). *(v0.10 hardening · v0.11 late-game & payoff · v0.12 run-2 & voice done)*
+- next cycle: **YEAR CARDS** (the deferred headline: ~4 authored year-conditions — flood/strict/market-road/quiet-hands — that change WHICH LEVER IS SCARCE; card id in chronicle so consecutive runs differ; mirror in check.js) + any owner feedback. After that: fresh review round. *(v0.10 hardening · v0.11 late-game · v0.12 run-2 & voice · v0.13 balance overhaul + scene cleanup done)*
