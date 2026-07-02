@@ -47,4 +47,4 @@
 - [x] One full 16-season headless run each in VI and EN with zero console errors (Gate 5, v0.19)
 
 ## Compass pointer
-- next cycle: **CONSTRAINT SEALS** headline (carried over — player-chosen glyph on intro when book nonempty: năm không hụi / không kết nối / không dạy; gate verb at existing disabled-check; stamp glyph into triện seal + chronicle). OWNER DIRECTIVES standing: less narration · simple opening · buildings mean something (visit layer, v0.22). *(…v0.20 OWNER two-person opening · v0.21 pentatonic+cards-bite+school-visible · v0.22 OWNER purposeful-movement done)*
+- next cycle: fresh review round on v0.23, rotated lenses (suggest: constraint-runs-in-play [do the three ⛓ years actually play differently? is the no-link tragedy legible?] · a cold player on the CURRENT two-person opening arc · visual polish of the new layers [motes, visits, picker] with rendered screenshots). OWNER DIRECTIVES standing: less narration · simple opening · buildings mean something. *(…v0.21 pentatonic+cards-bite+school-visible · v0.22 OWNER purposeful-movement · v0.23 constraint-seals done)*

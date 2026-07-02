@@ -1,5 +1,26 @@
 # Changelog — Thừa Số Không
 
+## v0.23 — 2026-07-02 — LOOP v2, cycle 12: ⛓ constraint runs — tie one of your own hands
+
+The replay reviewer proved it (v0.21 analysis): only REMOVING a verb forces genuinely new play. Now, once your village
+book has an entry, the intro card — and the ending card, for Chơi lại — offers one quiet question: **"tự trói một
+tay?"** and three glyphs. No explainer paragraphs; the verb names are the explanation.
+
+- **🚫🪙 Năm không hụi** — the river must fill itself: flywheel or market or nothing. In a flood year, existential.
+- **🚫🤝 Năm không kết nối** — BẠN has no verb: Chú Ba's craft and Cô Liên's roots become zeros one hand cannot turn.
+  The tragedies that follow are intended — some years, the xóm learns which locks it cannot reach.
+- **🚫📖 Năm không dạy** — the school and the mentor lines become the ONLY way skill moves. Lineage or nothing.
+
+The constraint persists in saves, records in the chronicle, **stamps its glyph into the triện seal** beside the year
+glyph, and names itself in the ending lead like the year card. The banned verb's button stays visible — struck
+through, a hand you can see but not use. Title thresholds unchanged: constrained titles are simply earned harder.
+
+check.js: no new assertions — a constrained strategy is a strictly-weaker player and the band's existing dominance
+ordering already covers it; a per-constraint band would triple gate time for no signal.
+
+Gates ×3 green (incl. both full-run playthroughs), 9/9 probes (gating × 3 verbs, save/load roundtrip, seal glyph,
+lead line, chronicle record, picker delegation, row visibility).
+
 ## v0.22 — 2026-07-02 — OWNER BATCH: people go where their story happens
 
 At the owner's direction ("each people came to each house will actually do something related to that house") —
