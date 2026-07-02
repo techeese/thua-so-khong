@@ -1,5 +1,27 @@
 # Changelog — Thừa Số Không
 
+## v0.22 — 2026-07-02 — OWNER BATCH: people go where their story happens
+
+At the owner's direction ("each people came to each house will actually do something related to that house") —
+the buildings stop being backdrop. A `visit()` layer makes movement carry meaning, wordlessly:
+
+- **📖 The class gathers** — students physically walk to Cô Mai's workshop when the lesson runs, and stand there
+  while the book motes fly.
+- **🪙 The hụi meets at the đình** — every villager you know converges on the communal hall when you contribute,
+  and the pooled coin arcs from the đình into the river (the money literally becomes the water).
+- **🏮 Failure night is a night AT someone's side** — the once-crushed walk over and sit with the person, not just
+  float a +1 from across the map.
+- **🛤 Chú Ba carries his ceramics to the market** — the gtm payout is now a visible trip: Ba and Hoa meet at her
+  stall, and the coin arcs to the river.
+- **🕯 The elder's days move to the đình steps** once his hands begin to fail — where the craft was always kept.
+- **🛶 Cô Liên, unheld, drifts back toward the river landing** season by season — you can SEE her leaving before
+  she leaves; rooting her brings her days back to the village.
+- **☁️ Storms huddle everyone near their own roof** (wander radius shrinks under a heavy sky).
+- Friends now close the distance before their pair-conversations — no more shouting across the xóm.
+
+No numbers changed; the band is untouched. Gates ×3 green (incl. both full-run playthroughs).
+Constraint seals move to next cycle.
+
 ## v0.21 — 2026-07-02 — LOOP v2, cycle 10: the game finds its scale (and the school shows its hands)
 
 **🎵 One scale for the whole xóm (soundscape review):** the gongs had quietly built an A-minor pentatonic that the

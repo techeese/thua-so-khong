@@ -128,7 +128,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.21</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.22</span></div>
 </div>
 
 <!-- intro -->
@@ -304,9 +304,12 @@ function chatter(){
   if(pairsHere.length&&Math.random()<0.45){
     var set=PAIR_TALK[pairsHere[Math.floor(Math.random()*pairsHere.length)]];
     var talk=set[Math.floor(Math.random()*set.length)];
-    bubble(S.cast[talk[0].who],talk[0][L]);
+    var pa=S.cast[talk[0].who], pb=S.cast[talk[1].who];
+    var mx2=(pa.x+pb.x)/2, my2=(pa.y+pb.y)/2;
+    visit(pa,mx2-16,my2,6000); visit(pb,mx2+16,my2,6000);   // friends close the distance before they speak
+    bubble(pa,talk[0][L]);
     var ctok=runTok;
-    setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(S.cast[talk[1].who],talk[1][L]); },1600);
+    setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pb,talk[1][L]); },1600);
     return;
   }
   var here=S.cast.filter(active); if(!here.length) return;
@@ -494,6 +497,12 @@ function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); shake=1; beep(85,0.35,0.07); 
 var shake=0, glows=[], lanterns=[];
 var dlBuf=[]; function dlCmp(a,b){ return a.z-b.z; }
 var motes=[];   // 📖 book motes — the class visibly leaves Cô Mai's workshop for each student
+// people go WHERE their story happens — a visit overrides idle wander for a few seconds
+var DINH={x:470,y:265}, CHO={x:560,y:490}, BEN={x:80,y:H-75};   // đình steps · market stall · river landing
+function visit(p,x,y,ms){ if(!p||p.gone) return;
+  p.vx=Math.max(40,Math.min(W-40,x)); p.vy=Math.max(230,Math.min(H-70,y));
+  p.vUntil=performance.now()+(ms||5000);
+  p.tx=p.vx+(Math.random()-0.5)*26; p.ty=p.vy+(Math.random()-0.5)*12; }
 function buzz(v){ if(META.muted) return; try{ if(navigator.vibrate) navigator.vibrate(v); }catch(e){} }
 
 // điệp-shell paper (once): dark speckle + fiber strokes + mica sparkle — the Đông Hồ ground
@@ -590,7 +599,7 @@ function drawScene(now){
   motes=motes.filter(function(mo){ mo.t+=0.016; if(mo.t<0) return true; var k3=Math.min(1,mo.t/1.1);
     var mx=mo.x0+(mo.x1-mo.x0)*k3, my=mo.y0+(mo.y1-mo.y0)*k3-Math.sin(k3*Math.PI)*46;
     ctx.font=Math.round(13*LKF)+"px sans-serif"; ctx.textAlign="center"; ctx.globalAlpha=0.9-0.5*k3;
-    ctx.fillText("📖",mx,my); ctx.globalAlpha=1;
+    ctx.fillText(mo.g||"📖",mx,my); ctx.globalAlpha=1;
     return k3<1; });
   glows=glows.filter(function(gl){ gl.t+=0.02; var r=18+gl.t*95, a=Math.max(0,0.55-gl.t*0.6);
     ctx.beginPath(); ctx.arc(gl.x,gl.y,r,0,6.28);
@@ -788,9 +797,12 @@ function workshop(s,now){
 function person(p,now){
   // wander
   var dx=p.tx-p.x, dy=p.ty-p.y, d=Math.hypot(dx,dy);
-  if(d<2){ if(Math.random()<0.006){ p.tx=p.hx+(Math.random()-0.5)*110; p.ty=p.hy+(Math.random()-0.5)*46;
+  var visiting=p.vUntil&&now<p.vUntil;
+  if(d<2){ if(Math.random()<0.006){
+      var cx2=visiting?p.vx:p.hx, cy2=visiting?p.vy:p.hy, rw=visiting?26:(S.luat<4?44:110), rh=visiting?12:(S.luat<4?20:46);
+      p.tx=cx2+(Math.random()-0.5)*rw; p.ty=cy2+(Math.random()-0.5)*rh;   // storms huddle people near their own roof
       p.tx=Math.max(40,Math.min(W-40,p.tx)); p.ty=Math.max(230,Math.min(H-70,p.ty)); } }
-  else { p.x+=dx/d*0.45; p.y+=dy/d*0.45; }
+  else { p.x+=dx/d*(visiting?0.7:0.45); p.y+=dy/d*(visiting?0.7:0.45); }
   var bob=Math.sin(now*0.006+p.ph)*(d>2?2.2:0.8);
   var awk=p.arriveT?Math.min(1,(now-p.arriveT)/1800):1;
   if(awk>=1) p.arriveT=0;
@@ -896,7 +908,8 @@ function actNerve(){ var p=cur(); if(!p||S.acts<=0||p.gan>=10||S.over) return; i
   p.gan=Math.min(10,p.gan+2); S.hintDone=true; beep(440*(1+(Math.random()-0.5)*0.015),0.08); floatOn(p,"+2 "+t("gan"),"#C1443C");
   // a failure night is communal — everyone who has fallen listens, and fears a little less
   var lifted=0;
-  S.cast.forEach(function(o){ if(o!==p&&active(o)&&o.crushCount>0&&!o.started&&o.gan<10){ o.gan=Math.min(10,o.gan+1); lifted++; floatOn(o,"+1 "+t("gan"),"#C1443C"); } });
+  S.cast.forEach(function(o){ if(o!==p&&active(o)&&o.crushCount>0&&!o.started&&o.gan<10){ o.gan=Math.min(10,o.gan+1); lifted++;
+    visit(o,p.x,p.y+14,6000); floatOn(o,"+1 "+t("gan"),"#C1443C"); } });   // they come and sit with them for the night
   if(lifted&&!S.nightSeen){ S.nightSeen=true;
     logMsg("🏮 Đêm thất bại — những người từng ngã ngồi nghe, và đỡ sợ hơn một chút.",
            "🏮 Failure night — those who fell sit and listen, and fear a little less."); }
@@ -950,7 +963,10 @@ function completeLink(otherId){
 }
 function huiMax(){ return (S.yearCard===0)?4:3; }   // a flood year leans harder on the hụi
 function actHui(){ if(S.acts<=0||S.hui>=huiMax()) return; if(!spend())return;
-  S.hui++; S.von=Math.min(10,S.von+1); beep(392,0.1); logMsg(STR.huiDone.vi,STR.huiDone.en); render(); save(); }
+  S.hui++; S.von=Math.min(10,S.von+1); beep(392,0.1);
+  S.cast.filter(function(p){return active(p)&&p.known;}).forEach(function(p){ visit(p,DINH.x+(Math.random()-0.5)*70,DINH.y,5200); });   // the hụi circle meets at the đình
+  motes.push({x0:DINH.x,y0:DINH.y-10,x1:W/2,y1:H-58,t:-0.9,g:"🪙"});   // and the pooled coin becomes river water
+  logMsg(STR.huiDone.vi,STR.huiDone.en); render(); save(); }
 function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notices — asking around is free
   if(S.probeSeen||S.over||(!free&&S.acts<=0)) return;
   if(!free){ if(!spend())return; }
@@ -1001,7 +1017,8 @@ function nextSeason(){
       var studs=S.cast.filter(function(q){ return q!==mai&&active(q)&&!q.started&&q.known&&q.tai<7&&!q._dripped; })
                       .sort(function(a2,b2){return a2.tai-b2.tai;}).slice(0,reach);
       studs.forEach(function(st2,si2){ st2.tai=Math.min(7,st2.tai+1);
-        if(maiShip) motes.push({x0:maiShip.x,y0:maiShip.y-20,x1:st2.x,y1:st2.y-30,t:-si2*0.25});   // 📖 leaves HER workshop
+        if(maiShip){ motes.push({x0:maiShip.x,y0:maiShip.y-20,x1:st2.x,y1:st2.y-30,t:-si2*0.25});   // 📖 leaves HER workshop
+          visit(st2,maiShip.x-30+si2*28,maiShip.y+26,5600); }                                       // and the students walk to the lesson
         floatOn(st2,"+1 "+t("tai")+" 📖","#2E4A62"); });
       if(studs.length&&!S.classSeen){ S.classSeen=true;
         bubble(mai,(L==="vi")?"“Lớp nhỏ thôi — đứa nào ghé cũng được.”":"“Just a small class — anyone who drops by is welcome.”"); }
@@ -1074,6 +1091,8 @@ function nextSeason(){
   var gtmMax=(S.yearCard===2&&S.season<=10)?2:1, gtmAmt=(S.yearCard===2&&S.season<=10)?2:1;   // the new road carries double only while it's new
   if(S.gtm && (S.gtmPays|0)<gtmMax && S.cast[1].started){ S.gtmPays=(S.gtmPays|0)+1; S.gtmPaid=true;
     S.von=Math.min(10,S.von+gtmAmt);
+    visit(S.cast[1],CHO.x-24,CHO.y,6000); visit(S.cast[4],CHO.x+18,CHO.y,6000);   // Ba carries the goods to Hoa's stall
+    motes.push({x0:CHO.x,y0:CHO.y-26,x1:W/2,y1:H-58,t:-1.2,g:"🪙"});
     if(S.yearCard===2){ logMsg(S.gtmPays===1?"🛤 Hàng gốm ra tới huyện — được GIÁ GẤP ĐÔI (+2 vốn). Đường mới còn đi được một chuyến nữa.":"🛤 Chuyến hàng cuối qua đường chợ — sông đầy hẳn lên (+2 vốn).",
                                 S.gtmPays===1?"🛤 The ceramics reach the district — DOUBLE the price (+2 capital). The new road carries one more trip.":"🛤 The last trip down the market road — the river truly rises (+2 capital)."); }
     else logMsg(STR.gtmPaid.vi,STR.gtmPaid.en); }
@@ -1106,7 +1125,7 @@ function nextSeason(){
   // 🛶 the returnee — arrives by sampan; stays only if the xóm gives her roots
   var lien=S.cast[6];
   if(S.season===lien.arrives && !lien.gone){
-    lien.x=60; lien.y=H-70; lien.tx=lien.hx; lien.ty=lien.hy;
+    lien.x=60; lien.y=H-70; lien.bhx=lien.hx; lien.bhy=lien.hy; lien.tx=lien.hx; lien.ty=lien.hy;
     banner("🛶 "+lien.name,2300);
     logMsg("🛶 Một chiếc thuyền cập bến — Cô Liên về xóm, sau mười năm Sài Gòn.",
            "🛶 A sampan docks — Cô Liên comes home, after ten years in Saigon.");
@@ -1114,6 +1133,8 @@ function nextSeason(){
   }
   if(!lien.gone && S.season>lien.arrives){
     var rooted = lien.started || lien.ban>=4 || S.pairs.some(function(pr){return pr[0]===6||pr[1]===6;});
+    if(!rooted && S.season>=10){ lien.hx=lien.hx+(BEN.x-lien.hx)*0.3; lien.hy=lien.hy+(BEN.y-lien.hy)*0.3; }   // unheld, she drifts back toward the landing
+    if(rooted && lien.bhx!==undefined){ lien.hx=lien.bhx; lien.hy=lien.bhy; }
     if(S.season===11 && !rooted && !S.lienWarned){ S.lienWarned=true;
       bubble(lien,(L==="vi")?"“Chắc tôi lại vào Nam…”":"“Maybe I'll head south again…”");
       logMsg("Cô Liên nhắc chuyện vào Nam — thừa số BẠN của cô vẫn gần số không.",
@@ -1127,6 +1148,7 @@ function nextSeason(){
   if(S.season>=(S.baFadeStart||8) && active(ba) && !ba.started && !S.apprentice && ba.tai>0){
     ba.tai=Math.max(0,ba.tai-1); if(ba.known) floatOn(ba,"−1 "+t("tai")+" 🕯","#7a6f5d");
     if(!S.baFade){ S.baFade=true;
+      ba.hx=DINH.x-40; ba.hy=DINH.y+6;   // his days move to the đình steps, where the craft was always kept
       beep(392,0.12,0.03); setTimeout(function(){beep(330,0.18,0.025);},150);
       logMsg("🕯 Mắt Chú Ba mờ dần, tay run dần — nghề chưa có người nối.",
              "🕯 Chú Ba's eyes dim, his hands tremble — the craft has no heir yet."); }
