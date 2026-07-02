@@ -97,7 +97,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.4</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.5</span></div>
 </div>
 
 <!-- intro -->
@@ -297,17 +297,22 @@ function bubble(p,txt){ bubbles.push({p:p,txt:txt,until:performance.now()+3600})
 function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); beep(120,0.4,0.05); buzz(60); }
 function buzz(v){ if(META.muted) return; try{ if(navigator.vibrate) navigator.vibrate(v); }catch(e){} }
 
-// paper speckle (once)
-var speck=[]; for(var i=0;i<130;i++) speck.push([Math.random()*W,Math.random()*H,Math.random()*1.6+0.4]);
+// điệp-shell paper (once): dark speckle + fiber strokes + mica sparkle — the Đông Hồ ground
+var speck=[]; for(var i=0;i<110;i++) speck.push([Math.random()*W,Math.random()*H,Math.random()*1.6+0.4]);
+var fibers=[]; for(var i=0;i<44;i++) fibers.push([Math.random()*W,Math.random()*H,26+Math.random()*60,(Math.random()-0.5)*0.3]);
+var mica=[]; for(var i=0;i<80;i++) mica.push([Math.random()*W,Math.random()*H]);
 
-function ink(w){ ctx.strokeStyle="#2B2320"; ctx.lineWidth=w||3; ctx.lineJoin="round"; ctx.lineCap="round"; }
+function ink(w){ ctx.strokeStyle="#3a2a1e"; ctx.lineWidth=w||3; ctx.lineJoin="round"; ctx.lineCap="round"; }
 
 var amb=[]; // seasonal drift: blossom in spring, leaves in autumn
 function drawScene(now){
   ctx.setTransform(DPR,0,0,DPR,0,0);
-  // paper
+  // paper — điệp ground
   ctx.fillStyle="#EAD9B8"; ctx.fillRect(0,0,W,H);
-  ctx.fillStyle="rgba(120,95,60,.14)"; speck.forEach(function(s){ ctx.fillRect(s[0],s[1],s[2],s[2]); });
+  ctx.strokeStyle="rgba(160,130,80,.09)"; ctx.lineWidth=1;
+  fibers.forEach(function(f){ ctx.beginPath(); ctx.moveTo(f[0],f[1]); ctx.lineTo(f[0]+f[2],f[1]+f[2]*f[3]); ctx.stroke(); });
+  ctx.fillStyle="rgba(120,95,60,.13)"; speck.forEach(function(s){ ctx.fillRect(s[0],s[1],s[2],s[2]); });
+  ctx.fillStyle="rgba(255,250,232,.55)"; mica.forEach(function(m){ ctx.fillRect(m[0],m[1],1.2,1.2); });
   var seas=S.season%4;
   if((seas===0||seas===2)&&amb.length<14&&Math.random()<0.25)
     amb.push({x:Math.random()*W,y:-8,vx:0.3+Math.random()*0.5,vy:0.35+Math.random()*0.5,rot:Math.random()*6.28,
@@ -317,8 +322,9 @@ function drawScene(now){
   var skyH=118;
   var clear=S.luat/10;
   ctx.fillStyle="rgba(160,200,214,"+(0.16+0.32*clear)+")"; ctx.fillRect(0,0,W,skyH);
-  // sun
-  ctx.beginPath(); ctx.arc(W-90,52,26,0,6.28); ctx.fillStyle="rgba(227,166,59,"+(0.35+0.5*clear)+")"; ctx.fill(); ink(2.5); ctx.stroke();
+  // the woodblock sun — đỏ vang, ringed
+  ctx.beginPath(); ctx.arc(W-90,52,24,0,6.28); ctx.fillStyle="rgba(193,68,60,"+(0.30+0.5*clear)+")"; ctx.fill(); ink(2.5); ctx.stroke();
+  ctx.beginPath(); ctx.arc(W-90,52,30,0,6.28); ctx.strokeStyle="rgba(193,68,60,"+(0.18+0.25*clear)+")"; ctx.lineWidth=2; ctx.stroke();
   // clouds — denser & darker when law is stuck
   var nc=Math.round(2+(10-S.luat)*0.7);
   for(var c=0;c<nc;c++){ var cx=((now*0.008)+(c*167))% (W+160)-80; var cy=24+((c*53)%70);
@@ -414,6 +420,13 @@ function drawScene(now){
   var tints=["rgba(217,124,142,.04)","rgba(227,166,59,.05)","rgba(193,68,60,.05)","rgba(110,130,165,.08)"];
   ctx.fillStyle=tints[seas]; ctx.fillRect(0,0,W,H);
 
+  // --- the printed frame + the ×0 seal (a woodblock print signs its corner) ---
+  ctx.strokeStyle="rgba(58,42,30,.5)"; ctx.lineWidth=2.5; ctx.strokeRect(9,9,W-18,H-18);
+  ctx.strokeStyle="rgba(58,42,30,.22)"; ctx.lineWidth=1; ctx.strokeRect(14,14,W-28,H-28);
+  ctx.fillStyle="rgba(193,68,60,.88)"; ctx.fillRect(W-48,H-48,32,32);
+  ctx.strokeStyle="rgba(245,234,208,.7)"; ctx.lineWidth=1.5; ctx.strokeRect(W-45,H-45,26,26);
+  ctx.fillStyle="#f5ead0"; ctx.font="700 14px Georgia"; ctx.textAlign="center"; ctx.fillText("×0",W-32,H-27); ctx.textAlign="left";
+
   // --- speech bubbles ---
   var nnow=performance.now();
   bubbles=bubbles.filter(function(b){ return b.until>nnow; });
@@ -442,7 +455,7 @@ function drawChickens(now){
     else { c.x+=dx/d*0.3; c.y+=dy/d*0.3; }
     var peck=Math.sin(now*0.02+c.ph)>0.85?2.5:0;
     ink(2);
-    ctx.fillStyle="#f4ead2"; ctx.beginPath(); ctx.ellipse(c.x,c.y,7,5,0,0,6.28); ctx.fill(); ctx.stroke();
+    ctx.fillStyle="#E8C06A"; ctx.beginPath(); ctx.ellipse(c.x,c.y,7,5,0,0,6.28); ctx.fill(); ctx.stroke();
     ctx.beginPath(); ctx.arc(c.x+6,c.y-4+peck,3.2,0,6.28); ctx.fill(); ctx.stroke();
     ctx.fillStyle="#C1443C"; ctx.fillRect(c.x+5,c.y-9+peck,2.4,2.4);
     ctx.fillStyle="#E3A63B"; ctx.beginPath(); ctx.moveTo(c.x+9,c.y-4+peck); ctx.lineTo(c.x+12,c.y-3+peck); ctx.lineTo(c.x+9,c.y-2+peck); ctx.closePath(); ctx.fill();
@@ -460,16 +473,29 @@ function banyan(x,y,now){
     ctx.beginPath(); ctx.ellipse(b[0]+sway,y+b[1],b[2],b[2]*0.62,0,0,6.28);
     ctx.fillStyle="#6C8F3D"; ctx.fill(); ink(3.5); ctx.stroke(); });
 }
-function dinh(x,y){ // the communal house (đình)
+function dinh(x,y){ // the communal house (đình) — with the upturned đao corners
   ink(3.5); ctx.fillStyle="#b8797a";
-  ctx.beginPath(); ctx.moveTo(x-70,y+30); ctx.quadraticCurveTo(x-78,y+26,x-84,y+16);
-  ctx.lineTo(x,y-16); ctx.lineTo(x+84,y+16); ctx.quadraticCurveTo(x+78,y+26,x+70,y+30); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x-70,y+30); ctx.quadraticCurveTo(x-80,y+26,x-88,y+12);
+  ctx.quadraticCurveTo(x-84,y+16,x-80,y+16);
+  ctx.lineTo(x,y-16); ctx.lineTo(x+80,y+16); ctx.quadraticCurveTo(x+84,y+16,x+88,y+12);
+  ctx.quadraticCurveTo(x+80,y+26,x+70,y+30); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle="rgba(58,42,30,.35)"; ctx.lineWidth=1.2;
+  for(var i=1;i<4;i++){ ctx.beginPath(); ctx.moveTo(x-70+i*10,y+28-i*2); ctx.lineTo(x,y-14+i*(-0)); ctx.stroke(); }
+  ink(3.5);
   ctx.fillStyle="#efe2c2"; ctx.fillRect(x-58,y+30,116,44); ctx.strokeRect(x-58,y+30,116,44);
   ctx.fillStyle="#8a6642"; ctx.fillRect(x-10,y+44,20,30); ctx.strokeRect(x-10,y+44,20,30);
+  ctx.strokeStyle="rgba(58,42,30,.4)"; ctx.lineWidth=1.4;
+  ctx.strokeRect(x-46,y+40,22,20); ctx.strokeRect(x+24,y+40,22,20);
 }
 function house(x,y,col){
   ink(3); ctx.fillStyle=col;
-  ctx.beginPath(); ctx.moveTo(x-46,y+22); ctx.lineTo(x,y-12); ctx.lineTo(x+46,y+22); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x-46,y+22); ctx.quadraticCurveTo(x-50,y+20,x-52,y+14);
+  ctx.quadraticCurveTo(x-48,y+18,x-44,y+18); ctx.lineTo(x,y-12); ctx.lineTo(x+44,y+18);
+  ctx.quadraticCurveTo(x+48,y+18,x+52,y+14); ctx.quadraticCurveTo(x+50,y+20,x+46,y+22); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // tile lines
+  ctx.strokeStyle="rgba(58,42,30,.3)"; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(x-30,y+12); ctx.lineTo(x+30,y+12); ctx.moveTo(x-16,y+1); ctx.lineTo(x+16,y+1); ctx.stroke();
+  ink(3);
   ctx.fillStyle="#efe2c2"; ctx.fillRect(x-36,y+22,72,38); ctx.strokeRect(x-36,y+22,72,38);
   ctx.fillStyle="#8a6642"; ctx.fillRect(x-8,y+34,16,26); ctx.strokeRect(x-8,y+34,16,26);
 }
@@ -501,26 +527,31 @@ function person(p,now){
   else { p.x+=dx/d*0.45; p.y+=dy/d*0.45; }
   var bob=Math.sin(now*0.006+p.ph)*(d>2?2.2:0.8);
   var x=p.x, y=p.y+bob, sc=p.young?0.85:1;
-  // shadow
-  ctx.fillStyle="rgba(43,35,32,.16)"; ctx.beginPath(); ctx.ellipse(x,p.y+22,15,5,0,0,6.28); ctx.fill();
+  // shadow — flat and light (a print barely casts one)
+  ctx.fillStyle="rgba(43,35,32,.10)"; ctx.beginPath(); ctx.ellipse(x,p.y+22,15,4.4,0,0,6.28); ctx.fill();
   ctx.save(); ctx.translate(x,y); ctx.scale(sc,sc);
-  ink(2.6);
+  ink(2.8);
   // legs
   var st=(d>2)?Math.sin(now*0.014+p.ph)*4:0;
-  ctx.strokeStyle="#2B2320"; ctx.beginPath(); ctx.moveTo(-4,10); ctx.lineTo(-4+st,22); ctx.moveTo(4,10); ctx.lineTo(4-st,22); ctx.stroke();
-  // áo body
+  ctx.strokeStyle="#3a2a1e"; ctx.beginPath(); ctx.moveTo(-4,10); ctx.lineTo(-4+st,22); ctx.moveTo(4,10); ctx.lineTo(4-st,22); ctx.stroke();
+  // áo body — plump, the Đông Hồ roundness
   ctx.fillStyle=p.color; ctx.beginPath();
-  ctx.moveTo(-9,-8); ctx.quadraticCurveTo(-11,6,-8,12); ctx.lineTo(8,12); ctx.quadraticCurveTo(11,6,9,-8); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.moveTo(-10,-8); ctx.quadraticCurveTo(-13.5,6,-9,12); ctx.lineTo(9,12); ctx.quadraticCurveTo(13.5,6,10,-8); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // a simple yếm/placket line down the áo
+  ctx.strokeStyle="rgba(58,42,30,.4)"; ctx.lineWidth=1.4; ctx.beginPath(); ctx.moveTo(0,-6); ctx.lineTo(0,10); ctx.stroke();
   // head
-  ctx.fillStyle="#F2C9A0"; ctx.beginPath(); ctx.arc(0,-16,8.5,0,6.28); ctx.fill(); ctx.stroke();
-  // face
-  ctx.fillStyle="#2B2320"; ctx.fillRect(-3.4,-17.5,1.7,1.7); ctx.fillRect(1.7,-17.5,1.7,1.7);
-  ctx.beginPath(); ctx.arc(0,-14,2.6,0.15*Math.PI,0.85*Math.PI); ctx.lineWidth=1.4; ctx.stroke();
+  ink(2.8); ctx.fillStyle="#F5D3A8"; ctx.beginPath(); ctx.arc(0,-16,9.4,0,6.28); ctx.fill(); ctx.stroke();
+  // face + the rosy woodblock cheeks
+  ctx.fillStyle="#3a2a1e"; ctx.fillRect(-3.6,-17.8,1.8,1.8); ctx.fillRect(1.8,-17.8,1.8,1.8);
+  ctx.beginPath(); ctx.arc(0,-14,2.7,0.15*Math.PI,0.85*Math.PI); ctx.lineWidth=1.4; ctx.stroke();
+  ctx.fillStyle="rgba(217,124,142,.5)";
+  ctx.beginPath(); ctx.arc(-5.4,-13.6,2,0,6.28); ctx.arc(5.4,-13.6,2,0,6.28); ctx.fill();
   // hat / hair
-  ink(2.6);
-  if(p.hat){ ctx.fillStyle="#E9DA9C"; ctx.beginPath(); ctx.moveTo(-13,-20); ctx.lineTo(0,-32); ctx.lineTo(13,-20); ctx.closePath(); ctx.fill(); ctx.stroke(); }
-  else { ctx.fillStyle="#2B2320"; ctx.beginPath(); ctx.arc(0,-18,8.5,Math.PI,2*Math.PI); ctx.fill(); }
-  if(p.elder){ ctx.strokeStyle="#ddd"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(-3,-10); ctx.quadraticCurveTo(0,-5,3,-10); ctx.stroke(); }
+  ink(2.8);
+  if(p.hat){ ctx.fillStyle="#E9DA9C"; ctx.beginPath(); ctx.moveTo(-14,-20); ctx.lineTo(0,-33); ctx.lineTo(14,-20); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle="rgba(58,42,30,.35)"; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(-9,-24.5); ctx.lineTo(9,-24.5); ctx.stroke(); }
+  else { ctx.fillStyle="#3a2a1e"; ctx.beginPath(); ctx.arc(0,-18,9.4,Math.PI,2*Math.PI); ctx.fill(); }
+  if(p.elder){ ctx.strokeStyle="#e8e0d0"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(-3,-10); ctx.quadraticCurveTo(0,-5,3,-10); ctx.stroke(); }
   ctx.restore();
   // selection ring
   if(S.sel===p.id){ ctx.strokeStyle="#C1443C"; ctx.lineWidth=2.5; ctx.setLineDash([5,4]);

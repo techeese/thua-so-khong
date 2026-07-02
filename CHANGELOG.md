@@ -1,5 +1,17 @@
 # Changelog — Thừa Số Không
 
+## v0.5 — 2026-07-02 — LOOP iteration 1: the Đông Hồ woodblock pass
+
+The loop's constitution added (`LOOP.md`: invariants · compass · bold-every-4th · ship-then-veto · halt conditions).
+First compass item, ART:
+- **Điệp-shell paper** — fiber strokes + mica sparkle over the ground speckle.
+- **Woodcut ink** — warm dark-brown (#3a2a1e) outlines everywhere, heavier line on figures.
+- **The figures got their folk plumpness** — rounder áo with a placket line, bigger heads, **rosy woodblock cheeks**.
+- **Roofs curve** — đao upturned corners on the đình + houses, tile lines, side windows on the đình.
+- **The red ringed sun** (đỏ vang), golden chicks, and a **printed frame with the ×0 seal** signing the corner —
+  a woodblock print signs its work.
+- Gates green; rendering-only (no model change).
+
 ## v0.4 — 2026-07-02 — buy the cheap question; two more lineages; shaped endings
 
 - **🔍 Hỏi thăm (the probe beat — the fable's rule #2, now playable):** unlocks at your first bloom, alongside the
