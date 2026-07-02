@@ -36,5 +36,15 @@
 - gates fail twice on the same change · identity-level changes (camera, thesis, cast removal, language)
 - anything outward-facing beyond this repo/Pages site.
 
+## 1.0 criteria (flip the footer to v1.0 only when ALL tick)
+- [x] Icons: 192/512 PNG in manifest (any+maskable), SVG favicon, apple-touch-icon
+- [x] Share: og/twitter tags + 1200×630 og.png (make-og.sh regenerates)
+- [x] Head: EN-carrying title, meta description, noscript, theme-color aligned
+- [x] README rewritten (play link, screenshots, VI+EN pitch) + LICENSE (MIT — owner may veto to MIT+CC-BY split)
+- [x] sw.js caches icons; CACHE bumped tsk-v2; r.ok guard
+- [ ] Installed-PWA icon + share preview verified on a real device/paste (needs human)
+- [ ] Owner's three feel-gate questions answer YES on the current build (needs owner)
+- [ ] One full 16-season headless run each in VI and EN with zero console errors (extend gate)
+
 ## Compass pointer
-- next cycle: fresh review round (cold full-arc · mobile ergonomics · path-to-1.0) — NOTE the owner's standing directive from v0.17: LESS NARRATION, let systems be felt; every reviewer suggestion that adds explanatory text is now presumptively rejected. *(…v0.15 cards-real · v0.16 six-endings + perf · v0.17 OWNER: school + de-lecture done)*
+- next cycle: extend the gate with full-run VI+EN headless playthroughs (1.0 checklist item), then a light polish round; the two human 1.0 boxes (device install/share check + owner feel-gate) wait on the owner. *(…v0.16 six-endings + perf · v0.17 OWNER school+de-lecture · v0.18 felt-feedback + mobile + 1.0-kit done)*

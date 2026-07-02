@@ -1,5 +1,39 @@
 # Changelog — Thừa Số Không
 
+## v0.18 — 2026-07-02 — LOOP v2, cycle 8: felt-not-told feedback + phone hands + the 1.0 kit
+
+The cold-arc reviewer's verdict on the owner's de-lecture: **"the cuts were correct — every removed sentence had a
+surviving mechanical carrier."** What remained were three feedback debts, fixed without a word of narration:
+
+**Felt, not told:**
+- **The tier-up celebrates like the milestone it is** — glow, petals, a rising two-note, the 🪜 pill pulses. It was
+  the game's only mute achievement.
+- **The stamp now falls FROM THE SKY** — it starts in the cloud layer, falls longer, and the sky itself darkens as
+  it drops. The heavy-sky ↔ stamp correlation is drawn, not explained.
+- **From season 13, unlit paper lanterns appear on standing workshops** — the xóm visibly prepares to count what
+  stands; the finale lights exactly those lanterns. A wordless promise, paid off.
+- **A gold tier-progress bar** under a bloomed person's multiplication — distance to the next tier as motion.
+- The "now you can see the factors" narrator line fires once per run (was once per person, ×7); the dead lecture
+  strings deleted from STR so they can't resurrect.
+
+**Phone hands (mobile deep pass):**
+- Canvas text was ~5 CSS px on phones — the LKF cap rises to 2.2 and now covers the tap hint, the **linking-mode
+  cue**, sky/river captions, the ĐÌNH CHỈ stamp, and all speech bubbles (with scaled wrapping).
+- **Kết nối's dead-ends fixed:** the button shows an armed state while waiting, every cancel clicks/buzzes, and
+  mistapping a stranger no longer silently exits linking mode.
+- touch-action + user-select on buttons/pills/canvas (no more double-tap zoom or long-press selection mid-game),
+  overscroll damped, safe-area bottom padding, landscape height clamp.
+
+**The 1.0 kit:**
+- **An identity:** the red ×0 seal is now the app icon (192/512 + maskable + apple-touch-icon + SVG favicon) —
+  installs stop looking broken.
+- **A face for links:** og/twitter share tags with a 1200×630 scene image (`make-og.sh` regenerates), bilingual
+  spoiler-free description, EN-carrying title, noscript fallback.
+- **README rewritten** for strangers (the old one said "throwaway prototype" and linked a 404); **LICENSE: MIT**
+  (ship-then-veto — say the word for an MIT+CC-BY art split); sw cache → tsk-v2 with the r.ok guard restored
+  (the v0.10 edit had silently missed).
+- A 1.0 checklist now lives in LOOP.md — three boxes remain, two of them need human hands.
+
 ## v0.17 — 2026-07-02 — OWNER BATCH: the school, and the game stops explaining itself
 
 Both changes at the owner's direction — they preempt the loop's own queue.

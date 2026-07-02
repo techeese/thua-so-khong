@@ -3,17 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#E9D8B7">
+<meta name="theme-color" content="#EAD9B8">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Thừa Số Không</title>
+<title>Thừa Số Không — The Zero Factor</title>
+<meta name="description" content="Một xóm nhỏ, sáu con người, mười sáu mùa. Ai cũng chăm chỉ — mà chẳng có gì nảy mầm. Chạm vào từng người, tìm thừa số đang đứng ở số không. A village game of finding the zero.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Thừa Số Không — The Zero Factor">
+<meta property="og:description" content="Một xóm nhỏ, sáu con người, mười sáu mùa. Ai cũng chăm chỉ — mà chẳng có gì nảy mầm. Bạn có ba việc mỗi mùa — dùng vào đâu? · Six neighbors, sixteen seasons, one multiplication. Find the zero.">
+<meta property="og:image" content="https://techeese.github.io/thua-so-khong/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://techeese.github.io/thua-so-khong/">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Thừa Số Không — The Zero Factor">
+<meta name="twitter:description" content="Một xóm nhỏ, sáu con người, mười sáu mùa. Tìm thừa số đang bằng không. · A village game of finding the zero.">
+<meta name="twitter:image" content="https://techeese.github.io/thua-so-khong/og.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='12' fill='%23EAD9B8' stroke='%232B2320' stroke-width='4'/%3E%3Cg transform='rotate(7 32 32)'%3E%3Crect x='15' y='15' width='34' height='34' rx='5' fill='none' stroke='%23C1443C' stroke-width='4'/%3E%3Ctext x='32' y='41' font-family='Georgia,serif' font-size='22' font-weight='bold' fill='%23C1443C' text-anchor='middle'%3E%C3%970%3C/text%3E%3C/g%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="icon-180.png">
 <style>
   :root{
     --paper:#EAD9B8; --ink:#2B2320; --red:#C1443C; --gold:#E3A63B;
     --indigo:#2E4A62; --leaf:#6C8F3D; --lotus:#D97C8E; --dim:#7a6f5d;
   }
   *{box-sizing:border-box}
+  html,body{overscroll-behavior-y:none}
   html,body{margin:0;padding:0;background:#d9c49a}
-  body{font:15px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink)}
+  body{font:15px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);padding-bottom:env(safe-area-inset-bottom)}
   .wrap{max-width:980px;margin:0 auto;padding:10px}
   /* top bar */
   .top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 2px;flex-wrap:wrap}
@@ -23,6 +40,11 @@
   button{font-family:inherit;cursor:pointer;border:2px solid var(--ink);border-radius:12px;background:#f5ead0;color:var(--ink);padding:8px 14px;font-size:14px;font-weight:600;box-shadow:2px 2px 0 var(--ink);transition:transform .05s}
   button:active{transform:translate(2px,2px);box-shadow:none}
   button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+  button,.pill{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  canvas{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  .armed{background:var(--leaf)!important;color:#fff!important}
+  @media (orientation:landscape) and (max-height:520px){
+    canvas{width:auto;max-width:100%;height:min(70vh,62.5vw);margin:0 auto} }
   canvas{display:block;width:100%;border:3px solid var(--ink);border-radius:14px;background:var(--paper);touch-action:manipulation}
   /* action bar */
   .bar{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center}
@@ -66,6 +88,7 @@
 </style>
 </head>
 <body>
+<noscript><div style="max-width:520px;margin:40px auto;padding:22px;background:#EAD9B8;border:3px solid #2B2320;border-radius:16px;font:15px/1.5 Georgia,serif;color:#2B2320;text-align:center">Trò chơi cần JavaScript để chạy. · This game needs JavaScript to run.</div></noscript>
 <div class="wrap">
   <div class="top">
     <div><h1 id="ttl">Thừa Số Không</h1><div class="sub" id="subttl">mười nhân với không vẫn bằng không</div></div>
@@ -96,6 +119,7 @@
     <div class="frow"><div class="fl" id="lblGan">GAN</div><div class="ftr"><i id="barGan" style="background:var(--red)"></i></div><div class="fv" id="valGan">0</div></div>
     <div class="frow"><div class="fl" id="lblBan">BẠN</div><div class="ftr"><i id="barBan" style="background:var(--leaf)"></i></div><div class="fv" id="valBan">0</div></div>
     <div class="mult" id="multLine">—</div>
+    <div class="ftr" id="tierBar" style="display:none;height:8px;margin:-4px 0 8px"><i id="tierFill" style="background:var(--gold);display:block;height:100%;width:0;transition:width .4s"></i></div>
     <div class="acts">
       <button id="teachBtn">📖 <span>Dạy</span><small id="teachHint">+2 TÀI · 1⚡</small></button>
       <button id="nerveBtn">🏮 <span id="nerveLbl">Đêm thất bại</span><small id="nerveHint">+2 GAN · 1⚡</small></button>
@@ -104,7 +128,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.17</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.18</span></div>
 </div>
 
 <!-- intro -->
@@ -153,8 +177,6 @@ var STR={
         en:"You come back to a small xóm. Everyone works hard — yet nothing blooms."},
   inP2:{vi:"Hãy chạm vào một người và trò chuyện. Phần còn lại, cứ chơi rồi xóm sẽ kể.",
         en:"Tap a person and talk. Play on — the xóm will tell you the rest."},
-  multHint:{vi:"thừa số NHỎ NHẤT quyết định cả phép nhân — dồn công đúng chỗ đó",
-        en:"the SMALLEST factor decides the whole product — spend your effort exactly there"},
   nudge:{vi:"Bạn còn ⚡ đó! Chạm vào một người trước đã.",en:"You still have ⚡! Tap a person first."},
   unLink:{vi:"🤝 Bạn đã quen vài người — giờ có thể KẾT NỐI họ với nhau (nút mới trong thẻ người).",
         en:"🤝 You know a few people now — you can CONNECT them (new button on a person's card)."},
@@ -162,10 +184,6 @@ var STR={
         en:"🪙 The river is CAPITAL — and the xóm keeps a HỤI pool: each round, the river rises a little (new button)."},
   unBuild:{vi:"🛠 Giờ có thể TỰ XÂY một sản phẩm của riêng mình (nút mới).",
         en:"🛠 You can now BUILD a product of your own (new button)."},
-  lawLine:{vi:"⚠ Bầu trời là LUẬT — trời càng âm u, con dấu càng dễ rơi xuống một xưởng non.",
-        en:"⚠ The sky is the LAW — the heavier it hangs, the easier a stamp falls on a young workshop."},
-  unProbe:{vi:"🔍 Giờ có thể NGHE NGÓNG trên xã xem mùa tới trời thế nào (nút mới). Hỏi một câu rẻ hơn mất một xưởng.",
-        en:"🔍 You can now ASK AROUND at the commune office about next season's sky (new button). A cheap question beats a lost workshop."},
   probe:{vi:"Nghe ngóng",en:"Ask around"},
   probeSun:{vi:"🔍 Trên xã bảo: mùa tới trời QUANG.",en:"🔍 Word at the commune office: next season the sky CLEARS."},
   probeCloud:{vi:"🔍 Trên xã bảo: mùa tới trời vẫn ÂM U — xưởng non dễ ăn dấu.",en:"🔍 Word at the commune office: next season stays HEAVY — young workshops risk the stamp."},
@@ -330,7 +348,7 @@ function fresh(){
   S={season:0, acts:3, luat:3, von:3, hui:0, cast:makeCast(), ships:[], sel:-1,
      build:0, built:false, pairs:[], apprentice:false, duo:false, gtm:false, gtmPaid:false,
      linking:null, banner:null, banners:[], luatNext:3, probeSeen:false, baFade:false,
-     un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false, stormSeen:false, tierTaught:false, lienNgan:false, stormCount:0, stormStreak:0, classSeen:false,
+     un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false, stormSeen:false, tierTaught:false, lienNgan:false, stormCount:0, stormStreak:0, classSeen:false, revealSeen:false,
      log:[], over:false};
   lanterns=[]; runTok++;      // invalidate ALL deferred callbacks from the previous run
   parts=[]; stamps=[]; glows=[]; bubbles=[]; amb=[]; pendQ=[];
@@ -413,7 +431,7 @@ function load(){
       p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; p.mom=cl(c.mom,0,0.5,0); });
     S.cast[6].arrives=cl(s.arr,5,8,6); S.baFadeStart=cl(s.baf,7,9,8);
     S.stormCount=cl(s.sc,0,16,0); S.stormStreak=cl(s.ss,0,16,0); S.yearCard=fin(s.yc)?cl(s.yc,0,4,0):S.yearCard; S.gtmPays=fin(s.gp)?cl(s.gp,0,2,0):(s.gtmPaid?1:0);
-    S.lienWarned=S.season>=11; S.baFade=S.season>=(S.baFadeStart||8); S.stormSeen=S.season>0; S.tierTaught=S.ships.length>0||S.season>1; S.lienNgan=pairExists(0,6); S.classSeen=S.cast[2].started;
+    S.lienWarned=S.season>=11; S.baFade=S.season>=(S.baFadeStart||8); S.stormSeen=S.season>0; S.tierTaught=S.ships.length>0||S.season>1; S.lienNgan=pairExists(0,6); S.classSeen=S.cast[2].started; S.revealSeen=S.cast.some(function(p){return p.known;});
     if(Array.isArray(s.ships)) S.ships=s.ships.filter(function(w){return w&&fin(w.x)&&fin(w.y)&&typeof w.owner==="string";});
     S.ships.forEach(function(w){ w.age=cl(w.age,0,99,2); w.shel=cl(w.shel,0,2,0); });
     if(Array.isArray(s.log)) S.log=s.log.filter(function(m){return m&&(typeof m.vi==="string"||typeof m.en==="string");});
@@ -452,7 +470,7 @@ function gong(f,d,v){ if(META.muted) return; try{ if(!_ac)_ac=new (window.AudioC
 // ---------- canvas ----------
 var cv=document.getElementById("cv"), ctx=cv.getContext("2d");
 var W=960,H=600,DPR=1;
-function fit(){ var w=cv.parentElement.clientWidth||W; DPR=window.devicePixelRatio||1;
+function fit(){ var w=cv.clientWidth||cv.parentElement.clientWidth||W; DPR=window.devicePixelRatio||1;
   // backing store sized to the DISPLAYED width, not the logical world — 8× fewer pixels per frame on phones
   cv.width=Math.round(w*DPR); cv.height=Math.round(w*H/W*DPR); cv.style.height=(w*H/W)+"px";
   buildGround(); }
@@ -490,7 +508,7 @@ var LKF=1, _lkfLast=-1, FONT_LBL="700 11px sans-serif", FONT_HINT="10px sans-ser
 function haloText(txt,x,y){ ctx.strokeStyle="#EAD9B8"; ctx.lineWidth=3; ctx.lineJoin="round"; ctx.strokeText(txt,x,y); ctx.fillText(txt,x,y); }
 function drawScene(now){
   var kk=cv.width/W; ctx.setTransform(kk,0,0,kk,0,0);
-  LKF=Math.min(1.5, W/Math.max(1,(cv.width/DPR)));
+  LKF=Math.min(2.2, W/Math.max(1,(cv.width/DPR)));
   if(LKF!==_lkfLast){ _lkfLast=LKF;
     FONT_LBL="700 "+Math.round(11*LKF)+"px sans-serif";
     FONT_HINT=Math.round(10*LKF)+"px sans-serif"; }
@@ -516,7 +534,7 @@ function drawScene(now){
   for(var c=0;c<nc;c++){ var cx=((now*0.008)+(c*167))% (W+160)-80; var cy=24+((c*53)%70);
     ctx.beginPath(); ctx.ellipse(cx,cy,34,13,0,0,6.28); ctx.ellipse(cx+24,cy+4,24,10,0,0,6.28); ctx.ellipse(cx-24,cy+5,22,9,0,0,6.28);
     ctx.fillStyle=cloudCol; ctx.fill(); }
-  ctx.font="italic 11px Georgia"; ctx.fillStyle="rgba(43,35,32,.5)";
+  ctx.font="italic "+Math.round(11*LKF)+"px Georgia"; ctx.fillStyle="rgba(43,35,32,.5)";
   ctx.fillText(L==="vi"?"bầu trời là LUẬT":"the sky is the LAW", 14, 18);
 
   // --- RIVER = capital (untouchable) ---
@@ -539,7 +557,7 @@ function drawScene(now){
       ctx.beginPath(); ctx.ellipse(lx,ly,6,7,0,0,6.28); ctx.fill(); ctx.stroke();
       ctx.fillStyle="#EFB7C4"; ctx.beginPath(); ctx.ellipse(lx,ly-3,3.4,4,0,0,6.28); ctx.fill(); });
   }
-  ctx.font="italic 11px Georgia"; ctx.fillStyle="rgba(43,35,32,.55)";
+  ctx.font="italic "+Math.round(11*LKF)+"px Georgia"; ctx.fillStyle="rgba(43,35,32,.55)";
   ctx.fillText(L==="vi"?"dòng sông là VỐN":"the river is CAPITAL", 14, H-8);
 
   // --- village furniture ---
@@ -572,6 +590,15 @@ function drawScene(now){
   dlBuf.length=dn; dlBuf.sort(dlCmp);
   for(di=0;di<dn;di++){ de=dlBuf[di]; if(de.s) workshop(de.s,now); else person(de.p,now); }
 
+  // --- from season 13, unlit paper lanterns hang on standing workshops — the xóm prepares to count ---
+  if(!S.over && S.season>=13){
+    S.ships.forEach(function(s2){ var t2=shipTier(s2), sc2=t2===3?1.24:t2===1?0.78:1;
+      var lx=s2.x+34*sc2, ly=s2.y-8*sc2;
+      ink(2); ctx.beginPath(); ctx.moveTo(lx,ly-22); ctx.lineTo(lx,ly-14); ctx.stroke();
+      ctx.fillStyle="#c9bb9d"; ctx.beginPath(); ctx.ellipse(lx,ly,8,11,0,0,6.28); ctx.fill(); ctx.stroke();
+      ctx.fillStyle="#b0a284"; ctx.fillRect(lx-4,ly-14,8,3); ctx.fillRect(lx-3,ly+10,6,5);
+    });
+  }
   // --- finale lanterns (beat 1: the xóm lights what stands) ---
   lanterns.forEach(function(ln){ var fl2=Math.sin(now*0.006+ln.ph)*1.5;
     ink(2); ctx.beginPath(); ctx.moveTo(ln.x,ln.y-22+fl2); ctx.lineTo(ln.x,ln.y-14+fl2); ctx.stroke();   // the string
@@ -586,25 +613,26 @@ function drawScene(now){
     var hp=S.cast[0], pulse=2+Math.sin(now*0.005)*1.6;
     ctx.strokeStyle="#C1443C"; ctx.lineWidth=2.5; ctx.setLineDash([4,5]);
     ctx.beginPath(); ctx.ellipse(hp.x,hp.y-4,24+pulse,32+pulse,0,0,6.28); ctx.stroke(); ctx.setLineDash([]);
-    ctx.font="italic 12px Georgia"; ctx.fillStyle="#C1443C"; ctx.textAlign="center";
+    ctx.font="italic "+Math.round(12*LKF)+"px Georgia"; ctx.fillStyle="#C1443C"; ctx.textAlign="center";
     ctx.fillText(L==="vi"?"chạm để trò chuyện":"tap to talk", hp.x, hp.y-52); ctx.textAlign="left";
   }
   // --- linking mode: highlight the initiator ---
   if(S.linking!=null){ var lp2=S.cast[S.linking], lps=2+Math.sin(now*0.008)*1.4;
     ctx.strokeStyle="#6C8F3D"; ctx.lineWidth=2.5; ctx.setLineDash([4,4]);
     ctx.beginPath(); ctx.ellipse(lp2.x,lp2.y-4,24+lps,32+lps,0,0,6.28); ctx.stroke(); ctx.setLineDash([]);
-    ctx.font="italic 12px Georgia"; ctx.fillStyle="#3f6023"; ctx.textAlign="center";
+    ctx.font="italic "+Math.round(12*LKF)+"px Georgia"; ctx.fillStyle="#3f6023"; ctx.textAlign="center";
     ctx.fillText(L==="vi"?"chạm vào người muốn kết nối…":"tap someone to connect…", lp2.x, lp2.y-52); ctx.textAlign="left";
   }
 
   // --- stamps (the law crushing) ---
-  stamps=stamps.filter(function(st){ st.t+=0.016; var k=Math.min(1,st.t/0.5);
-    var yy=st.y-120+(120*k*k);
+  stamps=stamps.filter(function(st){ st.t+=0.016; var k=Math.min(1,st.t/0.8);
+    var yy=136+(st.y-136)*k*k;   // starts with its top edge in the cloud layer (yy-46 = 90)
+    if(k<1){ ctx.fillStyle="rgba(70,70,84,"+(0.22*(1-k)).toFixed(3)+")"; ctx.fillRect(0,0,W,118); }   // the sky itself darkens — the stamp comes from up there
     ctx.save(); ctx.globalAlpha=st.t>1.4?Math.max(0,1-(st.t-1.4)/0.5):1;
     ctx.fillStyle="#5a5a66"; ink(3);
     ctx.fillRect(st.x-30,yy-46,60,34); ctx.strokeRect(st.x-30,yy-46,60,34);
     ctx.fillRect(st.x-8,yy-12,16,16); ctx.strokeRect(st.x-8,yy-12,16,16);
-    if(k>=1){ ctx.font="700 13px Georgia"; ctx.fillStyle="#fff"; ctx.textAlign="center";
+    if(k>=1){ ctx.font="700 "+Math.round(13*LKF)+"px Georgia"; ctx.fillStyle="#fff"; ctx.textAlign="center";
       ctx.fillText(L==="vi"?"ĐÌNH CHỈ":"SUSPENDED",st.x,yy-24); ctx.textAlign="left"; }
     ctx.restore(); return st.t<2.0; });
 
@@ -713,6 +741,12 @@ function market(x,y){
 }
 function workshop(s,now){
   var x=s.x,y=s.y, tr=shipTier(s), sc=tr===3?1.24:tr===1?0.78:1;
+  if(s.tr===undefined){ s.tr=tr; }
+  else if(tr>s.tr){ s.tr=tr;   // the tier-up gets the same vocabulary as a bloom — a milestone, not a mute scale pop
+    glows.push({x:x,y:y,t:0}); petals(x,y-24,10,["#E3A63B","#D97C8E"]);
+    beep(659,0.1,0.05); setTimeout(function(){beep(784,0.14,0.05);},110); buzz(15);
+    var tp2=document.getElementById("tierPill"); if(tp2){ tp2.style.transition="transform .15s"; tp2.style.transform="scale(1.25)"; setTimeout(function(){tp2.style.transform="";},220); } }
+  else if(tr<s.tr){ s.tr=tr; }
   ctx.save(); ctx.translate(x,y); ctx.scale(sc,sc); ctx.translate(-x,-y);
   ink(3);
   ctx.fillStyle=tr===3?"#b8797a":"#c98a5a"; ctx.beginPath(); ctx.moveTo(x-34,y); ctx.lineTo(x,y-24); ctx.lineTo(x+34,y); ctx.closePath(); ctx.fill(); ctx.stroke();
@@ -785,12 +819,13 @@ function zeroOf(p){ var m=Math.min(p.tai,p.gan,p.ban);
   if(m>3) return null;
   if(m===p.gan) return t("gan"); if(m===p.tai) return t("tai"); return t("ban"); }
 function layoutBubble(txt){
-  ctx.font="12px Georgia";
-  var words=txt.split(" "), lines=[], cur="";
-  words.forEach(function(w){ if(ctx.measureText(cur+" "+w).width>224){ lines.push(cur); cur=w; } else cur=cur?cur+" "+w:w; });
+  var fs=Math.round(12*LKF), lh=Math.round(15*LKF);
+  ctx.font=fs+"px Georgia";
+  var wrap=224*LKF, words=txt.split(" "), lines=[], cur="";
+  words.forEach(function(w){ if(ctx.measureText(cur+" "+w).width>wrap){ lines.push(cur); cur=w; } else cur=cur?cur+" "+w:w; });
   lines.push(cur);
-  return {lines:lines, hh:lines.length*15+12,
-          ww:Math.min(244, lines.reduce(function(mm,l){return Math.max(mm,ctx.measureText(l).width);},0)+20)};
+  return {fs:fs, lh:lh, lines:lines, hh:lines.length*lh+12,
+          ww:Math.min(244*LKF, lines.reduce(function(mm,l){return Math.max(mm,ctx.measureText(l).width);},0)+20)};
 }
 function drawBubble(x,y,lay){
   var lines=lay.lines, hh=lay.hh, ww=lay.ww;
@@ -800,8 +835,8 @@ function drawBubble(x,y,lay){
   if(ctx.roundRect) ctx.roundRect(bx,by,ww,hh,9); else ctx.rect(bx,by,ww,hh);
   ctx.fill(); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(x-6,by+hh); ctx.lineTo(x+6,by+hh); ctx.lineTo(x,by+hh+8); ctx.closePath(); ctx.fillStyle="#fffdf4"; ctx.fill(); ctx.stroke();
-  ctx.fillStyle="#2B2320"; ctx.font="12px Georgia";
-  lines.forEach(function(l,i){ ctx.fillText(l,bx+10,by+18+i*15); });
+  ctx.fillStyle="#2B2320"; ctx.font=lay.fs+"px Georgia";
+  lines.forEach(function(l,i){ ctx.fillText(l,bx+10,by+lay.lh+3+i*lay.lh); });
 }
 
 // ---------- interaction ----------
@@ -814,14 +849,16 @@ cv.addEventListener("click",function(e){
   S.cast.forEach(function(p){ if(!active(p)) return; var d=Math.hypot(p.x-mx,p.y-4-my); if(d<hitR&&d<bd){bd=d;best=p.id;} });
   if(S.linking!=null){
     if(best>=0 && best!==S.linking) completeLink(best);
-    else { S.linking=null; logMsg("(thôi, để dịp khác)","(never mind)"); }
+    else { S.linking=null; beep(300,0.06); buzz(20); logMsg("(thôi, để dịp khác)","(never mind)"); renderSheet(); }
     return;
   }
   if(best>=0){ selectPerson(best); }
 });
 function selectPerson(id){
   var p=S.cast[id]; S.sel=id;
-  if(!p.known){ p.known=true; bubble(p,quoteFor(p)); beep(520,0.07); logMsg(p.name+" — "+STR.reveal.vi, p.name+" — "+STR.reveal.en); unlockCheck(); save(); }
+  if(!p.known){ p.known=true; bubble(p,quoteFor(p)); beep(520,0.07);
+    if(!S.revealSeen){ S.revealSeen=true; logMsg(p.name+" — "+STR.reveal.vi, p.name+" — "+STR.reveal.en); }   // the bubble + card ARE the feedback; say it once
+    unlockCheck(); save(); }
   else bubble(p,quoteFor(p));
   renderSheet(); render();
 }
@@ -849,11 +886,12 @@ function actLink(){ var p=cur(); if(!p||S.acts<=0||S.over) return;
   // a deliberate verb: choose WHO to connect — tap a second person on the map
   S.linking=p.id; bubble(p,(L==="vi")?"“Kết thân với ai đây?”":"“Who should I get to know?”"); beep(560,0.06); render(); }
 function completeLink(otherId){
-  if(S.acts<=0){ S.linking=null; return; }
-  var a=S.cast[S.linking], b=S.cast[otherId]; S.linking=null;
-  if(!a||!b||a.id===b.id) return;
-  if(!b.known){ bubble(a,(L==="vi")?"“Mình đã quen người ta đâu…”":"“I haven't even met them…”"); render(); return; }   // diagnosis first — talk before you introduce
-  if(!spend())return;
+  if(S.acts<=0){ S.linking=null; beep(300,0.06); buzz(20); renderSheet(); return; }
+  var a=S.cast[S.linking], b=S.cast[otherId];
+  if(!a||!b||a.id===b.id){ S.linking=null; renderSheet(); return; }
+  if(!b.known){ bubble(a,(L==="vi")?"“Mình đã quen người ta đâu…”":"“I haven't even met them…”"); render(); return; }   // linking mode STAYS armed — a mistap on a stranger doesn't exit
+  S.linking=null;
+  if(!spend()){ renderSheet(); return; }
   var key=[Math.min(a.id,b.id),Math.max(a.id,b.id)];
   var again=S.pairs.some(function(pr){return pr[0]===key[0]&&pr[1]===key[1];});
   // the FIRST close friend changes a person (+2); every later connection adds a little (+1) — no pair-farming
@@ -1228,6 +1266,10 @@ function renderSheet(){
   el("barTai").style.width=(p.tai*10)+"%"; el("barGan").style.width=(p.gan*10)+"%"; el("barBan").style.width=(p.ban*10)+"%";
   var pr=prod(p), pc=Math.round(chance(p)*100);
   var trNow=pr<300?1:pr<600?2:3;
+  var tb=el("tierBar");
+  if(tb){ tb.style.display=p.started?"block":"none";
+    if(p.started){ var lo2=trNow===1?0:trNow===2?300:600, hi2=trNow===1?300:trNow===2?600:600;
+      el("tierFill").style.width=(trNow===3?100:Math.round((pr-lo2)/(hi2-lo2)*100))+"%"; } }
   el("multLine").innerHTML=p.tai+" × "+p.gan+" × "+p.ban+" = <b>"+pr+"</b>"
     +"<small>"+(p.started
       ?((L==="vi"?"bậc ":"tier ")+trNow+"/3"+(trNow<3?(L==="vi"?" · vun tiếp để lên bậc":" · keep tending to rise"):(L==="vi"?" · một thương hiệu":" · a brand")))
@@ -1238,6 +1280,7 @@ function renderSheet(){
   el("nerveBtn").disabled=S.acts<=0||p.gan>=10||S.over;
   el("linkBtn").style.display=S.un.link?"":"none";
   el("linkBtn").disabled=S.acts<=0||S.over;
+  el("linkBtn").classList.toggle("armed",S.linking!=null);
 }
 function renderLog(){
   el("log").innerHTML=S.log.map(function(m){return "<div>"+(m[L]||m.vi)+"</div>";}).join("")||"<div>"+t("talkFirst")+"</div>";
