@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#E9D8B7">
+<title>Thừa Số Không</title>
+<style>
+  :root{
+    --paper:#EAD9B8; --ink:#2B2320; --red:#C1443C; --gold:#E3A63B;
+    --indigo:#2E4A62; --leaf:#6C8F3D; --lotus:#D97C8E; --dim:#7a6f5d;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#d9c49a}
+  body{font:15px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink)}
+  .wrap{max-width:980px;margin:0 auto;padding:10px}
+  /* top bar */
+  .top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 2px}
+  .top h1{font:700 20px Georgia,"Times New Roman",serif;margin:0;letter-spacing:.5px}
+  .top .sub{font-size:11px;color:var(--dim);font-style:italic}
+  .pill{background:#f5ead0;border:2px solid var(--ink);border-radius:14px;padding:4px 12px;font-size:13px;font-weight:600;white-space:nowrap}
+  button{font-family:inherit;cursor:pointer;border:2px solid var(--ink);border-radius:12px;background:#f5ead0;color:var(--ink);padding:8px 14px;font-size:14px;font-weight:600;box-shadow:2px 2px 0 var(--ink);transition:transform .05s}
+  button:active{transform:translate(2px,2px);box-shadow:none}
+  button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+  canvas{display:block;width:100%;border:3px solid var(--ink);border-radius:14px;background:var(--paper);touch-action:manipulation}
+  /* action bar */
+  .bar{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center}
+  .bar .next{background:var(--red);color:#fff;flex:1;min-width:150px;padding:11px;font-size:15px}
+  .bar .spacer{flex:1}
+  /* character sheet */
+  .sheet{margin-top:8px;background:#f5ead0;border:3px solid var(--ink);border-radius:14px;padding:12px;display:none}
+  .sheet.show{display:block}
+  .sheet h3{margin:0;font:700 17px Georgia,serif}
+  .sheet .quote{font-style:italic;color:#5c5142;font-size:13px;margin:4px 0 10px}
+  .frow{display:flex;align-items:center;gap:8px;margin:6px 0}
+  .frow .fl{width:52px;font-size:12px;font-weight:700}
+  .frow .ftr{flex:1;height:14px;background:#e0d0ac;border:2px solid var(--ink);border-radius:8px;overflow:hidden}
+  .frow .ftr i{display:block;height:100%;transition:width .4s}
+  .frow .fv{width:22px;text-align:right;font-weight:700;font-size:13px}
+  .mult{font:700 16px Georgia,serif;text-align:center;margin:10px 0;padding:8px;background:#efe2c2;border:2px dashed var(--ink);border-radius:10px}
+  .mult small{display:block;font:400 11px sans-serif;color:var(--dim)}
+  .acts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .acts button{padding:9px 4px;font-size:13px}
+  .acts button small{display:block;font-weight:400;font-size:10px;color:var(--dim)}
+  /* log */
+  .log{margin-top:8px;font-size:12.5px;color:#4d4335;max-height:76px;overflow:auto;background:#efe3c5;border:2px solid #c9b78c;border-radius:10px;padding:6px 10px}
+  .log div{padding:1px 0}
+  /* overlays */
+  .ovl{position:fixed;inset:0;background:rgba(43,35,32,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+  .ovl.show{display:flex}
+  .card{max-width:520px;width:100%;background:var(--paper);border:3px solid var(--ink);border-radius:16px;padding:22px;box-shadow:6px 6px 0 rgba(43,35,32,.5)}
+  .card h2{font:700 24px Georgia,serif;margin:0 0 4px;text-align:center}
+  .card .tag{text-align:center;font-style:italic;color:var(--red);font-weight:700;margin-bottom:12px}
+  .card p{font-size:14px;margin:8px 0}
+  .card .go{width:100%;background:var(--red);color:#fff;margin-top:10px;padding:12px;font-size:16px}
+  .endline{font:700 15px Georgia,serif;text-align:center;margin-top:12px;padding-top:10px;border-top:2px dashed var(--ink)}
+  .small{font-size:12px;color:var(--dim)}
+  @media(max-width:520px){ .top h1{font-size:17px} .acts button{font-size:12px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1 id="ttl">Thừa Số Không</h1><div class="sub" id="subttl">mười nhân với không vẫn bằng không</div></div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <div class="pill" id="seasonPill">Xuân 2026</div>
+      <div class="pill" id="actPill">⚡ 3</div>
+      <button id="muteBtn" style="padding:6px 10px" aria-label="mute">🔊</button>
+      <button id="langBtn" style="padding:6px 10px">EN</button>
+    </div>
+  </div>
+
+  <canvas id="cv"></canvas>
+
+  <div class="bar">
+    <button id="huiBtn">🪙 <span id="huiLbl">Góp hụi</span> <small id="huiCost">(1⚡)</small></button>
+    <button id="buildBtn">🛠 <span id="buildLbl">Tự xây</span> <span id="buildProg">0/4</span></button>
+    <span class="spacer"></span>
+    <button class="next" id="nextBtn">MÙA SAU ▶</button>
+  </div>
+
+  <div class="sheet" id="sheet">
+    <h3 id="pName">—</h3>
+    <div class="quote" id="pQuote">…</div>
+    <div class="frow"><div class="fl" id="lblTai">TÀI</div><div class="ftr"><i id="barTai" style="background:var(--indigo)"></i></div><div class="fv" id="valTai">0</div></div>
+    <div class="frow"><div class="fl" id="lblGan">GAN</div><div class="ftr"><i id="barGan" style="background:var(--red)"></i></div><div class="fv" id="valGan">0</div></div>
+    <div class="frow"><div class="fl" id="lblBan">BẠN</div><div class="ftr"><i id="barBan" style="background:var(--leaf)"></i></div><div class="fv" id="valBan">0</div></div>
+    <div class="mult" id="multLine">—</div>
+    <div class="acts">
+      <button id="teachBtn">📖 <span>Dạy</span><small id="teachHint">+2 TÀI · 1⚡</small></button>
+      <button id="nerveBtn">🏮 <span id="nerveLbl">Đêm thất bại</span><small id="nerveHint">+2 GAN · 1⚡</small></button>
+      <button id="linkBtn">🤝 <span id="linkLbl">Kết nối</span><small id="linkHint">+2 BẠN · 1⚡</small></button>
+    </div>
+  </div>
+
+  <div class="log" id="log"></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a></div>
+</div>
+
+<!-- intro -->
+<div class="ovl show" id="intro">
+  <div class="card">
+    <h2 id="inTtl">Thừa Số Không</h2>
+    <div class="tag" id="inTag">mười nhân với không vẫn bằng không</div>
+    <p id="inP1">Bạn về lại một xóm nhỏ. Ai cũng chăm chỉ trên phần việc của mình — vậy mà chẳng có gì nảy mầm.</p>
+    <p id="inP2">Một con người chỉ nảy mầm khi <b>TÀI × GAN × BẠN</b> cùng đủ lớn. Trong phép nhân, thừa số yếu nhất quyết định tất cả. Hãy <b>trò chuyện</b> để tìm ra con số không của mỗi người — rồi dồn sức đúng chỗ đó.</p>
+    <p id="inP3">Bạn có <b>3 công</b> mỗi mùa, và 16 mùa. <b>Bầu trời là luật, dòng sông là vốn</b> — chúng chuyển động ngoài tầm tay bạn.</p>
+    <button class="go" id="startBtn">Bắt đầu / Begin</button>
+  </div>
+</div>
+
+<!-- ending -->
+<div class="ovl" id="endOvl">
+  <div class="card">
+    <h2 id="endTtl">—</h2>
+    <div class="tag" id="endTag"></div>
+    <div id="endBody"></div>
+    <div class="endline" id="endLine"></div>
+    <button class="go" id="againBtn">Chơi lại / Play again</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+// =============================================================
+// THỪA SỐ KHÔNG — a feel-first prototype of THESIS.md
+// (steve_vietnam_plan_fable): emergence is a MULTIPLICATION,
+// the weakest factor decides, and your verb is DIAGNOSIS.
+// The sky is the law; the river is the capital — untouchable.
+// =============================================================
+var L="vi";
+var STR={
+  sub:{vi:"mười nhân với không vẫn bằng không",en:"ten times zero is still zero"},
+  hui:{vi:"Góp hụi",en:"Hụi pool"}, build:{vi:"Tự xây",en:"Build yours"},
+  next:{vi:"MÙA SAU ▶",en:"NEXT SEASON ▶"},
+  tai:{vi:"TÀI",en:"SKILL"}, gan:{vi:"GAN",en:"NERVE"}, ban:{vi:"BẠN",en:"ALLIES"},
+  teach:{vi:"Dạy",en:"Teach"}, nerve:{vi:"Đêm thất bại",en:"Failure night"}, link:{vi:"Kết nối",en:"Connect"},
+  teachH:{vi:"+2 TÀI · 1⚡",en:"+2 SKILL · 1⚡"}, nerveH:{vi:"+2 GAN · 1⚡",en:"+2 NERVE · 1⚡"}, linkH:{vi:"+2 BẠN · 1⚡",en:"+2 ALLIES · 1⚡"},
+  sprout:{vi:"mầm",en:"sprout"}, perSeason:{vi:"mỗi mùa",en:"per season"},
+  foot:{vi:"bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn",en:"the sky is the law · the river is the capital — beyond your hands"},
+  inTtl:{vi:"Thừa Số Không",en:"The Zero Factor"},
+  inP1:{vi:"Bạn về lại một xóm nhỏ. Ai cũng chăm chỉ trên phần việc của mình — vậy mà chẳng có gì nảy mầm.",
+        en:"You come back to a small neighborhood. Everyone works hard at their own piece — yet nothing blooms."},
+  inP2:{vi:"Một con người chỉ nảy mầm khi <b>TÀI × GAN × BẠN</b> cùng đủ lớn. Trong phép nhân, thừa số yếu nhất quyết định tất cả. Hãy <b>trò chuyện</b> (chạm vào người) để tìm con số không của mỗi người — rồi dồn sức đúng chỗ đó.",
+        en:"A person only blooms when <b>SKILL × NERVE × ALLIES</b> are all large enough. In a multiplication, the weakest factor decides everything. <b>Talk</b> (tap a person) to find each one's zero — then spend your effort exactly there."},
+  inP3:{vi:"Bạn có <b>3 công</b> mỗi mùa, và 16 mùa. <b>Bầu trời là luật, dòng sông là vốn</b> — chúng chuyển động ngoài tầm tay bạn.",
+        en:"You have <b>3 efforts</b> a season, and 16 seasons. <b>The sky is the law, the river is the capital</b> — they move beyond your hands."},
+  seasons:{vi:["Xuân","Hạ","Thu","Đông"],en:["Spring","Summer","Autumn","Winter"]},
+  bloomed:{vi:" mở xưởng!",en:" opened a workshop!"},
+  crushed:{vi:" — xưởng bị đình chỉ (một con dấu từ trên xuống).",en:" — workshop suspended (a stamp from above)."},
+  shipped:{vi:"Bạn đã LÀM XONG sản phẩm của mình — cả xóm nhìn thấy. (+1 GAN cho mọi người)",en:"You SHIPPED your own product — the whole xóm saw it. (+1 NERVE for everyone)"},
+  inspired:{vi:"“Nếu người ấy làm được…” (+1 GAN cho mọi người)",en:"“If they can do it…” (+1 NERVE for everyone)"},
+  huiDone:{vi:"Vòng hụi góp xong — dòng sông đầy thêm một chút.",en:"The hụi round closes — the river rises a little."},
+  riverLow:{vi:"Dòng sông cạn — xưởng nào mở cũng chỉ là gánh hàng.",en:"The river runs low — any workshop stays a street stall."},
+  talkFirst:{vi:"Chạm vào một người để trò chuyện.",en:"Tap a person to talk."},
+  reveal:{vi:"Bạn ngồi nghe. Giờ bạn nhìn thấy các thừa số.",en:"You sit and listen. Now you can see the factors."}
+};
+function t(k){return (STR[k]||{})[L]||"";}
+
+// ---------- the cast (authored people, each embodying a zero) ----------
+function makeCast(){ return [
+  {id:0,name:"Bé Ngân",tai:8,gan:1,ban:4,color:"#D97C8E",hat:false,young:true,hx:180,hy:330,
+   q:{vi:"“Em viết app từ lớp 9… nhưng bố bảo con gái học Y cho ổn định.”",en:"“I've coded since grade 9… but Dad says medicine is safer for a girl.”"},
+   qh:{vi:"“Em nộp app lên trường rồi. Bố… chưa mắng.”",en:"“I submitted my app at school. Dad… didn't scold me.”"},
+   qb:{vi:"“Xưởng nhỏ thôi — nhưng là của em.”",en:"“It's small — but it's mine.”"},
+   qa:{vi:"“Chú Ba dạy em men gốm. Em đang viết app quản lò nung!”",en:"“Chú Ba teaches me glaze. I'm coding the kiln app!”"}},
+  {id:1,name:"Chú Ba",tai:9,gan:3,ban:2,color:"#8a6642",hat:true,elder:true,hx:730,hy:300,
+   q:{vi:"“Men gốm này ông nội để lại. Chắc nghề chết theo tôi thôi.”",en:"“This glaze came from my grandfather. I suppose the craft dies with me.”"},
+   qh:{vi:"“Lâu lắm rồi mới có người ngồi nghe chuyện men gốm.”",en:"“It's been so long since anyone sat to hear about glaze.”"},
+   qb:{vi:"“Lò lại đỏ lửa. Ông nội chắc đang cười.”",en:"“The kiln burns again. Grandfather must be smiling.”"}},
+  {id:2,name:"Cô Mai",tai:6,gan:4,ban:7,color:"#2E4A62",hat:false,hx:420,hy:280,
+   q:{vi:"“Tôi dạy hai mươi năm rồi. Vẫn ước làm bộ sách của riêng mình.”",en:"“Twenty years teaching. I still dream of writing my own books.”"},
+   qh:{vi:"“Tôi viết được ba chương rồi đấy.”",en:"“Three chapters written already.”"},
+   qb:{vi:"“Bộ sách của tôi — học trò cũ quay lại mua.”",en:"“My books — old students come back to buy them.”"}},
+  {id:3,name:"Anh Vũ",tai:5,gan:6,ban:3,color:"#5a7d62",hat:true,hx:300,hy:420,
+   q:{vi:"“Sửa được mọi máy trong xóm — trừ đời mình.”",en:"“I can fix every machine in this xóm — except my own life.”"},
+   qh:{vi:"“Hoá ra xóm này lắm người khéo tay hơn tôi tưởng.”",en:"“Turns out this xóm has more clever hands than I thought.”"},
+   qb:{vi:"“Tiệm sửa–chế của tôi. Hỏng gì cứ mang tới.”",en:"“My fix-and-make shop. Bring me anything broken.”"}},
+  {id:4,name:"Chị Hoa",tai:4,gan:7,ban:8,color:"#C1443C",hat:true,hx:500,hy:445,
+   q:{vi:"“Buôn có bạn, bán có phường. Chỉ thiếu một món hàng của MÌNH.”",en:"“Trade has friends, markets have guilds. I only lack a product of my OWN.”"},
+   qh:{vi:"“Tôi học đóng gói, học chụp ảnh món hàng rồi đó.”",en:"“I've learned packaging, product photos, the lot.”"},
+   qb:{vi:"“Món hàng của MÌNH — bán tận Sài Gòn.”",en:"“A product of my OWN — selling all the way to Saigon.”"}},
+  {id:5,name:"Anh Tú",tai:2,gan:8,ban:6,color:"#E3A63B",hat:false,hx:640,hy:360,
+   q:{vi:"“Làm liều trước, học sau! …học gì trước nhỉ?”",en:"“Leap first, learn later! …learn what first, though?”"},
+   qh:{vi:"“Hoá ra học cũng… đã như làm liều.”",en:"“Turns out learning is… as thrilling as leaping.”"},
+   qb:{vi:"“Vẫn liều — nhưng lần này có nghề.”",en:"“Still a leap — but this time with a craft.”"}}
+];}
+function quoteFor(p){
+  if(p.started&&p.qb) return p.qb[L];
+  if(S.apprentice&&p.id===0&&p.qa) return p.qa[L];
+  if(p.qh&&p.zkey&&p[p.zkey]>=5) return p.qh[L];
+  return p.q[L];
+}
+
+// ---------- state ----------
+var S, META={muted:false};
+var SAVE_KEY="thua-so-khong-v1";
+function fresh(){
+  S={season:0, acts:3, luat:3, von:3, hui:0, cast:makeCast(), ships:[], sel:-1,
+     build:0, built:false, pairs:[], apprentice:false, linking:null, banner:null,
+     log:[], over:false, seed:(Date.now()>>>0)};
+  S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0;
+    var m=Math.min(p.tai,p.gan,p.ban);
+    p.zkey = (m===p.gan)?"gan":(m===p.tai)?"tai":"ban";   // their original zero — quotes evolve when it turns
+    p.btai=p.tai; p.bgan=p.gan; p.bban=p.ban;             // their nature — un-bloomed tending decays back toward it
+    p.x=p.hx; p.y=p.hy; p.tx=p.hx; p.ty=p.hy; p.ph=Math.random()*6.28; });
+}
+function prod(p){ return p.tai*p.gan*p.ban; }
+function chance(p){ return Math.min(0.85, prod(p)/1000*0.9*(0.6+0.4*S.von/10)); }
+function logMsg(vi,en){ S.log.unshift({vi:vi,en:en}); S.log=S.log.slice(0,24); renderLog(); }
+
+// ---------- save / load (NaN-safe) ----------
+var fin=Number.isFinite;
+function cl(v,lo,hi,fb){ return fin(v)?Math.max(lo,Math.min(hi,v)):fb; }
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:1,
+  meta:{lang:L,muted:!!META.muted},
+  s:{season:S.season,acts:S.acts,luat:S.luat,von:S.von,hui:S.hui,build:S.build,built:!!S.built,
+     apprentice:!!S.apprentice,pairs:S.pairs,
+     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0};}),
+     ships:S.ships.map(function(w){return {x:w.x,y:w.y,owner:w.owner,small:!!w.small,pid:w.pid,yours:!!w.yours};}),
+     log:S.log.slice(0,12)}})); }catch(e){} }
+function load(){
+  try{
+    var raw=localStorage.getItem(SAVE_KEY); if(!raw) return false;
+    var d=JSON.parse(raw); if(!d||!d.s) return false;
+    if(d.meta){ if(d.meta.lang==="en"||d.meta.lang==="vi") L=d.meta.lang; META.muted=!!d.meta.muted; }
+    var s=d.s; if(!fin(s.season)||s.season>=16||s.season<0) return false;   // finished/garbage runs restart
+    fresh();
+    S.season=cl(s.season,0,15,0); S.acts=cl(s.acts,0,3,3);
+    S.luat=cl(s.luat,1,10,3); S.von=cl(s.von,1,10,3); S.hui=cl(s.hui,0,3,0);
+    S.build=cl(s.build,0,4,0); S.built=!!s.built; S.apprentice=!!s.apprentice;
+    if(Array.isArray(s.pairs)) S.pairs=s.pairs.filter(function(pr){return Array.isArray(pr)&&fin(pr[0])&&fin(pr[1]);});
+    if(Array.isArray(s.cast)) s.cast.forEach(function(c,i){ var p=S.cast[i]; if(!p||!c) return;
+      p.tai=cl(c.tai,0,10,p.tai); p.gan=cl(c.gan,0,10,p.gan); p.ban=cl(c.ban,0,10,p.ban);
+      p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); });
+    if(Array.isArray(s.ships)) S.ships=s.ships.filter(function(w){return w&&fin(w.x)&&fin(w.y)&&typeof w.owner==="string";});
+    if(Array.isArray(s.log)) S.log=s.log.filter(function(m){return m&&(typeof m.vi==="string"||typeof m.en==="string");});
+    return true;
+  }catch(e){ return false; }
+}
+
+// ---------- audio ----------
+var _ac=null;
+function beep(f,d,v){ if(META.muted) return; try{ if(!_ac)_ac=new (window.AudioContext||window.webkitAudioContext)();
+  var o=_ac.createOscillator(),g=_ac.createGain(); o.frequency.value=f; o.connect(g); g.connect(_ac.destination);
+  g.gain.value=v||0.03; o.start(); g.gain.exponentialRampToValueAtTime(0.0001,_ac.currentTime+(d||0.1)); o.stop(_ac.currentTime+(d||0.1)); }catch(e){} }
+
+// ---------- canvas ----------
+var cv=document.getElementById("cv"), ctx=cv.getContext("2d");
+var W=960,H=600,DPR=1;
+function fit(){ var w=cv.parentElement.clientWidth-0; DPR=window.devicePixelRatio||1;
+  cv.width=W*DPR; cv.height=H*DPR; cv.style.height=(w*H/W)+"px"; }
+window.addEventListener("resize",fit);
+
+var parts=[], bubbles=[], stamps=[];
+function petals(x,y,n,cols){ for(var i=0;i<n;i++) parts.push({x:x,y:y,vx:(Math.random()-.5)*2.2,vy:-1.5-Math.random()*2,r:3+Math.random()*4,rot:Math.random()*6.28,vr:(Math.random()-.5)*.3,life:1,col:cols[i%cols.length]}); }
+function bubble(p,txt){ bubbles.push({p:p,txt:txt,until:performance.now()+3600}); }
+function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); beep(120,0.4,0.05); }
+
+// paper speckle (once)
+var speck=[]; for(var i=0;i<130;i++) speck.push([Math.random()*W,Math.random()*H,Math.random()*1.6+0.4]);
+
+function ink(w){ ctx.strokeStyle="#2B2320"; ctx.lineWidth=w||3; ctx.lineJoin="round"; ctx.lineCap="round"; }
+
+var amb=[]; // seasonal drift: blossom in spring, leaves in autumn
+function drawScene(now){
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  // paper
+  ctx.fillStyle="#EAD9B8"; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle="rgba(120,95,60,.14)"; speck.forEach(function(s){ ctx.fillRect(s[0],s[1],s[2],s[2]); });
+  var seas=S.season%4;
+  if((seas===0||seas===2)&&amb.length<14&&Math.random()<0.25)
+    amb.push({x:Math.random()*W,y:-8,vx:0.3+Math.random()*0.5,vy:0.35+Math.random()*0.5,rot:Math.random()*6.28,
+              col:seas===0?"#EFB7C4":"#D99A3B",r:3+Math.random()*3});
+
+  // --- SKY = the law (untouchable) ---
+  var skyH=118;
+  var clear=S.luat/10;
+  ctx.fillStyle="rgba(160,200,214,"+(0.16+0.32*clear)+")"; ctx.fillRect(0,0,W,skyH);
+  // sun
+  ctx.beginPath(); ctx.arc(W-90,52,26,0,6.28); ctx.fillStyle="rgba(227,166,59,"+(0.35+0.5*clear)+")"; ctx.fill(); ink(2.5); ctx.stroke();
+  // clouds — denser & darker when law is stuck
+  var nc=Math.round(2+(10-S.luat)*0.7);
+  for(var c=0;c<nc;c++){ var cx=((now*0.008)+(c*167))% (W+160)-80; var cy=24+((c*53)%70);
+    ctx.beginPath(); ctx.ellipse(cx,cy,34,13,0,0,6.28); ctx.ellipse(cx+24,cy+4,24,10,0,0,6.28); ctx.ellipse(cx-24,cy+5,22,9,0,0,6.28);
+    ctx.fillStyle="rgba(90,90,100,"+(0.32-0.02*S.luat)+")"; ctx.fill(); }
+  ctx.font="italic 11px Georgia"; ctx.fillStyle="rgba(43,35,32,.5)";
+  ctx.fillText(L==="vi"?"bầu trời là LUẬT":"the sky is the LAW", 14, 18);
+
+  // --- RIVER = capital (untouchable) ---
+  var rh=26+S.von*5.5, ry=H-rh;
+  ctx.fillStyle="#7fa3b8"; ctx.fillRect(0,ry,W,rh);
+  ink(3); ctx.beginPath(); ctx.moveTo(0,ry); ctx.lineTo(W,ry); ctx.stroke();
+  ctx.strokeStyle="rgba(255,255,255,.5)"; ctx.lineWidth=2;
+  for(var wv=0;wv<6;wv++){ var wx=((now*0.02)+(wv*180))%(W+60)-30, wy=ry+8+(wv%3)*7;
+    ctx.beginPath(); ctx.moveTo(wx,wy); ctx.quadraticCurveTo(wx+12,wy-4,wx+24,wy); ctx.stroke(); }
+  if(S.von>=6){ // a sampan when capital flows
+    var bx=((now*0.012)%(W+120))-60;
+    ink(3); ctx.fillStyle="#8a6642"; ctx.beginPath();
+    ctx.moveTo(bx,ry+13); ctx.quadraticCurveTo(bx+26,ry+22,bx+52,ry+13); ctx.lineTo(bx+44,ry+8); ctx.lineTo(bx+8,ry+8); ctx.closePath(); ctx.fill(); ctx.stroke();
+  }
+  if(S.von>=7){ // lotus when the river is full
+    [[170,0],[196,10],[820,4]].forEach(function(lp){
+      var lx=lp[0],ly=ry+12+lp[1];
+      ctx.fillStyle="#4e7d52"; ctx.beginPath(); ctx.ellipse(lx+10,ly+4,10,4,0,0,6.28); ctx.fill();
+      ctx.fillStyle="#D97C8E"; ink(2);
+      ctx.beginPath(); ctx.ellipse(lx,ly,6,7,0,0,6.28); ctx.fill(); ctx.stroke();
+      ctx.fillStyle="#EFB7C4"; ctx.beginPath(); ctx.ellipse(lx,ly-3,3.4,4,0,0,6.28); ctx.fill(); });
+  }
+  ctx.font="italic 11px Georgia"; ctx.fillStyle="rgba(43,35,32,.55)";
+  ctx.fillText(L==="vi"?"dòng sông là VỐN":"the river is the CAPITAL", 14, H-8);
+
+  // --- village furniture ---
+  banyan(80,240,now);
+  dinh(470,158);
+  house(210,235,"#c98a5a"); house(660,225,"#b8797a"); house(840,250,"#c9a35a");
+  banana(905,410,now);
+  market(560,505);
+  drawChickens(now);
+
+  // --- pair threads (kết nối) ---
+  if(S.pairs.length){ ctx.save(); ctx.strokeStyle="rgba(108,143,61,.55)"; ctx.lineWidth=2; ctx.setLineDash([3,6]);
+    S.pairs.forEach(function(pr){ var a=S.cast[pr[0]],b=S.cast[pr[1]]; if(!a||!b) return;
+      ctx.beginPath(); ctx.moveTo(a.x,a.y-6); ctx.quadraticCurveTo((a.x+b.x)/2,(a.y+b.y)/2-34,b.x,b.y-6); ctx.stroke(); });
+    ctx.setLineDash([]); ctx.restore(); }
+
+  // --- workshops (blooms) ---
+  S.ships.forEach(function(s){ workshop(s,now); });
+
+  // --- people (sorted by y for depth) ---
+  var ppl=S.cast.slice().sort(function(a,b){return a.y-b.y;});
+  ppl.forEach(function(p){ person(p,now); });
+
+  // --- first-tap hint: a pulsing ring until you've talked to anyone ---
+  if(!S.over && !S.cast.some(function(p){return p.known;})){
+    var hp=S.cast[0], pulse=2+Math.sin(now*0.005)*1.6;
+    ctx.strokeStyle="#C1443C"; ctx.lineWidth=2.5; ctx.setLineDash([4,5]);
+    ctx.beginPath(); ctx.ellipse(hp.x,hp.y-4,24+pulse,32+pulse,0,0,6.28); ctx.stroke(); ctx.setLineDash([]);
+    ctx.font="italic 12px Georgia"; ctx.fillStyle="#C1443C"; ctx.textAlign="center";
+    ctx.fillText(L==="vi"?"chạm để trò chuyện":"tap to talk", hp.x, hp.y-52); ctx.textAlign="left";
+  }
+  // --- linking mode: highlight the initiator ---
+  if(S.linking!=null){ var lp2=S.cast[S.linking], lps=2+Math.sin(now*0.008)*1.4;
+    ctx.strokeStyle="#6C8F3D"; ctx.lineWidth=2.5; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.ellipse(lp2.x,lp2.y-4,24+lps,32+lps,0,0,6.28); ctx.stroke(); ctx.setLineDash([]);
+    ctx.font="italic 12px Georgia"; ctx.fillStyle="#3f6023"; ctx.textAlign="center";
+    ctx.fillText(L==="vi"?"chạm vào người muốn kết nối…":"tap someone to connect…", lp2.x, lp2.y-52); ctx.textAlign="left";
+  }
+
+  // --- stamps (the law crushing) ---
+  stamps=stamps.filter(function(st){ st.t+=0.016; var k=Math.min(1,st.t/0.5);
+    var yy=st.y-120+(120*k*k);
+    ctx.save(); ctx.globalAlpha=st.t>1.4?Math.max(0,1-(st.t-1.4)/0.5):1;
+    ctx.fillStyle="#5a5a66"; ink(3);
+    ctx.fillRect(st.x-30,yy-46,60,34); ctx.strokeRect(st.x-30,yy-46,60,34);
+    ctx.fillRect(st.x-8,yy-12,16,16); ctx.strokeRect(st.x-8,yy-12,16,16);
+    if(k>=1){ ctx.font="700 13px Georgia"; ctx.fillStyle="#fff"; ctx.textAlign="center";
+      ctx.fillText(L==="vi"?"ĐÌNH CHỈ":"SUSPENDED",st.x,yy-24); ctx.textAlign="left"; }
+    ctx.restore(); return st.t<2.0; });
+
+  // --- petals ---
+  parts=parts.filter(function(q){ q.x+=q.vx; q.y+=q.vy; q.vy+=0.05; q.rot+=q.vr; q.life-=0.012;
+    ctx.save(); ctx.translate(q.x,q.y); ctx.rotate(q.rot); ctx.globalAlpha=Math.max(0,q.life);
+    ctx.fillStyle=q.col; ctx.beginPath(); ctx.ellipse(0,0,q.r,q.r*0.62,0,0,6.28); ctx.fill(); ctx.restore();
+    return q.life>0; });
+
+  // --- seasonal drift particles ---
+  amb=amb.filter(function(q){ q.x+=Math.sin(now*0.001+q.rot)*0.6+0.2; q.y+=q.vy; q.rot+=0.02;
+    ctx.save(); ctx.translate(q.x,q.y); ctx.rotate(q.rot); ctx.globalAlpha=0.8;
+    ctx.fillStyle=q.col; ctx.beginPath(); ctx.ellipse(0,0,q.r,q.r*0.6,0,0,6.28); ctx.fill(); ctx.restore();
+    return q.y<H+10; });
+
+  // --- seasonal tint (subtle) ---
+  var tints=["rgba(217,124,142,.04)","rgba(227,166,59,.05)","rgba(193,68,60,.05)","rgba(110,130,165,.08)"];
+  ctx.fillStyle=tints[seas]; ctx.fillRect(0,0,W,H);
+
+  // --- speech bubbles ---
+  var nnow=performance.now();
+  bubbles=bubbles.filter(function(b){ return b.until>nnow; });
+  bubbles.forEach(function(b){ var p=b.p; drawBubble(p.x, p.y-66, b.txt); });
+
+  // --- season banner ---
+  if(S.banner){ var bdt=S.banner.until-nnow;
+    if(bdt>0){ ctx.save(); ctx.globalAlpha=Math.min(1,bdt/700);
+      ctx.font="700 32px Georgia"; ctx.textAlign="center"; ctx.fillStyle="#2B2320";
+      ctx.fillText(S.banner.txt,W/2,86); ctx.textAlign="left"; ctx.restore(); }
+    else S.banner=null; }
+}
+function banana(x,y,now){
+  ink(2.6); ctx.fillStyle="#5a7d3a";
+  var sw=Math.sin(now*0.0012)*4;
+  [[-1.9,0],[ -0.9,-14],[0.2,-20],[1.1,-14],[2.0,0]].forEach(function(l,i){
+    ctx.save(); ctx.translate(x,y); ctx.rotate(l[0]*0.35);
+    ctx.beginPath(); ctx.ellipse(sw*0.2,-34+l[1]*0.6,9,30,0,0,6.28); ctx.fill(); ctx.stroke(); ctx.restore(); });
+  ctx.fillStyle="#7a5a3a"; ctx.fillRect(x-4,y-14,8,26); ink(2.4); ctx.strokeRect(x-4,y-14,8,26);
+}
+var chicks=[{x:340,y:470,tx:340,ty:470,ph:0},{x:390,y:485,tx:390,ty:485,ph:2},{x:240,y:500,tx:240,ty:500,ph:4}];
+function drawChickens(now){
+  chicks.forEach(function(c){
+    var dx=c.tx-c.x,dy=c.ty-c.y,d=Math.hypot(dx,dy);
+    if(d<1){ if(Math.random()<0.01){ c.tx=180+Math.random()*280; c.ty=455+Math.random()*55; } }
+    else { c.x+=dx/d*0.3; c.y+=dy/d*0.3; }
+    var peck=Math.sin(now*0.02+c.ph)>0.85?2.5:0;
+    ink(2);
+    ctx.fillStyle="#f4ead2"; ctx.beginPath(); ctx.ellipse(c.x,c.y,7,5,0,0,6.28); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(c.x+6,c.y-4+peck,3.2,0,6.28); ctx.fill(); ctx.stroke();
+    ctx.fillStyle="#C1443C"; ctx.fillRect(c.x+5,c.y-9+peck,2.4,2.4);
+    ctx.fillStyle="#E3A63B"; ctx.beginPath(); ctx.moveTo(c.x+9,c.y-4+peck); ctx.lineTo(c.x+12,c.y-3+peck); ctx.lineTo(c.x+9,c.y-2+peck); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle="#2B2320"; ctx.lineWidth=1.6; ctx.beginPath();
+    ctx.moveTo(c.x-2,c.y+5); ctx.lineTo(c.x-2,c.y+9); ctx.moveTo(c.x+2,c.y+5); ctx.lineTo(c.x+2,c.y+9); ctx.stroke();
+  });
+}
+
+function banyan(x,y,now){
+  ink(4); ctx.fillStyle="#7a5a3a";
+  ctx.beginPath(); ctx.moveTo(x-10,y+60); ctx.quadraticCurveTo(x-6,y+10,x-14,y-10);
+  ctx.lineTo(x+14,y-10); ctx.quadraticCurveTo(x+8,y+14,x+12,y+60); ctx.closePath(); ctx.fill(); ctx.stroke();
+  var sway=Math.sin(now*0.001)*3;
+  [[x-34,-34,38],[x+30,-40,34],[x-2,-58,42]].forEach(function(b){
+    ctx.beginPath(); ctx.ellipse(b[0]+sway,y+b[1],b[2],b[2]*0.62,0,0,6.28);
+    ctx.fillStyle="#6C8F3D"; ctx.fill(); ink(3.5); ctx.stroke(); });
+}
+function dinh(x,y){ // the communal house (đình)
+  ink(3.5); ctx.fillStyle="#b8797a";
+  ctx.beginPath(); ctx.moveTo(x-70,y+30); ctx.quadraticCurveTo(x-78,y+26,x-84,y+16);
+  ctx.lineTo(x,y-16); ctx.lineTo(x+84,y+16); ctx.quadraticCurveTo(x+78,y+26,x+70,y+30); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle="#efe2c2"; ctx.fillRect(x-58,y+30,116,44); ctx.strokeRect(x-58,y+30,116,44);
+  ctx.fillStyle="#8a6642"; ctx.fillRect(x-10,y+44,20,30); ctx.strokeRect(x-10,y+44,20,30);
+}
+function house(x,y,col){
+  ink(3); ctx.fillStyle=col;
+  ctx.beginPath(); ctx.moveTo(x-46,y+22); ctx.lineTo(x,y-12); ctx.lineTo(x+46,y+22); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle="#efe2c2"; ctx.fillRect(x-36,y+22,72,38); ctx.strokeRect(x-36,y+22,72,38);
+  ctx.fillStyle="#8a6642"; ctx.fillRect(x-8,y+34,16,26); ctx.strokeRect(x-8,y+34,16,26);
+}
+function market(x,y){
+  ink(3);
+  ctx.fillStyle="#efe2c2"; ctx.fillRect(x-52,y-34,104,10); ctx.strokeRect(x-52,y-34,104,10);
+  for(var i=0;i<4;i++){ ctx.fillStyle=i%2?"#C1443C":"#E3A63B"; ctx.fillRect(x-52+i*26,y-52,26,18); ctx.strokeRect(x-52+i*26,y-52,26,18); }
+  ctx.beginPath(); ctx.moveTo(x-48,y-24); ctx.lineTo(x-48,y+12); ctx.moveTo(x+48,y-24); ctx.lineTo(x+48,y+12); ctx.stroke();
+  ctx.fillStyle="#6C8F3D"; ctx.beginPath(); ctx.arc(x-20,y-28,7,0,6.28); ctx.arc(x-2,y-28,7,0,6.28); ctx.arc(x+18,y-28,7,0,6.28); ctx.fill();
+}
+function workshop(s,now){
+  var x=s.x,y=s.y;
+  ink(3);
+  ctx.fillStyle="#c98a5a"; ctx.beginPath(); ctx.moveTo(x-34,y); ctx.lineTo(x,y-24); ctx.lineTo(x+34,y); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle="#f5ead0"; ctx.fillRect(x-27,y,54,30); ctx.strokeRect(x-27,y,54,30);
+  // pennant
+  ctx.beginPath(); ctx.moveTo(x,y-24); ctx.lineTo(x,y-46); ctx.stroke();
+  var fl=Math.sin(now*0.004)*3;
+  ctx.fillStyle="#E3A63B"; ctx.beginPath(); ctx.moveTo(x,y-46); ctx.lineTo(x+22,y-41+fl); ctx.lineTo(x,y-36); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.font="700 10px sans-serif"; ctx.fillStyle="#2B2320"; ctx.textAlign="center";
+  ctx.fillText(s.small?(L==="vi"?"gánh hàng":"stall"):(L==="vi"?"xưởng ":"w.shop ")+s.owner, x, y+20);
+  ctx.textAlign="left";
+}
+function person(p,now){
+  // wander
+  var dx=p.tx-p.x, dy=p.ty-p.y, d=Math.hypot(dx,dy);
+  if(d<2){ if(Math.random()<0.006){ p.tx=p.hx+(Math.random()-0.5)*110; p.ty=p.hy+(Math.random()-0.5)*46;
+      p.tx=Math.max(40,Math.min(W-40,p.tx)); p.ty=Math.max(230,Math.min(H-70,p.ty)); } }
+  else { p.x+=dx/d*0.45; p.y+=dy/d*0.45; }
+  var bob=Math.sin(now*0.006+p.ph)*(d>2?2.2:0.8);
+  var x=p.x, y=p.y+bob, sc=p.young?0.85:1;
+  // shadow
+  ctx.fillStyle="rgba(43,35,32,.16)"; ctx.beginPath(); ctx.ellipse(x,p.y+22,15,5,0,0,6.28); ctx.fill();
+  ctx.save(); ctx.translate(x,y); ctx.scale(sc,sc);
+  ink(2.6);
+  // legs
+  var st=(d>2)?Math.sin(now*0.014+p.ph)*4:0;
+  ctx.strokeStyle="#2B2320"; ctx.beginPath(); ctx.moveTo(-4,10); ctx.lineTo(-4+st,22); ctx.moveTo(4,10); ctx.lineTo(4-st,22); ctx.stroke();
+  // áo body
+  ctx.fillStyle=p.color; ctx.beginPath();
+  ctx.moveTo(-9,-8); ctx.quadraticCurveTo(-11,6,-8,12); ctx.lineTo(8,12); ctx.quadraticCurveTo(11,6,9,-8); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // head
+  ctx.fillStyle="#F2C9A0"; ctx.beginPath(); ctx.arc(0,-16,8.5,0,6.28); ctx.fill(); ctx.stroke();
+  // face
+  ctx.fillStyle="#2B2320"; ctx.fillRect(-3.4,-17.5,1.7,1.7); ctx.fillRect(1.7,-17.5,1.7,1.7);
+  ctx.beginPath(); ctx.arc(0,-14,2.6,0.15*Math.PI,0.85*Math.PI); ctx.lineWidth=1.4; ctx.stroke();
+  // hat / hair
+  ink(2.6);
+  if(p.hat){ ctx.fillStyle="#E9DA9C"; ctx.beginPath(); ctx.moveTo(-13,-20); ctx.lineTo(0,-32); ctx.lineTo(13,-20); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+  else { ctx.fillStyle="#2B2320"; ctx.beginPath(); ctx.arc(0,-18,8.5,Math.PI,2*Math.PI); ctx.fill(); }
+  if(p.elder){ ctx.strokeStyle="#ddd"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(-3,-10); ctx.quadraticCurveTo(0,-5,3,-10); ctx.stroke(); }
+  ctx.restore();
+  // selection ring
+  if(S.sel===p.id){ ctx.strokeStyle="#C1443C"; ctx.lineWidth=2.5; ctx.setLineDash([5,4]);
+    ctx.beginPath(); ctx.ellipse(x,p.y-4,22,30,0,0,6.28); ctx.stroke(); ctx.setLineDash([]); }
+  // name + zero hint
+  ctx.font="700 11px sans-serif"; ctx.textAlign="center"; ctx.fillStyle="#2B2320";
+  ctx.fillText(p.name,x,p.y+36);
+  if(p.known && !p.started){
+    var z=zeroOf(p);
+    ctx.font="10px sans-serif"; ctx.fillStyle="#C1443C";
+    ctx.fillText(z? ((L==="vi"?"số không: ":"zero: ")+z) : (Math.round(chance(p)*100)+"% "+t("sprout")), x, p.y+48);
+  }
+  ctx.textAlign="left";
+}
+function zeroOf(p){ var m=Math.min(p.tai,p.gan,p.ban);
+  if(m>3) return null;
+  if(m===p.gan) return t("gan"); if(m===p.tai) return t("tai"); return t("ban"); }
+function drawBubble(x,y,txt){
+  ctx.font="12px Georgia"; var wpx=Math.min(240,ctx.measureText(txt).width+18);
+  // naive wrap
+  var words=txt.split(" "), lines=[], cur="";
+  words.forEach(function(w){ if(ctx.measureText(cur+" "+w).width>224){ lines.push(cur); cur=w; } else cur=cur?cur+" "+w:w; });
+  lines.push(cur);
+  var hh=lines.length*15+12, ww=Math.min(244, lines.reduce(function(m,l){return Math.max(m,ctx.measureText(l).width);},0)+20);
+  var bx=Math.max(6,Math.min(W-ww-6,x-ww/2)), by=Math.max(4,y-hh);
+  ctx.fillStyle="#fffdf4"; ink(2.5);
+  ctx.beginPath();
+  if(ctx.roundRect) ctx.roundRect(bx,by,ww,hh,9); else ctx.rect(bx,by,ww,hh);
+  ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x-6,by+hh); ctx.lineTo(x+6,by+hh); ctx.lineTo(x,by+hh+8); ctx.closePath(); ctx.fillStyle="#fffdf4"; ctx.fill(); ctx.stroke();
+  ctx.fillStyle="#2B2320";
+  lines.forEach(function(l,i){ ctx.fillText(l,bx+10,by+18+i*15); });
+}
+
+// ---------- interaction ----------
+cv.addEventListener("click",function(e){
+  if(S.over) return;
+  var r=cv.getBoundingClientRect();
+  var mx=(e.clientX-r.left)*(W/r.width), my=(e.clientY-r.top)*(H/r.height);
+  var best=-1,bd=1e9;
+  S.cast.forEach(function(p){ var d=Math.hypot(p.x-mx,p.y-4-my); if(d<34&&d<bd){bd=d;best=p.id;} });
+  if(S.linking!=null){
+    if(best>=0 && best!==S.linking) completeLink(best);
+    else { S.linking=null; logMsg("(bỏ kết nối)","(link cancelled)"); }
+    return;
+  }
+  if(best>=0){ selectPerson(best); }
+});
+function selectPerson(id){
+  var p=S.cast[id]; S.sel=id;
+  if(!p.known){ p.known=true; bubble(p,quoteFor(p)); beep(520,0.07); logMsg(p.name+" — "+STR.reveal.vi, p.name+" — "+STR.reveal.en); save(); }
+  else bubble(p,quoteFor(p));
+  renderSheet(); render();
+}
+
+// ---------- actions ----------
+function spend(){ if(S.acts<=0) return false; S.acts--; render(); return true; }
+function actTeach(){ var p=cur(); if(!p||S.acts<=0||p.tai>=10) return; if(!spend())return;
+  p.tai=Math.min(10,p.tai+2); beep(660,0.08); floatOn(p,"+2 "+t("tai"),"#2E4A62"); renderSheet(); save(); }
+function actNerve(){ var p=cur(); if(!p||S.acts<=0||p.gan>=10) return; if(!spend())return;
+  p.gan=Math.min(10,p.gan+2); beep(440,0.08); floatOn(p,"+2 "+t("gan"),"#C1443C"); renderSheet(); save(); }
+function actLink(){ var p=cur(); if(!p||S.acts<=0) return;
+  // a deliberate verb: choose WHO to connect — tap a second person on the map
+  S.linking=p.id; bubble(p,(L==="vi")?"Kết nối với ai?":"Connect with whom?"); beep(560,0.06); render(); }
+function completeLink(otherId){
+  if(S.acts<=0){ S.linking=null; return; }
+  var a=S.cast[S.linking], b=S.cast[otherId]; S.linking=null;
+  if(!a||!b) return; if(!spend())return;
+  a.ban=Math.min(10,a.ban+2); b.ban=Math.min(10,b.ban+2);
+  var key=[Math.min(a.id,b.id),Math.max(a.id,b.id)];
+  if(!S.pairs.some(function(pr){return pr[0]===key[0]&&pr[1]===key[1];})) S.pairs.push(key);
+  if(!b.known){ b.known=true; }
+  floatOn(a,"+2 "+t("ban"),"#6C8F3D"); floatOn(b,"+2 "+t("ban"),"#6C8F3D"); beep(560,0.08);
+  logMsg("🤝 "+a.name+" — "+b.name+".","🤝 "+a.name+" — "+b.name+".");
+  // the authored beat: the master takes an apprentice — the lineage transmits
+  if(key[0]===0&&key[1]===1&&!S.apprentice){ S.apprentice=true;
+    logMsg("🏺 Chú Ba nhận Bé Ngân làm học trò — nghề gốm có người nối. (TÀI của Ngân sẽ lớn dần mỗi mùa)",
+           "🏺 Chú Ba takes Bé Ngân as his apprentice — the craft has an heir. (Her SKILL grows each season)");
+    bubble(S.cast[0],S.cast[0].qa[L]);
+    beep(660,0.1); setTimeout(function(){beep(784,0.12);},110); setTimeout(function(){beep(988,0.12);},230);
+    petals((a.x+b.x)/2,(a.y+b.y)/2-20,14,["#D97C8E","#E3A63B"]);
+  }
+  renderSheet(); save();
+}
+function actHui(){ if(S.acts<=0||S.hui>=3) return; if(!spend())return;
+  S.hui++; S.von=Math.min(10,S.von+1); beep(392,0.1); logMsg(STR.huiDone.vi,STR.huiDone.en); render(); save(); }
+function actBuild(){ if(S.acts<=0||S.built) return; if(!spend())return;
+  S.build++; beep(300+S.build*60,0.09);
+  if(S.build>=4){ S.built=true; S.ships.push({x:120,y:470,owner:(L==="vi"?"bạn":"you"),small:S.von<5,yours:true});
+    petals(120,450,26,["#D97C8E","#E3A63B","#fffdf4"]); beep(660,0.1); setTimeout(function(){beep(880,0.12);},110);
+    S.cast.forEach(function(q){ q.gan=Math.min(10,q.gan+1); });
+    logMsg(STR.shipped.vi,STR.shipped.en);
+  }
+  render(); renderSheet(); save();
+}
+function floatOn(p,txt,col){ bubbles.push({p:p,txt:txt,until:performance.now()+1200}); }
+
+// ---------- the season tick ----------
+function nextSeason(){
+  if(S.over) return;
+  S.linking=null;
+  // the lineage transmits: the apprentice's skill grows under the master
+  if(S.apprentice){ var ng=S.cast[0]; if(ng.tai<10){ ng.tai=Math.min(10,ng.tai+1); floatOn(ng,"+1 "+t("tai")+" 🏺","#2E4A62"); } }
+  // people roll — the multiplication decides
+  S.cast.forEach(function(p){
+    if(p.started) return;
+    if(Math.random()<chance(p)){
+      p.started=true;
+      var wx=Math.max(60,Math.min(W-60,p.hx+((Math.random()<.5)?-70:70)));
+      S.ships.push({x:wx,y:Math.min(H-90,p.hy+34),owner:p.name,small:S.von<5,pid:p.id});
+      petals(wx,p.hy+10,22,["#D97C8E","#E3A63B","#C1443C"]);
+      beep(660,0.09); setTimeout(function(){beep(880,0.1);},100);
+      logMsg("🌸 "+p.name+STR.bloomed.vi, "🌸 "+p.name+STR.bloomed.en);
+      S.cast.forEach(function(q){ if(q.id!==p.id) q.gan=Math.min(10,q.gan+1); });
+      if(S.cast.filter(function(q){return q.started;}).length===1) logMsg(STR.inspired.vi,STR.inspired.en);
+    }
+  });
+  // the law can crush (untouchable lock 3) — only while the sky is heavy
+  if(S.luat<4){
+    S.ships.slice().forEach(function(s){
+      if(s.yours) return;
+      if(Math.random()<0.10){
+        S.ships=S.ships.filter(function(o){return o!==s;});
+        stampAt(s.x,s.y);
+        var p=S.cast[s.pid]; if(p){ p.started=false; p.gan=Math.max(0,p.gan-3); p.crushCount++;
+          bubble(p,(L==="vi")?"“Tôi đã bảo mà…”":"“I told you so…”"); }
+        logMsg("⬛ "+s.owner+STR.crushed.vi, "⬛ "+s.owner+STR.crushed.en);
+      }
+    });
+  }
+  // entropy: tending that hasn't bloomed washes back toward each person's nature
+  var anyFade=false;
+  S.cast.forEach(function(p){ if(p.started) return;
+    ["tai","gan","ban"].forEach(function(k){ if(p[k]>p["b"+k] && Math.random()<0.35){ p[k]--; anyFade=true; } });
+  });
+  if(anyFade && !S.fadeSeen){ S.fadeSeen=true;
+    logMsg("Điều chưa bén rễ sẽ phai — mùa màng cuốn đi phần vun chưa kịp nở.",
+           "What hasn't taken root fades — the seasons wash away tending that hasn't bloomed."); }
+  // structural drift — beyond your hands
+  var r=Math.random();
+  if(r<0.12) S.luat=Math.min(10,S.luat+1); else if(r<0.20) S.luat=Math.max(1,S.luat-1);
+  if(S.season%4===3) S.von=Math.min(10,S.von+1);       // the era slowly rises
+  if(S.von<=3 && S.season===5) logMsg(STR.riverLow.vi,STR.riverLow.en);
+  // workshops resize with the river
+  S.ships.forEach(function(s){ s.small=S.von<5; });
+
+  S.season++; S.acts=3;
+  if(S.season>=16){ endGame(); return; }
+  S.banner={txt:STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4)),until:performance.now()+1900};
+  beep(330,0.12,0.02);
+  render(); renderSheet(); save();
+}
+
+// ---------- ending ----------
+function endGame(){
+  S.over=true;
+  var blooms=S.cast.filter(function(p){return p.started;});
+  var zeros=S.cast.filter(function(p){return !p.started && Math.min(p.tai,p.gan,p.ban)<=3;});
+  var b=document.getElementById("endBody"); b.innerHTML="";
+  function para(vi,en){ var d=document.createElement("p"); d.textContent=(L==="vi")?vi:en; b.appendChild(d); }
+  document.getElementById("endTtl").textContent=(L==="vi")?"Mười sáu mùa":"Sixteen seasons";
+  document.getElementById("endTag").textContent=(L==="vi")?"chuyện của một xóm nhỏ":"the story of one small xóm";
+  if(blooms.length){
+    para("Đã nảy mầm: "+blooms.map(function(p){return p.name;}).join(", ")+(S.built?" — và sản phẩm của chính bạn.":"."),
+         "Bloomed: "+blooms.map(function(p){return p.name;}).join(", ")+(S.built?" — and your own product.":"."));
+  } else {
+    para(S.built?"Chỉ có sản phẩm của bạn đứng đó — một bằng chứng đơn độc.":"Không gì nảy mầm. Ai cũng đã chăm chỉ — trên thừa số của riêng mình.",
+         S.built?"Only your own product stands — a lonely proof.":"Nothing bloomed. Everyone worked hard — each on their own factor.");
+  }
+  zeros.forEach(function(p){
+    var z=zeroOf(p)||"—";
+    para(p.name+" vẫn chưa nảy mầm — thừa số "+z+" vẫn nằm ở số không. Mười nhân với không vẫn bằng không.",
+         p.name+" never bloomed — the "+z+" factor stayed at zero. Ten times zero is still zero.");
+  });
+  para(S.luat>=5?"Bầu trời có quang hơn — có những mùa may mắn.":"Bầu trời không đổi. Có những ổ khóa ngoài tầm tay một người — điều đó không phải lỗi của bạn, cũng không phải lý do để ngừng vun.",
+       S.luat>=5?"The sky did clear a little — some seasons are lucky.":"The sky never changed. Some locks sit beyond one person's hands — that is not your fault, and not a reason to stop tending.");
+  var crushes=S.cast.reduce(function(a,p){return a+p.crushCount;},0);
+  if(crushes>0) para("Con dấu đã rơi "+crushes+" lần. Người ngã vì con dấu cần bàn tay của bạn gấp đôi.",
+                     "The stamp fell "+crushes+" times. Those it fell on need your hand twice as much.");
+  if(S.apprentice) para("Và một điều không hiện trên bản đồ: nghề gốm của Chú Ba đã có người nối — Bé Ngân. Có những 'lối thoát' không cần thương vụ nào.",
+                        "And one thing no map shows: Chú Ba's craft found an heir — Bé Ngân. Some 'exits' need no deal at all.");
+  document.getElementById("endLine").textContent=(L==="vi")
+    ? "Đừng hỏi “ai sẽ là Steve Jobs Việt Nam?” Hãy hỏi: “thừa số nào đang bằng không ở chỗ tôi đứng — và tay tôi xoay được bao nhiêu?”"
+    : "Don't ask “who will be Vietnam's Steve Jobs?” Ask: “which factor sits at zero where I stand — and how far can my own hand turn it?”";
+  document.getElementById("endOvl").classList.add("show");
+}
+
+// ---------- render (DOM) ----------
+function el(id){return document.getElementById(id);}
+function cur(){ return S.sel>=0?S.cast[S.sel]:null; }
+function render(){
+  var sn=STR.seasons[L][S.season%4], yr=2026+Math.floor(S.season/4);
+  el("seasonPill").textContent=sn+" "+yr+" · "+(S.season+1)+"/16";
+  el("actPill").textContent="⚡ "+S.acts;
+  el("subttl").textContent=t("sub"); el("foot").textContent=t("foot");
+  el("huiLbl").textContent=t("hui"); el("buildLbl").textContent=t("build");
+  el("nextBtn").textContent=t("next");
+  el("buildProg").textContent=S.built?"✓":(S.build+"/4");
+  el("huiBtn").disabled=S.acts<=0||S.hui>=3||S.over;
+  el("buildBtn").disabled=S.acts<=0||S.built||S.over;
+  el("nextBtn").disabled=S.over;
+  el("langBtn").textContent=L==="vi"?"EN":"VI";
+  el("muteBtn").textContent=META.muted?"🔇":"🔊";
+  el("lblTai").textContent=t("tai"); el("lblGan").textContent=t("gan"); el("lblBan").textContent=t("ban");
+  el("teachBtn").querySelector("span").textContent=t("teach");
+  el("nerveLbl").textContent=t("nerve"); el("linkLbl").textContent=t("link");
+  el("teachHint").textContent=STR.teachH[L]; el("nerveHint").textContent=STR.nerveH[L]; el("linkHint").textContent=STR.linkH[L];
+}
+function renderSheet(){
+  var p=cur(), sh=el("sheet");
+  if(!p||!p.known){ sh.classList.remove("show"); return; }
+  sh.classList.add("show");
+  el("pName").textContent=p.name+(p.started?(L==="vi"?" — đã mở xưởng 🌸":" — workshop open 🌸"):"");
+  el("pQuote").textContent=quoteFor(p);
+  el("valTai").textContent=p.tai; el("valGan").textContent=p.gan; el("valBan").textContent=p.ban;
+  el("barTai").style.width=(p.tai*10)+"%"; el("barGan").style.width=(p.gan*10)+"%"; el("barBan").style.width=(p.ban*10)+"%";
+  var pr=prod(p), pc=Math.round(chance(p)*100);
+  el("multLine").innerHTML=p.tai+" × "+p.gan+" × "+p.ban+" = <b>"+pr+"</b>"
+    +"<small>"+(p.started?(L==="vi"?"đang xây, mỗi mùa một ít":"building, season by season")
+    :(t("sprout")+" ~"+pc+"% "+t("perSeason")+(pc===0?(L==="vi"?" — vì có một thừa số bằng không":" — because one factor is zero"):"")))+"</small>";
+  el("teachBtn").disabled=S.acts<=0||p.tai>=10||p.started||S.over;
+  el("nerveBtn").disabled=S.acts<=0||p.gan>=10||S.over;
+  el("linkBtn").disabled=S.acts<=0||S.over;
+}
+function renderLog(){
+  el("log").innerHTML=S.log.map(function(m){return "<div>"+(m[L]||m.vi)+"</div>";}).join("")||"<div>"+t("talkFirst")+"</div>";
+}
+function setLang(x){ L=x; document.documentElement.lang=x;
+  el("inTtl").textContent=STR.inTtl[L]; el("inTag").textContent=t("sub");
+  el("inP1").textContent=STR.inP1[L]; el("inP2").innerHTML=STR.inP2[L]; el("inP3").innerHTML=STR.inP3[L];
+  render(); renderSheet(); renderLog(); }
+
+// ---------- wire ----------
+el("langBtn").onclick=function(){ setLang(L==="vi"?"en":"vi"); save(); };
+el("muteBtn").onclick=function(){ META.muted=!META.muted; el("muteBtn").textContent=META.muted?"🔇":"🔊"; if(!META.muted)beep(660,0.06); save(); };
+el("startBtn").onclick=function(){ el("intro").classList.remove("show"); beep(660,0.08); };
+el("nextBtn").onclick=nextSeason;
+el("teachBtn").onclick=actTeach; el("nerveBtn").onclick=actNerve; el("linkBtn").onclick=actLink;
+el("huiBtn").onclick=actHui; el("buildBtn").onclick=actBuild;
+el("againBtn").onclick=function(){ el("endOvl").classList.remove("show"); try{localStorage.removeItem(SAVE_KEY);}catch(e){} fresh(); S.sel=-1; render(); renderSheet(); renderLog(); };
+el("resetLink").onclick=function(e){ e.preventDefault(); try{localStorage.removeItem(SAVE_KEY);}catch(_){} el("endOvl").classList.remove("show"); fresh(); S.sel=-1; setLang(L); el("intro").classList.add("show"); };
+
+// ---------- boot ----------
+fresh(); fit();
+if(load()){ el("intro").classList.remove("show"); setLang(L); }   // resume a mid-run xóm
+else setLang(L);
+render(); renderLog();
+(function loop(now){ drawScene(now||0); requestAnimationFrame(loop); })(0);
+</script>
+</body>
+</html>
