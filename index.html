@@ -115,7 +115,7 @@
   <div class="sheet" id="sheet">
     <h3 id="pName">—</h3>
     <div class="quote" id="pQuote">…</div>
-    <div class="frow"><div class="fl" id="lblTai">TÀI</div><div class="ftr"><i id="barTai" style="background:var(--indigo)"></i></div><div class="fv" id="valTai">0</div></div>
+    <div class="frow"><div class="fl" id="lblTai">TÀI</div><div class="ftr" style="position:relative"><i id="barTai" style="background:var(--indigo)"></i><s id="notch7" style="position:absolute;left:70%;top:0;bottom:0;width:2px;background:rgba(43,35,32,.35);display:none"></s></div><div class="fv" id="valTai">0</div></div>
     <div class="frow"><div class="fl" id="lblGan">GAN</div><div class="ftr"><i id="barGan" style="background:var(--red)"></i></div><div class="fv" id="valGan">0</div></div>
     <div class="frow"><div class="fl" id="lblBan">BẠN</div><div class="ftr"><i id="barBan" style="background:var(--leaf)"></i></div><div class="fv" id="valBan">0</div></div>
     <div class="mult" id="multLine">—</div>
@@ -128,7 +128,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.20</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.21</span></div>
 </div>
 
 <!-- intro -->
@@ -351,7 +351,7 @@ function fresh(){
      un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false, stormSeen:false, tierTaught:false, lienNgan:false, stormCount:0, stormStreak:0, classSeen:false, revealSeen:false,
      log:[], over:false};
   lanterns=[]; runTok++;      // invalidate ALL deferred callbacks from the previous run
-  parts=[]; stamps=[]; glows=[]; bubbles=[]; amb=[]; pendQ=[];
+  parts=[]; stamps=[]; glows=[]; bubbles=[]; amb=[]; pendQ=[]; motes=[];
   S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false; p.mom=0;
     var m=Math.min(p.tai,p.gan,p.ban);
     p.zkey = (m===p.gan)?"gan":(m===p.tai)?"tai":"ban";   // their original zero — quotes evolve when it turns
@@ -370,6 +370,10 @@ function fresh(){
   var pool=[0,1,2,3,4].filter(function(cc){return cc!==lastYc;});
   S.yearCard=pool[Math.floor(Math.random()*pool.length)];
   S.gtmPays=0;
+  if((function(){ try{ return loadChron().length>0; }catch(e){ return false; } })()){
+    S.nudged=true; S.revealSeen=true; S.hintDone=true; S.vet=true;   // the book remembers — no training wheels on run 2+
+  }
+  if(S.yearCard===0) S.von=1;                             // a flood year: the river starts foul — the hụi is truly the only water
   if(S.yearCard===1) S.un.probe=true;                     // the strict year posts notices from day one
   if(S.yearCard===4){ S.cast[6].arrives=2; S.baFadeStart=5; }   // the reunion year: both people-clocks come early
   S.luatNext=driftLuat(S.luat);
@@ -400,9 +404,11 @@ function renderChron(){
   var last=c[c.length-1];
   var seen={}; c.forEach(function(r){ if(r&&r.ti) seen[r.ti]=1; }); var n=Object.keys(seen).length;
   var row=""; for(var i=1;i<=6;i++) row+=(seen[i]?"🏮":"○");
+  var seenYc2={}; c.forEach(function(r){ if(r&&Number.isFinite(r.yc)) seenYc2[r.yc]=1; });
+  var ycRow2=["🌊","📋","🛤","🍵","🧧"].map(function(g,gi){ return seenYc2[gi]?g:"·"; }).join("");
   el2.textContent=(L==="vi"?"📜 Sổ xóm — mùa trước: ":"📜 Village book — last time: ")
     +((L==="vi"?last.tv:last.te)||"—")+" · "+(last.nB|0)+(L==="vi"?" xưởng":" workshops")
-    +" · "+(L==="vi"?"kết đã thấy ":"endings seen ")+row+" "+n+"/6";
+    +" · "+(L==="vi"?"kết đã thấy ":"endings seen ")+row+" "+n+"/6 · "+ycRow2;
 }
 
 // ---------- save / load (NaN-safe) ----------
@@ -459,15 +465,18 @@ function beep(f,d,v){ if(META.muted) return; try{ if(!_ac)_ac=new (window.AudioC
   g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(v||0.04,t0+0.015);
   g.gain.exponentialRampToValueAtTime(0.0001,t0+(d||0.1));
   o.start(t0); o.stop(t0+(d||0.1)+0.02); }catch(e){} }
-// the gong: a long sine that sags in pitch — for seasons turning and the ending
+// the gong: three inharmonic bell partials (2.41/5.43 — classic bell ratios), fundamental sags in pitch
 function gong(f,d,v){ if(META.muted) return; try{ if(!_ac)_ac=new (window.AudioContext||window.webkitAudioContext)();
   if(_ac.state==="suspended")_ac.resume();
-  var o=_ac.createOscillator(),g=_ac.createGain(),t0=_ac.currentTime; o.type="sine";
-  o.frequency.setValueAtTime(f,t0); o.frequency.exponentialRampToValueAtTime(f*0.94,t0+(d||0.9));
-  o.connect(g); g.connect(_ac.destination);
+  var t0=_ac.currentTime, D=d||0.9, g=_ac.createGain(); g.connect(_ac.destination);
   g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(v||0.05,t0+0.02);
-  g.gain.exponentialRampToValueAtTime(0.0001,t0+(d||0.9));
-  o.start(t0); o.stop(t0+(d||0.9)+0.05); }catch(e){} }
+  g.gain.exponentialRampToValueAtTime(0.0001,t0+D);
+  [[1,1],[2.41,0.30],[5.43,0.10]].forEach(function(pp){
+    var o=_ac.createOscillator(),og=_ac.createGain(); o.type="sine";
+    o.frequency.setValueAtTime(f*pp[0],t0); o.frequency.exponentialRampToValueAtTime(f*pp[0]*0.94,t0+D);
+    og.gain.setValueAtTime(pp[1],t0); og.gain.exponentialRampToValueAtTime(Math.max(0.001,pp[1]*0.2),t0+D*0.5);
+    o.connect(og); og.connect(g); o.start(t0); o.stop(t0+D+0.05); });
+}catch(e){} }
 
 // ---------- canvas ----------
 var cv=document.getElementById("cv"), ctx=cv.getContext("2d");
@@ -484,6 +493,7 @@ function bubble(p,txt){ bubbles.push({p:p,lay:layoutBubble(txt),until:performanc
 function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); shake=1; beep(85,0.35,0.07); buzz(60); }
 var shake=0, glows=[], lanterns=[];
 var dlBuf=[]; function dlCmp(a,b){ return a.z-b.z; }
+var motes=[];   // 📖 book motes — the class visibly leaves Cô Mai's workshop for each student
 function buzz(v){ if(META.muted) return; try{ if(navigator.vibrate) navigator.vibrate(v); }catch(e){} }
 
 // điệp-shell paper (once): dark speckle + fiber strokes + mica sparkle — the Đông Hồ ground
@@ -577,6 +587,11 @@ function drawScene(now){
     ctx.setLineDash([]); ctx.restore(); }
 
   // --- bloom glows (a warm ring opening under a new workshop) ---
+  motes=motes.filter(function(mo){ mo.t+=0.016; if(mo.t<0) return true; var k3=Math.min(1,mo.t/1.1);
+    var mx=mo.x0+(mo.x1-mo.x0)*k3, my=mo.y0+(mo.y1-mo.y0)*k3-Math.sin(k3*Math.PI)*46;
+    ctx.font=Math.round(13*LKF)+"px sans-serif"; ctx.textAlign="center"; ctx.globalAlpha=0.9-0.5*k3;
+    ctx.fillText("📖",mx,my); ctx.globalAlpha=1;
+    return k3<1; });
   glows=glows.filter(function(gl){ gl.t+=0.02; var r=18+gl.t*95, a=Math.max(0,0.55-gl.t*0.6);
     ctx.beginPath(); ctx.arc(gl.x,gl.y,r,0,6.28);
     ctx.fillStyle="rgba(227,166,59,"+(a*0.3).toFixed(3)+")"; ctx.fill();
@@ -853,14 +868,14 @@ cv.addEventListener("click",function(e){
   S.cast.forEach(function(p){ if(!active(p)) return; var d=Math.hypot(p.x-mx,p.y-4-my); if(d<hitR&&d<bd){bd=d;best=p.id;} });
   if(S.linking!=null){
     if(best>=0 && best!==S.linking) completeLink(best);
-    else { S.linking=null; beep(300,0.06); buzz(20); logMsg("(thôi, để dịp khác)","(never mind)"); renderSheet(); }
+    else { S.linking=null; beep(294,0.06); buzz(20); logMsg("(thôi, để dịp khác)","(never mind)"); renderSheet(); }
     return;
   }
   if(best>=0){ selectPerson(best); }
 });
 function selectPerson(id){
   var p=S.cast[id]; S.sel=id;
-  if(!p.known){ p.known=true; bubble(p,quoteFor(p)); beep(520,0.07);
+  if(!p.known){ p.known=true; bubble(p,quoteFor(p)); beep(523,0.07);
     if(!S.revealSeen){ S.revealSeen=true; logMsg(p.name+" — "+STR.reveal.vi, p.name+" — "+STR.reveal.en); }   // the bubble + card ARE the feedback; say it once
     unlockCheck(); save(); }
   else bubble(p,quoteFor(p));
@@ -868,17 +883,17 @@ function selectPerson(id){
 }
 // verbs arrive one at a time, as the story needs them — never all at once
 function unlockCheck(){
-  if(!S.un.link && S.cast.filter(function(p){return p.known;}).length>=2){ S.un.link=true; logMsg(STR.unLink.vi,STR.unLink.en); beep(700,0.08,0.02); }
-  if(!S.un.hui && S.season>=2){ S.un.hui=true; logMsg(STR.unHui.vi,STR.unHui.en); }
-  if(!S.un.build && S.season>=4){ S.un.build=true; logMsg(STR.unBuild.vi,STR.unBuild.en); }
+  if(!S.un.link && S.cast.filter(function(p){return p.known;}).length>=2){ S.un.link=true; if(!S.vet) logMsg(STR.unLink.vi,STR.unLink.en); beep(784,0.08,0.02); }
+  if(!S.un.hui && S.season>=2){ S.un.hui=true; if(!S.vet) logMsg(STR.unHui.vi,STR.unHui.en); }
+  if(!S.un.build && S.season>=4){ S.un.build=true; if(!S.vet) logMsg(STR.unBuild.vi,STR.unBuild.en); }
 }
 
 // ---------- actions ----------
 function spend(){ if(S.acts<=0) return false; S.acts--; render(); return true; }
 function actTeach(){ var p=cur(); if(!p||S.acts<=0||p.tai>=10||S.over) return; if(!spend())return;
-  p.tai=Math.min(10,p.tai+2); S.hintDone=true; beep(660,0.08); floatOn(p,"+2 "+t("tai"),"#2E4A62"); renderSheet(); save(); }
+  p.tai=Math.min(10,p.tai+2); S.hintDone=true; beep(659*(1+(Math.random()-0.5)*0.015),0.08); floatOn(p,"+2 "+t("tai"),"#2E4A62"); renderSheet(); save(); }
 function actNerve(){ var p=cur(); if(!p||S.acts<=0||p.gan>=10||S.over) return; if(!spend())return;
-  p.gan=Math.min(10,p.gan+2); S.hintDone=true; beep(440,0.08); floatOn(p,"+2 "+t("gan"),"#C1443C");
+  p.gan=Math.min(10,p.gan+2); S.hintDone=true; beep(440*(1+(Math.random()-0.5)*0.015),0.08); floatOn(p,"+2 "+t("gan"),"#C1443C");
   // a failure night is communal — everyone who has fallen listens, and fears a little less
   var lifted=0;
   S.cast.forEach(function(o){ if(o!==p&&active(o)&&o.crushCount>0&&!o.started&&o.gan<10){ o.gan=Math.min(10,o.gan+1); lifted++; floatOn(o,"+1 "+t("gan"),"#C1443C"); } });
@@ -888,9 +903,9 @@ function actNerve(){ var p=cur(); if(!p||S.acts<=0||p.gan>=10||S.over) return; i
   renderSheet(); save(); }
 function actLink(){ var p=cur(); if(!p||S.acts<=0||S.over) return;
   // a deliberate verb: choose WHO to connect — tap a second person on the map
-  S.linking=p.id; bubble(p,(L==="vi")?"“Kết thân với ai đây?”":"“Who should I get to know?”"); beep(560,0.06); render(); }
+  S.linking=p.id; bubble(p,(L==="vi")?"“Kết thân với ai đây?”":"“Who should I get to know?”"); beep(587,0.06); render(); }
 function completeLink(otherId){
-  if(S.acts<=0){ S.linking=null; beep(300,0.06); buzz(20); renderSheet(); return; }
+  if(S.acts<=0){ S.linking=null; beep(294,0.06); buzz(20); renderSheet(); return; }
   var a=S.cast[S.linking], b=S.cast[otherId];
   if(!a||!b||a.id===b.id){ S.linking=null; renderSheet(); return; }
   if(!b.known){ bubble(a,(L==="vi")?"“Mình đã quen người ta đâu…”":"“I haven't even met them…”"); render(); return; }   // linking mode STAYS armed — a mistap on a stranger doesn't exit
@@ -903,7 +918,7 @@ function completeLink(otherId){
   var gA=again?1:(linksOf(a.id)===0?2:1), gB=again?1:(linksOf(b.id)===0?2:1);
   a.ban=Math.min(10,a.ban+gA); b.ban=Math.min(10,b.ban+gB); S.hintDone=true;
   if(!again) S.pairs.push(key);
-  floatOn(a,"+"+gA+" "+t("ban"),"#6C8F3D"); floatOn(b,"+"+gB+" "+t("ban"),"#6C8F3D"); beep(560,0.08);
+  floatOn(a,"+"+gA+" "+t("ban"),"#6C8F3D"); floatOn(b,"+"+gB+" "+t("ban"),"#6C8F3D"); beep(587,0.08);
   logMsg(again?("🤝 "+a.name+" và "+b.name+" — họ đã quen nhau rồi."):("🤝 "+a.name+" — "+b.name+"."),
          again?("🤝 "+a.name+" and "+b.name+" — they already know each other."):("🤝 "+a.name+" — "+b.name+"."));
   // the authored beats — some connections are more than +BẠN
@@ -911,24 +926,24 @@ function completeLink(otherId){
     logMsg("🏺 Chú Ba nhận Bé Ngân làm học trò — nghề gốm có người nối. (TÀI của Ngân sẽ lớn dần mỗi mùa)",
            "🏺 Chú Ba takes Bé Ngân as his apprentice — the craft has an heir. (Her SKILL grows each season)");
     bubble(S.cast[0],S.cast[0].qa[L]);
-    beep(660,0.1); setTimeout(function(){beep(784,0.12);},110); setTimeout(function(){beep(988,0.12);},230);
+    beep(659,0.1); setTimeout(function(){beep(784,0.12);},110); setTimeout(function(){beep(1047,0.12);},230);
     petals((a.x+b.x)/2,(a.y+b.y)/2-20,14,["#D97C8E","#E3A63B"]);
   }
   if(key[0]===3&&key[1]===5&&!S.duo){ S.duo=true;
     logMsg(STR.duoForm.vi,STR.duoForm.en); bubble(S.cast[5],S.cast[5].qa[L]);
-    beep(660,0.1); setTimeout(function(){beep(784,0.12);},110);
+    beep(659,0.1); setTimeout(function(){beep(784,0.12);},110);
     petals((a.x+b.x)/2,(a.y+b.y)/2-20,12,["#E3A63B","#6C8F3D"]);
   }
   if(key[0]===1&&key[1]===4&&!S.gtm){ S.gtm=true;
     logMsg(STR.gtmForm.vi,STR.gtmForm.en);
     bubble(S.cast[4],(L==="vi")?"“Gốm đẹp thế này mà để trong xưởng thì phí!”":"“Ceramics this fine, wasted sitting in a workshop!”");
-    beep(560,0.1);
+    beep(587,0.1);
   }
   if(key[0]===0&&key[1]===6&&!S.lienNgan){ S.lienNgan=true;
     logMsg("🎨 Cô Liên nhận kèm Bé Ngân — code gặp thiết kế. (TÀI của Ngân sẽ lớn dần)",
            "🎨 Cô Liên takes Bé Ngân under her wing — code meets design. (Her SKILL grows each season)");
     bubble(S.cast[0],(L==="vi")?"“Vậy em code, cô vẽ nha!”":"“Then I code, you design!”");
-    beep(660,0.1); setTimeout(function(){beep(880,0.1);},110);
+    beep(659,0.1); setTimeout(function(){beep(880,0.1);},110);
     petals((a.x+b.x)/2,(a.y+b.y)/2-20,12,["#7a5f8a","#D97C8E"]);
   }
   renderSheet(); save();
@@ -939,7 +954,7 @@ function actHui(){ if(S.acts<=0||S.hui>=huiMax()) return; if(!spend())return;
 function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notices — asking around is free
   if(S.probeSeen||S.over||(!free&&S.acts<=0)) return;
   if(!free){ if(!spend())return; }
-  S.probeSeen=true; beep(587,0.06); setTimeout(function(){beep(494,0.06);},80);
+  S.probeSeen=true; beep(587,0.06); setTimeout(function(){beep(523,0.06);},80);
   logMsg(S.luatNext>=4?STR.probeSun.vi:STR.probeCloud.vi, S.luatNext>=4?STR.probeSun.en:STR.probeCloud.en);
   if(S.luatNext<4&&shelTarget()) logMsg("— xưởng non đang phơi trời. Bạn có thể CHE CHẮN (nút mới).",
                                         "— a young workshop sits exposed. You can SHELTER it (new button).");
@@ -952,9 +967,9 @@ function actShel(){ if(S.acts<=0||S.over||!shelTarget()) return; if(!spend())ret
   var n=0; S.ships.forEach(function(s){ if(shelCovers(s)){ s.shel=2; n++; } });   // one hand tarps every covered roof
   beep(392,0.1); logMsg(STR.shelDone.vi,STR.shelDone.en); render(); save(); }
 function actBuild(){ if(S.acts<=0||S.built) return; if(!spend())return;
-  S.build++; beep(300+S.build*60,0.09);
+  S.build++; beep([294,330,392,440][Math.min(S.build-1,3)],0.09);
   if(S.build>=4){ S.built=true; S.ships.push({x:120,y:470,owner:(L==="vi"?"bạn":"you"),small:S.von<5,yours:true});
-    petals(120,450,26,["#D97C8E","#E3A63B","#fffdf4"]); beep(660,0.1); setTimeout(function(){beep(880,0.12);},110);
+    petals(120,450,26,["#D97C8E","#E3A63B","#fffdf4"]); beep(659,0.1); setTimeout(function(){beep(880,0.12);},110);
     S.cast.forEach(function(q){ q.gan=Math.min(10,q.gan+1); });
     logMsg(STR.shipped.vi,STR.shipped.en);
   }
@@ -970,24 +985,29 @@ function nextSeason(){
   var _preActive=S.cast.filter(active).map(function(p){return p.id;});
   // one gentle first-turn nudge: don't let a new player skip past their whole hand
   if(S.season===0 && S.acts===3 && !S.nudged){ S.nudged=true;
-    bubble(S.cast[0],t("nudge")); beep(500,0.07); return; }
+    bubble(S.cast[0],t("nudge")); beep(523,0.07); return; }
   // the lineage transmits: each mentored student's skill grows under their master (faster in a quiet-hands year)
   var drip=(S.yearCard===3)?2:1;
   MENTORS.forEach(function(m){ if(!pairExists(m.pair[0],m.pair[1])) return;
-    var st=S.cast[m.student]; if(!st.started&&st.tai<10){ st.tai=Math.min(10,st.tai+drip); floatOn(st,"+"+drip+" "+t("tai")+" 🏺","#2E4A62"); } });
+    var st=S.cast[m.student]; if(!st.started&&st.tai<10){ st.tai=Math.min(10,st.tai+drip); st._dripped=true; floatOn(st,"+"+drip+" "+t("tai")+" 🏺","#2E4A62"); } });
   // 📖 lớp của Cô Mai — a school scales BREADTH: one teacher, many students, and the floor rises.
   // But class TÀI caps at 7 — depth still needs a master's hands. Necessary, never sufficient.
   var mai=S.cast[2];
   if(mai.started){
-    var reach=0; S.ships.forEach(function(sh){ if(sh.pid===2) reach=shipTier(sh); });
+    var maiShip=null; S.ships.forEach(function(sh){ if(sh.pid===2) maiShip=sh; });
+    var reach=(maiShip&&(maiShip.age|0)>=1)?shipTier(maiShip):0;   // the class opens once her roof has weathered a season
+    if(S.classSkip){ reach=0; S.classSkip=false; }                 // a stamped roof teaches no one that season
     if(reach>0){
-      var studs=S.cast.filter(function(q){ return q!==mai&&active(q)&&!q.started&&q.known&&q.tai<7; })
+      var studs=S.cast.filter(function(q){ return q!==mai&&active(q)&&!q.started&&q.known&&q.tai<7&&!q._dripped; })
                       .sort(function(a2,b2){return a2.tai-b2.tai;}).slice(0,reach);
-      studs.forEach(function(st2){ st2.tai=Math.min(7,st2.tai+1); floatOn(st2,"+1 "+t("tai")+" 📖","#2E4A62"); });
+      studs.forEach(function(st2,si2){ st2.tai=Math.min(7,st2.tai+1);
+        if(maiShip) motes.push({x0:maiShip.x,y0:maiShip.y-20,x1:st2.x,y1:st2.y-30,t:-si2*0.25});   // 📖 leaves HER workshop
+        floatOn(st2,"+1 "+t("tai")+" 📖","#2E4A62"); });
       if(studs.length&&!S.classSeen){ S.classSeen=true;
         bubble(mai,(L==="vi")?"“Lớp nhỏ thôi — đứa nào ghé cũng được.”":"“Just a small class — anyone who drops by is welcome.”"); }
     }
   }
+  S.cast.forEach(function(q){ q._dripped=false; });
   // people roll — the multiplication decides
   S.cast.forEach(function(p){
     if(p.started||!active(p)) return;
@@ -1000,7 +1020,8 @@ function nextSeason(){
       banner("🌸 "+p.name,2100);
       bubble(p,p.qb?p.qb[L]:"");
       buzz([15,30,15]);
-      beep(523,0.12,0.05); setTimeout(function(){beep(659,0.12,0.05);},90); setTimeout(function(){beep(784,0.22,0.05);},190);
+      var _br=(S.cast.filter(function(q){return q.started;}).length%2)?587:523;
+      beep(_br,0.12,0.05); setTimeout(function(){beep(_br*1.26,0.12,0.05);},90); setTimeout(function(){beep(_br*1.5,0.22,0.05);},190);
       logMsg("🌸 "+p.name+STR.bloomed.vi, "🌸 "+p.name+STR.bloomed.en);
       // a bloom inspires the people who WITNESSED it with you — those you've met
       S.cast.forEach(function(q){ if(q.id!==p.id&&q.known) q.gan=Math.min(10,q.gan+1); });
@@ -1025,6 +1046,7 @@ function nextSeason(){
           logMsg(STR.yoursCrushed.vi,STR.yoursCrushed.en);
         } else if(tr>=2){ // an established workshop steps DOWN a tier — the owner takes the hit, the walls stand
           stampAt(s.x,s.y);
+          if(s.pid===2) S.classSkip=true;   // a stamped school roof teaches no one next season
           var p2=S.cast[s.pid]; if(p2){ p2.gan=Math.max(0,p2.gan-2); p2.mom=0; }
           logMsg("⬛ "+s.owner+STR.tierDown.vi, "⬛ "+s.owner+STR.tierDown.en);
         } else { // only a tier-1 gánh hàng can be erased outright
@@ -1049,7 +1071,7 @@ function nextSeason(){
     logMsg("Điều chưa bén rễ sẽ phai — mùa màng cuốn đi phần vun chưa kịp nở.",
            "What hasn't taken root fades — the seasons wash away tending that hasn't bloomed."); }
   // craft climbs the value curve: the market seller moves the master's ceramics (a market-road year pays double, twice)
-  var gtmMax=(S.yearCard===2)?2:1, gtmAmt=(S.yearCard===2)?2:1;
+  var gtmMax=(S.yearCard===2&&S.season<=10)?2:1, gtmAmt=(S.yearCard===2&&S.season<=10)?2:1;   // the new road carries double only while it's new
   if(S.gtm && (S.gtmPays|0)<gtmMax && S.cast[1].started){ S.gtmPays=(S.gtmPays|0)+1; S.gtmPaid=true;
     S.von=Math.min(10,S.von+gtmAmt);
     if(S.yearCard===2){ logMsg(S.gtmPays===1?"🛤 Hàng gốm ra tới huyện — được GIÁ GẤP ĐÔI (+2 vốn). Đường mới còn đi được một chuyến nữa.":"🛤 Chuyến hàng cuối qua đường chợ — sông đầy hẳn lên (+2 vốn).",
@@ -1057,11 +1079,11 @@ function nextSeason(){
     else logMsg(STR.gtmPaid.vi,STR.gtmPaid.en); }
   // the recycling flywheel: enough TIERS standing and the river feeds itself (a flood year demands deeper roots)
   if(tierSum()>=((S.yearCard===0)?6:4) && S.von<10){ S.von=Math.min(10,S.von+1);
-    if(!S.flySeen){ S.flySeen=true;
+    if(!S.flySeen){ S.flySeen=true; gong(330,1.0,0.03);
       logMsg("🌊 Xưởng đã đủ vững — dòng sông bắt đầu tự đầy.","🌊 The workshops stand firm — the river begins to fill itself."); } }
   // structural drift — beyond your hands (the pre-rolled forecast becomes the sky)
   S.luat=S.luatNext; S.luatNext=driftLuat(S.luat); S.probeSeen=false;
-  if(S.season%4===3) S.von=Math.min(10,S.von+1);       // the era slowly rises
+  if(S.season%4===3 && !(S.yearCard===0&&S.season===3)) S.von=Math.min(10,S.von+1);   // the era slowly rises (a flood year's first rise never comes)
   if(S.von<=3 && S.season===5) logMsg(STR.riverLow.vi,STR.riverLow.en);
   // workshops age; tarps weather down
   S.ships.forEach(function(s){ s.age=(s.age|0)+1; s.born=false; if(s.shel>0)s.shel--; });
@@ -1105,11 +1127,12 @@ function nextSeason(){
   if(S.season>=(S.baFadeStart||8) && active(ba) && !ba.started && !S.apprentice && ba.tai>0){
     ba.tai=Math.max(0,ba.tai-1); if(ba.known) floatOn(ba,"−1 "+t("tai")+" 🕯","#7a6f5d");
     if(!S.baFade){ S.baFade=true;
+      beep(392,0.12,0.03); setTimeout(function(){beep(330,0.18,0.025);},150);
       logMsg("🕯 Mắt Chú Ba mờ dần, tay run dần — nghề chưa có người nối.",
              "🕯 Chú Ba's eyes dim, his hands tremble — the craft has no heir yet."); }
   }
   banner(STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4)),1600);
-  gong(220,0.8,0.03);
+  gong(S.luat<4?147:[220,262,196,220][S.season%4],0.9,0.03);   // the sky tunes the bell — a heavy year rings low
   (function(){ var ctok=runTok; setTimeout(function(){ if(runTok===ctok) chatter(); },1100); })();   // after the season banner settles, the xóm talks
   render(); renderSheet(); save();
 }
@@ -1129,7 +1152,7 @@ function startFinale(){
     setTimeout(function(){ if(runTok!==myTok) return;
       var lsc=shipTier(s)===3?1.24:shipTier(s)===1?0.78:1;
       lanterns.push({x:s.x+34*lsc,y:s.y-8*lsc,ph:Math.random()*6.28});   // hung off the eave — clear of the pennants
-      gong(196+i*28,0.7,0.04); glows.push({x:s.x,y:s.y,t:0}); },700+i*800);
+      gong([196,220,262,294,330,392][Math.min(i,5)],0.7,0.04); glows.push({x:s.x,y:s.y,t:0}); },700+i*800);
   });
   setTimeout(function(){ if(runTok===myTok) endGame(); }, ships.length?700+ships.length*800+1200:1400);
 }
@@ -1188,9 +1211,11 @@ function endGame(){
              4:{vi:"Một năm chỉ lo xây món của MÌNH — đừng để quá một mầm nở.",en:"A year of building only YOUR thing — let almost nothing else bloom."},
              5:{vi:"Một năm buông tay — xem xóm tự xoay xở ra sao.",en:"A year of letting go — see how the xóm fares alone."},
              6:{vi:"Một năm trời âm u sáu mùa — mà vẫn giữ được ba mầm.",en:"A year of six storm seasons — and still three blooms held."}};
-  var next=null; for(var hi=1;hi<=6;hi++){ if(!seen[hi]){ next=hi; break; } }
+  var next=null; [3,2,6,1,4,5].some(function(hi){ if(!seen[hi]){ next=hi; return true; } return false; });   // point at the achievable-next, not the summit
   var chp=document.createElement("p"); chp.style.cssText="font-size:12.5px;color:#7a6f5d;margin-top:10px";
-  chp.textContent="📜 "+(L==="vi"?"kết đã thấy ":"endings seen ")+row+" "+nSeen+"/6"
+  var seenYc={}; ch.forEach(function(r){ if(r&&fin(r.yc)) seenYc[r.yc]=1; });
+  var ycRow=["🌊","📋","🛤","🍵","🧧"].map(function(g,gi){ return seenYc[gi]?g:"·"; }).join("");
+  chp.textContent="📜 "+(L==="vi"?"kết đã thấy ":"endings seen ")+row+" "+nSeen+"/6 · "+ycRow
     +(next?(" — "+((L==="vi")?HINTS[next].vi:HINTS[next].en)):"");
   // --- beat 3: epilogues, three highest-signal; the rest fold away ---
   var eps=[];
@@ -1275,6 +1300,7 @@ function renderSheet(){
   el("pQuote").textContent=quoteFor(p);
   el("valTai").textContent=p.tai; el("valGan").textContent=p.gan; el("valBan").textContent=p.ban;
   el("barTai").style.width=(p.tai*10)+"%"; el("barGan").style.width=(p.gan*10)+"%"; el("barBan").style.width=(p.ban*10)+"%";
+  var n7=el("notch7"); if(n7) n7.style.display=(S.classSeen&&!p.started)?"block":"none";
   var pr=prod(p), pc=Math.round(chance(p)*100);
   var trNow=pr<300?1:pr<600?2:3;
   var tb=el("tierBar");
@@ -1304,8 +1330,8 @@ function setLang(x){ L=x; document.documentElement.lang=x;
 
 // ---------- wire ----------
 el("langBtn").onclick=function(){ setLang(L==="vi"?"en":"vi"); save(); };
-el("muteBtn").onclick=function(){ META.muted=!META.muted; el("muteBtn").textContent=META.muted?"🔇":"🔊"; if(!META.muted)beep(660,0.06); save(); };
-el("startBtn").onclick=function(){ el("intro").classList.remove("show"); beep(660,0.08); };
+el("muteBtn").onclick=function(){ META.muted=!META.muted; el("muteBtn").textContent=META.muted?"🔇":"🔊"; if(!META.muted)beep(659,0.06); save(); };
+el("startBtn").onclick=function(){ el("intro").classList.remove("show"); beep(659,0.08); setTimeout(function(){gong(196,1.2,0.03);},450); };
 el("nextBtn").onclick=nextSeason;
 el("teachBtn").onclick=actTeach; el("nerveBtn").onclick=actNerve; el("linkBtn").onclick=actLink;
 el("huiBtn").onclick=actHui; el("buildBtn").onclick=actBuild; el("probeBtn").onclick=actProbe; el("shelBtn").onclick=actShel;

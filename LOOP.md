@@ -47,4 +47,4 @@
 - [x] One full 16-season headless run each in VI and EN with zero console errors (Gate 5, v0.19)
 
 ## Compass pointer
-- next cycle: v0.21 = the cycle-10 review batch (soundscape pentatonic unification + school-in-play + replay-depth findings, reviews already in/landing). OWNER DIRECTIVES standing: less narration · simple opening (max 2 people, xóm gathers). *(…v0.18 felt-feedback+mobile+1.0-kit · v0.19 Gate-5 · v0.20 OWNER two-person opening done)*
+- next cycle: **CONSTRAINT SEALS** headline (player-chosen glyph on the intro card when the book is nonempty: năm không hụi / không kết nối / không dạy; gate the verb at its existing disabled-check; stamp the constraint glyph into the triện seal + chronicle row; mirror a no-X strategy sanity in check.js if cheap). OWNER DIRECTIVES standing: less narration · simple opening. *(…v0.19 Gate-5 · v0.20 OWNER two-person opening · v0.21 pentatonic+cards-bite+school-visible done)*

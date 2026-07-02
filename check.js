@@ -31,6 +31,7 @@ function run(strategy,seed){
   var luat=2+Math.floor(rnd()*3), von=2+Math.floor(rnd()*3), baStart=7+Math.floor(rnd()*3), stormStreak=0;
   var lienPaired=false, gtmPays=0;
   var yc=Math.floor(rnd()*5);   // year card (mirrors index.html)
+  if(yc===0) von=1;                             // flood year: the river starts foul
   if(yc===4){ cast[6].arrives=2; baStart=5; }   // reunion year: both people-clocks come early
   for(var season=0;season<16;season++){
     var here=cast.filter(function(c){return activeSim(c,season);});
@@ -65,15 +66,16 @@ function run(strategy,seed){
     // formed pairs work like the game's: mentor drip (0-1, 3-5, 0-6) and the Hoa×Ba market payout
     var drip=(yc===3)?2:1;
     [["0-1",0],["3-5",5],["0-6",0]].forEach(function(md){ if(pairsSet[md[0]]){ var st=cast[md[1]];
-      if(!st.started&&st.tai<10) st.tai=Math.min(10,st.tai+drip); } });
+      if(!st.started&&st.tai<10){ st.tai=Math.min(10,st.tai+drip); st._dripped=true; } } });
     // 📖 Cô Mai's class (mirrors index.html): breadth up to TÀI 7, reach = her workshop tier; idle knows no one
-    if(cast[2].started && strategy!=="idle"){
+    if(cast[2].started && (cast[2].age|0)>=1 && strategy!=="idle"){   // class opens once her roof has weathered a season
       var pv2=cast[2].tai*cast[2].gan*cast[2].ban, reach=pv2<300?1:pv2<600?2:3;
-      cast.filter(function(q){return q!==cast[2]&&activeSim(q,season)&&!q.started&&q.tai<7;})
+      cast.filter(function(q){return q!==cast[2]&&activeSim(q,season)&&!q.started&&q.tai<7&&!q._dripped;})
           .sort(function(a3,b3){return a3.tai-b3.tai;}).slice(0,reach)
           .forEach(function(st3){ st3.tai=Math.min(7,st3.tai+1); });
     }
-    var gMax=(yc===2)?2:1, gAmt=(yc===2)?2:1;
+    cast.forEach(function(q){ q._dripped=false; });
+    var gMax=(yc===2&&season<=10)?2:1, gAmt=(yc===2&&season<=10)?2:1;
     if(pairsSet["1-4"]&&gtmPays<gMax&&cast[1].started){ gtmPays++; von=Math.min(10,von+gAmt); }
     cast.forEach(function(p){
       if(p.started||!activeSim(p,season)) return;
@@ -105,7 +107,7 @@ function run(strategy,seed){
     else if(yc===1){ if(r<0.10) luat=Math.min(10,luat+1); else if(r<0.25) luat=Math.max(1,luat-1); }
     else { if(r<0.12) luat=Math.min(10,luat+1); else if(r<0.20) luat=Math.max(1,luat-1); }
     if(luat<4){ stormStreak++; } else { stormStreak=0; }   // streak carries into the NEXT tick's acts (mirrors index.html order)
-    if(season%4===3) von=Math.min(10,von+1);
+    if(season%4===3 && !(yc===0&&season===3)) von=Math.min(10,von+1);
   }
   var tsum=cast.reduce(function(a,c){ if(!c.started) return a;
     var pv=c.tai*c.gan*c.ban; return a+(pv<300?1:pv<600?2:3); },0);

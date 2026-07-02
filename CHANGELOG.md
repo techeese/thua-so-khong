@@ -1,5 +1,35 @@
 # Changelog — Thừa Số Không
 
+## v0.21 — 2026-07-02 — LOOP v2, cycle 10: the game finds its scale (and the school shows its hands)
+
+**🎵 One scale for the whole xóm (soundscape review):** the gongs had quietly built an A-minor pentatonic that the
+beeps never joined. Now everything speaks it: every stray frequency remapped (the build ladder climbs D-E-G-A), the
+finale lantern ladder retuned — it was the game's only out-of-tune moment, at its emotional peak — and **the sky tunes
+the season bell**: a heavy year rings low on the grief pitch, clear seasons rotate gently so 16 rings breathe. The gong
+itself is finally a bell (three inharmonic partials, 2.41/5.43). Three silent moments got their note: the elder's first
+fade (the game's only descending pair — reserved for loss), the flywheel's first turn, and the year opening. Teach/
+nerve get a human ±13-cent detune; the second bloom answers the first in a different key. Verdict honored: NO storm
+ambient bed — this game is punctuation on paper, not a soundtrack.
+
+**🃏 The cards demand hands now (replay review):** the market-road window CLOSES at season 10 (the line always said
+"one more trip" — now the code means it); the flood year starts with the river foul (vốn 1) and its first era-rise
+never comes — the hụi is truly the only water. The ending hint points at the achievable-next title, not the summit;
+the village book shows **which years you've weathered** (🌊📋🛤🍵🧧 lit/dim) on the intro and the ending card; and a
+returning player (the book remembers) skips the training wheels — no tap-ring, no first-turn nudge, no "new button"
+lectures. The re-taps stay: that's the ritual worth keeping.
+
+**📖 The school shows its work (school review — verdict: balanced, boundary holds 2×):** each lesson is now a book
+mote that VISIBLY leaves Cô Mai's workshop and arcs to its student; a hairline notch at 7 on the TÀI bar draws the
+class's ceiling; the class opens only once her roof has weathered a season, a stamped school roof teaches no one the
+following season (shelter becomes live counterplay for the thing worth protecting most), and mentor + class no longer
+double-dip the same tick. Depth still needs a master's hands — now you can see why.
+
+Deferred to next cycle as its own headline: **constraint seals** (player-chosen "năm không hụi / không kết nối / không
+dạy" runs, stamped into the triện seal — the replay reviewer proved only removing a verb forces new hands).
+
+Band re-proven on all mirrors: hunter 6.99/16.0 · linker 6.79/14.6 · spreader 6.27/11.4 · idle 3.46/3.5. Gates ×3 incl.
+both full-run playthroughs.
+
 ## v0.20 — 2026-07-02 — OWNER BATCH: the xóm gathers
 
 At the owner's direction: **the game opens with two people** — Bé Ngân (the zero to find) and Cô Mai (the almost-ready
