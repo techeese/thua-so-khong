@@ -32,8 +32,9 @@ setTimeout(function(){ try{
   selectPerson(0); actNerve();
   selectPerson(1); actLink(); completeLink(0);   // the apprenticeship beat
   nextSeason(); nextSeason(); nextSeason(); nextSeason();
-  var ok = S.season===4 && S.apprentice===true && S.cast[0].gan>=3;
-  document.title=(ok?"GATE_OK":"GATE_BAD")+" s="+S.season+" appr="+S.apprentice+" nganTai="+S.cast[0].tai;
+  // deterministic wiring only — gan is entropy-decayed by design, so don't assert it
+  var ok = S.season===4 && S.apprentice===true && S.cast[0].known && S.cast[1].known && S.un.link===true && S.cast[0].tai>=9;
+  document.title=(ok?"GATE_OK":"GATE_BAD")+" s="+S.season+" appr="+S.apprentice+" nganTai="+S.cast[0].tai+" link="+S.un.link;
 }catch(e){ document.title="THREW: "+e.message; } },600);
 </script>'''
 open(tmp+"/g.html","w").write(html.replace("</body>",drv+"</body>"))

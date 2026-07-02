@@ -1,5 +1,17 @@
 # Changelog — Thừa Số Không
 
+## v0.3 — 2026-07-02 — the gentle opening (owner playtest: "hard to understand, too many elements at start")
+
+The game now introduces itself slowly, through play:
+- **Intro cut to two lines** — "tap a person and talk; the xóm will tell you the rest." All teaching moved into play.
+- **Verbs unlock as the story needs them:** Kết nối appears once you know 2 people · Góp hụi arrives season 3 (with
+  the river line) · Tự xây arrives season 5 ("people trust hands that have built"). Each announced by one log line.
+- **First-turn nudge** — pressing MÙA SAU with an unspent hand gets one gentle bubble before it advances.
+- **One-time red hint** under the first multiplication: "the SMALLEST factor decides — spend effort exactly there."
+- **The law is taught when it matters** — the sky=law line appears at the first bloom, not in the intro.
+- Resumed saves skip all teaching beats. Gate's fresh-run assertion made deterministic (entropy makes gan stochastic
+  by design — the gate was asserting against the game's own mechanic). All gates green ×4 runs.
+
 ## v0.2 — 2026-07-02 — the xóm comes alive (owner: "nice look, please continue")
 
 **People:**

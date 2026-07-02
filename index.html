@@ -39,8 +39,8 @@
   .frow .fv{width:22px;text-align:right;font-weight:700;font-size:13px}
   .mult{font:700 16px Georgia,serif;text-align:center;margin:10px 0;padding:8px;background:#efe2c2;border:2px dashed var(--ink);border-radius:10px}
   .mult small{display:block;font:400 11px sans-serif;color:var(--dim)}
-  .acts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .acts button{padding:9px 4px;font-size:13px}
+  .acts{display:flex;gap:8px}
+  .acts button{padding:9px 4px;font-size:13px;flex:1}
   .acts button small{display:block;font-weight:400;font-size:10px;color:var(--dim)}
   /* log */
   .log{margin-top:8px;font-size:12.5px;color:#4d4335;max-height:76px;overflow:auto;background:#efe3c5;border:2px solid #c9b78c;border-radius:10px;padding:6px 10px}
@@ -86,6 +86,7 @@
     <div class="frow"><div class="fl" id="lblGan">GAN</div><div class="ftr"><i id="barGan" style="background:var(--red)"></i></div><div class="fv" id="valGan">0</div></div>
     <div class="frow"><div class="fl" id="lblBan">BẠN</div><div class="ftr"><i id="barBan" style="background:var(--leaf)"></i></div><div class="fv" id="valBan">0</div></div>
     <div class="mult" id="multLine">—</div>
+    <div class="small" id="multHint" style="display:none;text-align:center;margin:-4px 0 8px;color:var(--red)"></div>
     <div class="acts">
       <button id="teachBtn">📖 <span>Dạy</span><small id="teachHint">+2 TÀI · 1⚡</small></button>
       <button id="nerveBtn">🏮 <span id="nerveLbl">Đêm thất bại</span><small id="nerveHint">+2 GAN · 1⚡</small></button>
@@ -102,9 +103,8 @@
   <div class="card">
     <h2 id="inTtl">Thừa Số Không</h2>
     <div class="tag" id="inTag">mười nhân với không vẫn bằng không</div>
-    <p id="inP1">Bạn về lại một xóm nhỏ. Ai cũng chăm chỉ trên phần việc của mình — vậy mà chẳng có gì nảy mầm.</p>
-    <p id="inP2">Một con người chỉ nảy mầm khi <b>TÀI × GAN × BẠN</b> cùng đủ lớn. Trong phép nhân, thừa số yếu nhất quyết định tất cả. Hãy <b>trò chuyện</b> để tìm ra con số không của mỗi người — rồi dồn sức đúng chỗ đó.</p>
-    <p id="inP3">Bạn có <b>3 công</b> mỗi mùa, và 16 mùa. <b>Bầu trời là luật, dòng sông là vốn</b> — chúng chuyển động ngoài tầm tay bạn.</p>
+    <p id="inP1">Bạn về lại một xóm nhỏ. Ai cũng chăm chỉ — mà chẳng có gì nảy mầm.</p>
+    <p id="inP2">Hãy chạm vào một người và trò chuyện. Phần còn lại, cứ chơi rồi xóm sẽ kể.</p>
     <button class="go" id="startBtn">Bắt đầu / Begin</button>
   </div>
 </div>
@@ -139,12 +139,21 @@ var STR={
   sprout:{vi:"mầm",en:"sprout"}, perSeason:{vi:"mỗi mùa",en:"per season"},
   foot:{vi:"bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn",en:"the sky is the law · the river is the capital — beyond your hands"},
   inTtl:{vi:"Thừa Số Không",en:"The Zero Factor"},
-  inP1:{vi:"Bạn về lại một xóm nhỏ. Ai cũng chăm chỉ trên phần việc của mình — vậy mà chẳng có gì nảy mầm.",
-        en:"You come back to a small neighborhood. Everyone works hard at their own piece — yet nothing blooms."},
-  inP2:{vi:"Một con người chỉ nảy mầm khi <b>TÀI × GAN × BẠN</b> cùng đủ lớn. Trong phép nhân, thừa số yếu nhất quyết định tất cả. Hãy <b>trò chuyện</b> (chạm vào người) để tìm con số không của mỗi người — rồi dồn sức đúng chỗ đó.",
-        en:"A person only blooms when <b>SKILL × NERVE × ALLIES</b> are all large enough. In a multiplication, the weakest factor decides everything. <b>Talk</b> (tap a person) to find each one's zero — then spend your effort exactly there."},
-  inP3:{vi:"Bạn có <b>3 công</b> mỗi mùa, và 16 mùa. <b>Bầu trời là luật, dòng sông là vốn</b> — chúng chuyển động ngoài tầm tay bạn.",
-        en:"You have <b>3 efforts</b> a season, and 16 seasons. <b>The sky is the law, the river is the capital</b> — they move beyond your hands."},
+  inP1:{vi:"Bạn về lại một xóm nhỏ. Ai cũng chăm chỉ — mà chẳng có gì nảy mầm.",
+        en:"You come back to a small xóm. Everyone works hard — yet nothing blooms."},
+  inP2:{vi:"Hãy chạm vào một người và trò chuyện. Phần còn lại, cứ chơi rồi xóm sẽ kể.",
+        en:"Tap a person and talk. Play on — the xóm will tell you the rest."},
+  multHint:{vi:"thừa số NHỎ NHẤT quyết định cả phép nhân — dồn công đúng chỗ đó",
+        en:"the SMALLEST factor decides the whole product — spend your effort exactly there"},
+  nudge:{vi:"Bạn còn ⚡ đó! Chạm vào một người trước đã.",en:"You still have ⚡! Tap a person first."},
+  unLink:{vi:"🤝 Bạn đã quen vài người — giờ có thể KẾT NỐI họ với nhau (nút mới trong thẻ người).",
+        en:"🤝 You know a few people now — you can CONNECT them (new button on a person's card)."},
+  unHui:{vi:"🪙 Dòng sông là VỐN — và xóm có lệ GÓP HỤI: mỗi vòng, sông đầy thêm một chút (nút mới).",
+        en:"🪙 The river is CAPITAL — and the xóm keeps a HỤI pool: each round, the river rises a little (new button)."},
+  unBuild:{vi:"🛠 Còn bạn thì sao? Người ta tin bàn tay đã từng LÀM — hãy TỰ XÂY sản phẩm của mình (nút mới).",
+        en:"🛠 And you? People trust hands that have BUILT — start a product of your own (new button)."},
+  lawLine:{vi:"⚠ Bầu trời là LUẬT — trời càng âm u, con dấu càng dễ rơi xuống một xưởng.",
+        en:"⚠ The sky is the LAW — the heavier it hangs, the easier a stamp falls on a workshop."},
   seasons:{vi:["Xuân","Hạ","Thu","Đông"],en:["Spring","Summer","Autumn","Winter"]},
   bloomed:{vi:" mở xưởng!",en:" opened a workshop!"},
   crushed:{vi:" — xưởng bị đình chỉ (một con dấu từ trên xuống).",en:" — workshop suspended (a stamp from above)."},
@@ -198,6 +207,7 @@ var SAVE_KEY="thua-so-khong-v1";
 function fresh(){
   S={season:0, acts:3, luat:3, von:3, hui:0, cast:makeCast(), ships:[], sel:-1,
      build:0, built:false, pairs:[], apprentice:false, linking:null, banner:null,
+     un:{link:false,hui:false,build:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false,
      log:[], over:false, seed:(Date.now()>>>0)};
   S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0;
     var m=Math.min(p.tai,p.gan,p.ban);
@@ -235,6 +245,10 @@ function load(){
       p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); });
     if(Array.isArray(s.ships)) S.ships=s.ships.filter(function(w){return w&&fin(w.x)&&fin(w.y)&&typeof w.owner==="string";});
     if(Array.isArray(s.log)) S.log=s.log.filter(function(m){return m&&(typeof m.vi==="string"||typeof m.en==="string");});
+    // a returning player has already been introduced — recompute unlocks from state, skip the teaching beats
+    S.un={link:S.cast.filter(function(p){return p.known;}).length>=2||S.pairs.length>0,
+          hui:S.season>=2, build:S.season>=4||S.build>0||S.built};
+    S.nudged=true; S.hintDone=S.season>0; S.lawSeen=S.season>1||S.ships.length>0;
     return true;
   }catch(e){ return false; }
 }
@@ -531,17 +545,23 @@ cv.addEventListener("click",function(e){
 });
 function selectPerson(id){
   var p=S.cast[id]; S.sel=id;
-  if(!p.known){ p.known=true; bubble(p,quoteFor(p)); beep(520,0.07); logMsg(p.name+" — "+STR.reveal.vi, p.name+" — "+STR.reveal.en); save(); }
+  if(!p.known){ p.known=true; bubble(p,quoteFor(p)); beep(520,0.07); logMsg(p.name+" — "+STR.reveal.vi, p.name+" — "+STR.reveal.en); unlockCheck(); save(); }
   else bubble(p,quoteFor(p));
   renderSheet(); render();
+}
+// verbs arrive one at a time, as the story needs them — never all at once
+function unlockCheck(){
+  if(!S.un.link && S.cast.filter(function(p){return p.known;}).length>=2){ S.un.link=true; logMsg(STR.unLink.vi,STR.unLink.en); beep(700,0.08,0.02); }
+  if(!S.un.hui && S.season>=2){ S.un.hui=true; logMsg(STR.unHui.vi,STR.unHui.en); }
+  if(!S.un.build && S.season>=4){ S.un.build=true; logMsg(STR.unBuild.vi,STR.unBuild.en); }
 }
 
 // ---------- actions ----------
 function spend(){ if(S.acts<=0) return false; S.acts--; render(); return true; }
 function actTeach(){ var p=cur(); if(!p||S.acts<=0||p.tai>=10) return; if(!spend())return;
-  p.tai=Math.min(10,p.tai+2); beep(660,0.08); floatOn(p,"+2 "+t("tai"),"#2E4A62"); renderSheet(); save(); }
+  p.tai=Math.min(10,p.tai+2); S.hintDone=true; beep(660,0.08); floatOn(p,"+2 "+t("tai"),"#2E4A62"); renderSheet(); save(); }
 function actNerve(){ var p=cur(); if(!p||S.acts<=0||p.gan>=10) return; if(!spend())return;
-  p.gan=Math.min(10,p.gan+2); beep(440,0.08); floatOn(p,"+2 "+t("gan"),"#C1443C"); renderSheet(); save(); }
+  p.gan=Math.min(10,p.gan+2); S.hintDone=true; beep(440,0.08); floatOn(p,"+2 "+t("gan"),"#C1443C"); renderSheet(); save(); }
 function actLink(){ var p=cur(); if(!p||S.acts<=0) return;
   // a deliberate verb: choose WHO to connect — tap a second person on the map
   S.linking=p.id; bubble(p,(L==="vi")?"Kết nối với ai?":"Connect with whom?"); beep(560,0.06); render(); }
@@ -549,7 +569,7 @@ function completeLink(otherId){
   if(S.acts<=0){ S.linking=null; return; }
   var a=S.cast[S.linking], b=S.cast[otherId]; S.linking=null;
   if(!a||!b) return; if(!spend())return;
-  a.ban=Math.min(10,a.ban+2); b.ban=Math.min(10,b.ban+2);
+  a.ban=Math.min(10,a.ban+2); b.ban=Math.min(10,b.ban+2); S.hintDone=true;
   var key=[Math.min(a.id,b.id),Math.max(a.id,b.id)];
   if(!S.pairs.some(function(pr){return pr[0]===key[0]&&pr[1]===key[1];})) S.pairs.push(key);
   if(!b.known){ b.known=true; }
@@ -582,6 +602,9 @@ function floatOn(p,txt,col){ bubbles.push({p:p,txt:txt,until:performance.now()+1
 function nextSeason(){
   if(S.over) return;
   S.linking=null;
+  // one gentle first-turn nudge: don't let a new player skip past their whole hand
+  if(S.season===0 && S.acts===3 && !S.nudged){ S.nudged=true;
+    bubble(S.cast[0],t("nudge")); beep(500,0.07); return; }
   // the lineage transmits: the apprentice's skill grows under the master
   if(S.apprentice){ var ng=S.cast[0]; if(ng.tai<10){ ng.tai=Math.min(10,ng.tai+1); floatOn(ng,"+1 "+t("tai")+" 🏺","#2E4A62"); } }
   // people roll — the multiplication decides
@@ -596,6 +619,7 @@ function nextSeason(){
       logMsg("🌸 "+p.name+STR.bloomed.vi, "🌸 "+p.name+STR.bloomed.en);
       S.cast.forEach(function(q){ if(q.id!==p.id) q.gan=Math.min(10,q.gan+1); });
       if(S.cast.filter(function(q){return q.started;}).length===1) logMsg(STR.inspired.vi,STR.inspired.en);
+      if(!S.lawSeen){ S.lawSeen=true; logMsg(STR.lawLine.vi,STR.lawLine.en); }   // the law matters once something exists to stamp
     }
   });
   // the law can crush (untouchable lock 3) — only while the sky is heavy
@@ -629,6 +653,7 @@ function nextSeason(){
 
   S.season++; S.acts=3;
   if(S.season>=16){ endGame(); return; }
+  unlockCheck();
   S.banner={txt:STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4)),until:performance.now()+1900};
   beep(330,0.12,0.02);
   render(); renderSheet(); save();
@@ -679,6 +704,8 @@ function render(){
   el("huiLbl").textContent=t("hui"); el("buildLbl").textContent=t("build");
   el("nextBtn").textContent=t("next");
   el("buildProg").textContent=S.built?"✓":(S.build+"/4");
+  el("huiBtn").style.display=S.un.hui?"":"none";
+  el("buildBtn").style.display=S.un.build?"":"none";
   el("huiBtn").disabled=S.acts<=0||S.hui>=3||S.over;
   el("buildBtn").disabled=S.acts<=0||S.built||S.over;
   el("nextBtn").disabled=S.over;
@@ -701,8 +728,10 @@ function renderSheet(){
   el("multLine").innerHTML=p.tai+" × "+p.gan+" × "+p.ban+" = <b>"+pr+"</b>"
     +"<small>"+(p.started?(L==="vi"?"đang xây, mỗi mùa một ít":"building, season by season")
     :(t("sprout")+" ~"+pc+"% "+t("perSeason")+(pc===0?(L==="vi"?" — vì có một thừa số bằng không":" — because one factor is zero"):"")))+"</small>";
+  var mh=el("multHint"); mh.style.display=(!S.hintDone&&!p.started)?"block":"none"; if(!S.hintDone) mh.textContent=t("multHint");
   el("teachBtn").disabled=S.acts<=0||p.tai>=10||p.started||S.over;
   el("nerveBtn").disabled=S.acts<=0||p.gan>=10||S.over;
+  el("linkBtn").style.display=S.un.link?"":"none";
   el("linkBtn").disabled=S.acts<=0||S.over;
 }
 function renderLog(){
@@ -710,7 +739,7 @@ function renderLog(){
 }
 function setLang(x){ L=x; document.documentElement.lang=x;
   el("inTtl").textContent=STR.inTtl[L]; el("inTag").textContent=t("sub");
-  el("inP1").textContent=STR.inP1[L]; el("inP2").innerHTML=STR.inP2[L]; el("inP3").innerHTML=STR.inP3[L];
+  el("inP1").textContent=STR.inP1[L]; el("inP2").textContent=STR.inP2[L];
   render(); renderSheet(); renderLog(); }
 
 // ---------- wire ----------
