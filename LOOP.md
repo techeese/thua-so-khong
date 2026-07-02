@@ -31,4 +31,4 @@
 6. **Schedule** the next wake (~25 min) with this same loop prompt.
 
 ## Compass pointer
-- next: FEEL/juice·audio *(ART v0.5, STORY v0.6 done; i4 = BOLD)*
+- next: **BOLD i4** — a new mechanic/structural experiment, ship-then-veto *(ART v0.5, STORY v0.6, FEEL v0.7 done)*

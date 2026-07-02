@@ -1,5 +1,14 @@
 # Changelog — Thừa Số Không
 
+## v0.7 — 2026-07-02 — LOOP iteration 3: the instrument (FEEL)
+
+- **The audio grew a voice:** raw sine pips → a soft-attack **triangle instrument**; blooms now play a rising
+  **pentatonic arpeggio** (C–E–G); seasons turn on a **gong** that sags in pitch; the ending gets a long low gong.
+- **The stamp is physical:** the whole woodblock print **jolts** (decaying screen-shake) when a workshop is suspended,
+  with a deeper thud.
+- **Blooms glow:** a warm golden ring opens under every new workshop, beneath the petals.
+- Rendering/audio only — model untouched, gates green, headless probe clean.
+
 ## v0.6 — 2026-07-02 — LOOP iteration 2: the xóm talks (STORY)
 
 - **Crush has an emotional arc now:** after a stamp, each person falls into a written despair state

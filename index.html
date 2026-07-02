@@ -97,7 +97,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.6</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.7</span></div>
 </div>
 
 <!-- intro -->
@@ -320,9 +320,21 @@ function load(){
 
 // ---------- audio ----------
 var _ac=null;
+// a softer instrument: triangle voice with a gentle attack (no more raw sine pips)
 function beep(f,d,v){ if(META.muted) return; try{ if(!_ac)_ac=new (window.AudioContext||window.webkitAudioContext)();
-  var o=_ac.createOscillator(),g=_ac.createGain(); o.frequency.value=f; o.connect(g); g.connect(_ac.destination);
-  g.gain.value=v||0.03; o.start(); g.gain.exponentialRampToValueAtTime(0.0001,_ac.currentTime+(d||0.1)); o.stop(_ac.currentTime+(d||0.1)); }catch(e){} }
+  var o=_ac.createOscillator(),g=_ac.createGain(),t0=_ac.currentTime; o.type="triangle"; o.frequency.value=f;
+  o.connect(g); g.connect(_ac.destination);
+  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(v||0.04,t0+0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001,t0+(d||0.1));
+  o.start(t0); o.stop(t0+(d||0.1)+0.02); }catch(e){} }
+// the gong: a long sine that sags in pitch — for seasons turning and the ending
+function gong(f,d,v){ if(META.muted) return; try{ if(!_ac)_ac=new (window.AudioContext||window.webkitAudioContext)();
+  var o=_ac.createOscillator(),g=_ac.createGain(),t0=_ac.currentTime; o.type="sine";
+  o.frequency.setValueAtTime(f,t0); o.frequency.exponentialRampToValueAtTime(f*0.94,t0+(d||0.9));
+  o.connect(g); g.connect(_ac.destination);
+  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(v||0.05,t0+0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001,t0+(d||0.9));
+  o.start(t0); o.stop(t0+(d||0.9)+0.05); }catch(e){} }
 
 // ---------- canvas ----------
 var cv=document.getElementById("cv"), ctx=cv.getContext("2d");
@@ -334,7 +346,8 @@ window.addEventListener("resize",fit);
 var parts=[], bubbles=[], stamps=[];
 function petals(x,y,n,cols){ for(var i=0;i<n;i++) parts.push({x:x,y:y,vx:(Math.random()-.5)*2.2,vy:-1.5-Math.random()*2,r:3+Math.random()*4,rot:Math.random()*6.28,vr:(Math.random()-.5)*.3,life:1,col:cols[i%cols.length]}); }
 function bubble(p,txt){ bubbles.push({p:p,txt:txt,until:performance.now()+3600}); }
-function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); beep(120,0.4,0.05); buzz(60); }
+function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); shake=1; beep(85,0.35,0.07); buzz(60); }
+var shake=0, glows=[];
 function buzz(v){ if(META.muted) return; try{ if(navigator.vibrate) navigator.vibrate(v); }catch(e){} }
 
 // điệp-shell paper (once): dark speckle + fiber strokes + mica sparkle — the Đông Hồ ground
@@ -347,6 +360,8 @@ function ink(w){ ctx.strokeStyle="#3a2a1e"; ctx.lineWidth=w||3; ctx.lineJoin="ro
 var amb=[]; // seasonal drift: blossom in spring, leaves in autumn
 function drawScene(now){
   ctx.setTransform(DPR,0,0,DPR,0,0);
+  // the whole print jolts when the stamp falls
+  if(shake>0.01){ ctx.translate((Math.random()-0.5)*12*shake,(Math.random()-0.5)*8*shake); shake*=0.88; } else shake=0;
   // paper — điệp ground
   ctx.fillStyle="#EAD9B8"; ctx.fillRect(0,0,W,H);
   ctx.strokeStyle="rgba(160,130,80,.09)"; ctx.lineWidth=1;
@@ -409,6 +424,13 @@ function drawScene(now){
     S.pairs.forEach(function(pr){ var a=S.cast[pr[0]],b=S.cast[pr[1]]; if(!a||!b) return;
       ctx.beginPath(); ctx.moveTo(a.x,a.y-6); ctx.quadraticCurveTo((a.x+b.x)/2,(a.y+b.y)/2-34,b.x,b.y-6); ctx.stroke(); });
     ctx.setLineDash([]); ctx.restore(); }
+
+  // --- bloom glows (a warm ring opening under a new workshop) ---
+  glows=glows.filter(function(gl){ gl.t+=0.02; var r=18+gl.t*95, a=Math.max(0,0.55-gl.t*0.6);
+    ctx.beginPath(); ctx.arc(gl.x,gl.y,r,0,6.28);
+    ctx.fillStyle="rgba(227,166,59,"+(a*0.3).toFixed(3)+")"; ctx.fill();
+    ctx.strokeStyle="rgba(227,166,59,"+a.toFixed(3)+")"; ctx.lineWidth=2.5; ctx.stroke();
+    return gl.t<1; });
 
   // --- workshops (blooms) ---
   S.ships.forEach(function(s){ workshop(s,now); });
@@ -727,10 +749,11 @@ function nextSeason(){
       var wx=Math.max(60,Math.min(W-60,p.hx+((Math.random()<.5)?-70:70)));
       S.ships.push({x:wx,y:Math.min(H-90,p.hy+34),owner:p.name,small:S.von<5,pid:p.id,age:0});
       petals(wx,p.hy+10,22,["#D97C8E","#E3A63B","#C1443C"]);
+      glows.push({x:wx,y:Math.min(H-90,p.hy+34),t:0});
       S.banner={txt:"🌸 "+p.name,until:performance.now()+2100};
       bubble(p,p.qb?p.qb[L]:"");
       buzz([15,30,15]);
-      beep(660,0.09); setTimeout(function(){beep(880,0.1);},100);
+      beep(523,0.12,0.05); setTimeout(function(){beep(659,0.12,0.05);},90); setTimeout(function(){beep(784,0.22,0.05);},190);
       logMsg("🌸 "+p.name+STR.bloomed.vi, "🌸 "+p.name+STR.bloomed.en);
       S.cast.forEach(function(q){ if(q.id!==p.id) q.gan=Math.min(10,q.gan+1); });
       if(S.cast.filter(function(q){return q.started;}).length===1) logMsg(STR.inspired.vi,STR.inspired.en);
@@ -773,7 +796,7 @@ function nextSeason(){
   if(S.season>=16){ endGame(); return; }
   unlockCheck();
   S.banner={txt:STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4)),until:performance.now()+1900};
-  beep(330,0.12,0.02);
+  gong(220,0.8,0.03);
   setTimeout(chatter,1100);   // after the season banner settles, the xóm talks
   render(); renderSheet(); save();
 }
@@ -793,6 +816,7 @@ function endGame(){
   else { ttl=(L==="vi")?"Mười sáu mùa lặng":"Sixteen quiet seasons"; tag=(L==="vi")?"các thừa số vẫn chờ":"the factors still wait"; }
   document.getElementById("endTtl").textContent=ttl;
   document.getElementById("endTag").textContent=tag;
+  gong(165,1.4,0.05);
   if(blooms.length){
     para("Đã nảy mầm: "+blooms.map(function(p){return p.name;}).join(", ")+(S.built?" — và sản phẩm của chính bạn.":"."),
          "Bloomed: "+blooms.map(function(p){return p.name;}).join(", ")+(S.built?" — and your own product.":"."));
