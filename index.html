@@ -96,7 +96,6 @@
     <div class="frow"><div class="fl" id="lblGan">GAN</div><div class="ftr"><i id="barGan" style="background:var(--red)"></i></div><div class="fv" id="valGan">0</div></div>
     <div class="frow"><div class="fl" id="lblBan">BẠN</div><div class="ftr"><i id="barBan" style="background:var(--leaf)"></i></div><div class="fv" id="valBan">0</div></div>
     <div class="mult" id="multLine">—</div>
-    <div class="small" id="multHint" style="display:none;text-align:center;margin:-4px 0 8px;color:var(--red)"></div>
     <div class="acts">
       <button id="teachBtn">📖 <span>Dạy</span><small id="teachHint">+2 TÀI · 1⚡</small></button>
       <button id="nerveBtn">🏮 <span id="nerveLbl">Đêm thất bại</span><small id="nerveHint">+2 GAN · 1⚡</small></button>
@@ -105,7 +104,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.16</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.17</span></div>
 </div>
 
 <!-- intro -->
@@ -161,8 +160,8 @@ var STR={
         en:"🤝 You know a few people now — you can CONNECT them (new button on a person's card)."},
   unHui:{vi:"🪙 Dòng sông là VỐN — và xóm có lệ GÓP HỤI: mỗi vòng, sông đầy thêm một chút (nút mới).",
         en:"🪙 The river is CAPITAL — and the xóm keeps a HỤI pool: each round, the river rises a little (new button)."},
-  unBuild:{vi:"🛠 Còn bạn thì sao? Người ta tin bàn tay đã từng LÀM — hãy TỰ XÂY sản phẩm của mình (nút mới).",
-        en:"🛠 And you? People trust hands that have BUILT — start a product of your own (new button)."},
+  unBuild:{vi:"🛠 Giờ có thể TỰ XÂY một sản phẩm của riêng mình (nút mới).",
+        en:"🛠 You can now BUILD a product of your own (new button)."},
   lawLine:{vi:"⚠ Bầu trời là LUẬT — trời càng âm u, con dấu càng dễ rơi xuống một xưởng non.",
         en:"⚠ The sky is the LAW — the heavier it hangs, the easier a stamp falls on a young workshop."},
   unProbe:{vi:"🔍 Giờ có thể NGHE NGÓNG trên xã xem mùa tới trời thế nào (nút mới). Hỏi một câu rẻ hơn mất một xưởng.",
@@ -331,7 +330,7 @@ function fresh(){
   S={season:0, acts:3, luat:3, von:3, hui:0, cast:makeCast(), ships:[], sel:-1,
      build:0, built:false, pairs:[], apprentice:false, duo:false, gtm:false, gtmPaid:false,
      linking:null, banner:null, banners:[], luatNext:3, probeSeen:false, baFade:false,
-     un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false, stormSeen:false, tierTaught:false, lienNgan:false, stormCount:0, stormStreak:0,
+     un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false, stormSeen:false, tierTaught:false, lienNgan:false, stormCount:0, stormStreak:0, classSeen:false,
      log:[], over:false};
   lanterns=[]; runTok++;      // invalidate ALL deferred callbacks from the previous run
   parts=[]; stamps=[]; glows=[]; bubbles=[]; amb=[]; pendQ=[];
@@ -414,7 +413,7 @@ function load(){
       p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; p.mom=cl(c.mom,0,0.5,0); });
     S.cast[6].arrives=cl(s.arr,5,8,6); S.baFadeStart=cl(s.baf,7,9,8);
     S.stormCount=cl(s.sc,0,16,0); S.stormStreak=cl(s.ss,0,16,0); S.yearCard=fin(s.yc)?cl(s.yc,0,4,0):S.yearCard; S.gtmPays=fin(s.gp)?cl(s.gp,0,2,0):(s.gtmPaid?1:0);
-    S.lienWarned=S.season>=11; S.baFade=S.season>=(S.baFadeStart||8); S.stormSeen=S.season>0; S.tierTaught=S.ships.length>0||S.season>1; S.lienNgan=pairExists(0,6);
+    S.lienWarned=S.season>=11; S.baFade=S.season>=(S.baFadeStart||8); S.stormSeen=S.season>0; S.tierTaught=S.ships.length>0||S.season>1; S.lienNgan=pairExists(0,6); S.classSeen=S.cast[2].started;
     if(Array.isArray(s.ships)) S.ships=s.ships.filter(function(w){return w&&fin(w.x)&&fin(w.y)&&typeof w.owner==="string";});
     S.ships.forEach(function(w){ w.age=cl(w.age,0,99,2); w.shel=cl(w.shel,0,2,0); });
     if(Array.isArray(s.log)) S.log=s.log.filter(function(m){return m&&(typeof m.vi==="string"||typeof m.en==="string");});
@@ -933,6 +932,19 @@ function nextSeason(){
   var drip=(S.yearCard===3)?2:1;
   MENTORS.forEach(function(m){ if(!pairExists(m.pair[0],m.pair[1])) return;
     var st=S.cast[m.student]; if(!st.started&&st.tai<10){ st.tai=Math.min(10,st.tai+drip); floatOn(st,"+"+drip+" "+t("tai")+" 🏺","#2E4A62"); } });
+  // 📖 lớp của Cô Mai — a school scales BREADTH: one teacher, many students, and the floor rises.
+  // But class TÀI caps at 7 — depth still needs a master's hands. Necessary, never sufficient.
+  var mai=S.cast[2];
+  if(mai.started){
+    var reach=0; S.ships.forEach(function(sh){ if(sh.pid===2) reach=shipTier(sh); });
+    if(reach>0){
+      var studs=S.cast.filter(function(q){ return q!==mai&&active(q)&&!q.started&&q.known&&q.tai<7; })
+                      .sort(function(a2,b2){return a2.tai-b2.tai;}).slice(0,reach);
+      studs.forEach(function(st2){ st2.tai=Math.min(7,st2.tai+1); floatOn(st2,"+1 "+t("tai")+" 📖","#2E4A62"); });
+      if(studs.length&&!S.classSeen){ S.classSeen=true;
+        bubble(mai,(L==="vi")?"“Lớp nhỏ thôi — đứa nào ghé cũng được.”":"“Just a small class — anyone who drops by is welcome.”"); }
+    }
+  }
   // people roll — the multiplication decides
   S.cast.forEach(function(p){
     if(p.started||!active(p)) return;
@@ -950,12 +962,10 @@ function nextSeason(){
       // a bloom inspires the people who WITNESSED it with you — those you've met
       S.cast.forEach(function(q){ if(q.id!==p.id&&q.known) q.gan=Math.min(10,q.gan+1); });
       if(S.cast.filter(function(q){return q.started;}).length===1) logMsg(STR.inspired.vi,STR.inspired.en);
-      if(!S.lawSeen){ S.lawSeen=true; S.un.probe=true;                            // teach in beats, not a burst — the bloom line keeps its moment
-        pendLog(1800,STR.lawLine.vi,STR.lawLine.en);
-        pendLog(3400,STR.unProbe.vi,STR.unProbe.en); }
-      if(!S.tierTaught){ S.tierTaught=true;
-        pendLog(5200,"🌱 Xưởng mới mở chỉ là GÁNH hàng — cứ vun người chủ (Dạy/Kết nối): gánh lên xưởng, xưởng lên thương hiệu.",
-          "🌱 A new workshop is just a stall — keep tending its owner and it climbs: stall → workshop → brand."); }
+      if(!S.lawSeen){ S.lawSeen=true; S.un.probe=true;                            // the first stamp teaches the law itself — only the new button gets a line
+        pendLog(2200,"🔍 Giờ có thể NGHE NGÓNG trên xã xem mùa tới trời thế nào (nút mới).",
+                     "🔍 You can now ASK AROUND at the commune office about next season's sky (new button)."); }
+      if(!S.tierTaught){ S.tierTaught=true; }   // the tier pill + the card teach this now — no narrator
     }
     else if(prod(p)>=100){ p.mom=Math.min(0.09,(p.mom||0)+0.03); }                // a tended-but-unlucky sprout pushes harder (capped — no free inevitability)
   });
@@ -1003,8 +1013,6 @@ function nextSeason(){
                                 S.gtmPays===1?"🛤 The ceramics reach the district — DOUBLE the price (+2 capital). The new road carries one more trip.":"🛤 The last trip down the market road — the river truly rises (+2 capital)."); }
     else logMsg(STR.gtmPaid.vi,STR.gtmPaid.en); }
   // the recycling flywheel: enough TIERS standing and the river feeds itself (a flood year demands deeper roots)
-  if(S.yearCard===0 && tierSum()>=4 && tierSum()<6 && !S.floodTaught){ S.floodTaught=true;
-    logMsg("🌊 Bốn bậc xưởng — năm thường thì sông đã tự đầy. Năm lũ cần SÁU.","🌊 Four tiers standing — an ordinary year, the river would already fill itself. A flood year needs SIX."); }
   if(tierSum()>=((S.yearCard===0)?6:4) && S.von<10){ S.von=Math.min(10,S.von+1);
     if(!S.flySeen){ S.flySeen=true;
       logMsg("🌊 Xưởng đã đủ vững — dòng sông bắt đầu tự đầy.","🌊 The workshops stand firm — the river begins to fill itself."); } }
@@ -1022,9 +1030,6 @@ function nextSeason(){
   if(S.acts===2&&!S.stormSeen){ S.stormSeen=true;
     logMsg("☁️ Mùa giông — ai cũng bận chống nhà (chỉ còn 2⚡).","☁️ Storm season — everyone is bracing their homes (only 2⚡)."); }
   if(S.luat<4&&S.stormStreak===3){ logMsg("Nhà đã chằng néo xong — xóm quen giông rồi (3⚡).","The roofs are braced — the xóm is used to storms now (3⚡)."); }
-  // a mid-run wanting, in the village's voice — the ending will count what stands
-  if(S.season===8&&!S.wantSeen){ S.wantSeen=true;
-    logMsg("Nửa đường rồi. Mùa cuối, xóm sẽ đếm những bậc xưởng còn đứng.","Halfway. When the last season ends, the xóm will count the tiers still standing."); }
   if(S.season>=16){ startFinale(); return; }
   unlockCheck();
   // 🛶 the returnee — arrives by sampan; stays only if the xóm gives her roots
@@ -1160,8 +1165,8 @@ function endGame(){
   if(S.gtmPaid) ep(5,"Gốm Chú Ba đã ra tới chợ huyện trên vai Chị Hoa — món hàng leo thang giá trị.",
                      "Chú Ba's ceramics reached the district market on Chị Hoa's shoulder pole — the craft climbed the value curve.");
   zeros.forEach(function(p){ var z=zeroOf(p)||"—";
-    ep(4,p.name+" vẫn chưa nảy mầm — thừa số "+z+" vẫn nằm ở số không. Mười nhân với không vẫn bằng không.",
-         p.name+" never bloomed — the "+z+" factor stayed at zero. Ten times zero is still zero."); });
+    ep(4,p.name+" vẫn chưa nảy mầm — thừa số "+z+" vẫn nằm ở số không.",
+         p.name+" never bloomed — the "+z+" factor stayed at zero."); });
   ep(3,S.luat>=5?"Bầu trời có quang hơn — có những mùa may mắn.":"Bầu trời không đổi. Có những ổ khóa ngoài tầm tay một người.",
        S.luat>=5?"The sky did clear a little — some seasons are lucky.":"The sky never changed. Some locks sit beyond one person's hands.");
   var found=(S.apprentice?1:0)+(S.duo?1:0)+(S.gtm?1:0)+(pairExists(0,6)?1:0);
@@ -1228,8 +1233,7 @@ function renderSheet(){
       ?((L==="vi"?"bậc ":"tier ")+trNow+"/3"+(trNow<3?(L==="vi"?" · vun tiếp để lên bậc":" · keep tending to rise"):(L==="vi"?" · một thương hiệu":" · a brand")))
       :(t("sprout")+" ~"+pc+"% "+t("perSeason")
       +((p.mom||0)>0?(L==="vi"?" · mầm đang nhú 🌱":" · pushing at the soil 🌱"):"")
-      +(pc===0?(L==="vi"?" — vì có một thừa số bằng không":" — because one factor is zero"):"")))+"</small>";
-  var mh=el("multHint"); mh.style.display=(!S.hintDone&&!p.started)?"block":"none"; if(!S.hintDone) mh.textContent=t("multHint");
+))+"</small>";
   el("teachBtn").disabled=S.acts<=0||p.tai>=10||S.over;   // tending doesn't stop at the bloom — tiers keep the verbs alive
   el("nerveBtn").disabled=S.acts<=0||p.gan>=10||S.over;
   el("linkBtn").style.display=S.un.link?"":"none";

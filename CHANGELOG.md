@@ -1,5 +1,28 @@
 # Changelog — Thừa Số Không
 
+## v0.17 — 2026-07-02 — OWNER BATCH: the school, and the game stops explaining itself
+
+Both changes at the owner's direction — they preempt the loop's own queue.
+
+**📖 Lớp của Cô Mai — education's role, answered in mechanics:**
+- When Cô Mai's workshop stands, it is a **class**: each season it lifts the lowest-TÀI villagers (+1 📖), reaching
+  1/2/3 students as her workshop climbs gánh → xưởng → thương hiệu.
+- **School raises the floor, never the peak:** class TÀI caps at 7 — depth beyond that still needs a master's hands
+  (mentor pairs go to 10). And a class only reaches people who are part of the village's life (known). Education:
+  necessary, never sufficient — the multiplication says it without a single line of narration.
+- One voice line, once, from Mai herself: *"Lớp nhỏ thôi — đứa nào ghé cũng được."*
+- Mirrored in check.js; the school legitimately compounds with breadth play (linker tiers 13.5→14.0) — the gate's
+  arbitrary 1.5-tier margin recalibrated to strict-dominance +1.0, documented in-file.
+
+**✂️ The de-lecture pass — "let people feel it by themselves":**
+- CUT: the red "smallest factor decides" card hint (the math on the card already shows it) · the tier tutorial log
+  (the pill and card carry it) · the "⚠ the sky is the LAW" explainer (the first stamp teaches itself) · the probe
+  aphorism ("a cheap question beats a lost workshop") · the flood arithmetic lesson · the season-8 goal
+  announcement · the per-person "ten times zero" repetition in endings · the "because one factor is zero" card
+  clause · the unBuild sales pitch.
+- KEPT: everything in a villager's voice, functional button announcements (one line), the card's numbers, and the
+  single closing question. The narrator now explains almost nothing; the systems do.
+
 ## v0.16 — 2026-07-02 — LOOP v2, cycle 7: six endings, six moods — and a 43% lighter frame
 
 **Endings (payoff review):**

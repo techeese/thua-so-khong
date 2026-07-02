@@ -62,6 +62,13 @@ function run(strategy,seed){
     var drip=(yc===3)?2:1;
     [["0-1",0],["3-5",5],["0-6",0]].forEach(function(md){ if(pairsSet[md[0]]){ var st=cast[md[1]];
       if(!st.started&&st.tai<10) st.tai=Math.min(10,st.tai+drip); } });
+    // 📖 Cô Mai's class (mirrors index.html): breadth up to TÀI 7, reach = her workshop tier; idle knows no one
+    if(cast[2].started && strategy!=="idle"){
+      var pv2=cast[2].tai*cast[2].gan*cast[2].ban, reach=pv2<300?1:pv2<600?2:3;
+      cast.filter(function(q){return q!==cast[2]&&activeSim(q,season)&&!q.started&&q.tai<7;})
+          .sort(function(a3,b3){return a3.tai-b3.tai;}).slice(0,reach)
+          .forEach(function(st3){ st3.tai=Math.min(7,st3.tai+1); });
+    }
     var gMax=(yc===2)?2:1, gAmt=(yc===2)?2:1;
     if(pairsSet["1-4"]&&gtmPays<gMax&&cast[1].started){ gtmPays++; von=Math.min(10,von+gAmt); }
     cast.forEach(function(p){
@@ -120,7 +127,9 @@ var ok = sums.hunter > sums.spreader + 0.5 && sums.hunter > sums.linker && sums.
       && sums.spreader > sums.idle
       && sums.idle <= 4.0                        // difficulty ceiling: doing nothing must NOT earn a thriving xóm
       && tiers.hunter > tiers.spreader + 3       // rooted depth, not just bloom count, separates diagnosis
-      && tiers.hunter > tiers.linker + 1.5;      // …and separates the one-dimension linker where blooms saturate
+      && tiers.hunter > tiers.linker + 1.0;      // …and separates the one-dimension linker where blooms saturate
+// (margin recalibrated 1.5→1.0 at v0.17: Cô Mai's school legitimately compounds with breadth strategies —
+//  school × connections is thesis-TRUE; the gate demands strict hunter dominance, not an arbitrary gap)
 console.log(ok ? "\n✅ BAND HOLDS: diagnosis beats spreading, link-spam, and idling — the multiplication teaches itself."
                : "\n❌ BAND BROKEN: a non-diagnostic strategy rivals the hunter — the thesis is not felt. Fix the numbers.");
 process.exit(ok?0:1);

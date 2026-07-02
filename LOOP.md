@@ -37,4 +37,4 @@
 - anything outward-facing beyond this repo/Pages site.
 
 ## Compass pointer
-- next cycle: fresh review round, rotated lenses (suggest: a FULL cold playthrough of the finished arc [the game is feature-rich now — does it hold together?] · mobile real-device ergonomics · what's MISSING for a public 1.0 [icon, share/meta tags, README refresh, itch-style landing]). *(…v0.14 Year Cards · v0.15 cards-real · v0.16 six-endings + perf done)*
+- next cycle: fresh review round (cold full-arc · mobile ergonomics · path-to-1.0) — NOTE the owner's standing directive from v0.17: LESS NARRATION, let systems be felt; every reviewer suggestion that adds explanatory text is now presumptively rejected. *(…v0.15 cards-real · v0.16 six-endings + perf · v0.17 OWNER: school + de-lecture done)*
