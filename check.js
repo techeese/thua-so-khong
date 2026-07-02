@@ -28,11 +28,12 @@ function lcg(seed){ var s=seed>>>0; return function(){ s=(1103515245*s+12345)>>>
 function run(strategy,seed){
   var rnd=lcg(seed), cast=makeCast(rnd), pairsSet={};
   var luat=2+Math.floor(rnd()*3), von=2+Math.floor(rnd()*3), baStart=7+Math.floor(rnd()*3), stormStreak=0;
-  var yc=Math.floor(rnd()*4);   // year card (mirrors index.html; gtm/mentor cards unmodeled — strategies don't pair)
+  var lienPaired=false, gtmPays=0;
+  var yc=Math.floor(rnd()*5);   // year card (mirrors index.html)
+  if(yc===4){ cast[6].arrives=2; baStart=5; }   // reunion year: both people-clocks come early
   for(var season=0;season<16;season++){
     var here=cast.filter(function(c){return activeSim(c,season);});
-    if(luat<4){ stormStreak++; } else { stormStreak=0; }
-    var actsN=(season>0&&luat<4&&stormStreak<=2)?2:3;   // storm tax + adaptation (mirrors index.html)
+    var actsN=(season>0&&luat<4&&stormStreak<2)?2:3;   // storm tax + adaptation (streak from PREVIOUS tick — mirrors index.html order)
     for(var a=0;a<actsN;a++){
       function communal(target){                  // failure night lifts everyone crushed (mirrors index.html actNerve)
         cast.forEach(function(o){ if(o!==target&&activeSim(o,season)&&o.crushedOnce&&!o.started) o.gan=Math.min(10,o.gan+1); });
@@ -50,20 +51,28 @@ function run(strategy,seed){
         var un=here.filter(function(c){return !c.started;}).sort(function(a,b){return a.ban-b.ban;});
         if(un.length>=2){ var A=un[0],B=un[1];
           var gA2=(A.links|0)===0?2:1, gB2=(B.links|0)===0?2:1;
-          var ky=cast.indexOf(A)+"-"+cast.indexOf(B);
+          var iA=cast.indexOf(A),iB=cast.indexOf(B);
+          var ky=Math.min(iA,iB)+"-"+Math.max(iA,iB);
           if(pairsSet[ky]){ gA2=1; gB2=1; } else { pairsSet[ky]=true; A.links=(A.links|0)+1; B.links=(B.links|0)+1; }
+          if(iA===6||iB===6) lienPaired=true;
           A.ban=Math.min(10,A.ban+gA2); B.ban=Math.min(10,B.ban+gB2); }
       }                                           // idle: nothing
     }
+    // formed pairs work like the game's: mentor drip (0-1, 3-5, 0-6) and the Hoa×Ba market payout
+    var drip=(yc===3)?2:1;
+    [["0-1",0],["3-5",5],["0-6",0]].forEach(function(md){ if(pairsSet[md[0]]){ var st=cast[md[1]];
+      if(!st.started&&st.tai<10) st.tai=Math.min(10,st.tai+drip); } });
+    var gMax=(yc===2)?2:1, gAmt=(yc===2)?2:1;
+    if(pairsSet["1-4"]&&gtmPays<gMax&&cast[1].started){ gtmPays++; von=Math.min(10,von+gAmt); }
     cast.forEach(function(p){
       if(p.started||!activeSim(p,season)) return;
       if(rnd()<chance(p,von)){ p.started=true; p.age=0; p.born=true; p.mom=0;
-        // inspiration reaches only people you've met — active strategies know everyone, idle knows no one
-        if(strategy!=="idle") cast.forEach(function(o){ if(o!==p) o.gan=Math.min(10,o.gan+1); }); }
+        // inspiration reaches only people you've met — active strategies know everyone PRESENT, idle knows no one
+        if(strategy!=="idle") cast.forEach(function(o){ if(o!==p&&activeSim(o,season)) o.gan=Math.min(10,o.gan+1); }); }
       else if(p.tai*p.gan*p.ban>=100){ p.mom=Math.min(0.09,(p.mom||0)+0.03); }
     });
-    // the returnee leaves if unrooted (mirrors index.html: season>=13, ban<4, not bloomed)
-    if(season>=13) cast.forEach(function(c){ if(c.arrives!==undefined&&!c.started&&c.ban<4) c.gone=true; });
+    // the returnee leaves if unrooted (mirrors index.html post-increment timing; a pair roots her too)
+    if(season+1>=13) cast.forEach(function(c){ if(c.arrives!==undefined&&!c.started&&c.ban<4&&!lienPaired) c.gone=true; });
     // age-based stamp risk (mirrors index.html): young workshops 15%, established 5%, only under a heavy sky
     // tier-based stamps (mirrors index.html): established workshops step down (owner gan−2), only tier-1 is erased
     if(luat<4) cast.forEach(function(p){ if(p.started&&!p.born&&rnd()<(((p.age|0)<2)?0.15:0.05)){
@@ -84,6 +93,7 @@ function run(strategy,seed){
     if(luat<4){ if(r<0.25) luat=luat+1; else if(r<0.33) luat=Math.max(1,luat-1); }
     else if(yc===1){ if(r<0.10) luat=Math.min(10,luat+1); else if(r<0.25) luat=Math.max(1,luat-1); }
     else { if(r<0.12) luat=Math.min(10,luat+1); else if(r<0.20) luat=Math.max(1,luat-1); }
+    if(luat<4){ stormStreak++; } else { stormStreak=0; }   // streak carries into the NEXT tick's acts (mirrors index.html order)
     if(season%4===3) von=Math.min(10,von+1);
   }
   var tsum=cast.reduce(function(a,c){ if(!c.started) return a;

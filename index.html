@@ -45,6 +45,7 @@
   .acts button small{display:block;font-weight:400;font-size:10px;color:var(--dim)}
   /* log */
   .log{margin-top:8px;font-size:12.5px;color:#4d4335;max-height:76px;overflow:auto;background:#efe3c5;border:2px solid #c9b78c;border-radius:10px;padding:6px 10px}
+  @media(min-width:521px){ .log{max-height:110px} }
   .log div{padding:1px 0}
   /* overlays */
   .ovl{position:fixed;inset:0;background:rgba(43,35,32,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
@@ -66,6 +67,7 @@
     <div style="display:flex;gap:6px;align-items:center">
       <div class="pill" id="seasonPill">Xuân 2026</div>
       <div class="pill" id="actPill">⚡ 3</div>
+      <div class="pill" id="tierPill" style="display:none">🏯</div>
       <button id="muteBtn" style="padding:6px 10px" aria-label="mute">🔊</button>
       <button id="langBtn" style="padding:6px 10px">EN</button>
     </div>
@@ -98,7 +100,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.14</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.15</span></div>
 </div>
 
 <!-- intro -->
@@ -281,7 +283,8 @@ function chatter(){
     var set=PAIR_TALK[pairsHere[Math.floor(Math.random()*pairsHere.length)]];
     var talk=set[Math.floor(Math.random()*set.length)];
     bubble(S.cast[talk[0].who],talk[0][L]);
-    setTimeout(function(){ if(!S.over) bubble(S.cast[talk[1].who],talk[1][L]); },1600);
+    var ctok=runTok;
+    setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(S.cast[talk[1].who],talk[1][L]); },1600);
     return;
   }
   var here=S.cast.filter(active); if(!here.length) return;
@@ -293,14 +296,16 @@ function chatter(){
 }
 // YEAR CARDS — each year, one lever is scarce. The diagnosis differs, not just the arithmetic.
 var YEAR_CARDS=[
-  {nv:"Năm lũ",ne:"the flood year",
+  {em:"🌊",nv:"Năm lũ",ne:"the flood year",
    fv:"🌊 Năm lũ — sông khó tự đầy, xóm trông cả vào vòng hụi.",fe:"🌊 A flood year — the river struggles to fill itself; the xóm leans on the hụi."},
-  {nv:"Năm xét kỹ",ne:"the strict year",
+  {em:"📋",nv:"Năm xét kỹ",ne:"the strict year",
    fv:"📋 Năm xét kỹ — trời khó quang, nhưng trên xã dán thông báo (nghe ngóng miễn phí).",fe:"📋 A strict year — the sky clears slowly, but the commune posts notices (asking around is free)."},
-  {nv:"Năm đường chợ",ne:"the market-road year",
+  {em:"🛤",nv:"Năm đường chợ",ne:"the market-road year",
    fv:"🛤 Năm mở đường chợ — hàng ra tới huyện được giá gấp đôi.",fe:"🛤 A market-road year — goods reaching the district fetch double."},
-  {nv:"Năm tay lặng",ne:"the quiet-hands year",
-   fv:"🍵 Năm tay lặng — nghề truyền nhanh, công vun bền.",fe:"🍵 A quiet-hands year — craft passes quickly, tending holds longer."}];
+  {em:"🍵",nv:"Năm tay lặng",ne:"the quiet-hands year",
+   fv:"🍵 Năm tay lặng — nghề truyền nhanh, công vun bền.",fe:"🍵 A quiet-hands year — craft passes quickly, tending holds longer."},
+  {em:"🧧",nv:"Năm đoàn viên",ne:"the reunion year",
+   fv:"🧧 Năm đoàn viên — thuyền về sớm, mà đèn nhà ai cũng hạ sớm.",fe:"🧧 A reunion year — the sampan comes home early, and the old lamps dim early too."}];
 // mentor pairs: connect them and the student's SKILL grows each season — lineage, not lecture
 var MENTORS=[{pair:[0,1],student:0},{pair:[3,5],student:5},{pair:[0,6],student:0}];
 function pairExists(a,b){ var lo=Math.min(a,b),hi=Math.max(a,b);
@@ -320,10 +325,11 @@ var SAVE_KEY="thua-so-khong-v1";
 function fresh(){
   S={season:0, acts:3, luat:3, von:3, hui:0, cast:makeCast(), ships:[], sel:-1,
      build:0, built:false, pairs:[], apprentice:false, duo:false, gtm:false, gtmPaid:false,
-     linking:null, banner:null, banners:[], luatNext:3, probeSeen:false, probeTaught:false, baFade:false,
+     linking:null, banner:null, banners:[], luatNext:3, probeSeen:false, baFade:false,
      un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false, stormSeen:false, tierTaught:false, lienNgan:false, stormCount:0, stormStreak:0,
-     log:[], over:false, seed:(Date.now()>>>0)};
-  lanterns=[]; finaleTok++;   // invalidate any pending finale timers
+     log:[], over:false};
+  lanterns=[]; runTok++;      // invalidate ALL deferred callbacks from the previous run
+  parts=[]; stamps=[]; glows=[]; bubbles=[]; amb=[]; pendQ=[];
   S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false; p.mom=0;
     var m=Math.min(p.tai,p.gan,p.ban);
     p.zkey = (m===p.gan)?"gan":(m===p.tai)?"tai":"ban";   // their original zero — quotes evolve when it turns
@@ -337,9 +343,11 @@ function fresh(){
   S.luat=2+Math.floor(Math.random()*3); S.von=2+Math.floor(Math.random()*3);
   // 🃏 draw this year's card — never the same card twice in a row
   var lastYc=(function(){ try{ var c=loadChron(); return c.length?c[c.length-1].yc:null; }catch(e){ return null; } })();
-  var pool=[0,1,2,3].filter(function(cc){return cc!==lastYc;});
+  var pool=[0,1,2,3,4].filter(function(cc){return cc!==lastYc;});
   S.yearCard=pool[Math.floor(Math.random()*pool.length)];
   S.gtmPays=0;
+  if(S.yearCard===1) S.un.probe=true;                     // the strict year posts notices from day one
+  if(S.yearCard===4){ S.cast[6].arrives=2; S.baFadeStart=5; }   // the reunion year: both people-clocks come early
   S.luatNext=driftLuat(S.luat);
   S.log.unshift({vi:YEAR_CARDS[S.yearCard].fv,en:YEAR_CARDS[S.yearCard].fe});
 }
@@ -351,6 +359,12 @@ function driftLuat(l){ var r=Math.random();
   if(r<0.12) return Math.min(10,l+1); if(r<0.20) return Math.max(1,l-1); return l; }
 function logMsg(vi,en){ S.log.unshift({vi:vi,en:en}); S.log=S.log.slice(0,24); renderLog(); }
 function banner(txt,dur){ if(!S.banners)S.banners=[]; S.banners.push({txt:txt,dur:dur||1900}); }   // queued — named moments no longer clobber each other
+// teaching beats queue: staggered so lessons don't bury the moment — but FLUSHED before a new season's burst
+var pendQ=[];
+function pendLog(ms,vi,en){ pendQ.push({at:performance.now()+ms,vi:vi,en:en,tok:runTok}); }
+function flushPend(force){ if(!pendQ.length) return; var now=performance.now();
+  pendQ=pendQ.filter(function(q){ if(q.tok!==runTok) return false;
+    if(force||q.at<=now){ logMsg(q.vi,q.en); return false; } return true; }); }
 
 // ---------- sổ xóm — the village chronicle (persists across runs) ----------
 var CHRON_KEY="thua-so-khong-chronicle";
@@ -370,10 +384,10 @@ function renderChron(){
 // ---------- save / load (NaN-safe) ----------
 var fin=Number.isFinite;
 function cl(v,lo,hi,fb){ return fin(v)?Math.max(lo,Math.min(hi,v)):fb; }
-function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:1,
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:2,   // NOTE: every NEW save field MUST get a fin()-guarded default in load()
   meta:{lang:L,muted:!!META.muted},
   s:{season:S.season,acts:S.acts,luat:S.luat,von:S.von,hui:S.hui,build:S.build,built:!!S.built,
-     apprentice:!!S.apprentice,gtmPaid:!!S.gtmPaid,pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
+     gtmPaid:!!S.gtmPaid,pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
      arr:S.cast[6].arrives,baf:S.baFadeStart,sc:S.stormCount|0,ss:S.stormStreak|0,yc:S.yearCard|0,gp:S.gtmPays|0,
      cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,bt:p.btai,bg:p.bgan,bb:p.bban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0};}),
      ships:S.ships.map(function(w){return {x:w.x,y:w.y,owner:w.owner,pid:w.pid,yours:!!w.yours,age:w.age|0,shel:w.shel|0};}),
@@ -381,7 +395,7 @@ function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:1,
 function load(){
   try{
     var raw=localStorage.getItem(SAVE_KEY); if(!raw) return false;
-    var d=JSON.parse(raw); if(!d||!d.s) return false;
+    var d=JSON.parse(raw); if(!d||!d.s||!(d.v>=1)) return false;
     if(d.meta){ if(d.meta.lang==="en"||d.meta.lang==="vi") L=d.meta.lang; META.muted=!!d.meta.muted; }
     var s=d.s; if(!fin(s.season)||s.season>=16||s.season<0) return false;   // finished/garbage runs restart
     fresh();
@@ -391,10 +405,10 @@ function load(){
     if(Array.isArray(s.pairs)) S.pairs=s.pairs.filter(function(pr){return Array.isArray(pr)&&fin(pr[0])&&fin(pr[1]);});
     if(Array.isArray(s.cast)) s.cast.forEach(function(c,i){ var p=S.cast[i]; if(!p||!c) return;
       p.tai=cl(c.tai,0,10,p.tai); p.gan=cl(c.gan,0,10,p.gan); p.ban=cl(c.ban,0,10,p.ban);
-      p.btai=cl(c.bt,0,10,p.btai); p.bgan=cl(c.bg,0,10,p.bgan); p.bban=cl(c.bb,0,10,p.bban);   // this run's jittered nature
+      p.btai=cl(c.bt,0,10,p.tai); p.bgan=cl(c.bg,0,10,p.gan); p.bban=cl(c.bb,0,10,p.ban);   // this run's jittered nature (fallback: loaded stats, never a re-jitter)
       p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; p.mom=cl(c.mom,0,0.5,0); });
     S.cast[6].arrives=cl(s.arr,5,8,6); S.baFadeStart=cl(s.baf,7,9,8);
-    S.stormCount=cl(s.sc,0,16,0); S.stormStreak=cl(s.ss,0,16,0); S.yearCard=cl(s.yc,0,3,0); S.gtmPays=cl(s.gp,0,2,0);
+    S.stormCount=cl(s.sc,0,16,0); S.stormStreak=cl(s.ss,0,16,0); S.yearCard=fin(s.yc)?cl(s.yc,0,4,0):S.yearCard; S.gtmPays=fin(s.gp)?cl(s.gp,0,2,0):(s.gtmPaid?1:0);
     S.lienWarned=S.season>=11; S.baFade=S.season>=(S.baFadeStart||8); S.stormSeen=S.season>0; S.tierTaught=S.ships.length>0||S.season>1; S.lienNgan=pairExists(0,6);
     if(Array.isArray(s.ships)) S.ships=s.ships.filter(function(w){return w&&fin(w.x)&&fin(w.y)&&typeof w.owner==="string";});
     S.ships.forEach(function(w){ w.age=cl(w.age,0,99,2); w.shel=cl(w.shel,0,2,0); });
@@ -404,7 +418,7 @@ function load(){
     S.un={link:S.cast.filter(function(p){return p.known;}).length>=2||S.pairs.length>0,
           hui:S.season>=2, build:S.season>=4||S.build>0||S.built,
           probe:S.ships.length>0||S.season>2};
-    S.nudged=true; S.hintDone=S.season>0; S.lawSeen=S.season>1||S.ships.length>0; S.probeTaught=true;
+    S.nudged=true; S.hintDone=S.season>0; S.lawSeen=S.season>1||S.ships.length>0; S.wantSeen=S.season>=8;
     S.flySeen=S.ships.length>=3; S.nightSeen=true;
     S.luatNext=cl(s.luatNext,1,10,driftLuat(S.luat)); S.probeSeen=!!s.probeSeen;   // a paid forecast survives a refresh
     return true;
@@ -853,7 +867,8 @@ function completeLink(otherId){
   }
   renderSheet(); save();
 }
-function actHui(){ if(S.acts<=0||S.hui>=3) return; if(!spend())return;
+function huiMax(){ return (S.yearCard===0)?4:3; }   // a flood year leans harder on the hụi
+function actHui(){ if(S.acts<=0||S.hui>=huiMax()) return; if(!spend())return;
   S.hui++; S.von=Math.min(10,S.von+1); beep(392,0.1); logMsg(STR.huiDone.vi,STR.huiDone.en); render(); save(); }
 function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notices — asking around is free
   if(S.probeSeen||S.over||(!free&&S.acts<=0)) return;
@@ -863,9 +878,12 @@ function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notic
   if(S.luatNext<4&&shelTarget()) logMsg("— xưởng non đang phơi trời. Bạn có thể CHE CHẮN (nút mới).",
                                         "— a young workshop sits exposed. You can SHELTER it (new button).");
   render(); save(); }
-function shelTarget(){ var best=null; S.ships.forEach(function(s){ if(s.shel>0) return; if((s.age|0)>=2&&!s.born) return; if(!best||(s.age|0)<(best.age|0)) best=s; }); return best; }
+// NOTE: ships are never `born` while the player holds the controls (born is set and cleared within one nextSeason tick),
+// so the born checks below are belt-and-braces, not a reachable state. In a strict year, notices are posted — tarp EVERYTHING.
+function shelCovers(s){ return (s.shel|0)<=0 && (S.yearCard===1 || (s.age|0)<2) && !s.born; }
+function shelTarget(){ var best=null; S.ships.forEach(function(s){ if(!shelCovers(s)) return; if(!best||(s.age|0)<(best.age|0)) best=s; }); return best; }
 function actShel(){ if(S.acts<=0||S.over||!shelTarget()) return; if(!spend())return;
-  var n=0; S.ships.forEach(function(s){ if((s.shel|0)<=0&&(s.age|0)<2&&!s.born){ s.shel=2; n++; } });   // one hand tarps every young roof
+  var n=0; S.ships.forEach(function(s){ if(shelCovers(s)){ s.shel=2; n++; } });   // one hand tarps every covered roof
   beep(392,0.1); logMsg(STR.shelDone.vi,STR.shelDone.en); render(); save(); }
 function actBuild(){ if(S.acts<=0||S.built) return; if(!spend())return;
   S.build++; beep(300+S.build*60,0.09);
@@ -882,6 +900,7 @@ function floatOn(p,txt,col){ bubbles.push({p:p,txt:txt,until:performance.now()+1
 function nextSeason(){
   if(S.over) return;
   S.linking=null;
+  flushPend(true);   // any pending lessons land BEFORE this season's burst, not inside it
   // one gentle first-turn nudge: don't let a new player skip past their whole hand
   if(S.season===0 && S.acts===3 && !S.nudged){ S.nudged=true;
     bubble(S.cast[0],t("nudge")); beep(500,0.07); return; }
@@ -907,11 +926,11 @@ function nextSeason(){
       S.cast.forEach(function(q){ if(q.id!==p.id&&q.known) q.gan=Math.min(10,q.gan+1); });
       if(S.cast.filter(function(q){return q.started;}).length===1) logMsg(STR.inspired.vi,STR.inspired.en);
       if(!S.lawSeen){ S.lawSeen=true; S.un.probe=true;                            // teach in beats, not a burst — the bloom line keeps its moment
-        setTimeout(function(){ if(!S.over) logMsg(STR.lawLine.vi,STR.lawLine.en); },1800);
-        setTimeout(function(){ if(!S.over) logMsg(STR.unProbe.vi,STR.unProbe.en); },3400); }
+        pendLog(1800,STR.lawLine.vi,STR.lawLine.en);
+        pendLog(3400,STR.unProbe.vi,STR.unProbe.en); }
       if(!S.tierTaught){ S.tierTaught=true;
-        setTimeout(function(){ if(!S.over) logMsg("🌱 Xưởng mới chỉ là GÁNH hàng — cứ vun chủ xưởng (Dạy/Kết nối), gánh sẽ lên xưởng, lên thương hiệu.",
-          "🌱 A new workshop is just a stall — keep tending its owner and it climbs: stall → workshop → brand."); },5200); }
+        pendLog(5200,"🌱 Xưởng mới chỉ là GÁNH hàng — cứ vun chủ xưởng (Dạy/Kết nối), gánh sẽ lên xưởng, lên thương hiệu.",
+          "🌱 A new workshop is just a stall — keep tending its owner and it climbs: stall → workshop → brand."); }
     }
     else if(prod(p)>=100){ p.mom=Math.min(0.09,(p.mom||0)+0.03); }                // a tended-but-unlucky sprout pushes harder (capped — no free inevitability)
   });
@@ -944,8 +963,9 @@ function nextSeason(){
   var anyFade=false;
   var fadeP=(S.yearCard===3)?0.175:0.35;   // tending holds longer in a quiet-hands year
   S.cast.forEach(function(p){ if(p.started||!active(p)) return;
-    ["tai","gan","ban"].forEach(function(k){ if(p[k]>p["b"+k] && Math.random()<fadeP){ p[k]--; anyFade=true;
-      if(p.known) floatOn(p,"−1 "+t(k),"#7a6f5d"); } });   // the wash-away is SEEN, not silent
+    var faded=[];
+    ["tai","gan","ban"].forEach(function(k){ if(p[k]>p["b"+k] && Math.random()<fadeP){ p[k]--; anyFade=true; faded.push(t(k)); } });
+    if(faded.length&&p.known) floatOn(p,(L==="vi"?"phai −":"fades −")+faded.join(" −"),"#7a6f5d");   // ONE float per person — seen, not a strafing
   });
   if(anyFade && !S.fadeSeen){ S.fadeSeen=true;
     logMsg("Điều chưa bén rễ sẽ phai — mùa màng cuốn đi phần vun chưa kịp nở.",
@@ -953,8 +973,13 @@ function nextSeason(){
   // craft climbs the value curve: the market seller moves the master's ceramics (a market-road year pays double, twice)
   var gtmMax=(S.yearCard===2)?2:1, gtmAmt=(S.yearCard===2)?2:1;
   if(S.gtm && (S.gtmPays|0)<gtmMax && S.cast[1].started){ S.gtmPays=(S.gtmPays|0)+1; S.gtmPaid=true;
-    S.von=Math.min(10,S.von+gtmAmt); logMsg(STR.gtmPaid.vi,STR.gtmPaid.en); }
+    S.von=Math.min(10,S.von+gtmAmt);
+    if(S.yearCard===2){ logMsg(S.gtmPays===1?"🛤 Hàng gốm ra tới huyện — được GIÁ GẤP ĐÔI (+2 vốn). Đường mới còn chở được một chuyến nữa.":"🛤 Chuyến hàng cuối qua đường chợ — sông đầy hẳn lên (+2 vốn).",
+                                S.gtmPays===1?"🛤 The ceramics reach the district — DOUBLE the price (+2 capital). The new road carries one more trip.":"🛤 The last trip down the market road — the river truly rises (+2 capital)."); }
+    else logMsg(STR.gtmPaid.vi,STR.gtmPaid.en); }
   // the recycling flywheel: enough TIERS standing and the river feeds itself (a flood year demands deeper roots)
+  if(S.yearCard===0 && tierSum()>=4 && tierSum()<6 && !S.floodTaught){ S.floodTaught=true;
+    logMsg("🌊 Bốn bậc xưởng — năm thường sông đã tự đầy. Năm lũ cần SÁU.","🌊 Four tiers standing — an ordinary year, the river would already fill itself. A flood year needs SIX."); }
   if(tierSum()>=((S.yearCard===0)?6:4) && S.von<10){ S.von=Math.min(10,S.von+1);
     if(!S.flySeen){ S.flySeen=true;
       logMsg("🌊 Xưởng đã đủ vững — dòng sông bắt đầu tự đầy.","🌊 The workshops stand firm — the river begins to fill itself."); } }
@@ -972,6 +997,9 @@ function nextSeason(){
   if(S.acts===2&&!S.stormSeen){ S.stormSeen=true;
     logMsg("☁️ Mùa giông — ai cũng bận chống nhà (chỉ còn 2⚡).","☁️ Storm season — everyone is bracing their homes (only 2⚡)."); }
   if(S.luat<4&&S.stormStreak===3){ logMsg("Nhà đã chằng néo xong — xóm quen giông rồi (3⚡).","The roofs are braced — the xóm is used to storms now (3⚡)."); }
+  // a mid-run wanting, in the village's voice — the ending will count what stands
+  if(S.season===8&&!S.wantSeen){ S.wantSeen=true;
+    logMsg("Nửa đường rồi. Mùa cuối, xóm sẽ đếm những bậc xưởng còn đứng.","Halfway. When the last season ends, the xóm will count the tiers still standing."); }
   if(S.season>=16){ startFinale(); return; }
   unlockCheck();
   // 🛶 the returnee — arrives by sampan; stays only if the xóm gives her roots
@@ -1003,26 +1031,26 @@ function nextSeason(){
   }
   banner(STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4)),1600);
   gong(220,0.8,0.03);
-  setTimeout(chatter,1100);   // after the season banner settles, the xóm talks
+  (function(){ var ctok=runTok; setTimeout(function(){ if(runTok===ctok) chatter(); },1100); })();   // after the season banner settles, the xóm talks
   render(); renderSheet(); save();
 }
 
 // ---------- ending ----------
 // --- beat 1: the lantern harvest — the xóm lights what stands, one gong at a time ---
-var finaleTok=0;
+var runTok=0;
 function startFinale(){
   S.over=true; S.linking=null; lanterns=[]; render(); renderSheet();
   try{ localStorage.removeItem(SAVE_KEY); }catch(e){}   // the run is over — a returning session starts a fresh year (no season-15 ghost, no double chronicle)
   banner("🏮",2000);
   logMsg("Mười sáu mùa đã qua — xóm thắp đèn cho những gì còn đứng.","Sixteen seasons have passed — the xóm lights lanterns for what still stands.");
-  var myTok=++finaleTok, ships=S.ships.slice();
+  var myTok=++runTok, ships=S.ships.slice();
   ships.forEach(function(s,i){
-    setTimeout(function(){ if(finaleTok!==myTok) return;
+    setTimeout(function(){ if(runTok!==myTok) return;
       var lsc=shipTier(s)===3?1.24:shipTier(s)===1?0.78:1;
       lanterns.push({x:s.x+34*lsc,y:s.y-8*lsc,ph:Math.random()*6.28});   // hung off the eave — clear of the pennants
       gong(196+i*28,0.7,0.04); glows.push({x:s.x,y:s.y,t:0}); },700+i*800);
   });
-  setTimeout(function(){ if(finaleTok===myTok) endGame(); }, ships.length?700+ships.length*800+1200:1400);
+  setTimeout(function(){ if(runTok===myTok) endGame(); }, ships.length?700+ships.length*800+1200:1400);
 }
 function endGame(){
   S.over=true;
@@ -1110,7 +1138,8 @@ function el(id){return document.getElementById(id);}
 function cur(){ return S.sel>=0?S.cast[S.sel]:null; }
 function render(){
   var sn=STR.seasons[L][S.season%4], yr=2026+Math.floor(S.season/4);
-  el("seasonPill").textContent=sn+" "+yr+" · "+Math.min(S.season+1,16)+"/16"+(S.probeSeen?(" → "+(S.luatNext>=4?"☀️":"☁️")):"");
+  el("seasonPill").textContent=YEAR_CARDS[S.yearCard|0].em+" "+sn+" "+yr+" · "+Math.min(S.season+1,16)+"/16"+(S.probeSeen?(" → "+(S.luatNext>=4?"☀️":"☁️")):"");
+  var tp=el("tierPill"); if(tp){ var tsNow=tierSum(); tp.style.display=(S.tierTaught&&tsNow>0)?"":"none"; tp.textContent="🏯 "+tsNow+(L==="vi"?" bậc":" tiers"); }
   el("actPill").textContent="⚡ "+S.acts;
   el("subttl").textContent=t("sub"); el("foot").textContent=t("foot");
   el("huiLbl").textContent=t("hui"); el("buildLbl").textContent=t("build");
@@ -1125,8 +1154,8 @@ function render(){
   var shelOk=S.un.probe&&(S.probeSeen?(S.luatNext<4||S.luat<4):(S.luat<4))&&shelTarget()&&!S.over;
   el("shelBtn").style.display=shelOk?"":"none";
   el("shelBtn").disabled=S.acts<=0;
-  el("huiCost").textContent=S.hui>=3?"✓ 3/3":"(1⚡)";
-  el("huiBtn").disabled=S.acts<=0||S.hui>=3||S.over;
+  el("huiCost").textContent=S.hui>=huiMax()?("✓ "+huiMax()+"/"+huiMax()):"(1⚡)";
+  el("huiBtn").disabled=S.acts<=0||S.hui>=huiMax()||S.over;
   el("buildBtn").disabled=S.acts<=0||S.built||S.over;
   el("probeBtn").disabled=(S.yearCard!==1&&S.acts<=0)||S.probeSeen||S.over;
   el("nextBtn").disabled=S.over;

@@ -37,4 +37,4 @@
 - anything outward-facing beyond this repo/Pages site.
 
 ## Compass pointer
-- next cycle: **fresh review round**, rotated lenses (suggest: year-cards-in-play balance · a true cold player on the CURRENT build · code health/perf after 14 versions of accretion). *(v0.10 hardening · v0.11 late-game · v0.12 run-2 & voice · v0.13 balance overhaul · v0.14 Year Cards done)*
+- next cycle: fresh review round, rotated lenses (suggest: perf/render prerender pass [deferred from code-health] · endings/emotional payoff quality · VI copy on all v0.14-15 additions). *(…v0.13 balance · v0.14 Year Cards · v0.15 cards-real + honest-gate done)*

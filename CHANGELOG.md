@@ -1,5 +1,36 @@
 # Changelog — Thừa Số Không
 
+## v0.15 — 2026-07-02 — LOOP v2, cycle 6: the cards become real, the gate becomes honest (3 reviewers → 17 shipped)
+
+**Year cards, made playable (cards-in-play review):**
+- **🧧 A FIFTH card — Năm đoàn viên (the reunion year):** the sampan docks at season 2 and the elder's hands begin to
+  fail at season 5 — the only year where WHEN matters more than WHAT. (*"thuyền về sớm, mà đèn nhà ai cũng hạ sớm"*)
+- **🌊 Flood is no longer a null draw:** the hụi cap rises to 4 (the flavor line finally tells the truth), and the
+  village teaches the moved flywheel threshold (*"năm thường sông đã tự đầy — năm lũ cần SÁU"*).
+- **📋 Strict's free probe unlocks from day one** (it was locked behind the first bloom — dark exactly when the card
+  hurts most), and in strict years **shelter tarps every roof**, not just young ones (the notices are posted).
+- **🛤 Market-road announces itself:** two dedicated payout lines (+2 vốn, *"đường mới còn chở được một chuyến nữa"*)
+  instead of the base year's "a little," twice.
+- **The card is visible all run:** its emoji leads the season pill; the intro line shows it on run 1.
+
+**Cold player (the accumulated build):**
+- **🏯 The score you could never see:** a tier pill (once tiers are taught) shows the xóm's standing tiers — the number
+  the endings are keyed to — plus a season-8 wanting line: *"Mùa cuối, xóm sẽ đếm những bậc xưởng còn đứng."*
+- **Entropy floats merge** to one per person (*"phai −TÀI −BẠN"*) — the mid-game no longer strafes the player.
+- **Teaching beats can't drown:** pending lessons flush BEFORE a new season's burst (pendLog queue) instead of
+  landing inside it; the log grows to 110px on wider screens.
+
+**Code health (the audit that keeps the next 10 versions honest):**
+- **The release gate had drifted from the shipped math** — fixed 4 mirror divergences in check.js: stormStreak
+  order (the sim was one adaptation-season more generous), inspiration reaching un-arrived/gone people, Liên's
+  departure timing + pair-rooting parity, and the linker finally receiving what the real game gives it (mentor
+  drips + the market payout). Band re-proven on the corrected mirror: 6.98 / 6.62 / 6.21 / 3.67 · tiers 15.2 / 13.5 / 10.0 / 3.7.
+- **Save format v2** with real guards: a pre-card save no longer force-loads as a flood year; gtmPaid/gtmPays can't
+  double-pay; jittered bases fall back to loaded stats (never a re-jitter); dead `apprentice`/`seed`/`probeTaught`
+  fields dropped.
+- **No more ghost callbacks:** one `runTok` invalidates every deferred timer on reset; all FX arrays clear in fresh().
+- Documented the unreachable shelter/born state so v16 doesn't "fix" it.
+
 ## v0.14 — 2026-07-02 — LOOP v2, cycle 5: 🃏 Year Cards — every run demands different diagnosis
 
 The deferred headline. At each run's dawn the xóm draws one of four authored years (never the same twice in a row —
