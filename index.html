@@ -51,7 +51,12 @@
   .ovl{position:fixed;inset:0;background:rgba(43,35,32,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
   .ovl.show{display:flex}
   .card{max-width:520px;width:100%;background:var(--paper);border:3px solid var(--ink);border-radius:16px;padding:22px;box-shadow:6px 6px 0 rgba(43,35,32,.5)}
+  .card{position:relative}
   .card h2{font:700 24px Georgia,serif;margin:0 0 4px;text-align:center}
+  .seal{position:absolute;right:14px;top:14px;width:56px;height:56px;border:3px solid #C1443C;
+    border-radius:8px;transform:rotate(7deg);color:#C1443C;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;font:700 20px Georgia;opacity:.92;pointer-events:none}
+  .seal small{font:700 10px Georgia;letter-spacing:1px}
   .card .tag{text-align:center;font-style:italic;color:var(--red);font-weight:700;margin-bottom:12px}
   .card p{font-size:14px;margin:8px 0}
   .card .go{width:100%;background:var(--red);color:#fff;margin-top:10px;padding:12px;font-size:16px}
@@ -67,7 +72,7 @@
     <div style="display:flex;gap:6px;align-items:center">
       <div class="pill" id="seasonPill">Xuân 2026</div>
       <div class="pill" id="actPill">⚡ 3</div>
-      <div class="pill" id="tierPill" style="display:none">🏯</div>
+      <div class="pill" id="tierPill" style="display:none">🪜</div>
       <button id="muteBtn" style="padding:6px 10px" aria-label="mute">🔊</button>
       <button id="langBtn" style="padding:6px 10px">EN</button>
     </div>
@@ -100,7 +105,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.15</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.16</span></div>
 </div>
 
 <!-- intro -->
@@ -299,13 +304,13 @@ var YEAR_CARDS=[
   {em:"🌊",nv:"Năm lũ",ne:"the flood year",
    fv:"🌊 Năm lũ — sông khó tự đầy, xóm trông cả vào vòng hụi.",fe:"🌊 A flood year — the river struggles to fill itself; the xóm leans on the hụi."},
   {em:"📋",nv:"Năm xét kỹ",ne:"the strict year",
-   fv:"📋 Năm xét kỹ — trời khó quang, nhưng trên xã dán thông báo (nghe ngóng miễn phí).",fe:"📋 A strict year — the sky clears slowly, but the commune posts notices (asking around is free)."},
+   fv:"📋 Năm xét kỹ — trời lâu quang, nhưng trên xã dán thông báo (nghe ngóng miễn phí).",fe:"📋 A strict year — the sky clears slowly, but the commune posts notices (asking around is free)."},
   {em:"🛤",nv:"Năm đường chợ",ne:"the market-road year",
-   fv:"🛤 Năm mở đường chợ — hàng ra tới huyện được giá gấp đôi.",fe:"🛤 A market-road year — goods reaching the district fetch double."},
+   fv:"🛤 Năm đường chợ — đường mới mở, hàng ra tới huyện được giá gấp đôi.",fe:"🛤 A market-road year — goods reaching the district fetch double."},
   {em:"🍵",nv:"Năm tay lặng",ne:"the quiet-hands year",
    fv:"🍵 Năm tay lặng — nghề truyền nhanh, công vun bền.",fe:"🍵 A quiet-hands year — craft passes quickly, tending holds longer."},
-  {em:"🧧",nv:"Năm đoàn viên",ne:"the reunion year",
-   fv:"🧧 Năm đoàn viên — thuyền về sớm, mà đèn nhà ai cũng hạ sớm.",fe:"🧧 A reunion year — the sampan comes home early, and the old lamps dim early too."}];
+  {em:"🧧",nv:"Năm đoàn tụ",ne:"the reunion year",
+   fv:"🧧 Năm đoàn tụ — thuyền về sớm, mà đèn nhà ai cũng lụi sớm.",fe:"🧧 A reunion year — the sampan comes home early, and the old lamps dim early too."}];
 // mentor pairs: connect them and the student's SKILL grows each season — lineage, not lecture
 var MENTORS=[{pair:[0,1],student:0},{pair:[3,5],student:5},{pair:[0,6],student:0}];
 function pairExists(a,b){ var lo=Math.min(a,b),hi=Math.max(a,b);
@@ -450,37 +455,51 @@ var cv=document.getElementById("cv"), ctx=cv.getContext("2d");
 var W=960,H=600,DPR=1;
 function fit(){ var w=cv.parentElement.clientWidth||W; DPR=window.devicePixelRatio||1;
   // backing store sized to the DISPLAYED width, not the logical world — 8× fewer pixels per frame on phones
-  cv.width=Math.round(w*DPR); cv.height=Math.round(w*H/W*DPR); cv.style.height=(w*H/W)+"px"; }
+  cv.width=Math.round(w*DPR); cv.height=Math.round(w*H/W*DPR); cv.style.height=(w*H/W)+"px";
+  buildGround(); }
 window.addEventListener("resize",fit);
 
 var parts=[], bubbles=[], stamps=[];
 function petals(x,y,n,cols){ for(var i=0;i<n;i++) parts.push({x:x,y:y,vx:(Math.random()-.5)*2.2,vy:-1.5-Math.random()*2,r:3+Math.random()*4,rot:Math.random()*6.28,vr:(Math.random()-.5)*.3,life:1,col:cols[i%cols.length]}); }
-function bubble(p,txt){ bubbles.push({p:p,txt:txt,until:performance.now()+3600}); }
+function bubble(p,txt){ bubbles.push({p:p,lay:layoutBubble(txt),until:performance.now()+3600}); }
 function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); shake=1; beep(85,0.35,0.07); buzz(60); }
 var shake=0, glows=[], lanterns=[];
+var dlBuf=[]; function dlCmp(a,b){ return a.z-b.z; }
 function buzz(v){ if(META.muted) return; try{ if(navigator.vibrate) navigator.vibrate(v); }catch(e){} }
 
 // điệp-shell paper (once): dark speckle + fiber strokes + mica sparkle — the Đông Hồ ground
 var speck=[]; for(var i=0;i<110;i++) speck.push([Math.random()*W,Math.random()*H,Math.random()*1.6+0.4]);
 var fibers=[]; for(var i=0;i<44;i++) fibers.push([Math.random()*W,Math.random()*H,26+Math.random()*60,(Math.random()-0.5)*0.3]);
 var mica=[]; for(var i=0;i<80;i++) mica.push([Math.random()*W,Math.random()*H]);
+// prerendered điệp ground — static arrays, rebuilt only when the backing store changes
+var groundCv=document.createElement("canvas");
+function buildGround(){
+  groundCv.width=cv.width; groundCv.height=cv.height;
+  var g=groundCv.getContext("2d"), kk2=cv.width/W;
+  g.setTransform(kk2,0,0,kk2,0,0);
+  g.fillStyle="#EAD9B8"; g.fillRect(0,0,W,H);
+  g.strokeStyle="rgba(160,130,80,.09)"; g.lineWidth=1; g.lineJoin="round"; g.lineCap="round";
+  fibers.forEach(function(f){ g.beginPath(); g.moveTo(f[0],f[1]); g.lineTo(f[0]+f[2],f[1]+f[2]*f[3]); g.stroke(); });
+  g.fillStyle="rgba(120,95,60,.13)"; speck.forEach(function(sp){ g.fillRect(sp[0],sp[1],sp[2],sp[2]); });
+  g.fillStyle="rgba(255,250,232,.55)"; mica.forEach(function(m){ g.fillRect(m[0],m[1],1.2,1.2); });
+}
 
 function ink(w){ ctx.strokeStyle="#3a2a1e"; ctx.lineWidth=w||3; ctx.lineJoin="round"; ctx.lineCap="round"; }
 
 var amb=[]; // seasonal drift: blossom in spring, leaves in autumn
-var LKF=1;  // label compensation — text stays readable when the canvas shrinks to phone width
+var LKF=1, _lkfLast=-1, FONT_LBL="700 11px sans-serif", FONT_HINT="10px sans-serif";  // label compensation + cached font strings
 function haloText(txt,x,y){ ctx.strokeStyle="#EAD9B8"; ctx.lineWidth=3; ctx.lineJoin="round"; ctx.strokeText(txt,x,y); ctx.fillText(txt,x,y); }
 function drawScene(now){
   var kk=cv.width/W; ctx.setTransform(kk,0,0,kk,0,0);
   LKF=Math.min(1.5, W/Math.max(1,(cv.width/DPR)));
+  if(LKF!==_lkfLast){ _lkfLast=LKF;
+    FONT_LBL="700 "+Math.round(11*LKF)+"px sans-serif";
+    FONT_HINT=Math.round(10*LKF)+"px sans-serif"; }
   // the whole print jolts when the stamp falls
   if(shake>0.01){ ctx.translate((Math.random()-0.5)*12*shake,(Math.random()-0.5)*8*shake); shake*=0.88; } else shake=0;
-  // paper — điệp ground
-  ctx.fillStyle="#EAD9B8"; ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle="rgba(160,130,80,.09)"; ctx.lineWidth=1;
-  fibers.forEach(function(f){ ctx.beginPath(); ctx.moveTo(f[0],f[1]); ctx.lineTo(f[0]+f[2],f[1]+f[2]*f[3]); ctx.stroke(); });
-  ctx.fillStyle="rgba(120,95,60,.13)"; speck.forEach(function(s){ ctx.fillRect(s[0],s[1],s[2],s[2]); });
-  ctx.fillStyle="rgba(255,250,232,.55)"; mica.forEach(function(m){ ctx.fillRect(m[0],m[1],1.2,1.2); });
+  // paper — điệp ground (prerendered in buildGround / fit)
+  if(groundCv.width!==cv.width||groundCv.height!==cv.height) buildGround();
+  ctx.drawImage(groundCv,0,0,W,H);
   var seas=S.season%4;
   if((seas===0||seas===2)&&amb.length<14&&Math.random()<0.25)
     amb.push({x:Math.random()*W,y:-8,vx:0.3+Math.random()*0.5,vy:0.35+Math.random()*0.5,rot:Math.random()*6.28,
@@ -494,10 +513,10 @@ function drawScene(now){
   ctx.beginPath(); ctx.arc(W-90,52,24,0,6.28); ctx.fillStyle="rgba(193,68,60,"+(0.30+0.5*clear)+")"; ctx.fill(); ink(2.5); ctx.stroke();
   ctx.beginPath(); ctx.arc(W-90,52,30,0,6.28); ctx.strokeStyle="rgba(193,68,60,"+(0.18+0.25*clear)+")"; ctx.lineWidth=2; ctx.stroke();
   // clouds — denser & darker when law is stuck
-  var nc=Math.round(2+(10-S.luat)*0.7);
+  var nc=Math.round(2+(10-S.luat)*0.7), cloudCol="rgba(90,90,100,"+(0.32-0.02*S.luat)+")";
   for(var c=0;c<nc;c++){ var cx=((now*0.008)+(c*167))% (W+160)-80; var cy=24+((c*53)%70);
     ctx.beginPath(); ctx.ellipse(cx,cy,34,13,0,0,6.28); ctx.ellipse(cx+24,cy+4,24,10,0,0,6.28); ctx.ellipse(cx-24,cy+5,22,9,0,0,6.28);
-    ctx.fillStyle="rgba(90,90,100,"+(0.32-0.02*S.luat)+")"; ctx.fill(); }
+    ctx.fillStyle=cloudCol; ctx.fill(); }
   ctx.font="italic 11px Georgia"; ctx.fillStyle="rgba(43,35,32,.5)";
   ctx.fillText(L==="vi"?"bầu trời là LUẬT":"the sky is the LAW", 14, 18);
 
@@ -546,10 +565,13 @@ function drawScene(now){
     return gl.t<1; });
 
   // --- workshops + people in ONE depth pass (near things draw over far things) ---
-  var dl=[];
-  S.ships.forEach(function(s){ dl.push({z:s.y+30, f:(function(sh){return function(){workshop(sh,now);};})(s)}); });
-  S.cast.filter(active).forEach(function(p){ dl.push({z:p.y+22, f:(function(pp){return function(){person(pp,now);};})(p)}); });
-  dl.sort(function(a,b){return a.z-b.z;}).forEach(function(d){ d.f(); });
+  var dn=0, di, de;
+  for(di=0;di<S.ships.length;di++){ de=dlBuf[dn]||(dlBuf[dn]={z:0,s:null,p:null});
+    de.z=S.ships[di].y+30; de.s=S.ships[di]; de.p=null; dn++; }
+  for(di=0;di<S.cast.length;di++){ if(!active(S.cast[di])) continue;
+    de=dlBuf[dn]||(dlBuf[dn]={z:0,s:null,p:null}); de.z=S.cast[di].y+22; de.s=null; de.p=S.cast[di]; dn++; }
+  dlBuf.length=dn; dlBuf.sort(dlCmp);
+  for(di=0;di<dn;di++){ de=dlBuf[di]; if(de.s) workshop(de.s,now); else person(de.p,now); }
 
   // --- finale lanterns (beat 1: the xóm lights what stands) ---
   lanterns.forEach(function(ln){ var fl2=Math.sin(now*0.006+ln.ph)*1.5;
@@ -611,9 +633,9 @@ function drawScene(now){
   ctx.fillStyle="#f5ead0"; ctx.font="700 14px Georgia"; ctx.textAlign="center"; ctx.fillText("×0",W-32,H-27); ctx.textAlign="left";
 
   // --- speech bubbles ---
-  var nnow=performance.now();
+  var nnow=now;
   bubbles=bubbles.filter(function(b){ return b.until>nnow; });
-  bubbles.forEach(function(b){ var p=b.p; drawBubble(p.x, p.y-66, b.txt); });
+  bubbles.forEach(function(b){ drawBubble(b.p.x, b.p.y-66, b.lay); });
 
   // --- banner queue (bloom / sampan / season — shown one after another) ---
   if(!S.banner && S.banners && S.banners.length){ var nb=S.banners.shift(); S.banner={txt:nb.txt,until:nnow+nb.dur}; }
@@ -707,7 +729,7 @@ function workshop(s,now){
     ctx.beginPath(); ctx.moveTo(x-30,y-8); ctx.lineTo(x+30,y-8); ctx.stroke(); }
   ctx.restore();
   // label OUTSIDE the tier scale, phone-compensated, tier word only (full name when its owner is selected) — less noise, print stays a print
-  ctx.font="700 "+Math.round(11*LKF)+"px sans-serif"; ctx.fillStyle="#2B2320"; ctx.textAlign="center";
+  ctx.font=FONT_LBL; ctx.fillStyle="#2B2320"; ctx.textAlign="center";
   var word=tr===1?(L==="vi"?"gánh":"stall"):tr===2?(L==="vi"?"xưởng":"shop"):(L==="vi"?"thương hiệu":"brand");
   var lbl=(S.sel===s.pid||s.yours)?(word+" "+s.owner):word;
   haloText(lbl, x, y+32*sc+(LKF-1)*6);
@@ -751,11 +773,11 @@ function person(p,now){
   if(S.sel===p.id){ ctx.strokeStyle="#C1443C"; ctx.lineWidth=2.5; ctx.setLineDash([5,4]);
     ctx.beginPath(); ctx.ellipse(x,p.y-4,22,30,0,0,6.28); ctx.stroke(); ctx.setLineDash([]); }
   // name + zero hint — paper-haloed and phone-compensated
-  ctx.font="700 "+Math.round(11*LKF)+"px sans-serif"; ctx.textAlign="center"; ctx.fillStyle="#2B2320";
+  ctx.font=FONT_LBL; ctx.textAlign="center"; ctx.fillStyle="#2B2320";
   haloText(p.name,x,p.y+36+(LKF-1)*4);
   if(p.known && !p.started){
     var z=zeroOf(p);
-    ctx.font=Math.round(10*LKF)+"px sans-serif"; ctx.fillStyle="#C1443C";
+    ctx.font=FONT_HINT; ctx.fillStyle="#C1443C";
     haloText(z? ((L==="vi"?"số không: ":"zero: ")+z) : (Math.round(chance(p)*100)+"% "+t("sprout")), x, p.y+48+(LKF-1)*10);
   }
   ctx.textAlign="left";
@@ -763,20 +785,23 @@ function person(p,now){
 function zeroOf(p){ var m=Math.min(p.tai,p.gan,p.ban);
   if(m>3) return null;
   if(m===p.gan) return t("gan"); if(m===p.tai) return t("tai"); return t("ban"); }
-function drawBubble(x,y,txt){
-  ctx.font="12px Georgia"; var wpx=Math.min(240,ctx.measureText(txt).width+18);
-  // naive wrap
+function layoutBubble(txt){
+  ctx.font="12px Georgia";
   var words=txt.split(" "), lines=[], cur="";
   words.forEach(function(w){ if(ctx.measureText(cur+" "+w).width>224){ lines.push(cur); cur=w; } else cur=cur?cur+" "+w:w; });
   lines.push(cur);
-  var hh=lines.length*15+12, ww=Math.min(244, lines.reduce(function(m,l){return Math.max(m,ctx.measureText(l).width);},0)+20);
+  return {lines:lines, hh:lines.length*15+12,
+          ww:Math.min(244, lines.reduce(function(mm,l){return Math.max(mm,ctx.measureText(l).width);},0)+20)};
+}
+function drawBubble(x,y,lay){
+  var lines=lay.lines, hh=lay.hh, ww=lay.ww;
   var bx=Math.max(6,Math.min(W-ww-6,x-ww/2)), by=Math.max(4,y-hh);
   ctx.fillStyle="#fffdf4"; ink(2.5);
   ctx.beginPath();
   if(ctx.roundRect) ctx.roundRect(bx,by,ww,hh,9); else ctx.rect(bx,by,ww,hh);
   ctx.fill(); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(x-6,by+hh); ctx.lineTo(x+6,by+hh); ctx.lineTo(x,by+hh+8); ctx.closePath(); ctx.fillStyle="#fffdf4"; ctx.fill(); ctx.stroke();
-  ctx.fillStyle="#2B2320";
+  ctx.fillStyle="#2B2320"; ctx.font="12px Georgia";
   lines.forEach(function(l,i){ ctx.fillText(l,bx+10,by+18+i*15); });
 }
 
@@ -894,7 +919,7 @@ function actBuild(){ if(S.acts<=0||S.built) return; if(!spend())return;
   }
   render(); renderSheet(); save();
 }
-function floatOn(p,txt,col){ bubbles.push({p:p,txt:txt,until:performance.now()+1200}); }
+function floatOn(p,txt,col){ bubbles.push({p:p,lay:layoutBubble(txt),until:performance.now()+1200}); }
 
 // ---------- the season tick ----------
 function nextSeason(){
@@ -929,7 +954,7 @@ function nextSeason(){
         pendLog(1800,STR.lawLine.vi,STR.lawLine.en);
         pendLog(3400,STR.unProbe.vi,STR.unProbe.en); }
       if(!S.tierTaught){ S.tierTaught=true;
-        pendLog(5200,"🌱 Xưởng mới chỉ là GÁNH hàng — cứ vun chủ xưởng (Dạy/Kết nối), gánh sẽ lên xưởng, lên thương hiệu.",
+        pendLog(5200,"🌱 Xưởng mới mở chỉ là GÁNH hàng — cứ vun người chủ (Dạy/Kết nối): gánh lên xưởng, xưởng lên thương hiệu.",
           "🌱 A new workshop is just a stall — keep tending its owner and it climbs: stall → workshop → brand."); }
     }
     else if(prod(p)>=100){ p.mom=Math.min(0.09,(p.mom||0)+0.03); }                // a tended-but-unlucky sprout pushes harder (capped — no free inevitability)
@@ -974,12 +999,12 @@ function nextSeason(){
   var gtmMax=(S.yearCard===2)?2:1, gtmAmt=(S.yearCard===2)?2:1;
   if(S.gtm && (S.gtmPays|0)<gtmMax && S.cast[1].started){ S.gtmPays=(S.gtmPays|0)+1; S.gtmPaid=true;
     S.von=Math.min(10,S.von+gtmAmt);
-    if(S.yearCard===2){ logMsg(S.gtmPays===1?"🛤 Hàng gốm ra tới huyện — được GIÁ GẤP ĐÔI (+2 vốn). Đường mới còn chở được một chuyến nữa.":"🛤 Chuyến hàng cuối qua đường chợ — sông đầy hẳn lên (+2 vốn).",
+    if(S.yearCard===2){ logMsg(S.gtmPays===1?"🛤 Hàng gốm ra tới huyện — được GIÁ GẤP ĐÔI (+2 vốn). Đường mới còn đi được một chuyến nữa.":"🛤 Chuyến hàng cuối qua đường chợ — sông đầy hẳn lên (+2 vốn).",
                                 S.gtmPays===1?"🛤 The ceramics reach the district — DOUBLE the price (+2 capital). The new road carries one more trip.":"🛤 The last trip down the market road — the river truly rises (+2 capital)."); }
     else logMsg(STR.gtmPaid.vi,STR.gtmPaid.en); }
   // the recycling flywheel: enough TIERS standing and the river feeds itself (a flood year demands deeper roots)
   if(S.yearCard===0 && tierSum()>=4 && tierSum()<6 && !S.floodTaught){ S.floodTaught=true;
-    logMsg("🌊 Bốn bậc xưởng — năm thường sông đã tự đầy. Năm lũ cần SÁU.","🌊 Four tiers standing — an ordinary year, the river would already fill itself. A flood year needs SIX."); }
+    logMsg("🌊 Bốn bậc xưởng — năm thường thì sông đã tự đầy. Năm lũ cần SÁU.","🌊 Four tiers standing — an ordinary year, the river would already fill itself. A flood year needs SIX."); }
   if(tierSum()>=((S.yearCard===0)?6:4) && S.von<10){ S.von=Math.min(10,S.von+1);
     if(!S.flySeen){ S.flySeen=true;
       logMsg("🌊 Xưởng đã đủ vững — dòng sông bắt đầu tự đầy.","🌊 The workshops stand firm — the river begins to fill itself."); } }
@@ -1041,9 +1066,11 @@ var runTok=0;
 function startFinale(){
   S.over=true; S.linking=null; lanterns=[]; render(); renderSheet();
   try{ localStorage.removeItem(SAVE_KEY); }catch(e){}   // the run is over — a returning session starts a fresh year (no season-15 ghost, no double chronicle)
-  banner("🏮",2000);
-  logMsg("Mười sáu mùa đã qua — xóm thắp đèn cho những gì còn đứng.","Sixteen seasons have passed — the xóm lights lanterns for what still stands.");
   var myTok=++runTok, ships=S.ships.slice();
+  banner(ships.length?"🏮":"…",2000);
+  logMsg(ships.length?"Mười sáu mùa đã qua — xóm thắp đèn cho những gì còn đứng.":"Mười sáu mùa đã qua. Không còn mái nào để thắp đèn.",
+         ships.length?"Sixteen seasons have passed — the xóm lights lanterns for what still stands.":"Sixteen seasons have passed. There is nothing left to hang a lantern on.");
+  if(!ships.length) gong(110,1.8,0.04);   // one low gong into the dark
   ships.forEach(function(s,i){
     setTimeout(function(){ if(runTok!==myTok) return;
       var lsc=shipTier(s)===3?1.24:shipTier(s)===1?0.78:1;
@@ -1064,10 +1091,30 @@ function endGame(){
   else if(nB>=4&&ts>=8){ ti=2; tv="Xóm đã thức"; te="The xóm woke up"; gv="những phép nhân đã chạy"; ge="the multiplications are running"; }
   else if(S.built&&nB<=1){ ti=4; tv="Bằng chứng đơn độc"; te="A lonely proof"; gv="một bàn tay đã LÀM"; ge="one hand that BUILT"; }
   else if(ts<=2){ ti=5; tv="Mười sáu mùa lặng"; te="Sixteen quiet seasons"; gv="các thừa số vẫn chờ"; ge="the factors still wait"; }
-  else { ti=3; tv="Những mầm đầu tiên"; te="The first sprouts"; gv="chuyện của một xóm nhỏ"; ge="the story of one small xóm"; }
+  else { ti=3; tv="Những mầm đầu tiên"; te="The first sprouts"; gv="một, rồi sẽ hai"; ge="one, then two"; }
   document.getElementById("endTtl").textContent=(L==="vi")?tv:te;
   document.getElementById("endTag").textContent=(L==="vi")?gv:ge;
-  gong(165,1.4,0.05);
+  // six endings, six moods: color, gong pattern, and one authored image each
+  var TM={1:{c:"#E3A63B",g:[[165,0],[220,400],[262,800]]},
+          2:{c:"#6C8F3D",g:[[165,0],[196,450]]},
+          3:{c:"#D97C8E",g:[[165,0]]},
+          4:{c:"#2E4A62",g:[[131,0]]},
+          5:{c:"#7a6f5d",g:[[110,0]]},
+          6:{c:"#C1443C",g:[[147,0],[147,500],[196,1000]]}};
+  var tm=TM[ti], crd=document.querySelector("#endOvl .card");
+  crd.style.borderColor=tm.c; document.getElementById("endTtl").style.color=tm.c;
+  tm.g.forEach(function(n){ setTimeout(function(){gong(n[0],1.4,0.05);},n[1]); });
+  var oldSeal=crd.querySelector(".seal"); if(oldSeal) oldSeal.remove();
+  var sl=document.createElement("div"); sl.className="seal"; sl.style.borderColor=tm.c; sl.style.color=tm.c;
+  sl.innerHTML=YEAR_CARDS[S.yearCard|0].em+"<small>"+ti+"/6</small>"; crd.appendChild(sl);
+  var AUTH={1:{vi:"Đêm nay đèn sáng từ bến sông tới sân đình.",en:"Tonight the lamps burn from the river landing to the đình yard."},
+            2:{vi:"Bốn mái xưởng gọi nhau qua tiếng gõ.",en:"Four workshop roofs call to each other in hammer-taps."},
+            3:{vi:(blooms[0]?blooms[0].name:"Ai đó")+" là người đầu tiên. Người thứ hai sẽ dễ hơn.",en:(blooms[0]?blooms[0].name:"Someone")+" was the first. The second will come easier."},
+            4:{vi:"Xưởng của bạn sáng đèn một mình. Xóm còn ngủ.",en:"Your workshop keeps its lamp lit alone. The xóm still sleeps."},
+            5:{vi:"Gió đi qua xóm, y như mười sáu mùa trước.",en:"The wind crosses the xóm, just as it did sixteen seasons ago."},
+            6:{vi:(S.stormCount|0)+" mùa giông — mà "+nB+" mái vẫn đứng.",en:(S.stormCount|0)+" storm seasons — and "+nB+" roofs still stand."}};
+  var ap=document.createElement("p"); ap.style.cssText="font-style:italic;text-align:center;color:"+tm.c+";margin:2px 0 8px";
+  ap.textContent=(L==="vi")?AUTH[ti].vi:AUTH[ti].en; b.appendChild(ap);
   // --- beat 2: the thesis as a number — whoever traveled furthest under your hands ---
   var wk=null,bestD=-1;
   S.cast.forEach(function(p){ if(!p.known) return; var d=prod(p)-(p.btai*p.bgan*p.bban); if(d>bestD){bestD=d;wk=p;} });
@@ -1075,30 +1122,29 @@ function endGame(){
   var lead=document.createElement("div"); lead.className="mult";
   lead.innerHTML=(L==="vi"?"Khi bạn đến: ":"When you arrived: ")+wk.btai+" × "+wk.bgan+" × "+wk.bban+" = <b>"+(wk.btai*wk.bgan*wk.bban)+"</b>"
     +"<br>"+(L==="vi"?"Khi bạn đi: ":"When you left: ")+wk.tai+" × "+wk.gan+" × "+wk.ban+" = <b>"+prod(wk)+"</b>"
-    +"<small>"+wk.name+" — "+(L==="vi"?"người đi xa nhất":"who traveled furthest")+" · "+(L==="vi"?"tổng bậc xưởng: ":"workshop tiers standing: ")+tierSum()+" · "+((L==="vi")?YEAR_CARDS[S.yearCard|0].nv:YEAR_CARDS[S.yearCard|0].ne)+"</small>";
+    +"<small>"+wk.name+" — "+(bestD>0?(L==="vi"?"người đi xa nhất":"who traveled furthest"):(L==="vi"?"các con số đã đứng yên mười sáu mùa":"the numbers never moved in sixteen seasons"))+" · "+(L==="vi"?"tổng bậc xưởng: ":"workshop tiers standing: ")+tierSum()+" · "+((L==="vi")?YEAR_CARDS[S.yearCard|0].nv:YEAR_CARDS[S.yearCard|0].ne)+"</small>";
   b.appendChild(lead);
   // 📜 write this run into the village book — and show the book right here, where the itch lives
   var ch=loadChron(); ch.push({ti:ti,tv:tv,te:te,yc:S.yearCard|0,nB:nB,ts:ts,wk:wk.name,then:wk.btai*wk.bgan*wk.bban,now:prod(wk)}); saveChron(ch);
   var seen={}; ch.forEach(function(r){ if(r&&r.ti) seen[r.ti]=1; }); var nSeen=Object.keys(seen).length;
   var row=""; for(var li2=1;li2<=6;li2++) row+=(seen[li2]?"🏮":"○");
-  var HINTS={1:{vi:"Mùa vàng cần năm mầm, mười hai bậc — và tay bạn.",en:"The golden season takes five blooms, twelve tiers — and your own hands."},
+  var HINTS={1:{vi:"Mùa vàng cần năm mầm, mười hai bậc — và chính tay bạn.",en:"The golden season takes five blooms, twelve tiers — and your own hands."},
              2:{vi:"Xóm thức khi bốn mầm nở và xưởng đã vững.",en:"The xóm wakes when four bloom and the workshops stand firm."},
              3:{vi:"Chỉ cần một mầm nở.",en:"It takes just one bloom."},
-             4:{vi:"Một năm chỉ xây món của MÌNH — không vun ai quá một mầm.",en:"A year of building only YOUR thing — let almost nothing else bloom."},
-             5:{vi:"Một năm buông tay — xem xóm tự xoay ra sao.",en:"A year of letting go — see how the xóm fares alone."},
+             4:{vi:"Một năm chỉ lo xây món của MÌNH — đừng để quá một mầm nở.",en:"A year of building only YOUR thing — let almost nothing else bloom."},
+             5:{vi:"Một năm buông tay — xem xóm tự xoay xở ra sao.",en:"A year of letting go — see how the xóm fares alone."},
              6:{vi:"Một năm trời âm u sáu mùa — mà vẫn giữ được ba mầm.",en:"A year of six storm seasons — and still three blooms held."}};
   var next=null; for(var hi=1;hi<=6;hi++){ if(!seen[hi]){ next=hi; break; } }
-  var chp=document.createElement("p"); chp.style.cssText="font-size:12.5px;color:#7a6f5d";
+  var chp=document.createElement("p"); chp.style.cssText="font-size:12.5px;color:#7a6f5d;margin-top:10px";
   chp.textContent="📜 "+(L==="vi"?"kết đã thấy ":"endings seen ")+row+" "+nSeen+"/6"
     +(next?(" — "+((L==="vi")?HINTS[next].vi:HINTS[next].en)):"");
-  b.appendChild(chp);
   // --- beat 3: epilogues, three highest-signal; the rest fold away ---
   var eps=[];
   function ep(pri,vi,en){ eps.push({pri:pri,vi:vi,en:en}); }
   if(blooms.length) ep(10,"Đã nảy mầm: "+blooms.map(function(p){return p.name;}).join(", ")+(S.built?" — và sản phẩm của chính bạn.":"."),
                          "Bloomed: "+blooms.map(function(p){return p.name;}).join(", ")+(S.built?" — and your own product.":"."));
-  else ep(10,S.built?"Chỉ có sản phẩm của bạn đứng đó — một bằng chứng đơn độc.":"Không gì nảy mầm. Ai cũng đã chăm chỉ — trên thừa số của riêng mình.",
-             S.built?"Only your own product stands — a lonely proof.":"Nothing bloomed. Everyone worked hard — each on their own factor.");
+  else ep(10,S.built?"Bốn mùa gõ, một mái xưởng — và cả xóm đi ngang, nhìn vào.":"Không gì nảy mầm. Ai cũng đã chăm chỉ — trên thừa số của riêng mình.",
+             S.built?"Four seasons of hammering, one roof — and the whole xóm walked past, looking in.":"Nothing bloomed. Everyone worked hard — each on their own factor.");
   var lienEnd=S.cast[6];
   if(lienEnd.gone) ep(9,"Cô Liên đã về — rồi đi. Thừa số BẠN của cô, không ai kịp vun.",
                         "Cô Liên came home — then left. Her ALLIES factor, no one tended in time.");
@@ -1127,6 +1173,7 @@ function endGame(){
     sm.textContent=t("more"); sm.style.cssText="cursor:pointer;font-size:12px;color:#7a6f5d"; det.appendChild(sm);
     eps.slice(3).forEach(function(e){ var d=document.createElement("p"); d.textContent=(L==="vi")?e.vi:e.en; d.style.fontSize="13px"; det.appendChild(d); });
     b.appendChild(det); }
+  b.appendChild(chp);   // the village book is a footer between the stories and the question
   document.getElementById("endLine").textContent=(L==="vi")
     ? "Đừng hỏi “ai sẽ là Steve Jobs Việt Nam?” Hãy hỏi: “thừa số nào đang bằng không ở chỗ tôi đứng — và tay tôi xoay được bao nhiêu?”"
     : "Don't ask “who will be Vietnam's Steve Jobs?” Ask: “which factor sits at zero where I stand — and how far can my own hand turn it?”";
@@ -1139,7 +1186,7 @@ function cur(){ return S.sel>=0?S.cast[S.sel]:null; }
 function render(){
   var sn=STR.seasons[L][S.season%4], yr=2026+Math.floor(S.season/4);
   el("seasonPill").textContent=YEAR_CARDS[S.yearCard|0].em+" "+sn+" "+yr+" · "+Math.min(S.season+1,16)+"/16"+(S.probeSeen?(" → "+(S.luatNext>=4?"☀️":"☁️")):"");
-  var tp=el("tierPill"); if(tp){ var tsNow=tierSum(); tp.style.display=(S.tierTaught&&tsNow>0)?"":"none"; tp.textContent="🏯 "+tsNow+(L==="vi"?" bậc":" tiers"); }
+  var tp=el("tierPill"); if(tp){ var tsNow=tierSum(); tp.style.display=(S.tierTaught&&tsNow>0)?"":"none"; tp.textContent="🪜 "+tsNow+(L==="vi"?" bậc":" tiers"); }
   el("actPill").textContent="⚡ "+S.acts;
   el("subttl").textContent=t("sub"); el("foot").textContent=t("foot");
   el("huiLbl").textContent=t("hui"); el("buildLbl").textContent=t("build");
@@ -1206,7 +1253,7 @@ el("teachBtn").onclick=actTeach; el("nerveBtn").onclick=actNerve; el("linkBtn").
 el("huiBtn").onclick=actHui; el("buildBtn").onclick=actBuild; el("probeBtn").onclick=actProbe; el("shelBtn").onclick=actShel;
 el("againBtn").onclick=function(){ el("endOvl").classList.remove("show"); try{localStorage.removeItem(SAVE_KEY);}catch(e){} fresh(); S.sel=-1;
   var c2=loadChron(); if(c2.length){ var last=c2[c2.length-1], sn2={}; c2.forEach(function(r){if(r&&r.ti)sn2[r.ti]=1;});
-    logMsg("📜 Sổ xóm ghi: "+last.tv+" · kết đã thấy "+Object.keys(sn2).length+"/6.","📜 The village book records: "+last.te+" · endings seen "+Object.keys(sn2).length+"/6."); }
+    logMsg("📜 Sổ xóm ghi: "+last.tv+".","📜 The village book records: "+last.te+"."); void sn2; }
   render(); renderSheet(); renderLog(); };
 el("resetLink").onclick=function(e){ e.preventDefault(); try{localStorage.removeItem(SAVE_KEY);}catch(_){} el("endOvl").classList.remove("show"); fresh(); S.sel=-1; setLang(L); el("intro").classList.add("show"); };
 

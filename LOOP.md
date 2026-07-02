@@ -37,4 +37,4 @@
 - anything outward-facing beyond this repo/Pages site.
 
 ## Compass pointer
-- next cycle: fresh review round, rotated lenses (suggest: perf/render prerender pass [deferred from code-health] · endings/emotional payoff quality · VI copy on all v0.14-15 additions). *(…v0.13 balance · v0.14 Year Cards · v0.15 cards-real + honest-gate done)*
+- next cycle: fresh review round, rotated lenses (suggest: a FULL cold playthrough of the finished arc [the game is feature-rich now — does it hold together?] · mobile real-device ergonomics · what's MISSING for a public 1.0 [icon, share/meta tags, README refresh, itch-style landing]). *(…v0.14 Year Cards · v0.15 cards-real · v0.16 six-endings + perf done)*

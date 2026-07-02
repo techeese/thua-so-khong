@@ -1,9 +1,37 @@
 # Changelog — Thừa Số Không
 
+## v0.16 — 2026-07-02 — LOOP v2, cycle 7: six endings, six moods — and a 43% lighter frame
+
+**Endings (payoff review):**
+- **Six endings are six objects now:** each title colors the card and its heading, plays its own gong pattern
+  (the golden year a rising triad; the quiet year one low note), and speaks **one authored image unique to the run**
+  (*"Bốn mái xưởng gọi nhau qua tiếng gõ." · "Xưởng của bạn sáng đèn một mình. Xóm còn ngủ." ·
+  "7 mùa giông — mà 3 mái vẫn đứng."*).
+- **The seal 🧧** — the con dấu was the antagonist all run; at year's end **the xóm stamps its own book**: a red
+  triện-style seal (year-card glyph + title n/6) tilted on the card's corner. Six visibly different trophies.
+- **The quiet ending is silence, not a bug:** zero workshops now gets *"Không còn mái nào để thắp đèn."* and one
+  low gong into the dark; unmoved numbers are captioned honestly (*"các con số đã đứng yên mười sáu mùa"*)
+  instead of "traveled furthest."
+- The chronicle row moved to a **footer** (it was interrupting the emotional spine), the Play-again recap de-duped,
+  title 4's self-repeating epilogue replaced (*"Bốn mùa gõ, một mái xưởng — và cả xóm đi ngang, nhìn vào."*),
+  title 3's tag sharpened (*"một, rồi sẽ hai"*).
+
+**Performance (spec'd, verified, pixel-identical):**
+- The static **điệp ground prerenders to an offscreen canvas** (365 draw calls → 1 drawImage per frame);
+  bubbles lay out **once at creation** (was ~22 measureText × 216 frames each); the depth pass is **pooled and
+  closure-free**; font strings cache on LKF change; cloud color hoisted. **≈43% fewer canvas calls/frame,
+  near-zero hot-path allocation** — a real difference on phones.
+
+**Vietnamese (native pass on v0.14–15 strings):**
+- **Năm đoàn viên → Năm đoàn tụ** (đoàn viên reads as Youth-Union member — an accidental register clash) and lamps
+  now *lụi* (not *hạ*); the tier teach line uncircled (*"cứ vun người chủ: gánh lên xưởng, xưởng lên thương hiệu"*);
+  the market road no longer *chở* (roads don't carry — trips do); HINT 4 de-garbled; **🏯 → 🪜** (a Japanese castle
+  had no place in this xóm; a ladder is literally "bậc"); + 4 more drop-ins.
+
 ## v0.15 — 2026-07-02 — LOOP v2, cycle 6: the cards become real, the gate becomes honest (3 reviewers → 17 shipped)
 
 **Year cards, made playable (cards-in-play review):**
-- **🧧 A FIFTH card — Năm đoàn viên (the reunion year):** the sampan docks at season 2 and the elder's hands begin to
+- **🧧 A FIFTH card — Năm đoàn tụ (the reunion year):** the sampan docks at season 2 and the elder's hands begin to
   fail at season 5 — the only year where WHEN matters more than WHAT. (*"thuyền về sớm, mà đèn nhà ai cũng hạ sớm"*)
 - **🌊 Flood is no longer a null draw:** the hụi cap rises to 4 (the flavor line finally tells the truth), and the
   village teaches the moved flywheel threshold (*"năm thường sông đã tự đầy — năm lũ cần SÁU"*).
