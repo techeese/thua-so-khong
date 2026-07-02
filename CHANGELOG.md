@@ -1,5 +1,40 @@
 # Changelog — Thừa Số Không
 
+## v0.24 — 2026-07-02 — LOOP v2, cycle 13: the arrival gets its moment, the vow gets its grief, 120Hz gets its time
+
+**The staged opening, tuned (cold-player review):**
+- **Newcomers walk in silently and speak AT THEIR DOOR** — the quote used to hang over an empty house while the
+  figure was still on the road (bubbles also now track walking figures). Arrivals get their own rising two-note
+  motif (D→G), distinct from every other sound.
+- **A dirt road now exists** — two wavering ochre strokes from the frame's edge to the đình yard — and when
+  tomorrow brings someone, **a faded figure is already visible far down it**. The empty village reads as promise,
+  wordlessly.
+- **Flood years run their hụi from day one** (the card line was selling a verb that didn't exist for two seasons);
+  new-button lines now wait until the newcomer has spoken; the reunion sampan docks as its own beat, not on top of
+  Chú Ba's arrival.
+
+**Constraint runs, honest and felt (constraints review — with 3000-run sims):**
+- **BUG: the picker's lit glyph went stale** after a constrained run — trusting it gave a silently unconstrained
+  run. Cleared at the single choke point.
+- **Cô Liên's tragedy names the vow, in her voice:** *"Năm nay không ai nối ai với ai… chắc tôi lại vào Nam."* —
+  and her departure line knows it too. (Sim: she leaves 44% of no-link runs even at optimal play. Intended.)
+- The village book now shows **⛓ which vows you've kept** (beside years and endings); flood + no-hụi is PROVEN
+  survivable (the constrained player actually earns more tiers — the flywheel is the deeper answer), and its card
+  line acknowledges the vow: *"Chỉ rễ sâu mới gọi được nước."* Difficulty ladder, intended and documented:
+  **no-teach < no-hụi < no-link.**
+
+**The print, corrected (visual review — with rendered screenshots):**
+- **Effects now run in TIME, not frames** — on 120Hz phones/laptops every animation was playing at double speed
+  (the stamp's dread lasted 0.4s). Stamps, motes, glows, petals, walks — all fps-invariant now.
+- **Clustered villagers no longer print name-gibberish** (per-frame label collision), workshop labels sit clear of
+  the wall stroke (the fake-hyphen bug), lanterns draw behind people and hang from actual eaves, **nobody stands in
+  the river anymore** (the people-floor follows the water level — Liên's riverbank drift kept her legs dry),
+  visitors stride at double pace so far walkers actually reach the đình circle, the falling stamp casts a growing
+  shadow where it will land, and a banned verb is struck in RED at full opacity — unmistakable vs. merely disabled.
+
+Gates ×3 green (incl. both full-run playthroughs), probes 6/6, season-0 render verified.
+Note for future gates: plain headless --window-size clamps at 500px — true 390px testing needs CDP emulation.
+
 ## v0.23 — 2026-07-02 — LOOP v2, cycle 12: ⛓ constraint runs — tie one of your own hands
 
 The replay reviewer proved it (v0.21 analysis): only REMOVING a verb forces genuinely new play. Now, once your village

@@ -130,7 +130,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.23</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.24</span></div>
 </div>
 
 <!-- intro -->
@@ -391,14 +391,18 @@ function fresh(){
   S.yearCard=pool[Math.floor(Math.random()*pool.length)];
   S.gtmPays=0;
   S.constraint=window._pendCon|0; window._pendCon=0;   // the hand the player tied on the intro card
+  try{ document.querySelectorAll(".con").forEach(function(x){x.classList.remove("on");}); }catch(e){}
   if((function(){ try{ return loadChron().length>0; }catch(e){ return false; } })()){
     S.nudged=true; S.revealSeen=true; S.hintDone=true; S.vet=true;   // the book remembers — no training wheels on run 2+
   }
-  if(S.yearCard===0) S.von=1;                             // a flood year: the river starts foul — the hụi is truly the only water
+  if(S.yearCard===0){ S.von=1; S.un.hui=true; }           // a flood year: the river starts foul — and the xóm is already running its hụi
   if(S.yearCard===1) S.un.probe=true;                     // the strict year posts notices from day one
   if(S.yearCard===4){ S.cast[6].arrives=2; S.baFadeStart=5; }   // the reunion year: both people-clocks come early
   S.luatNext=driftLuat(S.luat);
-  S.log.unshift({vi:YEAR_CARDS[S.yearCard].fv,en:YEAR_CARDS[S.yearCard].fe});
+  S.log.unshift((S.yearCard===0&&(S.constraint|0)===1)
+    ?{vi:"🌊 Năm lũ — sông khó tự đầy, mà năm nay bạn không góp hụi. Chỉ rễ sâu mới gọi được nước.",
+      en:"🌊 A flood year — and you've sworn off the hụi. Only deep roots call the water now."}
+    :{vi:YEAR_CARDS[S.yearCard].fv,en:YEAR_CARDS[S.yearCard].fe});
 }
 function prod(p){ return p.tai*p.gan*p.ban; }
 function chance(p){ return Math.min(0.85, prod(p)/1000*0.9*(0.6+0.4*S.von/10)+(p.mom||0)); }   // mom = a tended sprout pushing at the soil
@@ -429,9 +433,11 @@ function renderChron(){
   var row=""; for(var i=1;i<=6;i++) row+=(seen[i]?"🏮":"○");
   var seenYc2={}; c.forEach(function(r){ if(r&&Number.isFinite(r.yc)) seenYc2[r.yc]=1; });
   var ycRow2=["🌊","📋","🛤","🍵","🧧"].map(function(g,gi){ return seenYc2[gi]?g:"·"; }).join("");
+  var seenCn2={}; c.forEach(function(r){ if(r&&r.cn) seenCn2[r.cn]=1; });
+  var cnRow2s=Object.keys(seenCn2).length?(" · ⛓ "+[1,2,3].map(function(n){return seenCn2[n]?CONSTRAINTS[n].g:"·";}).join("")):"";
   el2.textContent=(L==="vi"?"📜 Sổ xóm — mùa trước: ":"📜 Village book — last time: ")
     +((L==="vi"?last.tv:last.te)||"—")+" · "+(last.nB|0)+(L==="vi"?" xưởng":" workshops")
-    +" · "+(L==="vi"?"kết đã thấy ":"endings seen ")+row+" "+n+"/6 · "+ycRow2;
+    +" · "+(L==="vi"?"kết đã thấy ":"endings seen ")+row+" "+n+"/6 · "+ycRow2+cnRow2s;
 }
 
 // ---------- save / load (NaN-safe) ----------
@@ -516,6 +522,7 @@ function bubble(p,txt){ bubbles.push({p:p,lay:layoutBubble(txt),until:performanc
 function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); shake=1; beep(85,0.35,0.07); buzz(60); }
 var shake=0, glows=[], lanterns=[];
 var dlBuf=[]; function dlCmp(a,b){ return a.z-b.z; }
+var lblR=[];   // per-frame label rects — clustered villagers don't print gibberish
 var motes=[];   // 📖 book motes — the class visibly leaves Cô Mai's workshop for each student
 // people go WHERE their story happens — a visit overrides idle wander for a few seconds
 var DINH={x:470,y:265}, CHO={x:560,y:490}, BEN={x:80,y:H-75};   // đình steps · market stall · river landing
@@ -524,8 +531,9 @@ var CONSTRAINTS={1:{g:"🚫🪙",nv:"năm không hụi",ne:"the no-hụi year"},
                  2:{g:"🚫🤝",nv:"năm không kết nối",ne:"the no-linking year"},
                  3:{g:"🚫📖",nv:"năm không dạy",ne:"the no-teaching year"}};
 function conBan(n){ return (S.constraint|0)===n; }
+function peopleFloor(){ return Math.min(H-70, H-(26+S.von*5.5)-30); }   // nobody stands in the river
 function visit(p,x,y,ms){ if(!p||p.gone) return;
-  p.vx=Math.max(40,Math.min(W-40,x)); p.vy=Math.max(230,Math.min(H-70,y));
+  p.vx=Math.max(40,Math.min(W-40,x)); p.vy=Math.max(230,Math.min(peopleFloor(),y));
   p.vUntil=performance.now()+(ms||5000);
   p.tx=p.vx+(Math.random()-0.5)*26; p.ty=p.vy+(Math.random()-0.5)*12; }
 function buzz(v){ if(META.muted) return; try{ if(navigator.vibrate) navigator.vibrate(v); }catch(e){} }
@@ -553,13 +561,14 @@ var amb=[]; // seasonal drift: blossom in spring, leaves in autumn
 var LKF=1, _lkfLast=-1, FONT_LBL="700 11px sans-serif", FONT_HINT="10px sans-serif";  // label compensation + cached font strings
 function haloText(txt,x,y){ ctx.strokeStyle="#EAD9B8"; ctx.lineWidth=3; ctx.lineJoin="round"; ctx.strokeText(txt,x,y); ctx.fillText(txt,x,y); }
 function drawScene(now){
+  var F=Math.min(2.5,(now-(window._pn||now))/16.7)||1; window._pn=now; window._pnF=F;   // effects run in TIME, not frames (120Hz-safe)
   var kk=cv.width/W; ctx.setTransform(kk,0,0,kk,0,0);
   LKF=Math.min(2.2, W/Math.max(1,(cv.width/DPR)));
   if(LKF!==_lkfLast){ _lkfLast=LKF;
     FONT_LBL="700 "+Math.round(11*LKF)+"px sans-serif";
     FONT_HINT=Math.round(10*LKF)+"px sans-serif"; }
   // the whole print jolts when the stamp falls
-  if(shake>0.01){ ctx.translate((Math.random()-0.5)*12*shake,(Math.random()-0.5)*8*shake); shake*=0.88; } else shake=0;
+  if(shake>0.01){ ctx.translate((Math.random()-0.5)*12*shake,(Math.random()-0.5)*8*shake); shake*=Math.pow(0.88,F); } else shake=0;
   // paper — điệp ground (prerendered in buildGround / fit)
   if(groundCv.width!==cv.width||groundCv.height!==cv.height) buildGround();
   ctx.drawImage(groundCv,0,0,W,H);
@@ -608,6 +617,18 @@ function drawScene(now){
 
   // --- village furniture ---
   banyan(80,240,now);
+  // the dirt road the xóm arrives by — two wavering ochre strokes from the frame edge to the đình yard
+  ctx.strokeStyle="rgba(160,130,80,.25)"; ctx.lineWidth=7; ctx.lineCap="round";
+  ctx.beginPath(); ctx.moveTo(W+4,336); ctx.quadraticCurveTo(760,346,560,318); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W+4,348); ctx.quadraticCurveTo(770,360,566,330); ctx.stroke();
+  // a faded figure far down the road when tomorrow brings someone
+  if(!S.over && S.cast.some(function(p3){ return p3.id!==6&&!p3.gone&&p3.arrives===S.season+1; })){
+    ctx.save(); ctx.globalAlpha=0.35; ctx.translate(W-26,342); ctx.scale(0.5,0.5);
+    ink(2.5); ctx.fillStyle="#8a7a5f";
+    ctx.beginPath(); ctx.ellipse(0,-14,7,9,0,0,6.28); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-5,-6); ctx.lineTo(5,-6); ctx.lineTo(4,8); ctx.lineTo(-4,8); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.restore();
+  }
   dinh(470,158);
   house(210,235,"#c98a5a"); house(660,225,"#b8797a"); house(840,250,"#c9a35a");
   banana(905,410,now);
@@ -621,18 +642,35 @@ function drawScene(now){
     ctx.setLineDash([]); ctx.restore(); }
 
   // --- bloom glows (a warm ring opening under a new workshop) ---
-  motes=motes.filter(function(mo){ mo.t+=0.016; if(mo.t<0) return true; var k3=Math.min(1,mo.t/1.1);
+  motes=motes.filter(function(mo){ mo.t+=0.016*F; if(mo.t<0) return true; var k3=Math.min(1,mo.t/1.1);
     var mx=mo.x0+(mo.x1-mo.x0)*k3, my=mo.y0+(mo.y1-mo.y0)*k3-Math.sin(k3*Math.PI)*46;
     ctx.font=Math.round(13*LKF)+"px sans-serif"; ctx.textAlign="center"; ctx.globalAlpha=0.9-0.5*k3;
     ctx.fillText(mo.g||"📖",mx,my); ctx.globalAlpha=1;
     return k3<1; });
-  glows=glows.filter(function(gl){ gl.t+=0.02; var r=18+gl.t*95, a=Math.max(0,0.55-gl.t*0.6);
+  glows=glows.filter(function(gl){ gl.t+=0.02*F; var r=18+gl.t*95, a=Math.max(0,0.55-gl.t*0.6);
     ctx.beginPath(); ctx.arc(gl.x,gl.y,r,0,6.28);
     ctx.fillStyle="rgba(227,166,59,"+(a*0.3).toFixed(3)+")"; ctx.fill();
     ctx.strokeStyle="rgba(227,166,59,"+a.toFixed(3)+")"; ctx.lineWidth=2.5; ctx.stroke();
     return gl.t<1; });
 
   // --- workshops + people in ONE depth pass (near things draw over far things) ---
+  // --- lanterns draw BEHIND the depth pass (people and roofs win); strings leave the eave itself ---
+  if(!S.over && S.season>=13){
+    S.ships.forEach(function(s2){ var t2=shipTier(s2), sc2=t2===3?1.24:t2===1?0.78:1;
+      var lx=s2.x+34*sc2, ly=s2.y+6;
+      ink(2); ctx.beginPath(); ctx.moveTo(lx,ly-16); ctx.lineTo(lx,ly-11); ctx.stroke();
+      ctx.fillStyle="#c9bb9d"; ctx.beginPath(); ctx.ellipse(lx,ly,8,11,0,0,6.28); ctx.fill(); ctx.stroke();
+      ctx.fillStyle="#b0a284"; ctx.fillRect(lx-4,ly-11,8,3); ctx.fillRect(lx-3,ly+10,6,5);
+    });
+  }
+  lanterns.forEach(function(ln){ var fl2=Math.sin(now*0.006+ln.ph)*1.5;
+    ink(2); ctx.beginPath(); ctx.moveTo(ln.x,ln.y-16+fl2); ctx.lineTo(ln.x,ln.y-11+fl2); ctx.stroke();
+    ctx.fillStyle="rgba(227,166,59,.16)"; ctx.beginPath(); ctx.arc(ln.x,ln.y+fl2,16,0,6.28); ctx.fill();
+    ctx.fillStyle="#C1443C";
+    ctx.beginPath(); ctx.ellipse(ln.x,ln.y+fl2,8,11,0,0,6.28); ctx.fill(); ctx.stroke();
+    ctx.fillStyle="#E3A63B"; ctx.fillRect(ln.x-4,ln.y-11+fl2,8,3); ctx.fillRect(ln.x-3,ln.y+10+fl2,6,5);
+  });
+  lblR.length=0;
   var dn=0, di, de;
   for(di=0;di<S.ships.length;di++){ de=dlBuf[dn]||(dlBuf[dn]={z:0,s:null,p:null});
     de.z=S.ships[di].y+30; de.s=S.ships[di]; de.p=null; dn++; }
@@ -641,23 +679,6 @@ function drawScene(now){
   dlBuf.length=dn; dlBuf.sort(dlCmp);
   for(di=0;di<dn;di++){ de=dlBuf[di]; if(de.s) workshop(de.s,now); else person(de.p,now); }
 
-  // --- from season 13, unlit paper lanterns hang on standing workshops — the xóm prepares to count ---
-  if(!S.over && S.season>=13){
-    S.ships.forEach(function(s2){ var t2=shipTier(s2), sc2=t2===3?1.24:t2===1?0.78:1;
-      var lx=s2.x+34*sc2, ly=s2.y-8*sc2;
-      ink(2); ctx.beginPath(); ctx.moveTo(lx,ly-22); ctx.lineTo(lx,ly-14); ctx.stroke();
-      ctx.fillStyle="#c9bb9d"; ctx.beginPath(); ctx.ellipse(lx,ly,8,11,0,0,6.28); ctx.fill(); ctx.stroke();
-      ctx.fillStyle="#b0a284"; ctx.fillRect(lx-4,ly-14,8,3); ctx.fillRect(lx-3,ly+10,6,5);
-    });
-  }
-  // --- finale lanterns (beat 1: the xóm lights what stands) ---
-  lanterns.forEach(function(ln){ var fl2=Math.sin(now*0.006+ln.ph)*1.5;
-    ink(2); ctx.beginPath(); ctx.moveTo(ln.x,ln.y-22+fl2); ctx.lineTo(ln.x,ln.y-14+fl2); ctx.stroke();   // the string
-    ctx.fillStyle="rgba(227,166,59,.16)"; ctx.beginPath(); ctx.arc(ln.x,ln.y+fl2,16,0,6.28); ctx.fill();
-    ctx.fillStyle="#C1443C";
-    ctx.beginPath(); ctx.ellipse(ln.x,ln.y+fl2,8,11,0,0,6.28); ctx.fill(); ctx.stroke();
-    ctx.fillStyle="#E3A63B"; ctx.fillRect(ln.x-4,ln.y-14+fl2,8,3); ctx.fillRect(ln.x-3,ln.y+10+fl2,6,5);
-  });
 
   // --- first-tap hint: a pulsing ring until you've talked to anyone ---
   if(!S.over && !S.cast.some(function(p){return p.known;})){
@@ -676,9 +697,10 @@ function drawScene(now){
   }
 
   // --- stamps (the law crushing) ---
-  stamps=stamps.filter(function(st){ st.t+=0.016; var k=Math.min(1,st.t/0.8);
+  stamps=stamps.filter(function(st){ st.t+=0.016*F; var k=Math.min(1,st.t/0.8);
     var yy=136+(st.y-136)*k*k;   // starts with its top edge in the cloud layer (yy-46 = 90)
-    if(k<1){ ctx.fillStyle="rgba(70,70,84,"+(0.22*(1-k)).toFixed(3)+")"; ctx.fillRect(0,0,W,118); }   // the sky itself darkens — the stamp comes from up there
+    if(k<1){ ctx.fillStyle="rgba(70,70,84,"+(0.22*(1-k)).toFixed(3)+")"; ctx.fillRect(0,0,W,118);   // the sky itself darkens — the stamp comes from up there
+      ctx.fillStyle="rgba(43,35,32,"+(0.25*k).toFixed(3)+")"; ctx.beginPath(); ctx.ellipse(st.x,st.y+14,26*k,7*k,0,0,6.28); ctx.fill(); }   // its shadow grows where it will land
     ctx.save(); ctx.globalAlpha=st.t>1.4?Math.max(0,1-(st.t-1.4)/0.5):1;
     ctx.fillStyle="#5a5a66"; ink(3);
     ctx.fillRect(st.x-30,yy-46,60,34); ctx.strokeRect(st.x-30,yy-46,60,34);
@@ -688,7 +710,7 @@ function drawScene(now){
     ctx.restore(); return st.t<2.0; });
 
   // --- petals ---
-  parts=parts.filter(function(q){ q.x+=q.vx; q.y+=q.vy; q.vy+=0.05; q.rot+=q.vr; q.life-=0.012;
+  parts=parts.filter(function(q){ q.x+=q.vx*F; q.y+=q.vy*F; q.vy+=0.05*F; q.rot+=q.vr*F; q.life-=0.012*F;
     ctx.save(); ctx.translate(q.x,q.y); ctx.rotate(q.rot); ctx.globalAlpha=Math.max(0,q.life);
     ctx.fillStyle=q.col; ctx.beginPath(); ctx.ellipse(0,0,q.r,q.r*0.62,0,0,6.28); ctx.fill(); ctx.restore();
     return q.life>0; });
@@ -713,7 +735,7 @@ function drawScene(now){
   // --- speech bubbles ---
   var nnow=now;
   bubbles=bubbles.filter(function(b){ return b.until>nnow; });
-  bubbles.forEach(function(b){ drawBubble(b.p.x, b.p.y-66, b.lay); });
+  bubbles.forEach(function(b){ drawBubble(b.p.drawX!==undefined?b.p.drawX:b.p.x, b.p.y-66, b.lay); });
 
   // --- banner queue (bloom / sampan / season — shown one after another) ---
   if(!S.banner && S.banners && S.banners.length){ var nb=S.banners.shift(); S.banner={txt:nb.txt,until:nnow+nb.dur}; }
@@ -816,7 +838,7 @@ function workshop(s,now){
   ctx.font=FONT_LBL; ctx.fillStyle="#2B2320"; ctx.textAlign="center";
   var word=tr===1?(L==="vi"?"gánh":"stall"):tr===2?(L==="vi"?"xưởng":"shop"):(L==="vi"?"thương hiệu":"brand");
   var lbl=(S.sel===s.pid||s.yours)?(word+" "+s.owner):word;
-  haloText(lbl, x, y+32*sc+(LKF-1)*6);
+  haloText(lbl, x, y+30*sc+11+(LKF-1)*6);
   ctx.textAlign="left";
 }
 function person(p,now){
@@ -826,12 +848,13 @@ function person(p,now){
   if(d<2){ if(Math.random()<0.006){
       var cx2=visiting?p.vx:p.hx, cy2=visiting?p.vy:p.hy, rw=visiting?26:(S.luat<4?44:110), rh=visiting?12:(S.luat<4?20:46);
       p.tx=cx2+(Math.random()-0.5)*rw; p.ty=cy2+(Math.random()-0.5)*rh;   // storms huddle people near their own roof
-      p.tx=Math.max(40,Math.min(W-40,p.tx)); p.ty=Math.max(230,Math.min(H-70,p.ty)); } }
-  else { p.x+=dx/d*(visiting?0.7:0.45); p.y+=dy/d*(visiting?0.7:0.45); }
+      p.tx=Math.max(40,Math.min(W-40,p.tx)); p.ty=Math.max(230,Math.min(peopleFloor(),p.ty)); } }
+  else { var spd=(visiting?1.4:0.45)*(window._pnF||1); p.x+=dx/d*spd; p.y+=dy/d*spd; }
   var bob=Math.sin(now*0.006+p.ph)*(d>2?2.2:0.8);
   var awk=p.arriveT?Math.min(1,(now-p.arriveT)/1800):1;
   if(awk>=1) p.arriveT=0;
   var x=p.x+(1-awk)*(W+70-p.x), y=p.y+bob+(awk<1?Math.abs(Math.sin(now*0.02))*2:0), sc=p.young?0.85:1;
+  p.drawX=x;
   // shadow — flat and light (a print barely casts one)
   ctx.fillStyle="rgba(43,35,32,.10)"; ctx.beginPath(); ctx.ellipse(x,p.y+22,15,4.4,0,0,6.28); ctx.fill();
   ctx.save(); ctx.translate(x,y); ctx.scale(sc,sc);
@@ -863,11 +886,15 @@ function person(p,now){
     ctx.beginPath(); ctx.ellipse(x,p.y-4,22,30,0,0,6.28); ctx.stroke(); ctx.setLineDash([]); }
   // name + zero hint — paper-haloed and phone-compensated
   ctx.font=FONT_LBL; ctx.textAlign="center"; ctx.fillStyle="#2B2320";
-  haloText(p.name,x,p.y+36+(LKF-1)*4);
-  if(p.known && !p.started){
-    var z=zeroOf(p);
-    ctx.font=FONT_HINT; ctx.fillStyle="#C1443C";
-    haloText(z? ((L==="vi"?"số không: ":"zero: ")+z) : (Math.round(chance(p)*100)+"% "+t("sprout")), x, p.y+48+(LKF-1)*10);
+  var lw=ctx.measureText(p.name).width, ly2=p.y+36+(LKF-1)*4;
+  var clash=lblR.some(function(r){ return Math.abs(r[1]-ly2)<14*LKF && Math.abs(r[0]-x)<(r[2]+lw)/2+6; });
+  if(!clash||S.sel===p.id){
+    haloText(p.name,x,ly2); lblR.push([x,ly2,lw]);
+    if(p.known && !p.started){
+      var z=zeroOf(p);
+      ctx.font=FONT_HINT; ctx.fillStyle="#C1443C";
+      haloText(z? ((L==="vi"?"số không: ":"zero: ")+z) : (Math.round(chance(p)*100)+"% "+t("sprout")), x, p.y+48+(LKF-1)*10);
+    }
   }
   ctx.textAlign="left";
 }
@@ -921,8 +948,8 @@ function selectPerson(id){
 // verbs arrive one at a time, as the story needs them — never all at once
 function unlockCheck(){
   if(!S.un.link && S.cast.filter(function(p){return p.known;}).length>=2){ S.un.link=true; if(!S.vet) logMsg(STR.unLink.vi,STR.unLink.en); beep(784,0.08,0.02); }
-  if(!S.un.hui && S.season>=2){ S.un.hui=true; if(!S.vet) logMsg(STR.unHui.vi,STR.unHui.en); }
-  if(!S.un.build && S.season>=4){ S.un.build=true; if(!S.vet) logMsg(STR.unBuild.vi,STR.unBuild.en); }
+  if(!S.un.hui && S.season>=2){ S.un.hui=true; if(!S.vet) pendLog(2800,STR.unHui.vi,STR.unHui.en); }   // after the newcomer has spoken
+  if(!S.un.build && S.season>=4){ S.un.build=true; if(!S.vet) pendLog(2800,STR.unBuild.vi,STR.unBuild.en); }
 }
 
 // ---------- actions ----------
@@ -1144,28 +1171,34 @@ function nextSeason(){
   S.cast.forEach(function(p){
     if(p.id===6) return;   // the sampan has its own beat below
     if(active(p)&&_preActive.indexOf(p.id)<0){ p.arriveT=performance.now();
-      bubble(p,quoteFor(p)); beep(523,0.08); }
+      (function(pp){ var ctok=runTok; setTimeout(function(){
+        if(!S.over&&runTok===ctok){ bubble(pp,quoteFor(pp)); beep(294,0.07,0.03);
+          setTimeout(function(){beep(392,0.09,0.03);},120); } },1900); })(p);   // walk first, speak at the door
+    }
   });
   unlockCheck();
   // 🛶 the returnee — arrives by sampan; stays only if the xóm gives her roots
   var lien=S.cast[6];
   if(S.season===lien.arrives && !lien.gone){
-    lien.x=60; lien.y=H-70; lien.bhx=lien.hx; lien.bhy=lien.hy; lien.tx=lien.hx; lien.ty=lien.hy;
-    banner("🛶 "+lien.name,2300);
+    lien.x=60; lien.y=Math.min(H-70,peopleFloor()); lien.bhx=lien.hx; lien.bhy=lien.hy; lien.tx=lien.hx; lien.ty=lien.hy;
+    (function(){ var ctok=runTok; setTimeout(function(){ if(S.over||runTok!==ctok) return;
+      banner("🛶 "+lien.name,2300);
     logMsg("🛶 Một chiếc thuyền cập bến — Cô Liên về xóm, sau mười năm Sài Gòn.",
            "🛶 A sampan docks — Cô Liên comes home, after ten years in Saigon.");
-    petals(90,H-70,14,["#7a5f8a","#D97C8E"]); gong(262,0.7,0.03);
+    petals(90,H-70,14,["#7a5f8a","#D97C8E"]); gong(262,0.7,0.03); },2800); })();   // the boat docks as its own beat
   }
   if(!lien.gone && S.season>lien.arrives){
     var rooted = lien.started || lien.ban>=4 || S.pairs.some(function(pr){return pr[0]===6||pr[1]===6;});
-    if(!rooted && S.season>=10){ lien.hx=lien.hx+(BEN.x-lien.hx)*0.3; lien.hy=lien.hy+(BEN.y-lien.hy)*0.3; }   // unheld, she drifts back toward the landing
+    if(!rooted && S.season>=10){ lien.hx=lien.hx+(BEN.x-lien.hx)*0.3; lien.hy=lien.hy+(Math.min(BEN.y,peopleFloor())-lien.hy)*0.3; }   // unheld, she drifts back toward the landing
     if(rooted && lien.bhx!==undefined){ lien.hx=lien.bhx; lien.hy=lien.bhy; }
     if(S.season===11 && !rooted && !S.lienWarned){ S.lienWarned=true;
-      bubble(lien,(L==="vi")?"“Chắc tôi lại vào Nam…”":"“Maybe I'll head south again…”");
+      bubble(lien,conBan(2)?((L==="vi")?"“Năm nay không ai nối ai với ai… chắc tôi lại vào Nam.”":"“No one ties anyone to anyone this year… maybe I'll head south again.”")
+                            :((L==="vi")?"“Chắc tôi lại vào Nam…”":"“Maybe I'll head south again…”"));
       logMsg("Cô Liên nhắc chuyện vào Nam — thừa số BẠN của cô vẫn gần số không.",
              "Cô Liên talks of heading south again — her ALLIES factor still sits near zero."); }
     if(S.season>=13 && !rooted){ lien.gone=true; if(S.sel===6){S.sel=-1;}
-      logMsg("🛶 Cô Liên lặng lẽ rời xóm — không ai giữ.","🛶 Cô Liên quietly left — no one held her.");
+      logMsg(conBan(2)?"🛶 Cô Liên lặng lẽ rời xóm — năm không kết nối, chẳng ai được phép giữ.":"🛶 Cô Liên lặng lẽ rời xóm — không ai giữ.",
+             conBan(2)?"🛶 Cô Liên quietly left — a no-linking year; no one was allowed to hold her.":"🛶 Cô Liên quietly left — no one held her.");
       banner("🛶 …",1800); gong(147,1.0,0.04); }
   }
   // 🕯 the elder's clock: Chú Ba's craft fades unless it lives on (his kiln, or the apprenticeship)
@@ -1263,7 +1296,9 @@ function endGame(){
   var chp=document.createElement("p"); chp.style.cssText="font-size:12.5px;color:#7a6f5d;margin-top:10px";
   var seenYc={}; ch.forEach(function(r){ if(r&&fin(r.yc)) seenYc[r.yc]=1; });
   var ycRow=["🌊","📋","🛤","🍵","🧧"].map(function(g,gi){ return seenYc[gi]?g:"·"; }).join("");
-  chp.textContent="📜 "+(L==="vi"?"kết đã thấy ":"endings seen ")+row+" "+nSeen+"/6 · "+ycRow
+  var seenCn={}; ch.forEach(function(r){ if(r&&r.cn) seenCn[r.cn]=1; });
+  var cnRow=Object.keys(seenCn).length?(" · ⛓ "+[1,2,3].map(function(n){return seenCn[n]?CONSTRAINTS[n].g:"·";}).join("")):"";
+  chp.textContent="📜 "+(L==="vi"?"kết đã thấy ":"endings seen ")+row+" "+nSeen+"/6 · "+ycRow+cnRow
     +(next?(" — "+((L==="vi")?HINTS[next].vi:HINTS[next].en)):"");
   // --- beat 3: epilogues, three highest-signal; the rest fold away ---
   var eps=[];
@@ -1330,7 +1365,7 @@ function render(){
   el("shelBtn").disabled=S.acts<=0;
   el("huiCost").textContent=S.hui>=huiMax()?("✓ "+huiMax()+"/"+huiMax()):"(1⚡)";
   el("huiBtn").disabled=S.acts<=0||S.hui>=huiMax()||S.over||conBan(1);
-  el("huiBtn").style.textDecoration=conBan(1)?"line-through":""; el("huiBtn").style.opacity=conBan(1)?".4":"";
+  el("huiBtn").style.textDecoration=conBan(1)?"line-through 2px #C1443C":""; el("huiBtn").style.opacity="";
   el("buildBtn").disabled=S.acts<=0||S.built||S.over;
   el("probeBtn").disabled=(S.yearCard!==1&&S.acts<=0)||S.probeSeen||S.over;
   el("nextBtn").disabled=S.over;
@@ -1363,11 +1398,11 @@ function renderSheet(){
       +((p.mom||0)>0?(L==="vi"?" · mầm đang nhú 🌱":" · pushing at the soil 🌱"):"")
 ))+"</small>";
   el("teachBtn").disabled=S.acts<=0||p.tai>=10||S.over||conBan(3);   // tending doesn't stop at the bloom — tiers keep the verbs alive
-  el("teachBtn").style.textDecoration=conBan(3)?"line-through":""; el("teachBtn").style.opacity=conBan(3)?".4":"";
+  el("teachBtn").style.textDecoration=conBan(3)?"line-through 2px #C1443C":""; el("teachBtn").style.opacity="";
   el("nerveBtn").disabled=S.acts<=0||p.gan>=10||S.over;
   el("linkBtn").style.display=S.un.link?"":"none";
   el("linkBtn").disabled=S.acts<=0||S.over||conBan(2);
-  el("linkBtn").style.textDecoration=conBan(2)?"line-through":""; el("linkBtn").style.opacity=conBan(2)?".4":"";
+  el("linkBtn").style.textDecoration=conBan(2)?"line-through 2px #C1443C":""; el("linkBtn").style.opacity="";
   el("linkBtn").classList.toggle("armed",S.linking!=null);
 }
 function renderLog(){
