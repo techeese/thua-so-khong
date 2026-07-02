@@ -130,7 +130,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.25</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.26</span></div>
 </div>
 
 <!-- intro -->
@@ -315,18 +315,26 @@ var PAIR_TALK={
           {who:0,vi:"“Vậy em code, cô vẽ nha!”",en:"“Then I code, you design!”"}],
          [{who:6,vi:"“Bản này màu chưa tới.”",en:"“The colors aren\'t there yet.”"},
           {who:0,vi:"“Thì cô sửa màu, em lo phần chạy.”",en:"“You fix the colors — I\'ll keep it running.”"}]]};
+var _lastBub=0;
+function pairTalkAt(key,walk){
+  var set=PAIR_TALK[key]; if(!set) return;
+  var nw2=performance.now();
+  if(nw2<beatUntil||bubbles.length>=2||nw2-_lastBub<25000) return;
+  _lastBub=nw2;
+  var talk=set[Math.floor(Math.random()*set.length)];
+  var pa=S.cast[talk[0].who], pb=S.cast[talk[1].who];
+  if(walk){ var mx2=(pa.x+pb.x)/2, my2=(pa.y+pb.y)/2;
+    visit(pa,mx2-16,my2,6000); visit(pb,mx2+16,my2,6000); }   // friends close the distance before they speak
+  bubble(pa,talk[0][L]);
+  var ctok=runTok;
+  setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pb,talk[1][L]); },1600);
+}
 function chatter(){
   if(S.over||performance.now()<beatUntil||bubbles.length>=2||Math.random()<0.4) return;   // the xóm doesn't perform on demand — and never over a named moment
   var pairsHere=S.pairs.map(function(pr){return pr[0]+"-"+pr[1];}).filter(function(k){return PAIR_TALK[k];});
   if(pairsHere.length&&Math.random()<0.45){
     var set=PAIR_TALK[pairsHere[Math.floor(Math.random()*pairsHere.length)]];
-    var talk=set[Math.floor(Math.random()*set.length)];
-    var pa=S.cast[talk[0].who], pb=S.cast[talk[1].who];
-    var mx2=(pa.x+pb.x)/2, my2=(pa.y+pb.y)/2;
-    visit(pa,mx2-16,my2,6000); visit(pb,mx2+16,my2,6000);   // friends close the distance before they speak
-    bubble(pa,talk[0][L]);
-    var ctok=runTok;
-    setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pb,talk[1][L]); },1600);
+    pairTalkAt(pairsHere[Math.floor(Math.random()*pairsHere.length)],true);
     return;
   }
   var here=S.cast.filter(active); if(!here.length) return;
@@ -595,6 +603,9 @@ function errandTick(now){
     if(!q3.dwl){ q3.dwl=now+1500+Math.random()*1500; walkers++; continue; }
     if(now<q3.dwl){ walkers++; continue; }
     q3.dwl=0;
+    if(q3.beh===5&&Math.random()<0.25){   // arriving at a friend's — sometimes they talk
+      var mt=S.pairs.filter(function(pr){return pr[0]===q3.id||pr[1]===q3.id;})[0];
+      if(mt) pairTalkAt(Math.min(mt[0],mt[1])+"-"+Math.max(mt[0],mt[1]),false); }
     if(q3.chain||((q3.legs|0)<2&&Math.random()<0.35)){ q3.legs=(q3.legs|0)+1; var nb=q3.chain?1:pickBeh(q3); q3.chain=0; execBeh(q3,nb,now); walkers++; }
     else { q3.amb=0; q3.beh=0; q3.legs=0; if(_chaser===q3)_chaser=null; }
   }
@@ -1055,7 +1066,30 @@ cv.addEventListener("click",function(e){
     else { S.linking=null; beep(294,0.06); buzz(20); logMsg("(thôi, để dịp khác)","(never mind)"); renderSheet(); }
     return;
   }
-  if(best>=0){ selectPerson(best); }
+  if(best>=0){ selectPerson(best); return; }
+  // hỏi thăm the PLACES — a curiosity tap sends the nearest neighbor over to answer, in their own voice
+  var zone=(my>H-(26+S.von*5.5))?"r":(Math.abs(mx-470)<85&&Math.abs(my-215)<62)?"d":(Math.abs(mx-CHO.x)<60&&Math.abs(my-(CHO.y-34))<40)?"c":null;
+  if(!zone) return;
+  S.looked=S.looked||{}; if(S.looked[zone]===S.season) return;
+  S.looked[zone]=S.season;
+  var near=null,nd=1e9;
+  S.cast.forEach(function(p){ if(!active(p)||!p.known) return; var d2=Math.hypot(p.x-mx,p.y-my); if(d2<nd){nd=d2;near=p;} });
+  if(!near) return;
+  var LOOK={
+    r:[ [S.von<=2,"“Sông cạn thế này, thuyền nào dám về…”","“A river this thin — what boat would dare come home…”"],
+        [S.von>=7,"“Nước đầy, cá về. Đất này sống nhờ con nước.”","“Full water, the fish return. This land lives by the river.”"],
+        [true,"“Sông đầy hay cạn là chuyện của cả xóm, không phải của trời.”","“Full or thin, the river is the xóm's doing — not heaven's.”"] ],
+    d:[ [!S.un.hui,"“Mai họp phiên hụi ở đây đấy. Nhà nào cũng góp một tay.”","“The hụi circle meets here tomorrow. Every house puts in a hand.”"],
+        [S.luat<4,"“Mái đình chưa dột bao giờ. Giông mấy cũng qua.”","“The đình roof has never leaked. Every storm passes.”"],
+        [true,"“Chuyện gì lớn của xóm cũng bắt đầu ở sân này.”","“Everything that matters in this xóm starts in this yard.”"] ],
+    c:[ [S.von<=2,"“Chợ vắng vì sông cạn. Tiền không tự mọc trên sạp đâu.”","“The stall is bare because the river is thin. Money doesn't grow on the counter.”"],
+        [tierSum()>=4,"“Hàng xóm làm, chợ xóm bán — thế là nước lại về sông.”","“The xóm makes, the stall sells — and the water finds the river again.”"],
+        [true,"“Sạp này chờ hàng khéo. Ai làm ra thứ gì, mang ra đây.”","“This stall waits for skilled goods. Whoever makes something — bring it here.”"] ]
+  };
+  var line=null; LOOK[zone].some(function(l3){ if(l3[0]){ line=l3; return true; } return false; });
+  var zx=zone==="r"?BEN.x+40:zone==="d"?DINH.x:CHO.x, zy=zone==="r"?peopleFloor():zone==="d"?DINH.y+8:CHO.y-2;
+  visit(near,zx,zy,6000); beep(523,0.06);
+  (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,(L==="vi")?ln[1]:ln[2]); },1400); })(near,line);
 });
 function selectPerson(id){
   var p=S.cast[id]; S.sel=id;
@@ -1216,6 +1250,17 @@ function nextSeason(){
       buzz([15,30,15]);
       var _br=(S.cast.filter(function(q){return q.started;}).length%2)?587:523;
       beep(_br,0.12,0.05); setTimeout(function(){beep(_br*1.26,0.12,0.05);},90); setTimeout(function(){beep(_br*1.5,0.22,0.05);},190);
+      // the first customer: the village receives the new workshop — no coin, no sound; the walk IS the delay
+      (function(np){ var ctok=runTok; setTimeout(function(){ if(S.over||runTok!==ctok) return;
+        var sh9=null; S.ships.forEach(function(sh){ if(sh.pid===np.id) sh9=sh; }); if(!sh9) return;
+        var cust=S.cast[4]; if(!active(cust)||cust===np||cust.vUntil>performance.now()){
+          cust=null; var cd9=1e9;
+          S.cast.forEach(function(q9){ if(q9===np||!active(q9)||!q9.known||q9.vUntil>performance.now()) return;
+            var dd9=Math.hypot(q9.x-sh9.x,q9.y-sh9.y); if(dd9<cd9){cd9=dd9;cust=q9;} }); }
+        if(!cust) return;
+        visit(cust,sh9.x+34,sh9.y+18,6000);
+        setTimeout(function(){ if(!S.over&&runTok===ctok&&motes.length<6) motes.push({x0:sh9.x,y0:sh9.y-16,x1:CHO.x,y1:CHO.y-34,t:-0.2,g:"🧺"}); },3000);
+      },2600); })(p);
       logMsg("🌸 "+p.name+STR.bloomed.vi, "🌸 "+p.name+STR.bloomed.en);
       // a bloom inspires the people who WITNESSED it with you — those you've met
       S.cast.forEach(function(q){ if(q.id!==p.id&&q.known) q.gan=Math.min(10,q.gan+1); });
@@ -1342,6 +1387,15 @@ function nextSeason(){
              "🕯 Chú Ba's eyes dim, his hands tremble — the craft has no heir yet."); }
   }
   banner(STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4)),1600);
+  // the hụi is a lệ, not a button: the circle meets at the đình every season whether you join or not
+  if(S.season>=1&&!S.over){ (function(){ var ctok=runTok; setTimeout(function(){ if(S.over||runTok!==ctok) return;
+    var eligible=S.cast.filter(function(p8){ return active(p8)&&!p8.arriveT&&!(p8.id===6&&!p8.started&&p8.ban<4); })
+                       .sort(function(a8,b8){return b8.ban-a8.ban;}).slice(0,3);
+    eligible.forEach(function(p8,ei){ visit(p8,DINH.x-30+ei*30,DINH.y+6,5200); });
+    if(motes.length<6) motes.push({x0:DINH.x-22,y0:DINH.y-6,x1:DINH.x+22,y1:DINH.y-6,t:-3.2,g:"🪙"});   // the coin hops WITHIN the circle — the river didn't rise
+    if(S.season===1&&!S.huiSeen){ S.huiSeen=true; var mai8=S.cast[2];
+      if(eligible.indexOf(mai8)>=0) bubble(mai8,(L==="vi")?"“Đến phiên hụi nhà ai rồi nhỉ?”":"“Whose turn in the hụi is it now?”"); }
+  },4200); })(); }
   gong(S.luat<4?147:[220,262,196,220][S.season%4],0.9,0.03);   // the sky tunes the bell — a heavy year rings low
   (function(){ var ctok=runTok; setTimeout(function(){ if(runTok===ctok) chatter(); },1100); })();   // after the season banner settles, the xóm talks
   render(); renderSheet(); save();

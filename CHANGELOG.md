@@ -1,5 +1,23 @@
 # Changelog — Thừa Số Không
 
+## v0.26 — 2026-07-02 — LOOP v2, cycle 15: the places answer back (living-xóm plan, final batch)
+
+- **Hỏi thăm the places:** tap the river, the đình, or the market and the nearest neighbor walks over and answers
+  in their own voice — one state-keyed line, proverb register, once per season per place. A thin river gets
+  *"Sông cạn thế này, thuyền nào dám về…"*; a flywheel-era market gets *"Hàng xóm làm, chợ xóm bán — thế là nước
+  lại về sông."* The economy explains itself only when asked, and never in numbers.
+- **The hụi is a lệ, not a button:** from season 1 the circle visibly meets at the đình every season — two or three
+  neighbors gather and one coin hops WITHIN the circle (it does not touch the river; vốn didn't rise — the
+  coin-to-river vocabulary stays honest). When the button unlocks at season 2, it's recognition, not introduction.
+- **Every bloom draws its first customer:** Chị Hoa (or the nearest neighbor) walks to the new workshop, and a
+  basket leaves for the stall. No coin, no sound — the walk is the celebration.
+- **Linked friends talk when they visit:** the FRIEND errand can spark the pair's conversation on arrival
+  (25%, ≥25s global cooldown, yields to beats).
+
+Deploy note: GitHub's legacy Pages builder failed opaquely twice on v0.25, then the deployment-status backend
+stopped answering (deploy-pages timeouts with empty status). Migrated the site to Actions-based Pages deploys
+(.github/workflows/pages.yml + .nojekyll); v0.25+v0.26 land the moment GitHub's backend recovers.
+
 ## v0.25 — 2026-07-02 — OWNER BATCH: "Xóm sống" — the village runs whether or not you act
 
 Both changes at the owner's direction ("the economy is hard to understand, the first season feels limited" ·
