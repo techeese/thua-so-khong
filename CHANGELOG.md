@@ -1,5 +1,17 @@
 # Changelog — Thừa Số Không
 
+## v0.8 — 2026-07-02 — LOOP iteration 4 (BOLD): Cô Liên, người về
+
+A seventh person who isn't there at the start. **Season 6, a sampan docks:** Cô Liên comes home after ten years in
+Saigon — TÀI 9, GAN 5, **BẠN 1** (*"Về rồi… mà như khách."*). The brain-circulation thesis as one human being:
+- **Root her or lose her:** if by season 13 she hasn't bloomed, her BẠN is still near zero, and no one has KẾT NỐI'd
+  her — she quietly leaves (*"không ai giữ"*), with a warning bubble at season 11. One real connection is enough to
+  hold a person.
+- Full quote arc (guest → remembered → studio-in-the-xóm), ambient chatter, ending epilogue lines for both fates.
+- `check.js` mirrors her (arrival + unrooted departure); the band **widened**: hunter 6.64 > spreader 5.40 > idle 3.64 —
+  the returnee rewards diagnosis exactly as the thesis predicts.
+- Ship-then-veto: if she doesn't earn her place, say the word and she sails back in one revert.
+
 ## v0.7 — 2026-07-02 — LOOP iteration 3: the instrument (FEEL)
 
 - **The audio grew a voice:** raw sine pips → a soft-attack **triangle instrument**; blooms now play a rising

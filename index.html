@@ -97,7 +97,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.7</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.8</span></div>
 </div>
 
 <!-- intro -->
@@ -217,8 +217,15 @@ function makeCast(){ return [
    qb:{vi:"“Vẫn liều — nhưng lần này có nghề.”",en:"“Still a leap — but this time with a craft.”"},
    qa:{vi:"“Anh Vũ chỉ đâu, em vọc đó — mà giờ vọc có bài bản!”",en:"“Whatever Anh Vũ points at, I tinker with — properly now!”"},
    qc:{vi:"“Liều thì phải chịu. Nhưng đau thật.”",en:"“Leap and you take the fall. Still hurts, though.”"},
-   chat:{vi:"“Có ai cần người liều không?”",en:"“Anyone need a risk-taker?”"}}
+   chat:{vi:"“Có ai cần người liều không?”",en:"“Anyone need a risk-taker?”"}},
+  {id:6,name:"Cô Liên",tai:9,gan:5,ban:1,color:"#7a5f8a",hat:false,hx:130,hy:395,arrives:6,
+   q:{vi:"“Mười năm ở Sài Gòn. Về rồi… mà như khách.”",en:"“Ten years in Saigon. I'm back… and feel like a guest.”"},
+   qh:{vi:"“Hoá ra vẫn có người nhớ tôi.”",en:"“Turns out people still remember me.”"},
+   qb:{vi:"“Studio nhỏ của tôi — ngay tại xóm mình.”",en:"“My little studio — right here in the xóm.”"},
+   qc:{vi:"“Ở đâu cũng có con dấu…”",en:"“Stamps exist everywhere…”"},
+   chat:{vi:"“Cà phê ở đây ngon hơn Sài Gòn.”",en:"“The coffee here beats Saigon's.”"}}
 ];}
+function active(p){ return (!p.arrives||S.season>=p.arrives)&&!p.gone; }   // Cô Liên isn't here yet — or has left
 // the xóm talks — ambient seasonal small-talk + mini-dialogues between the special pairs
 var CHAT_SEASONAL=[
   {vi:"“Sắp Tết rồi đấy!”",en:"“Tết is coming!”"},
@@ -241,7 +248,8 @@ function chatter(){
     setTimeout(function(){ if(!S.over) bubble(S.cast[talk[1].who],talk[1][L]); },1600);
     return;
   }
-  var p=S.cast[Math.floor(Math.random()*S.cast.length)];
+  var here=S.cast.filter(active); if(!here.length) return;
+  var p=here[Math.floor(Math.random()*here.length)];
   if(p.crushCount>0&&!p.started&&p.qc) bubble(p,p.qc[L]);
   else if(Math.random()<0.35) bubble(p,CHAT_SEASONAL[S.season%4][L]);
   else if(p.chat) bubble(p,p.chat[L]);
@@ -266,10 +274,10 @@ function fresh(){
   S={season:0, acts:3, luat:3, von:3, hui:0, cast:makeCast(), ships:[], sel:-1,
      build:0, built:false, pairs:[], apprentice:false, duo:false, gtm:false, gtmPaid:false,
      linking:null, banner:null, luatNext:3, probeSeen:false, probeTaught:false,
-     un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false,
+     un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false,
      log:[], over:false, seed:(Date.now()>>>0)};
   S.luatNext=driftLuat(S.luat);
-  S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0;
+  S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false;
     var m=Math.min(p.tai,p.gan,p.ban);
     p.zkey = (m===p.gan)?"gan":(m===p.tai)?"tai":"ban";   // their original zero — quotes evolve when it turns
     p.btai=p.tai; p.bgan=p.gan; p.bban=p.ban;             // their nature — un-bloomed tending decays back toward it
@@ -287,7 +295,7 @@ function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:1,
   meta:{lang:L,muted:!!META.muted},
   s:{season:S.season,acts:S.acts,luat:S.luat,von:S.von,hui:S.hui,build:S.build,built:!!S.built,
      apprentice:!!S.apprentice,gtmPaid:!!S.gtmPaid,pairs:S.pairs,
-     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0};}),
+     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone};}),
      ships:S.ships.map(function(w){return {x:w.x,y:w.y,owner:w.owner,small:!!w.small,pid:w.pid,yours:!!w.yours,age:w.age|0};}),
      log:S.log.slice(0,12)}})); }catch(e){} }
 function load(){
@@ -303,7 +311,8 @@ function load(){
     if(Array.isArray(s.pairs)) S.pairs=s.pairs.filter(function(pr){return Array.isArray(pr)&&fin(pr[0])&&fin(pr[1]);});
     if(Array.isArray(s.cast)) s.cast.forEach(function(c,i){ var p=S.cast[i]; if(!p||!c) return;
       p.tai=cl(c.tai,0,10,p.tai); p.gan=cl(c.gan,0,10,p.gan); p.ban=cl(c.ban,0,10,p.ban);
-      p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); });
+      p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; });
+    S.lienWarned=S.season>=11;
     if(Array.isArray(s.ships)) S.ships=s.ships.filter(function(w){return w&&fin(w.x)&&fin(w.y)&&typeof w.owner==="string";});
     S.ships.forEach(function(w){ w.age=cl(w.age,0,99,2); });
     if(Array.isArray(s.log)) S.log=s.log.filter(function(m){return m&&(typeof m.vi==="string"||typeof m.en==="string");});
@@ -436,7 +445,7 @@ function drawScene(now){
   S.ships.forEach(function(s){ workshop(s,now); });
 
   // --- people (sorted by y for depth) ---
-  var ppl=S.cast.slice().sort(function(a,b){return a.y-b.y;});
+  var ppl=S.cast.filter(active).sort(function(a,b){return a.y-b.y;});
   ppl.forEach(function(p){ person(p,now); });
 
   // --- first-tap hint: a pulsing ring until you've talked to anyone ---
@@ -654,7 +663,7 @@ cv.addEventListener("click",function(e){
   var r=cv.getBoundingClientRect();
   var mx=(e.clientX-r.left)*(W/r.width), my=(e.clientY-r.top)*(H/r.height);
   var best=-1,bd=1e9;
-  S.cast.forEach(function(p){ var d=Math.hypot(p.x-mx,p.y-4-my); if(d<34&&d<bd){bd=d;best=p.id;} });
+  S.cast.forEach(function(p){ if(!active(p)) return; var d=Math.hypot(p.x-mx,p.y-4-my); if(d<34&&d<bd){bd=d;best=p.id;} });
   if(S.linking!=null){
     if(best>=0 && best!==S.linking) completeLink(best);
     else { S.linking=null; logMsg("(bỏ kết nối)","(link cancelled)"); }
@@ -743,7 +752,7 @@ function nextSeason(){
     var st=S.cast[m.student]; if(!st.started&&st.tai<10){ st.tai=Math.min(10,st.tai+1); floatOn(st,"+1 "+t("tai")+" 🏺","#2E4A62"); } });
   // people roll — the multiplication decides
   S.cast.forEach(function(p){
-    if(p.started) return;
+    if(p.started||!active(p)) return;
     if(Math.random()<chance(p)){
       p.started=true;
       var wx=Math.max(60,Math.min(W-60,p.hx+((Math.random()<.5)?-70:70)));
@@ -777,7 +786,7 @@ function nextSeason(){
   }
   // entropy: tending that hasn't bloomed washes back toward each person's nature
   var anyFade=false;
-  S.cast.forEach(function(p){ if(p.started) return;
+  S.cast.forEach(function(p){ if(p.started||!active(p)) return;
     ["tai","gan","ban"].forEach(function(k){ if(p[k]>p["b"+k] && Math.random()<0.35){ p[k]--; anyFade=true; } });
   });
   if(anyFade && !S.fadeSeen){ S.fadeSeen=true;
@@ -795,6 +804,25 @@ function nextSeason(){
   S.season++; S.acts=3;
   if(S.season>=16){ endGame(); return; }
   unlockCheck();
+  // 🛶 the returnee — arrives by sampan; stays only if the xóm gives her roots
+  var lien=S.cast[6];
+  if(S.season===lien.arrives && !lien.gone){
+    lien.x=60; lien.y=H-70; lien.tx=lien.hx; lien.ty=lien.hy;
+    S.banner={txt:"🛶 "+lien.name,until:performance.now()+2300};
+    logMsg("🛶 Một chiếc thuyền cập bến — Cô Liên về xóm, sau mười năm Sài Gòn.",
+           "🛶 A sampan docks — Cô Liên comes home, after ten years in Saigon.");
+    petals(90,H-70,14,["#7a5f8a","#D97C8E"]); gong(262,0.7,0.03);
+  }
+  if(!lien.gone && S.season>lien.arrives){
+    var rooted = lien.started || lien.ban>=4 || S.pairs.some(function(pr){return pr[0]===6||pr[1]===6;});
+    if(S.season===11 && !rooted && !S.lienWarned){ S.lienWarned=true;
+      bubble(lien,(L==="vi")?"“Chắc tôi lại vào Nam…”":"“Maybe I'll head south again…”");
+      logMsg("Cô Liên nhắc chuyện vào Nam — thừa số BẠN của cô vẫn gần số không.",
+             "Cô Liên talks of heading south again — her ALLIES factor still sits near zero."); }
+    if(S.season>=13 && !rooted){ lien.gone=true; if(S.sel===6){S.sel=-1;}
+      logMsg("🛶 Cô Liên lặng lẽ rời xóm — không ai giữ.","🛶 Cô Liên quietly left — no one held her.");
+      S.banner={txt:"🛶 …",until:performance.now()+1800}; gong(147,1.0,0.04); }
+  }
   S.banner={txt:STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4)),until:performance.now()+1900};
   gong(220,0.8,0.03);
   setTimeout(chatter,1100);   // after the season banner settles, the xóm talks
@@ -805,7 +833,7 @@ function nextSeason(){
 function endGame(){
   S.over=true;
   var blooms=S.cast.filter(function(p){return p.started;});
-  var zeros=S.cast.filter(function(p){return !p.started && Math.min(p.tai,p.gan,p.ban)<=3;});
+  var zeros=S.cast.filter(function(p){return active(p) && !p.started && Math.min(p.tai,p.gan,p.ban)<=3;});
   var b=document.getElementById("endBody"); b.innerHTML="";
   function para(vi,en){ var d=document.createElement("p"); d.textContent=(L==="vi")?vi:en; b.appendChild(d); }
   var nB=blooms.length, ttl, tag;
@@ -840,6 +868,11 @@ function endGame(){
                  "Anh Tú tinkers properly now — Anh Vũ's craft passed to the leaper.");
   if(S.gtmPaid) para("Gốm Chú Ba đã ra tới chợ huyện trên vai Chị Hoa — món hàng leo thang giá trị, dòng sông đầy thêm.",
                      "Chú Ba's ceramics reached the district market on Chị Hoa's shoulder — the craft climbed the value curve, and the river rose.");
+  var lienEnd=S.cast[6];
+  if(lienEnd.gone) para("Cô Liên đã về — rồi đi. Thừa số BẠN của cô, không ai kịp vun.",
+                        "Cô Liên came home — then left. Her ALLIES factor, no one tended in time.");
+  else if(lienEnd.started) para("Và Cô Liên đã ở lại — studio nhỏ sáng đèn ngay trong xóm.",
+                                "And Cô Liên stayed — her little studio lit right here in the xóm.");
   document.getElementById("endLine").textContent=(L==="vi")
     ? "Đừng hỏi “ai sẽ là Steve Jobs Việt Nam?” Hãy hỏi: “thừa số nào đang bằng không ở chỗ tôi đứng — và tay tôi xoay được bao nhiêu?”"
     : "Don't ask “who will be Vietnam's Steve Jobs?” Ask: “which factor sits at zero where I stand — and how far can my own hand turn it?”";

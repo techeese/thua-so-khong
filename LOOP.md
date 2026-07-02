@@ -31,4 +31,4 @@
 6. **Schedule** the next wake (~25 min) with this same loop prompt.
 
 ## Compass pointer
-- next: **BOLD i4** — a new mechanic/structural experiment, ship-then-veto *(ART v0.5, STORY v0.6, FEEL v0.7 done)*
+- next: DEPTH/strategy *(ART v0.5, STORY v0.6, FEEL v0.7, BOLD-i4 v0.8 Cô Liên done; next BOLD = i8)*
