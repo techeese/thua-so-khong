@@ -1,5 +1,16 @@
 # Changelog — Thừa Số Không
 
+## v0.6 — 2026-07-02 — LOOP iteration 2: the xóm talks (STORY)
+
+- **Crush has an emotional arc now:** after a stamp, each person falls into a written despair state
+  (Mai: *"hai mươi năm dạy học, chưa ai đóng cửa lớp của tôi"* · Hoa, defiant: *"chợ vẫn họp — mai tôi bày hàng lại"*)
+  — and it **lifts when you rebuild their GAN** past 5, returning them to their hope line.
+- **Ambient chatter:** each season, someone in the xóm may speak on their own — seasonal small-talk
+  (Tết in spring, lanterns at Trung thu), personal lines, or a crushed person's grief.
+- **The pairs banter:** connected duos exchange authored mini-dialogues (Ngân to Chú Ba: *"như debug thôi chú —
+  từ từ từng dòng"* · Vũ: *"đo hai lần, cắt một lần"* — Tú: *"em toàn cắt trước đo sau…"*).
+- No model change; gates green; probe verified (despair→hope arc + 30 chatter rolls clean).
+
 ## v0.5 — 2026-07-02 — LOOP iteration 1: the Đông Hồ woodblock pass
 
 The loop's constitution added (`LOOP.md`: invariants · compass · bold-every-4th · ship-then-veto · halt conditions).

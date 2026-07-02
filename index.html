@@ -97,7 +97,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.5</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.6</span></div>
 </div>
 
 <!-- intro -->
@@ -184,29 +184,68 @@ function makeCast(){ return [
    q:{vi:"“Em viết app từ lớp 9… nhưng bố bảo con gái học Y cho ổn định.”",en:"“I've coded since grade 9… but Dad says medicine is safer for a girl.”"},
    qh:{vi:"“Em nộp app lên trường rồi. Bố… chưa mắng.”",en:"“I submitted my app at school. Dad… didn't scold me.”"},
    qb:{vi:"“Xưởng nhỏ thôi — nhưng là của em.”",en:"“It's small — but it's mine.”"},
-   qa:{vi:"“Chú Ba dạy em men gốm. Em đang viết app quản lò nung!”",en:"“Chú Ba teaches me glaze. I'm coding the kiln app!”"}},
+   qa:{vi:"“Chú Ba dạy em men gốm. Em đang viết app quản lò nung!”",en:"“Chú Ba teaches me glaze. I'm coding the kiln app!”"},
+   qc:{vi:"“Giấy phép… em làm sai gì sao?”",en:"“The permit… did I do something wrong?”"},
+   chat:{vi:"“Trên mạng người ta làm được, em cũng làm được.”",en:"“If people online can build it, so can I.”"}},
   {id:1,name:"Chú Ba",tai:9,gan:3,ban:2,color:"#8a6642",hat:true,elder:true,hx:730,hy:300,
    q:{vi:"“Men gốm này ông nội để lại. Chắc nghề chết theo tôi thôi.”",en:"“This glaze came from my grandfather. I suppose the craft dies with me.”"},
    qh:{vi:"“Lâu lắm rồi mới có người ngồi nghe chuyện men gốm.”",en:"“It's been so long since anyone sat to hear about glaze.”"},
-   qb:{vi:"“Lò lại đỏ lửa. Ông nội chắc đang cười.”",en:"“The kiln burns again. Grandfather must be smiling.”"}},
+   qb:{vi:"“Lò lại đỏ lửa. Ông nội chắc đang cười.”",en:"“The kiln burns again. Grandfather must be smiling.”"},
+   qc:{vi:"“Đấy. Tôi đã bảo mà.”",en:"“There. I told you so.”"},
+   chat:{vi:"“Đất sét năm nay mịn.”",en:"“The clay is fine this year.”"}},
   {id:2,name:"Cô Mai",tai:6,gan:4,ban:7,color:"#2E4A62",hat:false,hx:420,hy:280,
    q:{vi:"“Tôi dạy hai mươi năm rồi. Vẫn ước làm bộ sách của riêng mình.”",en:"“Twenty years teaching. I still dream of writing my own books.”"},
    qh:{vi:"“Tôi viết được ba chương rồi đấy.”",en:"“Three chapters written already.”"},
-   qb:{vi:"“Bộ sách của tôi — học trò cũ quay lại mua.”",en:"“My books — old students come back to buy them.”"}},
+   qb:{vi:"“Bộ sách của tôi — học trò cũ quay lại mua.”",en:"“My books — old students come back to buy them.”"},
+   qc:{vi:"“Hai mươi năm dạy học, chưa ai đóng cửa lớp của tôi.”",en:"“Twenty years teaching — no one ever shut my classroom.”"},
+   chat:{vi:"“Học trò cũ vừa ghé thăm.”",en:"“An old student dropped by.”"}},
   {id:3,name:"Anh Vũ",tai:5,gan:6,ban:3,color:"#5a7d62",hat:true,hx:300,hy:420,
    q:{vi:"“Sửa được mọi máy trong xóm — trừ đời mình.”",en:"“I can fix every machine in this xóm — except my own life.”"},
    qh:{vi:"“Hoá ra xóm này lắm người khéo tay hơn tôi tưởng.”",en:"“Turns out this xóm has more clever hands than I thought.”"},
-   qb:{vi:"“Tiệm sửa–chế của tôi. Hỏng gì cứ mang tới.”",en:"“My fix-and-make shop. Bring me anything broken.”"}},
+   qb:{vi:"“Tiệm sửa–chế của tôi. Hỏng gì cứ mang tới.”",en:"“My fix-and-make shop. Bring me anything broken.”"},
+   qc:{vi:"“Máy hỏng sửa được. Cái này… để xem.”",en:"“Broken machines I can fix. This… we'll see.”"},
+   chat:{vi:"“Cái quạt này sửa ba lần rồi.”",en:"“Third time fixing this fan.”"}},
   {id:4,name:"Chị Hoa",tai:4,gan:7,ban:8,color:"#C1443C",hat:true,hx:500,hy:445,
    q:{vi:"“Buôn có bạn, bán có phường. Chỉ thiếu một món hàng của MÌNH.”",en:"“Trade has friends, markets have guilds. I only lack a product of my OWN.”"},
    qh:{vi:"“Tôi học đóng gói, học chụp ảnh món hàng rồi đó.”",en:"“I've learned packaging, product photos, the lot.”"},
-   qb:{vi:"“Món hàng của MÌNH — bán tận Sài Gòn.”",en:"“A product of my OWN — selling all the way to Saigon.”"}},
+   qb:{vi:"“Món hàng của MÌNH — bán tận Sài Gòn.”",en:"“A product of my OWN — selling all the way to Saigon.”"},
+   qc:{vi:"“Chợ vẫn họp. Mai tôi bày hàng lại.”",en:"“The market still meets. Tomorrow I set up again.”"},
+   chat:{vi:"“Hôm nay chợ đông.”",en:"“Busy market today.”"}},
   {id:5,name:"Anh Tú",tai:2,gan:8,ban:6,color:"#E3A63B",hat:false,hx:640,hy:360,
    q:{vi:"“Làm liều trước, học sau! …học gì trước nhỉ?”",en:"“Leap first, learn later! …learn what first, though?”"},
    qh:{vi:"“Hoá ra học cũng… đã như làm liều.”",en:"“Turns out learning is… as thrilling as leaping.”"},
    qb:{vi:"“Vẫn liều — nhưng lần này có nghề.”",en:"“Still a leap — but this time with a craft.”"},
-   qa:{vi:"“Anh Vũ chỉ đâu, em vọc đó — mà giờ vọc có bài bản!”",en:"“Whatever Anh Vũ points at, I tinker with — properly now!”"}}
+   qa:{vi:"“Anh Vũ chỉ đâu, em vọc đó — mà giờ vọc có bài bản!”",en:"“Whatever Anh Vũ points at, I tinker with — properly now!”"},
+   qc:{vi:"“Liều thì phải chịu. Nhưng đau thật.”",en:"“Leap and you take the fall. Still hurts, though.”"},
+   chat:{vi:"“Có ai cần người liều không?”",en:"“Anyone need a risk-taker?”"}}
 ];}
+// the xóm talks — ambient seasonal small-talk + mini-dialogues between the special pairs
+var CHAT_SEASONAL=[
+  {vi:"“Sắp Tết rồi đấy!”",en:"“Tết is coming!”"},
+  {vi:"“Nắng thế này, lúa được mùa.”",en:"“Sun like this, the rice will be good.”"},
+  {vi:"“Trung thu, trẻ con rước đèn.”",en:"“Mid-autumn — the kids parade lanterns.”"},
+  {vi:"“Rét về rồi, đốt lửa sưởi thôi.”",en:"“The cold is back — light the fire.”"}];
+var PAIR_TALK={
+  "0-1":[{who:1,vi:"“Tay đỡ men phải mềm.”",en:"“The glazing hand must be soft.”"},
+         {who:0,vi:"“Như debug thôi chú — từ từ từng dòng.”",en:"“Like debugging, chú — slowly, line by line.”"}],
+  "3-5":[{who:3,vi:"“Đo hai lần, cắt một lần.”",en:"“Measure twice, cut once.”"},
+         {who:5,vi:"“Em toàn cắt trước đo sau…”",en:"“I always cut first, measure later…”"}],
+  "1-4":[{who:4,vi:"“Gốm chú mà chụp ảnh đẹp, bán gấp đôi.”",en:"“Photograph your ceramics well and they sell for double.”"},
+         {who:1,vi:"“Bán là chuyện của cô. Nung là chuyện của tôi.”",en:"“Selling is your business. Firing is mine.”"}]};
+function chatter(){
+  if(S.over||Math.random()<0.4) return;   // the xóm doesn't perform on demand
+  var pairsHere=S.pairs.map(function(pr){return pr[0]+"-"+pr[1];}).filter(function(k){return PAIR_TALK[k];});
+  if(pairsHere.length&&Math.random()<0.45){
+    var talk=PAIR_TALK[pairsHere[Math.floor(Math.random()*pairsHere.length)]];
+    bubble(S.cast[talk[0].who],talk[0][L]);
+    setTimeout(function(){ if(!S.over) bubble(S.cast[talk[1].who],talk[1][L]); },1600);
+    return;
+  }
+  var p=S.cast[Math.floor(Math.random()*S.cast.length)];
+  if(p.crushCount>0&&!p.started&&p.qc) bubble(p,p.qc[L]);
+  else if(Math.random()<0.35) bubble(p,CHAT_SEASONAL[S.season%4][L]);
+  else if(p.chat) bubble(p,p.chat[L]);
+}
 // mentor pairs: connect them and the student's SKILL grows each season — lineage, not lecture
 var MENTORS=[{pair:[0,1],student:0},{pair:[3,5],student:5}];
 function pairExists(a,b){ var lo=Math.min(a,b),hi=Math.max(a,b);
@@ -214,6 +253,7 @@ function pairExists(a,b){ var lo=Math.min(a,b),hi=Math.max(a,b);
 function mentorActive(id){ return MENTORS.some(function(m){return m.student===id&&pairExists(m.pair[0],m.pair[1]);}); }
 function quoteFor(p){
   if(p.started&&p.qb) return p.qb[L];
+  if(p.qc&&p.crushCount>0&&!p.started&&p.gan<5) return p.qc[L];   // despair after the stamp — until you rebuild their nerve
   if(p.qa&&mentorActive(p.id)) return p.qa[L];
   if(p.qh&&p.zkey&&p[p.zkey]>=5) return p.qh[L];
   return p.q[L];
@@ -734,6 +774,7 @@ function nextSeason(){
   unlockCheck();
   S.banner={txt:STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4)),until:performance.now()+1900};
   beep(330,0.12,0.02);
+  setTimeout(chatter,1100);   // after the season banner settles, the xóm talks
   render(); renderSheet(); save();
 }
 
