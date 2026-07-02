@@ -1,5 +1,31 @@
 # Changelog — Thừa Số Không
 
+## v0.11 — 2026-07-02 — LOOP v2, cycle 2: the late-game & payoff batch
+
+The three deferred design-review features, built as one system:
+
+**🏯 Workshop tiers — tending doesn't stop at the bloom.**
+- A workshop's tier follows its owner's LIVING product: <300 **gánh hàng** · <600 **xưởng** · ≥600 **thương hiệu**
+  (drawn bigger, twin pennants). Dạy stays live on bloomed people — seasons 11–16 no longer play themselves.
+- **Stamps knock a tier down instead of erasing** (owner GAN −2, the walls stand); only a tier-1 gánh can be erased.
+- The flywheel now counts **sum of tiers ≥ 4** — something you keep feeding, not a switch you flipped in season 8.
+- Your own product now lives under the same sky (stamp immunity removed) — if it falls, you rebuild from 2/4,
+  faster than the first time.
+
+**🛡 Che chắn — the probe becomes real insurance.**
+- After a heavy forecast, a Shelter button appears: 1⚡ tarps the youngest exposed workshop (a woven mat over the
+  roof) through the storm season. Probe → shelter is now a genuine 2⚡ play against a 15% loss.
+
+**🏮 The staged ending — three beats, not a text wall.**
+- Season 16 first plays a **lantern harvest** on the canvas: a lantern lights over each standing workshop, one gong
+  per beat, before any overlay.
+- The card **leads with the thesis as a number** — the weakest person's multiplication then-vs-now:
+  *Khi bạn đến: 8 × 1 × 4 = 32 · Khi bạn đi: 8 × 7 × 6 = 336* — plus total tiers standing.
+- Epilogues capped at the 3 highest-signal lines; the rest fold behind **xem thêm ▾**. The closing question stands alone.
+
+Under the hood: tier crush + tier flywheel mirrored in check.js (band: hunter 6.96 > linker 6.64 > spreader 6.25 >
+idle 4.63); finale timers token-guarded against mid-scene resets; shelter persisted in saves. All gates green.
+
 ## v0.10 — 2026-07-02 — LOOP v2, cycle 1: the review-hardening batch (3 reviewers → 12 fixes)
 
 First big-batch cycle: three parallel fresh-eyes reviews (first-session fun · design depth · code/mobile), all

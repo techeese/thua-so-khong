@@ -75,6 +75,7 @@
 
   <div class="bar">
     <button id="probeBtn" style="display:none">🔍 <span id="probeLbl">Hỏi thăm</span> <small>(1⚡)</small></button>
+    <button id="shelBtn" style="display:none">🛡 <span id="shelLbl">Che chắn</span> <small>(1⚡)</small></button>
     <button id="huiBtn">🪙 <span id="huiLbl">Góp hụi</span> <small id="huiCost">(1⚡)</small></button>
     <button id="buildBtn">🛠 <span id="buildLbl">Tự xây</span> <span id="buildProg">0/4</span></button>
     <span class="spacer"></span>
@@ -97,7 +98,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.10</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.11</span></div>
 </div>
 
 <!-- intro -->
@@ -166,6 +167,11 @@ var STR={
   gtmForm:{vi:"🧺 Chị Hoa nhận gánh gốm Chú Ba ra chợ huyện.",en:"🧺 Chị Hoa takes Chú Ba's ceramics to the district market."},
   gtmPaid:{vi:"🧺 Hàng gốm bán chạy ngoài chợ huyện — dòng sông đầy thêm một chút.",
         en:"🧺 The ceramics sell well at the district market — the river rises a little."},
+  shel:{vi:"Che chắn",en:"Shelter"},
+  shelDone:{vi:"🛡 Đã che chắn cho xưởng non nhất — qua mùa giông này.",en:"🛡 The youngest workshop is tarped — through this storm season."},
+  tierDown:{vi:" — xưởng bị con dấu, lùi một bậc.",en:" — the stamp fell; the workshop steps down a tier."},
+  yoursCrushed:{vi:"⬛ Sản phẩm của BẠN bị đình chỉ. Bạn dựng lại nhanh hơn lần đầu.",en:"⬛ YOUR product was suspended. You rebuild faster than the first time."},
+  more:{vi:"xem thêm ▾",en:"more ▾"},
   seasons:{vi:["Xuân","Hạ","Thu","Đông"],en:["Spring","Summer","Autumn","Winter"]},
   bloomed:{vi:" mở xưởng!",en:" opened a workshop!"},
   crushed:{vi:" — xưởng bị đình chỉ (một con dấu từ trên xuống).",en:" — workshop suspended (a stamp from above)."},
@@ -226,6 +232,11 @@ function makeCast(){ return [
    chat:{vi:"“Cà phê ở đây ngon hơn Sài Gòn.”",en:"“The coffee here beats Saigon's.”"}}
 ];}
 function active(p){ return (!p.arrives||S.season>=p.arrives)&&!p.gone; }   // Cô Liên isn't here yet — or has left
+// a workshop's TIER follows its owner's living product — tending doesn't stop at the bloom
+function shipTier(s){ if(s.yours) return 1;
+  var p=S.cast[s.pid]; if(!p) return 1;
+  var pr=prod(p); return pr<300?1:pr<600?2:3; }
+function tierSum(){ return S.ships.reduce(function(a,s){return a+shipTier(s);},0); }
 // the xóm talks — ambient seasonal small-talk + mini-dialogues between the special pairs
 var CHAT_SEASONAL=[
   {vi:"“Sắp Tết rồi đấy!”",en:"“Tết is coming!”"},
@@ -276,7 +287,7 @@ function fresh(){
      linking:null, banner:null, banners:[], luatNext:3, probeSeen:false, probeTaught:false, baFade:false,
      un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false,
      log:[], over:false, seed:(Date.now()>>>0)};
-  S.luatNext=driftLuat(S.luat);
+  S.luatNext=driftLuat(S.luat); lanterns=[]; finaleTok++;   // invalidate any pending finale timers
   S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false; p.mom=0;
     var m=Math.min(p.tai,p.gan,p.ban);
     p.zkey = (m===p.gan)?"gan":(m===p.tai)?"tai":"ban";   // their original zero — quotes evolve when it turns
@@ -297,7 +308,7 @@ function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:1,
   s:{season:S.season,acts:S.acts,luat:S.luat,von:S.von,hui:S.hui,build:S.build,built:!!S.built,
      apprentice:!!S.apprentice,gtmPaid:!!S.gtmPaid,pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
      cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0};}),
-     ships:S.ships.map(function(w){return {x:w.x,y:w.y,owner:w.owner,small:!!w.small,pid:w.pid,yours:!!w.yours,age:w.age|0};}),
+     ships:S.ships.map(function(w){return {x:w.x,y:w.y,owner:w.owner,pid:w.pid,yours:!!w.yours,age:w.age|0,shel:w.shel|0};}),
      log:S.log.slice(0,12)}})); }catch(e){} }
 function load(){
   try{
@@ -315,7 +326,7 @@ function load(){
       p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; p.mom=cl(c.mom,0,0.5,0); });
     S.lienWarned=S.season>=11; S.baFade=S.season>=8;
     if(Array.isArray(s.ships)) S.ships=s.ships.filter(function(w){return w&&fin(w.x)&&fin(w.y)&&typeof w.owner==="string";});
-    S.ships.forEach(function(w){ w.age=cl(w.age,0,99,2); });
+    S.ships.forEach(function(w){ w.age=cl(w.age,0,99,2); w.shel=cl(w.shel,0,2,0); });
     if(Array.isArray(s.log)) S.log=s.log.filter(function(m){return m&&(typeof m.vi==="string"||typeof m.en==="string");});
     // a returning player has already been introduced — recompute unlocks/flags from state, skip the teaching beats
     S.apprentice=pairExists(0,1); S.duo=pairExists(3,5); S.gtm=pairExists(1,4); S.gtmPaid=!!s.gtmPaid;
@@ -361,7 +372,7 @@ var parts=[], bubbles=[], stamps=[];
 function petals(x,y,n,cols){ for(var i=0;i<n;i++) parts.push({x:x,y:y,vx:(Math.random()-.5)*2.2,vy:-1.5-Math.random()*2,r:3+Math.random()*4,rot:Math.random()*6.28,vr:(Math.random()-.5)*.3,life:1,col:cols[i%cols.length]}); }
 function bubble(p,txt){ bubbles.push({p:p,txt:txt,until:performance.now()+3600}); }
 function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); shake=1; beep(85,0.35,0.07); buzz(60); }
-var shake=0, glows=[];
+var shake=0, glows=[], lanterns=[];
 function buzz(v){ if(META.muted) return; try{ if(navigator.vibrate) navigator.vibrate(v); }catch(e){} }
 
 // điệp-shell paper (once): dark speckle + fiber strokes + mica sparkle — the Đông Hồ ground
@@ -448,6 +459,14 @@ function drawScene(now){
 
   // --- workshops (blooms) ---
   S.ships.forEach(function(s){ workshop(s,now); });
+
+  // --- finale lanterns (beat 1: the xóm lights what stands) ---
+  lanterns.forEach(function(ln){ var fl2=Math.sin(now*0.006+ln.ph)*1.5;
+    ctx.fillStyle="rgba(227,166,59,.22)"; ctx.beginPath(); ctx.arc(ln.x,ln.y+fl2,22,0,6.28); ctx.fill();
+    ink(2); ctx.fillStyle="#C1443C";
+    ctx.beginPath(); ctx.ellipse(ln.x,ln.y+fl2,8,11,0,0,6.28); ctx.fill(); ctx.stroke();
+    ctx.fillStyle="#E3A63B"; ctx.fillRect(ln.x-4,ln.y-14+fl2,8,3); ctx.fillRect(ln.x-3,ln.y+10+fl2,6,5);
+  });
 
   // --- people (sorted by y for depth) ---
   var ppl=S.cast.filter(active).sort(function(a,b){return a.y-b.y;});
@@ -584,17 +603,24 @@ function market(x,y){
   ctx.fillStyle="#6C8F3D"; ctx.beginPath(); ctx.arc(x-20,y-28,7,0,6.28); ctx.arc(x-2,y-28,7,0,6.28); ctx.arc(x+18,y-28,7,0,6.28); ctx.fill();
 }
 function workshop(s,now){
-  var x=s.x,y=s.y;
+  var x=s.x,y=s.y, tr=shipTier(s), sc=tr===3?1.24:tr===1?0.78:1;
+  ctx.save(); ctx.translate(x,y); ctx.scale(sc,sc); ctx.translate(-x,-y);
   ink(3);
-  ctx.fillStyle="#c98a5a"; ctx.beginPath(); ctx.moveTo(x-34,y); ctx.lineTo(x,y-24); ctx.lineTo(x+34,y); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle=tr===3?"#b8797a":"#c98a5a"; ctx.beginPath(); ctx.moveTo(x-34,y); ctx.lineTo(x,y-24); ctx.lineTo(x+34,y); ctx.closePath(); ctx.fill(); ctx.stroke();
   ctx.fillStyle="#f5ead0"; ctx.fillRect(x-27,y,54,30); ctx.strokeRect(x-27,y,54,30);
-  // pennant
+  // pennant(s) — a thương hiệu flies two
   ctx.beginPath(); ctx.moveTo(x,y-24); ctx.lineTo(x,y-46); ctx.stroke();
   var fl=Math.sin(now*0.004)*3;
   ctx.fillStyle="#E3A63B"; ctx.beginPath(); ctx.moveTo(x,y-46); ctx.lineTo(x+22,y-41+fl); ctx.lineTo(x,y-36); ctx.closePath(); ctx.fill(); ctx.stroke();
+  if(tr===3){ ctx.fillStyle="#C1443C"; ctx.beginPath(); ctx.moveTo(x,y-40); ctx.lineTo(x-20,y-36-fl); ctx.lineTo(x,y-31); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+  // the shelter mat — a woven tarp over the roof
+  if(s.shel>0){ ctx.strokeStyle="#7a5a3a"; ctx.lineWidth=2.4;
+    for(var m=-2;m<=2;m++){ ctx.beginPath(); ctx.moveTo(x+m*11-6,y-20); ctx.lineTo(x+m*11+8,y-2); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(x-30,y-8); ctx.lineTo(x+30,y-8); ctx.stroke(); }
   ctx.font="700 10px sans-serif"; ctx.fillStyle="#2B2320"; ctx.textAlign="center";
-  ctx.fillText(s.small?(L==="vi"?"gánh hàng":"stall"):(L==="vi"?"xưởng ":"w.shop ")+s.owner, x, y+20);
-  ctx.textAlign="left";
+  var lbl=tr===1?((L==="vi"?"gánh ":"stall ")+(s.yours?s.owner:s.owner)):tr===2?((L==="vi"?"xưởng ":"w.shop ")+s.owner):((L==="vi"?"thương hiệu ":"brand ")+s.owner);
+  ctx.fillText(lbl, x, y+20);
+  ctx.textAlign="left"; ctx.restore();
 }
 function person(p,now){
   // wander
@@ -749,6 +775,10 @@ function actProbe(){ if(S.acts<=0||S.probeSeen||S.over) return; if(!spend())retu
   S.probeSeen=true; beep(587,0.06); setTimeout(function(){beep(494,0.06);},80);
   logMsg(S.luatNext>=4?STR.probeSun.vi:STR.probeCloud.vi, S.luatNext>=4?STR.probeSun.en:STR.probeCloud.en);
   render(); save(); }
+function shelTarget(){ var best=null; S.ships.forEach(function(s){ if(s.shel>0) return; if((s.age|0)>=2&&!s.born) return; if(!best||(s.age|0)<(best.age|0)) best=s; }); return best; }
+function actShel(){ var s2=shelTarget(); if(S.acts<=0||S.over||!s2) return; if(!spend())return;
+  s2.shel=2;   // holds through the forecasted storm season
+  beep(392,0.1); logMsg(STR.shelDone.vi,STR.shelDone.en); render(); save(); }
 function actBuild(){ if(S.acts<=0||S.built) return; if(!spend())return;
   S.build++; beep(300+S.build*60,0.09);
   if(S.build>=4){ S.built=true; S.ships.push({x:120,y:470,owner:(L==="vi"?"bạn":"you"),small:S.von<5,yours:true});
@@ -794,14 +824,25 @@ function nextSeason(){
   // the law can crush (untouchable lock 3) — only while the sky is heavy, and young workshops are the most exposed
   if(S.luat<4){
     S.ships.slice().forEach(function(s){
-      if(s.yours||s.born) return;   // a workshop stands at least one full season before the law can touch it
+      if(s.born||s.shel>0) return;   // newborns stand one season; a tarp holds through the storm
       var risk=(s.age|0)<2?0.15:0.05;
       if(Math.random()<risk){
-        S.ships=S.ships.filter(function(o){return o!==s;});
-        stampAt(s.x,s.y);
-        var p=S.cast[s.pid]; if(p){ p.started=false; p.gan=Math.max(0,p.gan-3); p.crushCount++; p.mom=0;
-          bubble(p,(L==="vi")?"“Tôi đã bảo mà…”":"“I told you so…”"); }
-        logMsg("⬛ "+s.owner+STR.crushed.vi, "⬛ "+s.owner+STR.crushed.en);
+        var tr=shipTier(s);
+        if(s.yours){ // your own product lives under the same sky — but you rebuild faster than the first time
+          S.ships=S.ships.filter(function(o){return o!==s;});
+          stampAt(s.x,s.y); S.built=false; S.build=2;
+          logMsg(STR.yoursCrushed.vi,STR.yoursCrushed.en);
+        } else if(tr>=2){ // an established workshop steps DOWN a tier — the owner takes the hit, the walls stand
+          stampAt(s.x,s.y);
+          var p2=S.cast[s.pid]; if(p2){ p2.gan=Math.max(0,p2.gan-2); p2.mom=0; }
+          logMsg("⬛ "+s.owner+STR.tierDown.vi, "⬛ "+s.owner+STR.tierDown.en);
+        } else { // only a tier-1 gánh hàng can be erased outright
+          S.ships=S.ships.filter(function(o){return o!==s;});
+          stampAt(s.x,s.y);
+          var p=S.cast[s.pid]; if(p){ p.started=false; p.gan=Math.max(0,p.gan-3); p.crushCount++; p.mom=0;
+            bubble(p,(L==="vi")?"“Tôi đã bảo mà…”":"“I told you so…”"); }
+          logMsg("⬛ "+s.owner+STR.crushed.vi, "⬛ "+s.owner+STR.crushed.en);
+        }
       }
     });
   }
@@ -816,19 +857,19 @@ function nextSeason(){
            "What hasn't taken root fades — the seasons wash away tending that hasn't bloomed."); }
   // craft climbs the value curve: the market seller moves the master's ceramics
   if(S.gtm && !S.gtmPaid && S.cast[1].started){ S.gtmPaid=true; S.von=Math.min(10,S.von+1); logMsg(STR.gtmPaid.vi,STR.gtmPaid.en); }
-  // the recycling flywheel: enough standing workshops and the river feeds itself
-  if(S.ships.length>=3 && S.von<10){ S.von=Math.min(10,S.von+1);
+  // the recycling flywheel: enough TIERS standing and the river feeds itself — something you keep feeding, not a switch
+  if(tierSum()>=4 && S.von<10){ S.von=Math.min(10,S.von+1);
     if(!S.flySeen){ S.flySeen=true;
-      logMsg("🌊 Ba xưởng đứng vững — dòng sông bắt đầu tự đầy.","🌊 Three workshops standing — the river begins to fill itself."); } }
+      logMsg("🌊 Xưởng đã đủ vững — dòng sông bắt đầu tự đầy.","🌊 The workshops stand firm — the river begins to fill itself."); } }
   // structural drift — beyond your hands (the pre-rolled forecast becomes the sky)
   S.luat=S.luatNext; S.luatNext=driftLuat(S.luat); S.probeSeen=false;
   if(S.season%4===3) S.von=Math.min(10,S.von+1);       // the era slowly rises
   if(S.von<=3 && S.season===5) logMsg(STR.riverLow.vi,STR.riverLow.en);
-  // workshops age and resize with the river
-  S.ships.forEach(function(s){ s.age=(s.age|0)+1; s.born=false; s.small=S.von<5; });
+  // workshops age; tarps weather down
+  S.ships.forEach(function(s){ s.age=(s.age|0)+1; s.born=false; if(s.shel>0)s.shel--; });
 
   S.season++; S.acts=3;
-  if(S.season>=16){ endGame(); return; }
+  if(S.season>=16){ startFinale(); return; }
   unlockCheck();
   // 🛶 the returnee — arrives by sampan; stays only if the xóm gives her roots
   var lien=S.cast[6];
@@ -864,12 +905,23 @@ function nextSeason(){
 }
 
 // ---------- ending ----------
+// --- beat 1: the lantern harvest — the xóm lights what stands, one gong at a time ---
+var finaleTok=0;
+function startFinale(){
+  S.over=true; S.linking=null; lanterns=[]; render();
+  var myTok=++finaleTok, ships=S.ships.slice();
+  ships.forEach(function(s,i){
+    setTimeout(function(){ if(finaleTok!==myTok) return;
+      lanterns.push({x:s.x,y:s.y-52,ph:Math.random()*6.28});
+      gong(196+i*28,0.7,0.04); glows.push({x:s.x,y:s.y,t:0}); },700+i*800);
+  });
+  setTimeout(function(){ if(finaleTok===myTok) endGame(); }, ships.length?700+ships.length*800+1200:1400);
+}
 function endGame(){
   S.over=true;
   var blooms=S.cast.filter(function(p){return p.started;});
   var zeros=S.cast.filter(function(p){return active(p) && !p.started && Math.min(p.tai,p.gan,p.ban)<=3;});
   var b=document.getElementById("endBody"); b.innerHTML="";
-  function para(vi,en){ var d=document.createElement("p"); d.textContent=(L==="vi")?vi:en; b.appendChild(d); }
   var nB=blooms.length, ttl, tag;
   if(nB>=5&&S.built){ ttl=(L==="vi")?"Mùa vàng":"The golden season"; tag=(L==="vi")?"một xóm tự nở hoa":"a xóm blooming on its own"; }
   else if(nB>=4){ ttl=(L==="vi")?"Xóm đã thức":"The xóm woke up"; tag=(L==="vi")?"những phép nhân đã chạy":"the multiplications are running"; }
@@ -879,34 +931,45 @@ function endGame(){
   document.getElementById("endTtl").textContent=ttl;
   document.getElementById("endTag").textContent=tag;
   gong(165,1.4,0.05);
-  if(blooms.length){
-    para("Đã nảy mầm: "+blooms.map(function(p){return p.name;}).join(", ")+(S.built?" — và sản phẩm của chính bạn.":"."),
-         "Bloomed: "+blooms.map(function(p){return p.name;}).join(", ")+(S.built?" — and your own product.":"."));
-  } else {
-    para(S.built?"Chỉ có sản phẩm của bạn đứng đó — một bằng chứng đơn độc.":"Không gì nảy mầm. Ai cũng đã chăm chỉ — trên thừa số của riêng mình.",
-         S.built?"Only your own product stands — a lonely proof.":"Nothing bloomed. Everyone worked hard — each on their own factor.");
-  }
-  zeros.forEach(function(p){
-    var z=zeroOf(p)||"—";
-    para(p.name+" vẫn chưa nảy mầm — thừa số "+z+" vẫn nằm ở số không. Mười nhân với không vẫn bằng không.",
-         p.name+" never bloomed — the "+z+" factor stayed at zero. Ten times zero is still zero.");
-  });
-  para(S.luat>=5?"Bầu trời có quang hơn — có những mùa may mắn.":"Bầu trời không đổi. Có những ổ khóa ngoài tầm tay một người — điều đó không phải lỗi của bạn, cũng không phải lý do để ngừng vun.",
-       S.luat>=5?"The sky did clear a little — some seasons are lucky.":"The sky never changed. Some locks sit beyond one person's hands — that is not your fault, and not a reason to stop tending.");
-  var crushes=S.cast.reduce(function(a,p){return a+p.crushCount;},0);
-  if(crushes>0) para("Con dấu đã rơi "+crushes+" lần. Người ngã vì con dấu cần bàn tay của bạn gấp đôi.",
-                     "The stamp fell "+crushes+" times. Those it fell on need your hand twice as much.");
-  if(S.apprentice) para("Và một điều không hiện trên bản đồ: nghề gốm của Chú Ba đã có người nối — Bé Ngân. Có những 'lối thoát' không cần thương vụ nào.",
-                        "And one thing no map shows: Chú Ba's craft found an heir — Bé Ngân. Some 'exits' need no deal at all.");
-  if(S.duo) para("Anh Tú giờ vọc có bài bản — tay nghề của Anh Vũ đã sang tay người liều.",
-                 "Anh Tú tinkers properly now — Anh Vũ's craft passed to the leaper.");
-  if(S.gtmPaid) para("Gốm Chú Ba đã ra tới chợ huyện trên vai Chị Hoa — món hàng leo thang giá trị, dòng sông đầy thêm.",
-                     "Chú Ba's ceramics reached the district market on Chị Hoa's shoulder — the craft climbed the value curve, and the river rose.");
+  // --- beat 2: the thesis as a number — the weakest person, then vs now ---
+  var wk=null; S.cast.forEach(function(p){ if(!wk||p.btai*p.bgan*p.bban<wk.btai*wk.bgan*wk.bban) wk=p; });
+  var lead=document.createElement("div"); lead.className="mult";
+  lead.innerHTML=(L==="vi"?"Khi bạn đến: ":"When you arrived: ")+wk.btai+" × "+wk.bgan+" × "+wk.bban+" = <b>"+(wk.btai*wk.bgan*wk.bban)+"</b>"
+    +"<br>"+(L==="vi"?"Khi bạn đi: ":"When you left: ")+wk.tai+" × "+wk.gan+" × "+wk.ban+" = <b>"+prod(wk)+"</b>"
+    +"<small>"+wk.name+" · "+(L==="vi"?"tổng bậc xưởng: ":"workshop tiers standing: ")+tierSum()+"</small>";
+  b.appendChild(lead);
+  // --- beat 3: epilogues, three highest-signal; the rest fold away ---
+  var eps=[];
+  function ep(pri,vi,en){ eps.push({pri:pri,vi:vi,en:en}); }
+  if(blooms.length) ep(10,"Đã nảy mầm: "+blooms.map(function(p){return p.name;}).join(", ")+(S.built?" — và sản phẩm của chính bạn.":"."),
+                         "Bloomed: "+blooms.map(function(p){return p.name;}).join(", ")+(S.built?" — and your own product.":"."));
+  else ep(10,S.built?"Chỉ có sản phẩm của bạn đứng đó — một bằng chứng đơn độc.":"Không gì nảy mầm. Ai cũng đã chăm chỉ — trên thừa số của riêng mình.",
+             S.built?"Only your own product stands — a lonely proof.":"Nothing bloomed. Everyone worked hard — each on their own factor.");
   var lienEnd=S.cast[6];
-  if(lienEnd.gone) para("Cô Liên đã về — rồi đi. Thừa số BẠN của cô, không ai kịp vun.",
+  if(lienEnd.gone) ep(9,"Cô Liên đã về — rồi đi. Thừa số BẠN của cô, không ai kịp vun.",
                         "Cô Liên came home — then left. Her ALLIES factor, no one tended in time.");
-  else if(lienEnd.started) para("Và Cô Liên đã ở lại — studio nhỏ sáng đèn ngay trong xóm.",
+  else if(lienEnd.started) ep(9,"Và Cô Liên đã ở lại — studio nhỏ sáng đèn ngay trong xóm.",
                                 "And Cô Liên stayed — her little studio lit right here in the xóm.");
+  if(S.apprentice) ep(8,"Nghề gốm của Chú Ba đã có người nối — Bé Ngân. Có những 'lối thoát' không cần thương vụ nào.",
+                        "Chú Ba's craft found an heir — Bé Ngân. Some 'exits' need no deal at all.");
+  var crushes=S.cast.reduce(function(a,p){return a+p.crushCount;},0);
+  if(crushes>0) ep(7,"Con dấu đã rơi "+crushes+" lần. Người ngã vì con dấu cần bàn tay của bạn gấp đôi.",
+                     "The stamp fell "+crushes+" times. Those it fell on need your hand twice as much.");
+  if(S.duo) ep(6,"Anh Tú giờ vọc có bài bản — tay nghề của Anh Vũ đã sang tay người liều.",
+                 "Anh Tú tinkers properly now — Anh Vũ's craft passed to the leaper.");
+  if(S.gtmPaid) ep(5,"Gốm Chú Ba đã ra tới chợ huyện trên vai Chị Hoa — món hàng leo thang giá trị.",
+                     "Chú Ba's ceramics reached the district market on Chị Hoa's shoulder — the craft climbed the value curve.");
+  zeros.forEach(function(p){ var z=zeroOf(p)||"—";
+    ep(4,p.name+" vẫn chưa nảy mầm — thừa số "+z+" vẫn nằm ở số không. Mười nhân với không vẫn bằng không.",
+         p.name+" never bloomed — the "+z+" factor stayed at zero. Ten times zero is still zero."); });
+  ep(3,S.luat>=5?"Bầu trời có quang hơn — có những mùa may mắn.":"Bầu trời không đổi. Có những ổ khóa ngoài tầm tay một người.",
+       S.luat>=5?"The sky did clear a little — some seasons are lucky.":"The sky never changed. Some locks sit beyond one person's hands.");
+  eps.sort(function(a,b){return b.pri-a.pri;});
+  eps.slice(0,3).forEach(function(e){ var d=document.createElement("p"); d.textContent=(L==="vi")?e.vi:e.en; b.appendChild(d); });
+  if(eps.length>3){ var det=document.createElement("details"); var sm=document.createElement("summary");
+    sm.textContent=t("more"); sm.style.cssText="cursor:pointer;font-size:12px;color:#7a6f5d"; det.appendChild(sm);
+    eps.slice(3).forEach(function(e){ var d=document.createElement("p"); d.textContent=(L==="vi")?e.vi:e.en; d.style.fontSize="13px"; det.appendChild(d); });
+    b.appendChild(det); }
   document.getElementById("endLine").textContent=(L==="vi")
     ? "Đừng hỏi “ai sẽ là Steve Jobs Việt Nam?” Hãy hỏi: “thừa số nào đang bằng không ở chỗ tôi đứng — và tay tôi xoay được bao nhiêu?”"
     : "Don't ask “who will be Vietnam's Steve Jobs?” Ask: “which factor sits at zero where I stand — and how far can my own hand turn it?”";
@@ -927,7 +990,10 @@ function render(){
   el("huiBtn").style.display=S.un.hui?"":"none";
   el("buildBtn").style.display=S.un.build?"":"none";
   el("probeBtn").style.display=S.un.probe?"":"none";
-  el("probeLbl").textContent=t("probe");
+  el("probeLbl").textContent=t("probe"); el("shelLbl").textContent=t("shel");
+  var shelOk=S.un.probe&&S.probeSeen&&S.luatNext<4&&shelTarget()&&!S.over;   // shelter appears when the forecast is heavy and something young stands exposed
+  el("shelBtn").style.display=shelOk?"":"none";
+  el("shelBtn").disabled=S.acts<=0;
   el("huiCost").textContent=S.hui>=3?"✓ 3/3":"(1⚡)";
   el("huiBtn").disabled=S.acts<=0||S.hui>=3||S.over;
   el("buildBtn").disabled=S.acts<=0||S.built||S.over;
@@ -949,13 +1015,15 @@ function renderSheet(){
   el("valTai").textContent=p.tai; el("valGan").textContent=p.gan; el("valBan").textContent=p.ban;
   el("barTai").style.width=(p.tai*10)+"%"; el("barGan").style.width=(p.gan*10)+"%"; el("barBan").style.width=(p.ban*10)+"%";
   var pr=prod(p), pc=Math.round(chance(p)*100);
+  var trNow=pr<300?1:pr<600?2:3;
   el("multLine").innerHTML=p.tai+" × "+p.gan+" × "+p.ban+" = <b>"+pr+"</b>"
-    +"<small>"+(p.started?(L==="vi"?"đang xây, mỗi mùa một ít":"building, season by season")
-    :(t("sprout")+" ~"+pc+"% "+t("perSeason")
+    +"<small>"+(p.started
+      ?((L==="vi"?"bậc ":"tier ")+trNow+"/3"+(trNow<3?(L==="vi"?" · vun tiếp để lên bậc":" · keep tending to rise"):(L==="vi"?" · một thương hiệu":" · a brand")))
+      :(t("sprout")+" ~"+pc+"% "+t("perSeason")
       +((p.mom||0)>0?(L==="vi"?" · mầm đang nhú 🌱":" · pushing at the soil 🌱"):"")
       +(pc===0?(L==="vi"?" — vì có một thừa số bằng không":" — because one factor is zero"):"")))+"</small>";
   var mh=el("multHint"); mh.style.display=(!S.hintDone&&!p.started)?"block":"none"; if(!S.hintDone) mh.textContent=t("multHint");
-  el("teachBtn").disabled=S.acts<=0||p.tai>=10||p.started||S.over;
+  el("teachBtn").disabled=S.acts<=0||p.tai>=10||S.over;   // tending doesn't stop at the bloom — tiers keep the verbs alive
   el("nerveBtn").disabled=S.acts<=0||p.gan>=10||S.over;
   el("linkBtn").style.display=S.un.link?"":"none";
   el("linkBtn").disabled=S.acts<=0||S.over;
@@ -974,7 +1042,7 @@ el("muteBtn").onclick=function(){ META.muted=!META.muted; el("muteBtn").textCont
 el("startBtn").onclick=function(){ el("intro").classList.remove("show"); beep(660,0.08); };
 el("nextBtn").onclick=nextSeason;
 el("teachBtn").onclick=actTeach; el("nerveBtn").onclick=actNerve; el("linkBtn").onclick=actLink;
-el("huiBtn").onclick=actHui; el("buildBtn").onclick=actBuild; el("probeBtn").onclick=actProbe;
+el("huiBtn").onclick=actHui; el("buildBtn").onclick=actBuild; el("probeBtn").onclick=actProbe; el("shelBtn").onclick=actShel;
 el("againBtn").onclick=function(){ el("endOvl").classList.remove("show"); try{localStorage.removeItem(SAVE_KEY);}catch(e){} fresh(); S.sel=-1; render(); renderSheet(); renderLog(); };
 el("resetLink").onclick=function(e){ e.preventDefault(); try{localStorage.removeItem(SAVE_KEY);}catch(_){} el("endOvl").classList.remove("show"); fresh(); S.sel=-1; setLang(L); el("intro").classList.add("show"); };
 

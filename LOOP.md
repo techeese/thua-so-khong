@@ -37,4 +37,4 @@
 - anything outward-facing beyond this repo/Pages site.
 
 ## Compass pointer
-- next batch (designed together): **workshop tiers + Che chắn shelter (+ yours-immunity removal) + staged 3-beat ending** — the "late-game & payoff" batch from the design review. *(v0.10 = review-hardening batch done)*
+- next cycle: **NEW review round** (rotate lenses: replayability/variety · bilingual copy quality · fresh first-session) → triage → batch. *(v0.10 hardening · v0.11 late-game & payoff done)*

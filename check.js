@@ -52,9 +52,15 @@ function run(strategy,seed){
     // the returnee leaves if unrooted (mirrors index.html: season>=13, ban<4, not bloomed)
     if(season>=13) cast.forEach(function(c){ if(c.arrives!==undefined&&!c.started&&c.ban<4) c.gone=true; });
     // age-based stamp risk (mirrors index.html): young workshops 15%, established 5%, only under a heavy sky
-    if(luat<4) cast.forEach(function(p){ if(p.started&&!p.born&&rnd()<(((p.age|0)<2)?0.15:0.05)){ p.started=false; p.crushedOnce=true; p.gan=Math.max(0,p.gan-3); p.mom=0; } });
-    // the recycling flywheel: enough standing workshops and the river feeds itself (mirrors index.html)
-    if(cast.filter(function(c){return c.started;}).length>=3) von=Math.min(10,von+1);
+    // tier-based stamps (mirrors index.html): established workshops step down (owner gan−2), only tier-1 is erased
+    if(luat<4) cast.forEach(function(p){ if(p.started&&!p.born&&rnd()<(((p.age|0)<2)?0.15:0.05)){
+      var prodv=p.tai*p.gan*p.ban;
+      if(prodv>=300){ p.gan=Math.max(0,p.gan-2); p.mom=0; }
+      else { p.started=false; p.crushedOnce=true; p.gan=Math.max(0,p.gan-3); p.mom=0; } } });
+    // the recycling flywheel now counts TIERS (mirrors index.html): sum(tier)>=4 → the river feeds itself
+    var tsum=cast.reduce(function(a,c){ if(!c.started) return a;
+      var pv=c.tai*c.gan*c.ban; return a+(pv<300?1:pv<600?2:3); },0);
+    if(tsum>=4) von=Math.min(10,von+1);
     cast.forEach(function(p){ if(p.started){ p.age=(p.age|0)+1; p.born=false; } });
     // the elder's clock (mirrors index.html; the sim has no apprenticeship, so blooming him is the only save)
     if(season>=8){ var ba=cast[1]; if(!ba.started&&!ba.gone&&ba.tai>0) ba.tai=Math.max(0,ba.tai-1); }
