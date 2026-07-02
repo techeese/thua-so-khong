@@ -1,5 +1,40 @@
 # Changelog — Thừa Số Không
 
+## v0.12 — 2026-07-02 — LOOP v2, cycle 3: run 2 & the village's voice (3 reviewers → 18 shipped)
+
+**Replayability (run 2 is now a different year, and pulls you in):**
+- **Year variants** — every run jitters each person's non-zero stats ±1 (authored zeros stay true), Cô Liên's sampan
+  comes seasons 5–8, the elder's clock starts 7–9, the starting sky/river roll 2–4 — announced by one flavor line
+  (*"Năm nay lũ về sớm…"*). Re-diagnosis is real again.
+- **📜 Sổ xóm — the village chronicle** persists across runs: the intro now shows your last run's title and
+  **kết đã thấy 🏮🏮○○○ 2/5** — the five endings are finally advertised by the village's own record book.
+- **☁️ Storm tax** — under a heavy sky the xóm has only **2⚡** (everyone is bracing their own roofs). Scarcity waves
+  land in different seasons every run; triage is real.
+- **🎨 A fourth authored pair** — Cô Liên × Bé Ngân (*"Vậy em code, cô vẽ nha!"*): a second mentor route for Ngân, a
+  real returnee-first strategy. The ending now counts **Mối duyên đã kết: X/4** so run-1 players know more is hidden.
+- **The finale names YOUR run** — the then-vs-now multiplication now picks **whoever traveled furthest under your
+  hands** (was: always Bé Ngân).
+
+**First-session (the new systems teach themselves):**
+- Tiers get their one-time teaching beat at first bloom; the first-bloom log burst is staggered into beats
+  (bloom line keeps its moment; law/probe/tier lessons arrive 2–5s later).
+- The finale announces itself (🏮 banner + one line), the pill no longer reads **17/16**, and — real bug — the person
+  card's buttons are now properly dead during the ending (missing S.over guards).
+- Probe→shelter chain closed: a heavy forecast with an exposed workshop now says so in the same breath.
+- Tier labels drawn outside the tier scale at 12px — readable on phones (were ~3px).
+
+**The village's voice (native-reader pass):**
+- **Everyone grieves in their own voice** — the crush bubble now uses each character's written despair line (Bé Ngân's
+  *"Giấy phép… em làm sai gì sao?"*) instead of everyone stealing Chú Ba's *"Tôi đã bảo mà…"* (pronoun-register bug).
+- **Hỏi thăm → Nghe ngóng** (the true village verb for loitering near the xã office collecting rumors).
+- "the river is the capital" → **"the river is capital"** (no more Hanoi readings); linking lines de-jargoned
+  (*"Kết thân với ai đây?"*); the hụi line earns its laugh (*"ai cũng kêu hết tiền, mà ai cũng góp đủ"*); shoulder →
+  **shoulder pole**; "w.shop" → "shop"; + 5 more drop-in polish lines.
+
+Under the hood: variants/storm-tax/elder-window mirrored in check.js (band re-proven: hunter 6.95 > linker 6.58 >
+spreader 6.06 > idle 4.54); jittered bases + arrival/fade windows persist in saves; gate assertion made jitter-proof;
+gates green ×3.
+
 ## v0.11 — 2026-07-02 — LOOP v2, cycle 2: the late-game & payoff batch
 
 The three deferred design-review features, built as one system:

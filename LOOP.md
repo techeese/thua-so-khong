@@ -37,4 +37,4 @@
 - anything outward-facing beyond this repo/Pages site.
 
 ## Compass pointer
-- next cycle: **NEW review round** (rotate lenses: replayability/variety · bilingual copy quality · fresh first-session) → triage → batch. *(v0.10 hardening · v0.11 late-game & payoff done)*
+- next cycle: review round again, rotate lenses (suggest: balance-of-the-new-systems [storm tax + tiers + variants together] · art/scene composition · a full cold replay for run-2 feel). *(v0.10 hardening · v0.11 late-game & payoff · v0.12 run-2 & voice done)*

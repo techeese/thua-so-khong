@@ -6,11 +6,19 @@
 // =============================================================
 "use strict";
 
-function makeCast(){ return [
+function makeCast(rnd){ return [
   {tai:8,gan:1,ban:4},{tai:9,gan:3,ban:2},{tai:6,gan:4,ban:7},
   {tai:5,gan:6,ban:3},{tai:4,gan:7,ban:8},{tai:2,gan:8,ban:6},
-  {tai:9,gan:5,ban:1,arrives:6}                                    // Cô Liên — the returnee (leaves at 13 if unrooted)
-].map(function(c){ return {tai:c.tai,gan:c.gan,ban:c.ban,btai:c.tai,bgan:c.gan,bban:c.ban,started:false,arrives:c.arrives,gone:false}; }); }
+  {tai:9,gan:5,ban:1,arrives:0}                                    // Cô Liên — arrival rolled per run below
+].map(function(c,idx){
+  var o={tai:c.tai,gan:c.gan,ban:c.ban,started:false,gone:false};
+  // year variants (mirrors index.html fresh()): jitter non-zero stats ±1, authored zero stays true
+  var m=Math.min(o.tai,o.gan,o.ban), zk=(m===o.gan)?"gan":(m===o.tai)?"tai":"ban";
+  ["tai","gan","ban"].forEach(function(k){ if(k===zk||o[k]<=1) return;
+    o[k]=Math.max(1,Math.min(10,o[k]+(rnd()<0.5?-1:1))); });
+  o.btai=o.tai; o.bgan=o.gan; o.bban=o.ban;
+  if(idx===6) o.arrives=5+Math.floor(rnd()*4);
+  return o; }); }
 function activeSim(c,season){ return !c.gone && (c.arrives===undefined||season>=c.arrives); }
 
 function chance(p,von){ return Math.min(0.85,(p.tai*p.gan*p.ban)/1000*0.9*(0.6+0.4*von/10)+(p.mom||0)); }
@@ -18,10 +26,12 @@ function chance(p,von){ return Math.min(0.85,(p.tai*p.gan*p.ban)/1000*0.9*(0.6+0
 function lcg(seed){ var s=seed>>>0; return function(){ s=(1103515245*s+12345)>>>0; return s/4294967296; }; }
 
 function run(strategy,seed){
-  var rnd=lcg(seed), cast=makeCast(), luat=3, von=3, pairsSet={};
+  var rnd=lcg(seed), cast=makeCast(rnd), pairsSet={};
+  var luat=2+Math.floor(rnd()*3), von=2+Math.floor(rnd()*3), baStart=7+Math.floor(rnd()*3);
   for(var season=0;season<16;season++){
     var here=cast.filter(function(c){return activeSim(c,season);});
-    for(var a=0;a<3;a++){
+    var actsN=(season>0&&luat<4)?2:3;   // storm tax (mirrors index.html)
+    for(var a=0;a<actsN;a++){
       function communal(target){                  // failure night lifts everyone crushed (mirrors index.html actNerve)
         cast.forEach(function(o){ if(o!==target&&activeSim(o,season)&&o.crushedOnce&&!o.started) o.gan=Math.min(10,o.gan+1); });
       }
@@ -63,7 +73,7 @@ function run(strategy,seed){
     if(tsum>=4) von=Math.min(10,von+1);
     cast.forEach(function(p){ if(p.started){ p.age=(p.age|0)+1; p.born=false; } });
     // the elder's clock (mirrors index.html; the sim has no apprenticeship, so blooming him is the only save)
-    if(season>=8){ var ba=cast[1]; if(!ba.started&&!ba.gone&&ba.tai>0) ba.tai=Math.max(0,ba.tai-1); }
+    if(season>=baStart){ var ba=cast[1]; if(!ba.started&&!ba.gone&&ba.tai>0) ba.tai=Math.max(0,ba.tai-1); }
     // entropy: un-bloomed tending decays back toward each person's nature (mirrors index.html)
     cast.forEach(function(p){ if(p.started||!activeSim(p,season)) return;
       ["tai","gan","ban"].forEach(function(k){ if(p[k]>p["b"+k] && rnd()<0.35) p[k]--; }); });
