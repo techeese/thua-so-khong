@@ -1,5 +1,22 @@
 # Changelog — Thừa Số Không
 
+## v0.4 — 2026-07-02 — buy the cheap question; two more lineages; shaped endings
+
+- **🔍 Hỏi thăm (the probe beat — the fable's rule #2, now playable):** unlocks at your first bloom, alongside the
+  law lesson. 1⚡ asks the commune office about NEXT season's sky (shown on the season pill as → ☀️/☁️). Young
+  workshops (< 2 seasons) now face 15% stamp risk under a heavy sky vs 5% established — so *timing a bloom around
+  the forecast* is real strategy: a cheap question beats a lost workshop.
+- **Two new authored pairs:** 🔧 **Anh Vũ → Anh Tú** (the leaper gains a craft: his TÀI grows each season) and
+  🧺 **Chị Hoa × Chú Ba** (she takes his ceramics to the district market — when his kiln stands, the river rises:
+  the craft climbing the value curve, mechanized). Mentor logic generalized (MENTORS table).
+- **Bloom moments:** each bloom now raises a named banner ("🌸 Cô Mai"), speaks their bloom quote, and buzzes
+  (haptics, mute-governed).
+- **Shaped endings:** the title now matches your xóm's story — *Mùa vàng · Xóm đã thức · Những mầm đầu tiên ·
+  Bằng chứng đơn độc · Mười sáu mùa lặng* — plus new duo/GTM epilogue lines.
+- **PWA:** manifest + network-first sw.js — installable, plays offline.
+- Hardening: completeLink self-link guard (found by probe); check.js mirrors age-based stamp risk; band re-verified
+  **hunter 5.69 > spreader 4.89 > idle 3.30** @1200 runs. All gates green.
+
 ## v0.3 — 2026-07-02 — the gentle opening (owner playtest: "hard to understand, too many elements at start")
 
 The game now introduces itself slowly, through play:

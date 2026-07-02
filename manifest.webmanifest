@@ -1,0 +1,11 @@
+{
+  "name": "Thừa Số Không — The Zero Factor",
+  "short_name": "Thừa Số Không",
+  "description": "Mười nhân với không vẫn bằng không — a village game of the multiplication.",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#EAD9B8",
+  "theme_color": "#EAD9B8",
+  "icons": []
+}

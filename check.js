@@ -32,10 +32,12 @@ function run(strategy,seed){
     }
     cast.forEach(function(p){
       if(p.started) return;
-      if(rnd()<chance(p,von)){ p.started=true;
+      if(rnd()<chance(p,von)){ p.started=true; p.age=0;
         cast.forEach(function(o){ if(o!==p) o.gan=Math.min(10,o.gan+1); }); }
     });
-    if(luat<4) cast.forEach(function(p){ if(p.started&&rnd()<0.10){ p.started=false; p.gan=Math.max(0,p.gan-3); } });
+    // age-based stamp risk (mirrors index.html): young workshops 15%, established 5%, only under a heavy sky
+    if(luat<4) cast.forEach(function(p){ if(p.started&&rnd()<(((p.age|0)<2)?0.15:0.05)){ p.started=false; p.gan=Math.max(0,p.gan-3); } });
+    cast.forEach(function(p){ if(p.started) p.age=(p.age|0)+1; });
     // entropy: un-bloomed tending decays back toward each person's nature (mirrors index.html)
     cast.forEach(function(p){ if(p.started) return;
       ["tai","gan","ban"].forEach(function(k){ if(p[k]>p["b"+k] && rnd()<0.35) p[k]--; }); });
