@@ -16,7 +16,7 @@
   body{font:15px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink)}
   .wrap{max-width:980px;margin:0 auto;padding:10px}
   /* top bar */
-  .top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 2px}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 2px;flex-wrap:wrap}
   .top h1{font:700 20px Georgia,"Times New Roman",serif;margin:0;letter-spacing:.5px}
   .top .sub{font-size:11px;color:var(--dim);font-style:italic}
   .pill{background:#f5ead0;border:2px solid var(--ink);border-radius:14px;padding:4px 12px;font-size:13px;font-weight:600;white-space:nowrap}
@@ -97,7 +97,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.9</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.10</span></div>
 </div>
 
 <!-- intro -->
@@ -273,20 +273,21 @@ var SAVE_KEY="thua-so-khong-v1";
 function fresh(){
   S={season:0, acts:3, luat:3, von:3, hui:0, cast:makeCast(), ships:[], sel:-1,
      build:0, built:false, pairs:[], apprentice:false, duo:false, gtm:false, gtmPaid:false,
-     linking:null, banner:null, luatNext:3, probeSeen:false, probeTaught:false,
+     linking:null, banner:null, banners:[], luatNext:3, probeSeen:false, probeTaught:false, baFade:false,
      un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false,
      log:[], over:false, seed:(Date.now()>>>0)};
   S.luatNext=driftLuat(S.luat);
-  S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false;
+  S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false; p.mom=0;
     var m=Math.min(p.tai,p.gan,p.ban);
     p.zkey = (m===p.gan)?"gan":(m===p.tai)?"tai":"ban";   // their original zero — quotes evolve when it turns
     p.btai=p.tai; p.bgan=p.gan; p.bban=p.ban;             // their nature — un-bloomed tending decays back toward it
     p.x=p.hx; p.y=p.hy; p.tx=p.hx; p.ty=p.hy; p.ph=Math.random()*6.28; });
 }
 function prod(p){ return p.tai*p.gan*p.ban; }
-function chance(p){ return Math.min(0.85, prod(p)/1000*0.9*(0.6+0.4*S.von/10)); }
+function chance(p){ return Math.min(0.85, prod(p)/1000*0.9*(0.6+0.4*S.von/10)+(p.mom||0)); }   // mom = a tended sprout pushing at the soil
 function driftLuat(l){ var r=Math.random(); if(r<0.12) return Math.min(10,l+1); if(r<0.20) return Math.max(1,l-1); return l; }
 function logMsg(vi,en){ S.log.unshift({vi:vi,en:en}); S.log=S.log.slice(0,24); renderLog(); }
+function banner(txt,dur){ if(!S.banners)S.banners=[]; S.banners.push({txt:txt,dur:dur||1900}); }   // queued — named moments no longer clobber each other
 
 // ---------- save / load (NaN-safe) ----------
 var fin=Number.isFinite;
@@ -294,8 +295,8 @@ function cl(v,lo,hi,fb){ return fin(v)?Math.max(lo,Math.min(hi,v)):fb; }
 function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:1,
   meta:{lang:L,muted:!!META.muted},
   s:{season:S.season,acts:S.acts,luat:S.luat,von:S.von,hui:S.hui,build:S.build,built:!!S.built,
-     apprentice:!!S.apprentice,gtmPaid:!!S.gtmPaid,pairs:S.pairs,
-     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone};}),
+     apprentice:!!S.apprentice,gtmPaid:!!S.gtmPaid,pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
+     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0};}),
      ships:S.ships.map(function(w){return {x:w.x,y:w.y,owner:w.owner,small:!!w.small,pid:w.pid,yours:!!w.yours,age:w.age|0};}),
      log:S.log.slice(0,12)}})); }catch(e){} }
 function load(){
@@ -311,8 +312,8 @@ function load(){
     if(Array.isArray(s.pairs)) S.pairs=s.pairs.filter(function(pr){return Array.isArray(pr)&&fin(pr[0])&&fin(pr[1]);});
     if(Array.isArray(s.cast)) s.cast.forEach(function(c,i){ var p=S.cast[i]; if(!p||!c) return;
       p.tai=cl(c.tai,0,10,p.tai); p.gan=cl(c.gan,0,10,p.gan); p.ban=cl(c.ban,0,10,p.ban);
-      p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; });
-    S.lienWarned=S.season>=11;
+      p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; p.mom=cl(c.mom,0,0.5,0); });
+    S.lienWarned=S.season>=11; S.baFade=S.season>=8;
     if(Array.isArray(s.ships)) S.ships=s.ships.filter(function(w){return w&&fin(w.x)&&fin(w.y)&&typeof w.owner==="string";});
     S.ships.forEach(function(w){ w.age=cl(w.age,0,99,2); });
     if(Array.isArray(s.log)) S.log=s.log.filter(function(m){return m&&(typeof m.vi==="string"||typeof m.en==="string");});
@@ -323,7 +324,7 @@ function load(){
           probe:S.ships.length>0||S.season>2};
     S.nudged=true; S.hintDone=S.season>0; S.lawSeen=S.season>1||S.ships.length>0; S.probeTaught=true;
     S.flySeen=S.ships.length>=3; S.nightSeen=true;
-    S.luatNext=driftLuat(S.luat);
+    S.luatNext=cl(s.luatNext,1,10,driftLuat(S.luat)); S.probeSeen=!!s.probeSeen;   // a paid forecast survives a refresh
     return true;
   }catch(e){ return false; }
 }
@@ -332,6 +333,7 @@ function load(){
 var _ac=null;
 // a softer instrument: triangle voice with a gentle attack (no more raw sine pips)
 function beep(f,d,v){ if(META.muted) return; try{ if(!_ac)_ac=new (window.AudioContext||window.webkitAudioContext)();
+  if(_ac.state==="suspended")_ac.resume();   // iOS suspends on backgrounding and never auto-resumes
   var o=_ac.createOscillator(),g=_ac.createGain(),t0=_ac.currentTime; o.type="triangle"; o.frequency.value=f;
   o.connect(g); g.connect(_ac.destination);
   g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(v||0.04,t0+0.015);
@@ -339,6 +341,7 @@ function beep(f,d,v){ if(META.muted) return; try{ if(!_ac)_ac=new (window.AudioC
   o.start(t0); o.stop(t0+(d||0.1)+0.02); }catch(e){} }
 // the gong: a long sine that sags in pitch — for seasons turning and the ending
 function gong(f,d,v){ if(META.muted) return; try{ if(!_ac)_ac=new (window.AudioContext||window.webkitAudioContext)();
+  if(_ac.state==="suspended")_ac.resume();
   var o=_ac.createOscillator(),g=_ac.createGain(),t0=_ac.currentTime; o.type="sine";
   o.frequency.setValueAtTime(f,t0); o.frequency.exponentialRampToValueAtTime(f*0.94,t0+(d||0.9));
   o.connect(g); g.connect(_ac.destination);
@@ -349,8 +352,9 @@ function gong(f,d,v){ if(META.muted) return; try{ if(!_ac)_ac=new (window.AudioC
 // ---------- canvas ----------
 var cv=document.getElementById("cv"), ctx=cv.getContext("2d");
 var W=960,H=600,DPR=1;
-function fit(){ var w=cv.parentElement.clientWidth-0; DPR=window.devicePixelRatio||1;
-  cv.width=W*DPR; cv.height=H*DPR; cv.style.height=(w*H/W)+"px"; }
+function fit(){ var w=cv.parentElement.clientWidth||W; DPR=window.devicePixelRatio||1;
+  // backing store sized to the DISPLAYED width, not the logical world — 8× fewer pixels per frame on phones
+  cv.width=Math.round(w*DPR); cv.height=Math.round(w*H/W*DPR); cv.style.height=(w*H/W)+"px"; }
 window.addEventListener("resize",fit);
 
 var parts=[], bubbles=[], stamps=[];
@@ -369,7 +373,7 @@ function ink(w){ ctx.strokeStyle="#3a2a1e"; ctx.lineWidth=w||3; ctx.lineJoin="ro
 
 var amb=[]; // seasonal drift: blossom in spring, leaves in autumn
 function drawScene(now){
-  ctx.setTransform(DPR,0,0,DPR,0,0);
+  var kk=cv.width/W; ctx.setTransform(kk,0,0,kk,0,0);
   // the whole print jolts when the stamp falls
   if(shake>0.01){ ctx.translate((Math.random()-0.5)*12*shake,(Math.random()-0.5)*8*shake); shake*=0.88; } else shake=0;
   // paper — điệp ground
@@ -504,7 +508,8 @@ function drawScene(now){
   bubbles=bubbles.filter(function(b){ return b.until>nnow; });
   bubbles.forEach(function(b){ var p=b.p; drawBubble(p.x, p.y-66, b.txt); });
 
-  // --- season banner ---
+  // --- banner queue (bloom / sampan / season — shown one after another) ---
+  if(!S.banner && S.banners && S.banners.length){ var nb=S.banners.shift(); S.banner={txt:nb.txt,until:nnow+nb.dur}; }
   if(S.banner){ var bdt=S.banner.until-nnow;
     if(bdt>0){ ctx.save(); ctx.globalAlpha=Math.min(1,bdt/700);
       ctx.font="700 32px Georgia"; ctx.textAlign="center"; ctx.fillStyle="#2B2320";
@@ -663,8 +668,9 @@ cv.addEventListener("click",function(e){
   if(S.over) return;
   var r=cv.getBoundingClientRect();
   var mx=(e.clientX-r.left)*(W/r.width), my=(e.clientY-r.top)*(H/r.height);
+  var hitR=Math.max(34, 22*(W/r.width));   // ≥22 CSS px of tap slop on any screen — phone thumbs welcome
   var best=-1,bd=1e9;
-  S.cast.forEach(function(p){ if(!active(p)) return; var d=Math.hypot(p.x-mx,p.y-4-my); if(d<34&&d<bd){bd=d;best=p.id;} });
+  S.cast.forEach(function(p){ if(!active(p)) return; var d=Math.hypot(p.x-mx,p.y-4-my); if(d<hitR&&d<bd){bd=d;best=p.id;} });
   if(S.linking!=null){
     if(best>=0 && best!==S.linking) completeLink(best);
     else { S.linking=null; logMsg("(bỏ kết nối)","(link cancelled)"); }
@@ -704,13 +710,19 @@ function actLink(){ var p=cur(); if(!p||S.acts<=0) return;
 function completeLink(otherId){
   if(S.acts<=0){ S.linking=null; return; }
   var a=S.cast[S.linking], b=S.cast[otherId]; S.linking=null;
-  if(!a||!b||a.id===b.id) return; if(!spend())return;
-  a.ban=Math.min(10,a.ban+2); b.ban=Math.min(10,b.ban+2); S.hintDone=true;
+  if(!a||!b||a.id===b.id) return;
+  if(!b.known){ bubble(a,(L==="vi")?"“Mình chưa quen người ấy…”":"“I haven't talked with them yet…”"); render(); return; }   // diagnosis first — talk before you introduce
+  if(!spend())return;
   var key=[Math.min(a.id,b.id),Math.max(a.id,b.id)];
-  if(!S.pairs.some(function(pr){return pr[0]===key[0]&&pr[1]===key[1];})) S.pairs.push(key);
-  if(!b.known){ b.known=true; }
-  floatOn(a,"+2 "+t("ban"),"#6C8F3D"); floatOn(b,"+2 "+t("ban"),"#6C8F3D"); beep(560,0.08);
-  logMsg("🤝 "+a.name+" — "+b.name+".","🤝 "+a.name+" — "+b.name+".");
+  var again=S.pairs.some(function(pr){return pr[0]===key[0]&&pr[1]===key[1];});
+  // the FIRST close friend changes a person (+2); every later connection adds a little (+1) — no pair-farming
+  function linksOf(id){ return S.pairs.filter(function(pr){return pr[0]===id||pr[1]===id;}).length; }
+  var gA=again?1:(linksOf(a.id)===0?2:1), gB=again?1:(linksOf(b.id)===0?2:1);
+  a.ban=Math.min(10,a.ban+gA); b.ban=Math.min(10,b.ban+gB); S.hintDone=true;
+  if(!again) S.pairs.push(key);
+  floatOn(a,"+"+gA+" "+t("ban"),"#6C8F3D"); floatOn(b,"+"+gB+" "+t("ban"),"#6C8F3D"); beep(560,0.08);
+  logMsg(again?("🤝 "+a.name+" và "+b.name+" — họ đã quen nhau rồi."):("🤝 "+a.name+" — "+b.name+"."),
+         again?("🤝 "+a.name+" and "+b.name+" — they already know each other."):("🤝 "+a.name+" — "+b.name+"."));
   // the authored beats — some connections are more than +BẠN
   if(key[0]===0&&key[1]===1&&!S.apprentice){ S.apprentice=true;
     logMsg("🏺 Chú Ba nhận Bé Ngân làm học trò — nghề gốm có người nối. (TÀI của Ngân sẽ lớn dần mỗi mùa)",
@@ -762,12 +774,12 @@ function nextSeason(){
   S.cast.forEach(function(p){
     if(p.started||!active(p)) return;
     if(Math.random()<chance(p)){
-      p.started=true;
+      p.started=true; p.mom=0;
       var wx=Math.max(60,Math.min(W-60,p.hx+((Math.random()<.5)?-70:70)));
-      S.ships.push({x:wx,y:Math.min(H-90,p.hy+34),owner:p.name,small:S.von<5,pid:p.id,age:0});
+      S.ships.push({x:wx,y:Math.min(H-90,p.hy+34),owner:p.name,small:S.von<5,pid:p.id,age:0,born:true});
       petals(wx,p.hy+10,22,["#D97C8E","#E3A63B","#C1443C"]);
       glows.push({x:wx,y:Math.min(H-90,p.hy+34),t:0});
-      S.banner={txt:"🌸 "+p.name,until:performance.now()+2100};
+      banner("🌸 "+p.name,2100);
       bubble(p,p.qb?p.qb[L]:"");
       buzz([15,30,15]);
       beep(523,0.12,0.05); setTimeout(function(){beep(659,0.12,0.05);},90); setTimeout(function(){beep(784,0.22,0.05);},190);
@@ -777,16 +789,17 @@ function nextSeason(){
       if(!S.lawSeen){ S.lawSeen=true; logMsg(STR.lawLine.vi,STR.lawLine.en);      // the law matters once something exists to stamp
         S.un.probe=true; logMsg(STR.unProbe.vi,STR.unProbe.en); }                 // …and so does asking about it cheaply
     }
+    else if(prod(p)>=100){ p.mom=Math.min(0.09,(p.mom||0)+0.03); }                // a tended-but-unlucky sprout pushes harder (capped — no free inevitability)
   });
   // the law can crush (untouchable lock 3) — only while the sky is heavy, and young workshops are the most exposed
   if(S.luat<4){
     S.ships.slice().forEach(function(s){
-      if(s.yours) return;
+      if(s.yours||s.born) return;   // a workshop stands at least one full season before the law can touch it
       var risk=(s.age|0)<2?0.15:0.05;
       if(Math.random()<risk){
         S.ships=S.ships.filter(function(o){return o!==s;});
         stampAt(s.x,s.y);
-        var p=S.cast[s.pid]; if(p){ p.started=false; p.gan=Math.max(0,p.gan-3); p.crushCount++;
+        var p=S.cast[s.pid]; if(p){ p.started=false; p.gan=Math.max(0,p.gan-3); p.crushCount++; p.mom=0;
           bubble(p,(L==="vi")?"“Tôi đã bảo mà…”":"“I told you so…”"); }
         logMsg("⬛ "+s.owner+STR.crushed.vi, "⬛ "+s.owner+STR.crushed.en);
       }
@@ -795,7 +808,8 @@ function nextSeason(){
   // entropy: tending that hasn't bloomed washes back toward each person's nature
   var anyFade=false;
   S.cast.forEach(function(p){ if(p.started||!active(p)) return;
-    ["tai","gan","ban"].forEach(function(k){ if(p[k]>p["b"+k] && Math.random()<0.35){ p[k]--; anyFade=true; } });
+    ["tai","gan","ban"].forEach(function(k){ if(p[k]>p["b"+k] && Math.random()<0.35){ p[k]--; anyFade=true;
+      if(p.known) floatOn(p,"−1 "+t(k),"#7a6f5d"); } });   // the wash-away is SEEN, not silent
   });
   if(anyFade && !S.fadeSeen){ S.fadeSeen=true;
     logMsg("Điều chưa bén rễ sẽ phai — mùa màng cuốn đi phần vun chưa kịp nở.",
@@ -811,7 +825,7 @@ function nextSeason(){
   if(S.season%4===3) S.von=Math.min(10,S.von+1);       // the era slowly rises
   if(S.von<=3 && S.season===5) logMsg(STR.riverLow.vi,STR.riverLow.en);
   // workshops age and resize with the river
-  S.ships.forEach(function(s){ s.age=(s.age|0)+1; s.small=S.von<5; });
+  S.ships.forEach(function(s){ s.age=(s.age|0)+1; s.born=false; s.small=S.von<5; });
 
   S.season++; S.acts=3;
   if(S.season>=16){ endGame(); return; }
@@ -820,7 +834,7 @@ function nextSeason(){
   var lien=S.cast[6];
   if(S.season===lien.arrives && !lien.gone){
     lien.x=60; lien.y=H-70; lien.tx=lien.hx; lien.ty=lien.hy;
-    S.banner={txt:"🛶 "+lien.name,until:performance.now()+2300};
+    banner("🛶 "+lien.name,2300);
     logMsg("🛶 Một chiếc thuyền cập bến — Cô Liên về xóm, sau mười năm Sài Gòn.",
            "🛶 A sampan docks — Cô Liên comes home, after ten years in Saigon.");
     petals(90,H-70,14,["#7a5f8a","#D97C8E"]); gong(262,0.7,0.03);
@@ -833,9 +847,17 @@ function nextSeason(){
              "Cô Liên talks of heading south again — her ALLIES factor still sits near zero."); }
     if(S.season>=13 && !rooted){ lien.gone=true; if(S.sel===6){S.sel=-1;}
       logMsg("🛶 Cô Liên lặng lẽ rời xóm — không ai giữ.","🛶 Cô Liên quietly left — no one held her.");
-      S.banner={txt:"🛶 …",until:performance.now()+1800}; gong(147,1.0,0.04); }
+      banner("🛶 …",1800); gong(147,1.0,0.04); }
   }
-  S.banner={txt:STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4)),until:performance.now()+1900};
+  // 🕯 the elder's clock: from season 8, Chú Ba's craft fades unless it lives on (his kiln, or the apprenticeship)
+  var ba=S.cast[1];
+  if(S.season>=8 && active(ba) && !ba.started && !S.apprentice && ba.tai>0){
+    ba.tai=Math.max(0,ba.tai-1); if(ba.known) floatOn(ba,"−1 "+t("tai")+" 🕯","#7a6f5d");
+    if(!S.baFade){ S.baFade=true;
+      logMsg("🕯 Mắt Chú Ba mờ dần, tay run dần — nghề chưa có người nối.",
+             "🕯 Chú Ba's eyes dim, his hands tremble — the craft has no heir yet."); }
+  }
+  banner(STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4)),1600);
   gong(220,0.8,0.03);
   setTimeout(chatter,1100);   // after the season banner settles, the xóm talks
   render(); renderSheet(); save();
@@ -906,6 +928,7 @@ function render(){
   el("buildBtn").style.display=S.un.build?"":"none";
   el("probeBtn").style.display=S.un.probe?"":"none";
   el("probeLbl").textContent=t("probe");
+  el("huiCost").textContent=S.hui>=3?"✓ 3/3":"(1⚡)";
   el("huiBtn").disabled=S.acts<=0||S.hui>=3||S.over;
   el("buildBtn").disabled=S.acts<=0||S.built||S.over;
   el("probeBtn").disabled=S.acts<=0||S.probeSeen||S.over;
@@ -928,7 +951,9 @@ function renderSheet(){
   var pr=prod(p), pc=Math.round(chance(p)*100);
   el("multLine").innerHTML=p.tai+" × "+p.gan+" × "+p.ban+" = <b>"+pr+"</b>"
     +"<small>"+(p.started?(L==="vi"?"đang xây, mỗi mùa một ít":"building, season by season")
-    :(t("sprout")+" ~"+pc+"% "+t("perSeason")+(pc===0?(L==="vi"?" — vì có một thừa số bằng không":" — because one factor is zero"):"")))+"</small>";
+    :(t("sprout")+" ~"+pc+"% "+t("perSeason")
+      +((p.mom||0)>0?(L==="vi"?" · mầm đang nhú 🌱":" · pushing at the soil 🌱"):"")
+      +(pc===0?(L==="vi"?" — vì có một thừa số bằng không":" — because one factor is zero"):"")))+"</small>";
   var mh=el("multHint"); mh.style.display=(!S.hintDone&&!p.started)?"block":"none"; if(!S.hintDone) mh.textContent=t("multHint");
   el("teachBtn").disabled=S.acts<=0||p.tai>=10||p.started||S.over;
   el("nerveBtn").disabled=S.acts<=0||p.gan>=10||S.over;

@@ -1,5 +1,42 @@
 # Changelog — Thừa Số Không
 
+## v0.10 — 2026-07-02 — LOOP v2, cycle 1: the review-hardening batch (3 reviewers → 12 fixes)
+
+First big-batch cycle: three parallel fresh-eyes reviews (first-session fun · design depth · code/mobile), all
+findings triaged, twelve shipped:
+
+**Critical bugs the gates couldn't see:**
+- **Named banners never displayed** — the bloom 🌸 and sampan 🛶 banners were clobbered by the season banner in the
+  same tick (dead since v0.4/v0.8). Now a queue: bloom → sampan → season, shown one after another.
+- **A newborn workshop could be stamped the same instant it bloomed** — the payoff moment read as cruel RNG. Now every
+  workshop stands at least one full season before the law can touch it (`born` grace, mirrored in check.js).
+
+**Design/balance (the exploit hunt):**
+- **Kết nối pair-farming killed:** the first close friend changes a person (+2 BẠN); every later connection adds +1.
+  Repeats +1/+1 with a gentler log. Linking now also **requires having talked to both people** (diagnosis first).
+- **New `linker` strategy in the band** — the gate now proves diagnosis beats link-spam too:
+  hunter 6.73 > linker 6.29 > spreader 6.05 > idle 4.64 (margin note in check.js: the sim's linker is
+  semi-diagnostic, so its bar is +0.3).
+- **🕯 The elder's clock:** from season 8, Chú Ba's TÀI fades −1/season unless his kiln stands or the apprenticeship
+  exists — the greedy "Hoa-first" opening now has a real cost, and "the craft dies with me" is earnable/losable.
+- **🌱 Momentum:** a tended-but-unlucky sprout (product ≥100) pushes harder each missed season (+3%, capped +9%),
+  shown on the card as "mầm đang nhú 🌱" — dead mid-game stretches now visibly accumulate toward something.
+
+**Feel/mobile/platform:**
+- **Entropy is visible** — known people float "−1 TÀI/GAN/BẠN" the instant tending washes away (was a silent stat drop
+  that read as a save bug).
+- **Tap targets ≥22 CSS px** on any screen (was ~13px radius on a 390px phone).
+- **Canvas backing store sized to the display** — ~8× fewer pixels per frame on phones (was rendering 2880×1800 on a
+  370px-wide screen).
+- **Top bar wraps** at narrow widths (the probe forecast no longer causes 22px horizontal overflow).
+- **iOS audio resumes** after backgrounding/calls (suspended AudioContext now `resume()`d).
+- **Service worker won't cache captive portals / mid-deploy 404s** (`r.ok` guard); hụi cap now shows **✓ 3/3**; a paid
+  forecast survives a page refresh (probeSeen/luatNext persisted).
+
+Deferred to next batch (designed together): **workshop tiers** (late game currently plays itself), **Che chắn shelter**
+(makes the probe a real insurance play) + removing your own workshop's stamp immunity, and the **staged 3-beat ending**
+(lantern harvest scene, then-vs-now multiplication line, capped epilogues).
+
 ## v0.9 — 2026-07-02 — LOOP iteration 5: the flywheel and the lantern (DEPTH)
 
 Two interlocking strategy layers, both straight from the thesis:
