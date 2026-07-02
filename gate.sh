@@ -58,6 +58,47 @@ PYEOF
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/n.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "NAN_OK" && pass "nan-safe: $T" || fail "nan-safe: $T"
 
+# Gate 5: full 16-season playthrough, VI and EN — zero JS errors, game ends, chronicle written
+for LANG5 in vi en; do
+python3 - "$TMP" "$LANG5" <<'PYEOF5'
+import sys
+tmp=sys.argv[1]; lang=sys.argv[2]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1"); localStorage.removeItem("thua-so-khong-chronicle");
+  if("__LANG__"==="en") setLang("en");
+  document.getElementById("startBtn").click();
+  // a plausible player: meet people, tend the runt, link, hụi, build, season on
+  for(var seas=0; seas<16; seas++){
+    for(var i=0;i<7;i++){ if(S.cast[i]&&!S.cast[i].known&&(S.cast[i].arrives===undefined||S.season>=S.cast[i].arrives)&&!S.cast[i].gone) selectPerson(i); }
+    var un=S.cast.filter(function(p){return p.known&&!p.started&&!p.gone;});
+    un.sort(function(a,b){return Math.min(a.tai,a.gan,a.ban)-Math.min(b.tai,b.gan,b.ban);});
+    if(un.length){ var tgt=un[0]; selectPerson(tgt.id);
+      var mk=Math.min(tgt.tai,tgt.gan,tgt.ban);
+      if(mk===tgt.gan) actNerve(); else if(mk===tgt.tai) actTeach(); else if(S.un.link&&un.length>1){ actLink(); completeLink(un[1].id); } else actTeach(); }
+    if(S.un.hui&&S.acts>0&&S.hui<3) actHui();
+    if(S.un.build&&!S.built&&S.acts>0) actBuild();
+    if(S.acts>0&&un.length){ selectPerson(un[0].id); actNerve(); }
+    S.nudged=true; nextSeason();
+    if(S.over) break;
+  }
+  // the finale runs on timers (lantern beats then endGame) — assert after they finish
+  setTimeout(function(){ try{
+    var chron=[]; try{ chron=JSON.parse(localStorage.getItem("thua-so-khong-chronicle")||"[]"); }catch(e){}
+    var ovl=document.getElementById("endOvl");
+    var ok=S.over===true && ovl && ovl.className.indexOf("show")>=0 && chron.length===1 && document.getElementById("endTtl").textContent.length>1;
+    document.title=(ok?"FULL_OK":"FULL_BAD")+" lang=__LANG__ over="+S.over+" chron="+chron.length+" ttl="+document.getElementById("endTtl").textContent;
+  }catch(e2){ document.title="THREW2: "+e2.message; } },9000);
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/f.html","w").write(html.replace("</body>",drv.replace("__LANG__",lang)+"</body>"))
+PYEOF5
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=20000 --dump-dom "file://$TMP/f.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "FULL_OK" && pass "full-run($LANG5): $T" || fail "full-run($LANG5): $T"
+done
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

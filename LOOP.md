@@ -44,7 +44,7 @@
 - [x] sw.js caches icons; CACHE bumped tsk-v2; r.ok guard
 - [ ] Installed-PWA icon + share preview verified on a real device/paste (needs human)
 - [ ] Owner's three feel-gate questions answer YES on the current build (needs owner)
-- [ ] One full 16-season headless run each in VI and EN with zero console errors (extend gate)
+- [x] One full 16-season headless run each in VI and EN with zero console errors (Gate 5, v0.19)
 
 ## Compass pointer
-- next cycle: extend the gate with full-run VI+EN headless playthroughs (1.0 checklist item), then a light polish round; the two human 1.0 boxes (device install/share check + owner feel-gate) wait on the owner. *(…v0.16 six-endings + perf · v0.17 OWNER school+de-lecture · v0.18 felt-feedback + mobile + 1.0-kit done)*
+- next cycle: fresh review round on v0.19, rotated lenses (suggest: the SCHOOL system in play [balance + legibility of Lớp Cô Mai, one cycle after shipping] · replay depth across year cards [do 3 consecutive runs feel different in practice?] · soundscape/gong quality). The two human 1.0 boxes (device install/share check + owner feel-gate) remain with the owner — do not nag. *(…v0.17 OWNER school+de-lecture · v0.18 felt-feedback+mobile+1.0-kit · v0.19 Gate-5 full-runs + polish done)*

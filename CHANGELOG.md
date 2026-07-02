@@ -1,5 +1,15 @@
 # Changelog — Thừa Số Không
 
+## v0.19 — 2026-07-02 — LOOP v2, cycle 9: the gate plays the whole game now
+
+- **Gate 5:** every ship now requires TWO full 16-season headless playthroughs — one in Vietnamese, one in English —
+  with a plausible scripted player (meets everyone, tends the weakest factor, links, joins the hụi, builds), asserting
+  zero JS errors, a shown ending overlay, and a written chronicle row. The script earns *Mùa vàng*, which doubles as a
+  standing balance sanity check. This closes the last automatable 1.0 checklist box.
+- Polish verification pass: fresh desktop/phone screenshots confirm the season-13 unlit lanterns, the 🪜 pill, the gold
+  tier bar, and phone-readable bubbles (LKF 2.2); og.png and the ×0 seal icon reviewed and approved as shipped.
+- Remaining 1.0 boxes are the two human ones: a real-device install/share check and the owner's feel-gate.
+
 ## v0.18 — 2026-07-02 — LOOP v2, cycle 8: felt-not-told feedback + phone hands + the 1.0 kit
 
 The cold-arc reviewer's verdict on the owner's de-lecture: **"the cuts were correct — every removed sentence had a
