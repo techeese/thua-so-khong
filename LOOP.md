@@ -31,4 +31,4 @@
 6. **Schedule** the next wake (~25 min) with this same loop prompt.
 
 ## Compass pointer
-- next: DEPTH/strategy *(ART v0.5, STORY v0.6, FEEL v0.7, BOLD-i4 v0.8 Cô Liên done; next BOLD = i8)*
+- next: ENDINGS *(ART v0.5, STORY v0.6, FEEL v0.7, BOLD v0.8, DEPTH v0.9 done; then MOBILE i7, BOLD i8)*

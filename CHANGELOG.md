@@ -1,5 +1,16 @@
 # Changelog — Thừa Số Không
 
+## v0.9 — 2026-07-02 — LOOP iteration 5: the flywheel and the lantern (DEPTH)
+
+Two interlocking strategy layers, both straight from the thesis:
+- **🌊 The recycling flywheel:** with **3+ workshops standing, the river fills itself** (+1 vốn/season) — value
+  retained recirculates, and early blooms compound into easier later ones. The PayPal-mafia loop, village-sized.
+  One-time line: *"Ba xưởng đứng vững — dòng sông bắt đầu tự đầy."*
+- **🏮 Failure night is communal:** Đêm thất bại still gives its target +2 GAN — but now everyone who has ever been
+  stamped and sits unbloomed also gains +1. Holding your lantern night until *after* a crush becomes a real play
+  (thất bại có ích, mechanized).
+- Both mirrored in `check.js`; band re-verified: **hunter 6.68 > spreader 5.69 > idle 3.79**. Gates green.
+
 ## v0.8 — 2026-07-02 — LOOP iteration 4 (BOLD): Cô Liên, người về
 
 A seventh person who isn't there at the start. **Season 6, a sampan docks:** Cô Liên comes home after ten years in

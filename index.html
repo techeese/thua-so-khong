@@ -97,7 +97,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.8</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.9</span></div>
 </div>
 
 <!-- intro -->
@@ -274,7 +274,7 @@ function fresh(){
   S={season:0, acts:3, luat:3, von:3, hui:0, cast:makeCast(), ships:[], sel:-1,
      build:0, built:false, pairs:[], apprentice:false, duo:false, gtm:false, gtmPaid:false,
      linking:null, banner:null, luatNext:3, probeSeen:false, probeTaught:false,
-     un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false,
+     un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false,
      log:[], over:false, seed:(Date.now()>>>0)};
   S.luatNext=driftLuat(S.luat);
   S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false;
@@ -322,6 +322,7 @@ function load(){
           hui:S.season>=2, build:S.season>=4||S.build>0||S.built,
           probe:S.ships.length>0||S.season>2};
     S.nudged=true; S.hintDone=S.season>0; S.lawSeen=S.season>1||S.ships.length>0; S.probeTaught=true;
+    S.flySeen=S.ships.length>=3; S.nightSeen=true;
     S.luatNext=driftLuat(S.luat);
     return true;
   }catch(e){ return false; }
@@ -689,7 +690,14 @@ function spend(){ if(S.acts<=0) return false; S.acts--; render(); return true; }
 function actTeach(){ var p=cur(); if(!p||S.acts<=0||p.tai>=10) return; if(!spend())return;
   p.tai=Math.min(10,p.tai+2); S.hintDone=true; beep(660,0.08); floatOn(p,"+2 "+t("tai"),"#2E4A62"); renderSheet(); save(); }
 function actNerve(){ var p=cur(); if(!p||S.acts<=0||p.gan>=10) return; if(!spend())return;
-  p.gan=Math.min(10,p.gan+2); S.hintDone=true; beep(440,0.08); floatOn(p,"+2 "+t("gan"),"#C1443C"); renderSheet(); save(); }
+  p.gan=Math.min(10,p.gan+2); S.hintDone=true; beep(440,0.08); floatOn(p,"+2 "+t("gan"),"#C1443C");
+  // a failure night is communal — everyone who has fallen listens, and fears a little less
+  var lifted=0;
+  S.cast.forEach(function(o){ if(o!==p&&active(o)&&o.crushCount>0&&!o.started&&o.gan<10){ o.gan=Math.min(10,o.gan+1); lifted++; floatOn(o,"+1 "+t("gan"),"#C1443C"); } });
+  if(lifted&&!S.nightSeen){ S.nightSeen=true;
+    logMsg("🏮 Đêm thất bại — những người từng ngã ngồi nghe, và đỡ sợ hơn một chút.",
+           "🏮 Failure night — those who fell sit and listen, and fear a little less."); }
+  renderSheet(); save(); }
 function actLink(){ var p=cur(); if(!p||S.acts<=0) return;
   // a deliberate verb: choose WHO to connect — tap a second person on the map
   S.linking=p.id; bubble(p,(L==="vi")?"Kết nối với ai?":"Connect with whom?"); beep(560,0.06); render(); }
@@ -794,6 +802,10 @@ function nextSeason(){
            "What hasn't taken root fades — the seasons wash away tending that hasn't bloomed."); }
   // craft climbs the value curve: the market seller moves the master's ceramics
   if(S.gtm && !S.gtmPaid && S.cast[1].started){ S.gtmPaid=true; S.von=Math.min(10,S.von+1); logMsg(STR.gtmPaid.vi,STR.gtmPaid.en); }
+  // the recycling flywheel: enough standing workshops and the river feeds itself
+  if(S.ships.length>=3 && S.von<10){ S.von=Math.min(10,S.von+1);
+    if(!S.flySeen){ S.flySeen=true;
+      logMsg("🌊 Ba xưởng đứng vững — dòng sông bắt đầu tự đầy.","🌊 Three workshops standing — the river begins to fill itself."); } }
   // structural drift — beyond your hands (the pre-rolled forecast becomes the sky)
   S.luat=S.luatNext; S.luatNext=driftLuat(S.luat); S.probeSeen=false;
   if(S.season%4===3) S.von=Math.min(10,S.von+1);       // the era slowly rises
