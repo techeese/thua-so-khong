@@ -35,7 +35,7 @@ function run(strategy,seed){
   if(yc===4){ cast[6].arrives=2; baStart=5; }   // reunion year: both people-clocks come early
   for(var season=0;season<16;season++){
     var here=cast.filter(function(c){return activeSim(c,season);});
-    var actsN=(season>0&&luat<4&&stormStreak<2)?2:3;   // storm tax + adaptation (streak from PREVIOUS tick — mirrors index.html order)
+    var actsN=(season===0)?2:((luat<4&&stormStreak<2)?2:3);   // s0 deals 2 hands (v0.25); storm tax + adaptation (streak from PREVIOUS tick)
     for(var a=0;a<actsN;a++){
       function communal(target){                  // failure night lifts everyone crushed (mirrors index.html actNerve)
         cast.forEach(function(o){ if(o!==target&&activeSim(o,season)&&o.crushedOnce&&!o.started) o.gan=Math.min(10,o.gan+1); });

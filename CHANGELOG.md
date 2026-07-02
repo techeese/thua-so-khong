@@ -1,5 +1,45 @@
 # Changelog — Thừa Số Không
 
+## v0.25 — 2026-07-02 — OWNER BATCH: "Xóm sống" — the village runs whether or not you act
+
+Both changes at the owner's direction ("the economy is hard to understand, the first season feels limited" ·
+"people should act like agents, doing things, interacting with the buildings"), designed by a 4-designer fan-out
+(economy legibility · autonomous agents · economy-as-theater · a restraint critic) synthesized into one plan.
+
+**🚶 The errand governor — villagers are agents now:**
+- One global scheduler sends villagers on **factor-weighted walks to real buildings**: watching the xóm IS reading
+  the multiplication. Bé Ngân (GAN 1) walks to the đình door, stops, and turns back — visible fear. Cô Liên (BẠN 1)
+  haunts the river landing alone. Chú Ba keeps returning to stare at the stall his mastery can't reach. A bloomed
+  craftsman works his own roof (hammer flick). High-BẠN people visit their friends' homes.
+- Micro-poses per building: sitting at the đình, sweeping their own doorstep, a watched ripple at the river,
+  browsing the stall, chasing chickens (the chickens scatter).
+- **Every newcomer's first act teaches a building**: Vũ sits at the đình, Ba stares at the unmanned market, Hoa
+  takes her stall, Tú chases chickens, Liên docks and does not come up the bank.
+- **The opener is a two-beat silent play**: Mai sits at the đình (what the hall is for), Ngân approaches it and
+  falters (what GAN-1 is) — before a single verb is spent.
+- **The restraint layer ships in the same commit**: a beat lock (blooms/stamps/arrivals/storms own the screen;
+  ambient life yields), a counted walker budget (1 before season 4, 2 after), movers carry no labels, ambient acts
+  are silent and push no effects, and ambient behavior touches NO numbers (check.js byte-identical for this layer).
+
+**🪙 The economy became watchable ink:**
+- **Every đồng travels the same road**: whenever the river rises — hụi, market payout, flywheel, era — a coin
+  visibly flies to the water and a **bamboo gauge** at the landing (10 notches, wet up to vốn) shimmers gold.
+- **The flywheel plays its whole loop**: goods baskets fly from the two tallest workshops to the stall, then the
+  coin leaves the stall for the river — production drawn as village activity.
+- **The market carries what the river carries**: a bare counter and an overturned basket at vốn ≤ 2, produce and a
+  hanging bundle in fat years; a **cracked riverbed** when the water is thin. A flood year now OPENS on drought.
+- **Góp hụi shows its point**: every unbloomed villager's sprout-% floats up when the circle meets; the person card
+  ties the % to the river ("· sông 4/10"); the footer stops teaching the wrong model ("dòng sông là vốn — cả xóm
+  cùng góp"); re-tapping a person now alternates their quotes (the free verb gained depth).
+
+**⚡ Hands grow with the xóm (the one balance change):** season 0 deals **2 hands** — exactly what its decision
+space supports; the third arrives with the third villager. Mirrored in check.js; band re-proven: hunter 6.99/15.9 ·
+linker 6.80/14.6 · spreader 6.29/11.2 · idle 3.46/3.5.
+
+Also: constraint picker chips are bilingual now, and the triện seal fits its three rows on constrained runs
+(both from the completion audit). Batch 7 (tap-the-buildings voices, the visible hụi ritual, bloom's first customer)
+→ v0.26. Gates ×3 green incl. both full-run playthroughs; governor probes 7/7.
+
 ## v0.24 — 2026-07-02 — LOOP v2, cycle 13: the arrival gets its moment, the vow gets its grief, 120Hz gets its time
 
 **The staged opening, tuned (cold-player review):**

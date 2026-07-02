@@ -130,7 +130,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.24</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.25</span></div>
 </div>
 
 <!-- intro -->
@@ -142,11 +142,11 @@
     <p id="inP2">Hãy chạm vào một người và trò chuyện. Phần còn lại, cứ chơi rồi xóm sẽ kể.</p>
     <div class="small" id="chronLine" style="margin-top:4px;opacity:.8"></div>
     <div id="conRow" style="display:none;margin-top:8px">
-      <div class="small" style="opacity:.7">⛓ <span id="conLbl">tự trói một tay?</span></div>
+      <div class="small" style="opacity:.7">⛓ <span id="conLbl" data-vi="tự trói một tay?" data-en="tie one of your own hands?">tự trói một tay?</span></div>
       <div style="display:flex;gap:6px;justify-content:center;margin-top:4px">
-        <button class="con" data-c="1">🚫🪙 <small>không hụi</small></button>
-        <button class="con" data-c="2">🚫🤝 <small>không kết nối</small></button>
-        <button class="con" data-c="3">🚫📖 <small>không dạy</small></button>
+        <button class="con" data-c="1">🚫🪙 <small class="conL" data-vi="không hụi" data-en="no hụi">không hụi</small></button>
+        <button class="con" data-c="2">🚫🤝 <small class="conL" data-vi="không kết nối" data-en="no linking">không kết nối</small></button>
+        <button class="con" data-c="3">🚫📖 <small class="conL" data-vi="không dạy" data-en="no teaching">không dạy</small></button>
       </div>
     </div>
     <button class="go" id="startBtn">Bắt đầu / Begin</button>
@@ -162,9 +162,9 @@
     <div class="endline" id="endLine"></div>
     <div id="conRow2" style="margin-top:6px">
       <div style="display:flex;gap:6px;justify-content:center">
-        <button class="con" data-c="1">🚫🪙 <small>không hụi</small></button>
-        <button class="con" data-c="2">🚫🤝 <small>không kết nối</small></button>
-        <button class="con" data-c="3">🚫📖 <small>không dạy</small></button>
+        <button class="con" data-c="1">🚫🪙 <small class="conL" data-vi="không hụi" data-en="no hụi">không hụi</small></button>
+        <button class="con" data-c="2">🚫🤝 <small class="conL" data-vi="không kết nối" data-en="no linking">không kết nối</small></button>
+        <button class="con" data-c="3">🚫📖 <small class="conL" data-vi="không dạy" data-en="no teaching">không dạy</small></button>
       </div>
     </div>
     <button class="go" id="againBtn">Chơi lại / Play again</button>
@@ -188,7 +188,7 @@ var STR={
   teach:{vi:"Dạy",en:"Teach"}, nerve:{vi:"Đêm thất bại",en:"Failure night"}, link:{vi:"Kết nối",en:"Connect"},
   teachH:{vi:"+2 TÀI · 1⚡",en:"+2 SKILL · 1⚡"}, nerveH:{vi:"+2 GAN · 1⚡",en:"+2 NERVE · 1⚡"}, linkH:{vi:"+2 BẠN · 1⚡",en:"+2 ALLIES · 1⚡"},
   sprout:{vi:"mầm",en:"sprout"}, perSeason:{vi:"mỗi mùa",en:"per season"},
-  foot:{vi:"bầu trời là luật · dòng sông là vốn — ngoài tầm tay bạn",en:"the sky is the law · the river is capital — beyond your hands"},
+  foot:{vi:"bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp",en:"the sky is the law — beyond your hands · the river is capital — the xóm fills it together"},
   inTtl:{vi:"Thừa Số Không",en:"The Zero Factor"},
   inP1:{vi:"Bạn về lại một xóm nhỏ. Ai cũng chăm chỉ — mà chẳng có gì nảy mầm.",
         en:"You come back to a small xóm. Everyone works hard — yet nothing blooms."},
@@ -316,7 +316,7 @@ var PAIR_TALK={
          [{who:6,vi:"“Bản này màu chưa tới.”",en:"“The colors aren\'t there yet.”"},
           {who:0,vi:"“Thì cô sửa màu, em lo phần chạy.”",en:"“You fix the colors — I\'ll keep it running.”"}]]};
 function chatter(){
-  if(S.over||Math.random()<0.4) return;   // the xóm doesn't perform on demand
+  if(S.over||performance.now()<beatUntil||bubbles.length>=2||Math.random()<0.4) return;   // the xóm doesn't perform on demand — and never over a named moment
   var pairsHere=S.pairs.map(function(pr){return pr[0]+"-"+pr[1];}).filter(function(k){return PAIR_TALK[k];});
   if(pairsHere.length&&Math.random()<0.45){
     var set=PAIR_TALK[pairsHere[Math.floor(Math.random()*pairsHere.length)]];
@@ -365,13 +365,17 @@ function quoteFor(p){
 var S, META={muted:false};
 var SAVE_KEY="thua-so-khong-v1";
 function fresh(){
-  S={season:0, acts:3, luat:3, von:3, hui:0, cast:makeCast(), ships:[], sel:-1,
+  S={season:0, acts:2, luat:3, von:3, hui:0, cast:makeCast(), ships:[], sel:-1,   // season 0 deals the hands its choices support
      build:0, built:false, pairs:[], apprentice:false, duo:false, gtm:false, gtmPaid:false,
      linking:null, banner:null, banners:[], luatNext:3, probeSeen:false, baFade:false,
      un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false, stormSeen:false, tierTaught:false, lienNgan:false, stormCount:0, stormStreak:0, classSeen:false, revealSeen:false,
      log:[], over:false};
   lanterns=[]; runTok++;      // invalidate ALL deferred callbacks from the previous run
   parts=[]; stamps=[]; glows=[]; bubbles=[]; amb=[]; pendQ=[]; motes=[];
+  beatUntil=0; nextErrandAt=0; _chaser=null;
+  S.cast.forEach(function(p9){ p9.amb=0; p9.beh=0; p9.legs=0; p9.dwl=0; p9.chain=0; p9.behForce=0; p9.bfAt=0; });
+  S.cast[2].behForce=2; S.cast[2].bfAt=performance.now()+8000;    // Mai sits at the đình — what the hall is FOR
+  S.cast[0].behForce=3; S.cast[0].bfAt=performance.now()+20000;   // Ngân approaches it and turns back — what GAN-1 IS
   S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false; p.mom=0;
     var m=Math.min(p.tai,p.gan,p.ban);
     p.zkey = (m===p.gan)?"gan":(m===p.tai)?"tai":"ban";   // their original zero — quotes evolve when it turns
@@ -411,7 +415,7 @@ function driftLuat(l){ var r=Math.random();
   if(S&&S.yearCard===1){ if(r<0.10) return Math.min(10,l+1); if(r<0.25) return Math.max(1,l-1); return l; }   // the strict year: clear skies don't last
   if(r<0.12) return Math.min(10,l+1); if(r<0.20) return Math.max(1,l-1); return l; }
 function logMsg(vi,en){ S.log.unshift({vi:vi,en:en}); S.log=S.log.slice(0,24); renderLog(); }
-function banner(txt,dur){ if(!S.banners)S.banners=[]; S.banners.push({txt:txt,dur:dur||1900}); }   // queued — named moments no longer clobber each other
+function banner(txt,dur){ if(!S.banners)S.banners=[]; S.banners.push({txt:txt,dur:dur||1900}); beat((dur||1900)+600); }   // queued — named moments own the screen; ambient life yields
 // teaching beats queue: staggered so lessons don't bury the moment — but FLUSHED before a new season's burst
 var pendQ=[];
 function pendLog(ms,vi,en){ pendQ.push({at:performance.now()+ms,vi:vi,en:en,tok:runTok}); }
@@ -519,7 +523,7 @@ window.addEventListener("resize",fit);
 var parts=[], bubbles=[], stamps=[];
 function petals(x,y,n,cols){ for(var i=0;i<n;i++) parts.push({x:x,y:y,vx:(Math.random()-.5)*2.2,vy:-1.5-Math.random()*2,r:3+Math.random()*4,rot:Math.random()*6.28,vr:(Math.random()-.5)*.3,life:1,col:cols[i%cols.length]}); }
 function bubble(p,txt){ bubbles.push({p:p,lay:layoutBubble(txt),until:performance.now()+3600}); }
-function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); shake=1; beep(85,0.35,0.07); buzz(60); }
+function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); shake=1; beat(2400); beep(85,0.35,0.07); buzz(60); }
 var shake=0, glows=[], lanterns=[];
 var dlBuf=[]; function dlCmp(a,b){ return a.z-b.z; }
 var lblR=[];   // per-frame label rects — clustered villagers don't print gibberish
@@ -531,8 +535,83 @@ var CONSTRAINTS={1:{g:"🚫🪙",nv:"năm không hụi",ne:"the no-hụi year"},
                  2:{g:"🚫🤝",nv:"năm không kết nối",ne:"the no-linking year"},
                  3:{g:"🚫📖",nv:"năm không dạy",ne:"the no-teaching year"}};
 function conBan(n){ return (S.constraint|0)===n; }
+
+// ===== the living xóm: ONE global errand governor (v0.25) =====
+// Behaviors: 1 HOME 2 ĐÌNH-sit 3 FALTER 4 MARKET 5 FRIEND 6 WORK 7 RIVER 8 WATCH 9 CHICK
+// Watching the xóm IS reading the factors: weights derive from TÀI/GAN/BẠN.
+var beatUntil=0, nextErrandAt=0, _chaser=null;
+function beat(ms){ beatUntil=Math.max(beatUntil,performance.now()+Math.min(ms||1900,3600)); }
+// ambient acts are SILENT — any future ambient sound must pass this gate (>=30s spacing, never in beats)
+var _ambSndAt=0;
+function ambSound(f,d,v){ var n2=performance.now(); if(META.muted||n2<beatUntil||n2-_ambSndAt<30000) return; _ambSndAt=n2; beep(f,d,v); }
+function pairCount(id){ return S.pairs.reduce(function(a,pr){ return a+(pr[0]===id||pr[1]===id?1:0); },0); }
+function landmarkFull(beh){ var n2=0,nw=performance.now(); S.cast.forEach(function(q){ if(q.beh===beh&&q.vUntil>nw) n2++; }); return n2>=2; }
+function execBeh(p,beh,now){
+  var dx=0,dy=0,dur=6000+Math.random()*3000;
+  if(beh===3){ dx=DINH.x-44; dy=DINH.y+12; dur=2600; }
+  else if(beh===2){ dx=DINH.x+(Math.random()<0.5?-26:26); dy=DINH.y+10; }
+  else if(beh===4){ dx=CHO.x-30+((p.id*17)%60); dy=CHO.y-2; }
+  else if(beh===5){ var mates=S.pairs.filter(function(pr){return pr[0]===p.id||pr[1]===p.id;});
+    if(!mates.length) beh=1; else { var mm=mates[Math.floor(Math.random()*mates.length)], q2=S.cast[mm[0]===p.id?mm[1]:mm[0]]; dx=q2.hx; dy=q2.hy; } }
+  else if(beh===6){ var sh2=null; S.ships.forEach(function(sh){ if(sh.pid===p.id) sh2=sh; });
+    if(!sh2) beh=1; else { dx=sh2.x-30; dy=sh2.y+22; } }
+  else if(beh===7){ dx=BEN.x+26; dy=peopleFloor(); }
+  else if(beh===8){ if(!S.ships.length) beh=1; else { var sh3=S.ships[(p.id+S.season)%S.ships.length]; dx=sh3.x-40; dy=sh3.y+26; } }
+  else if(beh===9){ var c2=chicks[0],bd=1e9; chicks.forEach(function(c3){ var dd=Math.hypot(c3.x-p.x,c3.y-p.y); if(dd<bd){bd=dd;c2=c3;} });
+    dx=c2.x; dy=c2.y-6; _chaser=p; }
+  if(beh===1){ dx=p.hx; dy=p.hy; }
+  visit(p,dx+(Math.random()-0.5)*(beh===3?4:30),dy,dur);
+  p.amb=1; p.beh=beh;
+  if(beh===3) p.chain=1;   // faltering always turns back home
+}
+function pickBeh(p){
+  var w=[[1,3.0]];
+  w.push([p.gan<=2?3:2, 0.5+0.35*p.ban]);
+  var wm=(S.von<=2?0:0.8)+((!p.started&&p.tai>=7)?2.5:0)+(p.id===4?1.5:0); if(wm>0) w.push([4,wm]);
+  var wf=pairCount(p.id); if(wf>0) w.push([5,wf]);
+  if(p.started){ var has=false; S.ships.forEach(function(sh){ if(sh.pid===p.id) has=true; }); if(has) w.push([6,5.0]); }
+  w.push([7,p.ban<=2?3.5:0.25]);
+  if(!p.started&&S.ships.length) w.push([8,0.6+0.12*p.tai]);
+  if(p.young||p.gan>=8) w.push([9,1.1]);
+  var tot=0,i2; for(i2=0;i2<w.length;i2++) tot+=w[i2][1];
+  var r=Math.random()*tot;
+  for(i2=0;i2<w.length;i2++){ r-=w[i2][1]; if(r<=0) return w[i2][0]; }
+  return 1;
+}
+function errandTick(now){
+  if(S.over) return;
+  // forced chains (arrivals + the opener scene) run one at a time, bypassing pool and beats
+  for(var fi=0; fi<S.cast.length; fi++){ var fp=S.cast[fi];
+    if(fp.behForce && now>=(fp.bfAt||0) && !(fp.vUntil>now) && !fp.arriveT && active(fp)){
+      var bF=fp.behForce; fp.behForce=0; execBeh(fp,bF,now);
+      if(bF===7) p_setV(fp,now+9000);   // Liên lingers at the landing — she docks and does not come up the bank
+      nextErrandAt=now+5000; return; } }
+  if(now<beatUntil) return;
+  if(S.luat<4){ nextErrandAt=now+7000; return; }   // the storm huddle owns the screen
+  if(now<nextErrandAt) return;
+  var walkers=0;
+  for(var i3=0;i3<S.cast.length;i3++){ var q3=S.cast[i3]; if(!q3.amb) continue;
+    if(q3.vUntil>now){ walkers++; continue; }
+    if(!q3.dwl){ q3.dwl=now+1500+Math.random()*1500; walkers++; continue; }
+    if(now<q3.dwl){ walkers++; continue; }
+    q3.dwl=0;
+    if(q3.chain||((q3.legs|0)<2&&Math.random()<0.35)){ q3.legs=(q3.legs|0)+1; var nb=q3.chain?1:pickBeh(q3); q3.chain=0; execBeh(q3,nb,now); walkers++; }
+    else { q3.amb=0; q3.beh=0; q3.legs=0; if(_chaser===q3)_chaser=null; }
+  }
+  if(walkers>=(S.season<4?1:2)){ nextErrandAt=now+4000; return; }
+  var pool=S.cast.filter(function(p4){ return active(p4)&&p4.known&&!p4.arriveT&&!(p4.vUntil>now)&&S.sel!==p4.id&&!p4.amb; });
+  if(!pool.length){ nextErrandAt=now+4000; return; }
+  var pk=pool[Math.floor(Math.random()*pool.length)];
+  var beh2=pickBeh(pk);
+  if((beh2===2||beh2===4)&&landmarkFull(beh2)) beh2=1;
+  execBeh(pk,beh2,now);
+  nextErrandAt=now+6000+Math.random()*6000;
+}
+function p_setV(p,until){ p.vUntil=until; }
+
 function peopleFloor(){ return Math.min(H-70, H-(26+S.von*5.5)-30); }   // nobody stands in the river
 function visit(p,x,y,ms){ if(!p||p.gone) return;
+  p.beh=0;
   p.vx=Math.max(40,Math.min(W-40,x)); p.vy=Math.max(230,Math.min(peopleFloor(),y));
   p.vUntil=performance.now()+(ms||5000);
   p.tx=p.vx+(Math.random()-0.5)*26; p.ty=p.vy+(Math.random()-0.5)*12; }
@@ -542,6 +621,7 @@ function buzz(v){ if(META.muted) return; try{ if(navigator.vibrate) navigator.vi
 var speck=[]; for(var i=0;i<110;i++) speck.push([Math.random()*W,Math.random()*H,Math.random()*1.6+0.4]);
 var fibers=[]; for(var i=0;i<44;i++) fibers.push([Math.random()*W,Math.random()*H,26+Math.random()*60,(Math.random()-0.5)*0.3]);
 var mica=[]; for(var i=0;i<80;i++) mica.push([Math.random()*W,Math.random()*H]);
+var cracks=[]; for(var i=0;i<8;i++) cracks.push([40+i*115+Math.random()*40, 8+Math.random()*10, 4+Math.random()*5, 6+Math.random()*6]);
 // prerendered điệp ground — static arrays, rebuilt only when the backing store changes
 var groundCv=document.createElement("canvas");
 function buildGround(){
@@ -562,6 +642,7 @@ var LKF=1, _lkfLast=-1, FONT_LBL="700 11px sans-serif", FONT_HINT="10px sans-ser
 function haloText(txt,x,y){ ctx.strokeStyle="#EAD9B8"; ctx.lineWidth=3; ctx.lineJoin="round"; ctx.strokeText(txt,x,y); ctx.fillText(txt,x,y); }
 function drawScene(now){
   var F=Math.min(2.5,(now-(window._pn||now))/16.7)||1; window._pn=now; window._pnF=F;   // effects run in TIME, not frames (120Hz-safe)
+  errandTick(now);
   var kk=cv.width/W; ctx.setTransform(kk,0,0,kk,0,0);
   LKF=Math.min(2.2, W/Math.max(1,(cv.width/DPR)));
   if(LKF!==_lkfLast){ _lkfLast=LKF;
@@ -596,6 +677,18 @@ function drawScene(now){
   var rh=26+S.von*5.5, ry=H-rh;
   ctx.fillStyle="#7fa3b8"; ctx.fillRect(0,ry,W,rh);
   ink(3); ctx.beginPath(); ctx.moveTo(0,ry); ctx.lineTo(W,ry); ctx.stroke();
+  // drought: a cracked riverbed when the water is thin — scarcity you can see
+  if(S.von<=2){ ctx.strokeStyle="rgba(120,95,60,.35)"; ctx.lineWidth=1.5;
+    cracks.forEach(function(cr){ ctx.beginPath(); ctx.moveTo(cr[0],ry-3); ctx.lineTo(cr[0]+cr[1],ry-3-cr[2]); ctx.moveTo(cr[0]+cr[1]*0.6,ry-3-cr[2]*0.6); ctx.lineTo(cr[0]+cr[1]*0.6+cr[3],ry-5-cr[2]); ctx.stroke(); }); }
+  // the bamboo gauge at the landing — vốn has a body
+  (function(){ var gx=92, gb=H-6, gt=gb-58;
+    ctx.strokeStyle="#8a6642"; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(gx,gb); ctx.lineTo(gx,gt); ctx.stroke();
+    for(var gi=0;gi<10;gi++){ var gy=gb-5-gi*5.4;
+      ctx.strokeStyle=gi<S.von?"#2E4A62":"rgba(43,35,32,.3)"; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(gx-5,gy); ctx.lineTo(gx+5,gy); ctx.stroke(); }
+    if(S._vonAt && performance.now()-S._vonAt<1200){ ctx.strokeStyle="rgba(227,166,59,.8)"; ctx.lineWidth=2;
+      ctx.strokeRect(gx-8,gt-3,16,gb-gt+6); }
+  })();
   ctx.strokeStyle="rgba(255,255,255,.5)"; ctx.lineWidth=2;
   for(var wv=0;wv<6;wv++){ var wx=((now*0.02)+(wv*180))%(W+60)-30, wy=ry+8+(wv%3)*7;
     ctx.beginPath(); ctx.moveTo(wx,wy); ctx.quadraticCurveTo(wx+12,wy-4,wx+24,wy); ctx.stroke(); }
@@ -757,6 +850,9 @@ var chicks=[{x:340,y:470,tx:340,ty:470,ph:0},{x:390,y:485,tx:390,ty:485,ph:2},{x
 function drawChickens(now){
   chicks.forEach(function(c){
     var dx=c.tx-c.x,dy=c.ty-c.y,d=Math.hypot(dx,dy);
+    if(_chaser && Math.hypot(c.x-_chaser.x,c.y-_chaser.y)<34){
+      c.tx=Math.max(180,Math.min(460,c.x+(c.x-_chaser.x)*1.8));
+      c.ty=Math.max(455,Math.min(510,c.y+(c.y-_chaser.y)*1.8)); }
     if(d<1){ if(Math.random()<0.01){ c.tx=180+Math.random()*280; c.ty=455+Math.random()*55; } }
     else { c.x+=dx/d*0.3; c.y+=dy/d*0.3; }
     var peck=Math.sin(now*0.02+c.ph)>0.85?2.5:0;
@@ -810,7 +906,13 @@ function market(x,y){
   ctx.fillStyle="#efe2c2"; ctx.fillRect(x-52,y-34,104,10); ctx.strokeRect(x-52,y-34,104,10);
   for(var i=0;i<4;i++){ ctx.fillStyle=i%2?"#C1443C":"#E3A63B"; ctx.fillRect(x-52+i*26,y-52,26,18); ctx.strokeRect(x-52+i*26,y-52,26,18); }
   ctx.beginPath(); ctx.moveTo(x-48,y-24); ctx.lineTo(x-48,y+12); ctx.moveTo(x+48,y-24); ctx.lineTo(x+48,y+12); ctx.stroke();
-  ctx.fillStyle="#6C8F3D"; ctx.beginPath(); ctx.arc(x-20,y-28,7,0,6.28); ctx.arc(x-2,y-28,7,0,6.28); ctx.arc(x+18,y-28,7,0,6.28); ctx.fill();
+  var nP=S.von<=2?0:S.von<=5?2:3;   // the stall carries what the river carries
+  ctx.fillStyle="#6C8F3D"; ctx.beginPath();
+  if(nP>=1) ctx.arc(x-20,y-28,7,0,6.28); if(nP>=2) ctx.arc(x-2,y-28,7,0,6.28); if(nP>=3) ctx.arc(x+18,y-28,7,0,6.28);
+  ctx.fill();
+  if(S.von<=2){ ink(2); ctx.fillStyle="#d9c9a3"; ctx.beginPath(); ctx.ellipse(x+30,y+6,9,5,0.5,0,6.28); ctx.fill(); ctx.stroke(); }   // an overturned basket
+  if(S.von>=8){ ink(2); ctx.beginPath(); ctx.moveTo(x+40,y-52); ctx.lineTo(x+40,y-44); ctx.stroke();
+    ctx.fillStyle="#E3A63B"; ctx.beginPath(); ctx.ellipse(x+40,y-40,4,6,0,0,6.28); ctx.fill(); ctx.stroke(); }   // a hanging bundle in a fat year
 }
 function workshop(s,now){
   var x=s.x,y=s.y, tr=shipTier(s), sc=tr===3?1.24:tr===1?0.78:1;
@@ -851,9 +953,11 @@ function person(p,now){
       p.tx=Math.max(40,Math.min(W-40,p.tx)); p.ty=Math.max(230,Math.min(peopleFloor(),p.ty)); } }
   else { var spd=(visiting?1.4:0.45)*(window._pnF||1); p.x+=dx/d*spd; p.y+=dy/d*spd; }
   var bob=Math.sin(now*0.006+p.ph)*(d>2?2.2:0.8);
+  var beh=(p.vUntil>now&&p.beh)?p.beh:0, atT=beh&&d<6;
+  if(atT){ if(beh===2) bob*=0.4; else if(beh===7) bob*=0.3; }
   var awk=p.arriveT?Math.min(1,(now-p.arriveT)/1800):1;
   if(awk>=1) p.arriveT=0;
-  var x=p.x+(1-awk)*(W+70-p.x), y=p.y+bob+(awk<1?Math.abs(Math.sin(now*0.02))*2:0), sc=p.young?0.85:1;
+  var x=p.x+(1-awk)*(W+70-p.x), y=p.y+bob+(atT&&beh===2?4:0)+(awk<1?Math.abs(Math.sin(now*0.02))*2:0), sc=p.young?0.85:1;
   p.drawX=x;
   // shadow — flat and light (a print barely casts one)
   ctx.fillStyle="rgba(43,35,32,.10)"; ctx.beginPath(); ctx.ellipse(x,p.y+22,15,4.4,0,0,6.28); ctx.fill();
@@ -881,10 +985,26 @@ function person(p,now){
   else { ctx.fillStyle="#3a2a1e"; ctx.beginPath(); ctx.arc(0,-18,9.4,Math.PI,2*Math.PI); ctx.fill(); }
   if(p.elder){ ctx.strokeStyle="#e8e0d0"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(-3,-10); ctx.quadraticCurveTo(0,-5,3,-10); ctx.stroke(); }
   ctx.restore();
+  // micro-poses: the errand is readable at a glance, wordlessly
+  if(atT){
+    if(beh===6 && Math.sin(now*0.011+p.ph)>0.94){ ink(2.2);   // the hammer flick
+      ctx.beginPath(); ctx.moveTo(x+9,y-8); ctx.lineTo(x+16,y-14); ctx.stroke();
+      ctx.fillStyle="#8a7a5f"; ctx.fillRect(x+14,y-17,5,4); }
+    else if(beh===1 && p.amb){ ink(2);                        // the broom at their own door
+      var sw2=Math.sin(now*0.008+p.ph)*4;
+      ctx.beginPath(); ctx.moveTo(x-10,y-6); ctx.lineTo(x-15+sw2,y+16); ctx.stroke();
+      ctx.strokeStyle="rgba(160,130,80,.6)"; ctx.lineWidth=3.4; ctx.beginPath(); ctx.moveTo(x-15+sw2,y+16); ctx.lineTo(x-17+sw2,y+20); ctx.stroke(); }
+    else if(beh===2){ ink(2);                                 // seated: folded legs
+      ctx.beginPath(); ctx.moveTo(x-8,y+18); ctx.lineTo(x+8,y+18); ctx.stroke(); }
+    else if(beh===7 && Math.sin(now*0.0015+p.ph)>0.995){      // a ripple watched alone
+      ctx.strokeStyle="rgba(46,74,98,.4)"; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.arc(x,y+26,7,0.2,2.9); ctx.stroke(); }
+  }
   // selection ring
   if(S.sel===p.id){ ctx.strokeStyle="#C1443C"; ctx.lineWidth=2.5; ctx.setLineDash([5,4]);
     ctx.beginPath(); ctx.ellipse(x,p.y-4,22,30,0,0,6.28); ctx.stroke(); ctx.setLineDash([]); }
-  // name + zero hint — paper-haloed and phone-compensated
+  // name + zero hint — paper-haloed and phone-compensated; MOVERS carry no label (returns on arrival)
+  if(p.amb && d>2 && S.sel!==p.id){ ctx.textAlign="left"; return; }
   ctx.font=FONT_LBL; ctx.textAlign="center"; ctx.fillStyle="#2B2320";
   var lw=ctx.measureText(p.name).width, ly2=p.y+36+(LKF-1)*4;
   var clash=lblR.some(function(r){ return Math.abs(r[1]-ly2)<14*LKF && Math.abs(r[0]-x)<(r[2]+lw)/2+6; });
@@ -942,7 +1062,8 @@ function selectPerson(id){
   if(!p.known){ p.known=true; bubble(p,quoteFor(p)); beep(523,0.07);
     if(!S.revealSeen){ S.revealSeen=true; logMsg(p.name+" — "+STR.reveal.vi, p.name+" — "+STR.reveal.en); }   // the bubble + card ARE the feedback; say it once
     unlockCheck(); save(); }
-  else bubble(p,quoteFor(p));
+  else { p._ci=(p._ci|0)+1;
+    bubble(p,(p._ci%2&&p.chat&&p.chat.length)?p.chat[(p._ci>>1)%p.chat.length][L]:quoteFor(p)); }
   renderSheet(); render();
 }
 // verbs arrive one at a time, as the story needs them — never all at once
@@ -1013,11 +1134,15 @@ function completeLink(otherId){
   }
   renderSheet(); save();
 }
+// every đồng travels the same road: a coin flies to the river, the gauge shimmers
+function riverRise(n,sx,sy,dly){ if(S.von>=10) return;
+  S.von=Math.min(10,S.von+n); S._vonAt=performance.now();
+  if(motes.length<6) motes.push({x0:sx,y0:sy,x1:W/2,y1:H-58,t:-(dly||0.4),g:"🪙"}); }
 function huiMax(){ return (S.yearCard===0)?4:3; }   // a flood year leans harder on the hụi
 function actHui(){ if(S.acts<=0||S.hui>=huiMax()||conBan(1)) return; if(!spend())return;
-  S.hui++; S.von=Math.min(10,S.von+1); beep(392,0.1);
-  S.cast.filter(function(p){return active(p)&&p.known;}).forEach(function(p){ visit(p,DINH.x+(Math.random()-0.5)*70,DINH.y,5200); });   // the hụi circle meets at the đình
-  motes.push({x0:DINH.x,y0:DINH.y-10,x1:W/2,y1:H-58,t:-0.9,g:"🪙"});   // and the pooled coin becomes river water
+  S.hui++; beep(392,0.1); riverRise(1,DINH.x,DINH.y-10,0.9);
+  S.cast.filter(function(p){return active(p)&&p.known;}).forEach(function(p){ visit(p,DINH.x+(Math.random()-0.5)*70,DINH.y,5200);
+    if(!p.started) floatOn(p,"🌱 "+Math.round(chance(p)*100)+"%","#2E4A62"); });   // the circle meets — and every named sprout visibly rises
   logMsg(STR.huiDone.vi,STR.huiDone.en); render(); save(); }
 function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notices — asking around is free
   if(S.probeSeen||S.over||(!free&&S.acts<=0)) return;
@@ -1052,7 +1177,7 @@ function nextSeason(){
   flushPend(true);   // any pending lessons land BEFORE this season's burst, not inside it
   var _preActive=S.cast.filter(active).map(function(p){return p.id;});
   // one gentle first-turn nudge: don't let a new player skip past their whole hand
-  if(S.season===0 && S.acts===3 && !S.nudged){ S.nudged=true;
+  if(S.season===0 && S.acts===2 && !S.nudged){ S.nudged=true;
     bubble(S.cast[0],t("nudge")); beep(523,0.07); return; }
   // the lineage transmits: each mentored student's skill grows under their master (faster in a quiet-hands year)
   var drip=(S.yearCard===3)?2:1;
@@ -1142,19 +1267,22 @@ function nextSeason(){
   // craft climbs the value curve: the market seller moves the master's ceramics (a market-road year pays double, twice)
   var gtmMax=(S.yearCard===2&&S.season<=10)?2:1, gtmAmt=(S.yearCard===2&&S.season<=10)?2:1;   // the new road carries double only while it's new
   if(S.gtm && (S.gtmPays|0)<gtmMax && S.cast[1].started){ S.gtmPays=(S.gtmPays|0)+1; S.gtmPaid=true;
-    S.von=Math.min(10,S.von+gtmAmt);
+    riverRise(gtmAmt,CHO.x,CHO.y-26,1.2);
     visit(S.cast[1],CHO.x-24,CHO.y,6000); visit(S.cast[4],CHO.x+18,CHO.y,6000);   // Ba carries the goods to Hoa's stall
-    motes.push({x0:CHO.x,y0:CHO.y-26,x1:W/2,y1:H-58,t:-1.2,g:"🪙"});
     if(S.yearCard===2){ logMsg(S.gtmPays===1?"🛤 Hàng gốm ra tới huyện — được GIÁ GẤP ĐÔI (+2 vốn). Đường mới còn đi được một chuyến nữa.":"🛤 Chuyến hàng cuối qua đường chợ — sông đầy hẳn lên (+2 vốn).",
                                 S.gtmPays===1?"🛤 The ceramics reach the district — DOUBLE the price (+2 capital). The new road carries one more trip.":"🛤 The last trip down the market road — the river truly rises (+2 capital)."); }
     else logMsg(STR.gtmPaid.vi,STR.gtmPaid.en); }
   // the recycling flywheel: enough TIERS standing and the river feeds itself (a flood year demands deeper roots)
-  if(tierSum()>=((S.yearCard===0)?6:4) && S.von<10){ S.von=Math.min(10,S.von+1);
+  if(tierSum()>=((S.yearCard===0)?6:4) && S.von<10){
+    var _tops=S.ships.slice().sort(function(a4,b4){return shipTier(b4)-shipTier(a4);}).slice(0,2);
+    _tops.forEach(function(sh4,ti4){ if(motes.length<6) motes.push({x0:sh4.x,y0:sh4.y-16,x1:CHO.x,y1:CHO.y-34,t:-(0.4+ti4*0.35),g:"🧺"}); });
+    riverRise(1,CHO.x,CHO.y-30,2.2);   // the coin leaves the stall only after the goods arrive
+    var hoa=S.cast[4]; if(active(hoa)&&!(hoa.vUntil>performance.now())) visit(hoa,CHO.x+18,CHO.y,6000);
     if(!S.flySeen){ S.flySeen=true; gong(330,1.0,0.03);
       logMsg("🌊 Xưởng đã đủ vững — dòng sông bắt đầu tự đầy.","🌊 The workshops stand firm — the river begins to fill itself."); } }
   // structural drift — beyond your hands (the pre-rolled forecast becomes the sky)
   S.luat=S.luatNext; S.luatNext=driftLuat(S.luat); S.probeSeen=false;
-  if(S.season%4===3 && !(S.yearCard===0&&S.season===3)) S.von=Math.min(10,S.von+1);   // the era slowly rises (a flood year's first rise never comes)
+  if(S.season%4===3 && !(S.yearCard===0&&S.season===3)) riverRise(1,W-20,340,0.4);   // the era slowly rises — capital walks in down the road
   if(S.von<=3 && S.season===5) logMsg(STR.riverLow.vi,STR.riverLow.en);
   // workshops age; tarps weather down
   S.ships.forEach(function(s){ s.age=(s.age|0)+1; s.born=false; if(s.shel>0)s.shel--; });
@@ -1170,7 +1298,8 @@ function nextSeason(){
   // 🚶 the xóm gathers: whoever's season this is walks in and speaks their own trouble — no narrator
   S.cast.forEach(function(p){
     if(p.id===6) return;   // the sampan has its own beat below
-    if(active(p)&&_preActive.indexOf(p.id)<0){ p.arriveT=performance.now();
+    if(active(p)&&_preActive.indexOf(p.id)<0){ p.arriveT=performance.now(); beat(3500);
+      p.behForce=({3:2, 1:4, 4:4, 5:9})[p.id]||1; p.bfAt=performance.now()+2600;   // each newcomer's first errand teaches a building
       (function(pp){ var ctok=runTok; setTimeout(function(){
         if(!S.over&&runTok===ctok){ bubble(pp,quoteFor(pp)); beep(294,0.07,0.03);
           setTimeout(function(){beep(392,0.09,0.03);},120); } },1900); })(p);   // walk first, speak at the door
@@ -1181,6 +1310,7 @@ function nextSeason(){
   var lien=S.cast[6];
   if(S.season===lien.arrives && !lien.gone){
     lien.x=60; lien.y=Math.min(H-70,peopleFloor()); lien.bhx=lien.hx; lien.bhy=lien.hy; lien.tx=lien.hx; lien.ty=lien.hy;
+    lien.behForce=7; lien.bfAt=performance.now()+3200;   // she lingers at the landing — her BẠN-1, visible before a word
     (function(){ var ctok=runTok; setTimeout(function(){ if(S.over||runTok!==ctok) return;
       banner("🛶 "+lien.name,2300);
     logMsg("🛶 Một chiếc thuyền cập bến — Cô Liên về xóm, sau mười năm Sài Gòn.",
@@ -1263,7 +1393,8 @@ function endGame(){
   tm.g.forEach(function(n){ setTimeout(function(){gong(n[0],1.4,0.05);},n[1]); });
   var oldSeal=crd.querySelector(".seal"); if(oldSeal) oldSeal.remove();
   var sl=document.createElement("div"); sl.className="seal"; sl.style.borderColor=tm.c; sl.style.color=tm.c;
-  sl.innerHTML=YEAR_CARDS[S.yearCard|0].em+(S.constraint?("<small style=\"font-size:12px\">"+CONSTRAINTS[S.constraint].g+"</small>"):"")+"<small>"+ti+"/6</small>"; crd.appendChild(sl);
+  if(S.constraint) sl.style.fontSize="15px";   // three rows share the stamp — shrink the year glyph
+  sl.innerHTML=YEAR_CARDS[S.yearCard|0].em+(S.constraint?("<small style=\"font-size:11px;line-height:1.1\">"+CONSTRAINTS[S.constraint].g+"</small>"):"")+"<small>"+ti+"/6</small>"; crd.appendChild(sl);
   var AUTH={1:{vi:"Đêm nay đèn sáng từ bến sông tới sân đình.",en:"Tonight the lamps burn from the river landing to the đình yard."},
             2:{vi:"Bốn mái xưởng gọi nhau qua tiếng gõ.",en:"Four workshop roofs call to each other in hammer-taps."},
             3:{vi:(blooms[0]?blooms[0].name:"Ai đó")+" là người đầu tiên. Người thứ hai sẽ dễ hơn.",en:(blooms[0]?blooms[0].name:"Someone")+" was the first. The second will come easier."},
@@ -1395,6 +1526,7 @@ function renderSheet(){
     +"<small>"+(p.started
       ?((L==="vi"?"bậc ":"tier ")+trNow+"/3"+(trNow<3?(L==="vi"?" · vun tiếp để lên bậc":" · keep tending to rise"):(L==="vi"?" · một thương hiệu":" · a brand")))
       :(t("sprout")+" ~"+pc+"% "+t("perSeason")
+      +(L==="vi"?" · sông ":" · river ")+S.von+"/10"
       +((p.mom||0)>0?(L==="vi"?" · mầm đang nhú 🌱":" · pushing at the soil 🌱"):"")
 ))+"</small>";
   el("teachBtn").disabled=S.acts<=0||p.tai>=10||S.over||conBan(3);   // tending doesn't stop at the bloom — tiers keep the verbs alive
@@ -1409,6 +1541,7 @@ function renderLog(){
   el("log").innerHTML=S.log.map(function(m){return "<div>"+(m[L]||m.vi)+"</div>";}).join("")||"<div>"+t("talkFirst")+"</div>";
 }
 function setLang(x){ L=x; document.documentElement.lang=x;
+  document.querySelectorAll(".conL,#conLbl").forEach(function(e2){ var v2=e2.getAttribute("data-"+x); if(v2) e2.textContent=v2; });
   el("inTtl").textContent=STR.inTtl[L]; el("inTag").textContent=t("sub");
   el("inP1").textContent=STR.inP1[L]; el("inP2").textContent=STR.inP2[L];
   renderChron();
