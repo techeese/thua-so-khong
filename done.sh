@@ -79,23 +79,31 @@ if [ "$OPEN" -gt 0 ]; then
   cat <<'EOF'
 🟢 CONVERGED — every machine gate is green. Only owner gates remain.
 
-THIS ERA IS DONE. That is a success state, not a failure.
-Do NOT rotate to lateral work and do NOT pad the game with items that close nothing.
-Report to the owner and name the open owner gates above.
-
-The era closes when the owner answers them. Then run the SYNTHESIS
-(MILESTONES.md → "The synthesis protocol") to choose the next era.
+▶ GEAR 3 — VIGIL. The loop does NOT stop and does NOT touch index.html.
+  Each tick: re-verify (a regression here re-opens Gear 1), then do LAB work —
+  evidence, probes and throwaway prototypes in lab/ for candidate next eras.
+  Unbounded effort, zero drift risk: nothing in lab/ ships.
+  Hold the synthesis until the owner answers the felt gate — a synthesis written
+  without knowing whether the core lands is guesswork.
 EOF
   exit 10
+fi
+if [ -f SYNTHESIS.md ]; then
+  cat <<'EOF'
+🕯  ERA COMPLETE · SYNTHESIS WRITTEN — awaiting the owner's pick.
+
+▶ GEAR 3 — VIGIL. Keep watch and keep prototyping in lab/ for the candidates
+  already proposed in SYNTHESIS.md. Do not pick an era for yourself.
+EOF
+  exit 20
 fi
 cat <<'EOF'
 🏁 ERA COMPLETE — machine and owner gates all green.
 
-Now do the most important thing this loop ever does: run the SYNTHESIS.
-See MILESTONES.md → "The synthesis protocol". Read the whole game as a stranger,
-name what is load-bearing vs. decoration, find the unspent potential, and write
-3–4 candidate next eras to SYNTHESIS.md — one of them reductive, one a real swing.
-
-Then HALT. The owner picks the next era; the loop never picks for itself.
+▶ GEAR 2 — SYNTHESIZE. The most important thing this loop ever does.
+  MILESTONES.md → "The synthesis protocol". Read the whole game as a stranger,
+  separate load-bearing from decoration, find the unspent potential, and write
+  3-4 candidate next eras to SYNTHESIS.md — one reductive, one a real swing.
+  Then drop to Gear 3 and keep watch. The owner picks; the loop never picks.
 EOF
 exit 20

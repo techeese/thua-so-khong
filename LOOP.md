@@ -14,10 +14,29 @@
    owner picks ◀────── SYNTHESIS.md ◀──── the era closes
 ```
 
-Each era has a **closed** definition of done (`done.sh` + `OWNER-GATE.md`). The loop grinds toward
-it and then **stops** — stopping is a success state. New work is opened by a **synthesis** and an
-owner's choice, never by a compass rotating because the loop had nothing to do.
+Each era has a **closed** definition of done (`done.sh` + `OWNER-GATE.md`). New work is opened by a
+**synthesis** and an owner's choice, never by a compass rotating because the loop had nothing to do.
 Eras are recorded in `MILESTONES.md`. Current era: **1 — "The fable is playable"**.
+
+## The loop runs forever — in one of three gears
+
+Owner's standing rule: **the improvement loop never stops.** But always-running is not
+always-shipping. `done.sh` picks the gear:
+
+| verdict | gear | the work | touches `index.html`? |
+|---|---|---|---|
+| exit 0 | **1 · CONVERGE** | grind the red gates green, ship, fast cadence | **yes** |
+| exit 20, no `SYNTHESIS.md` | **2 · SYNTHESIZE** | propose 3–4 candidate next eras | no |
+| exit 10 or 20 | **3 · VIGIL** | watchdog + `lab/` prototypes, slow cadence | **never** |
+
+Gear 3 is how the loop runs forever without drifting. The **watchdog** re-runs the gates and
+re-checks the live URL every tick — rot is real, and any red gate immediately re-opens Gear 1
+(this is what would have caught the six-week outage). The **lab** does unbounded evidence-gathering
+and prototyping in `lab/`, which is gitignored and **never ships** — it is raw material for the
+owner's next pick. A quiet vigil tick that finds nothing is a **successful** tick.
+
+A lab prototype that looks worth shipping still does not get shipped. It becomes a candidate and
+waits. That boundary is the whole difference between infinite development and drift.
 
 ## Invariants (never ship without)
 1. `./gate.sh` green — band · syntax · fresh run · poisoned save · 16-season VI+EN.
