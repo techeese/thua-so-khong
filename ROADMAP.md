@@ -1,24 +1,21 @@
 # Roadmap — Thừa Số Không
 
-`../steve_vietnam_plan_fable/THESIS.md` is the source of truth; `README.md` holds the felt-gate questions.
+Future direction now lives in **`MILESTONES.md`** (eras + the synthesis protocol + parked candidate
+directions). This file holds only the current era's open engineering work.
 
-## The standing gate (before anything else ships)
-- [ ] **The owner's 5-minute playtest** — (1) does diagnosing a zero feel like play? (2) do you care about anyone
-      by season 8? (3) does "mười nhân với không vẫn bằng không" land from play alone? Every milestone re-runs this.
+`../steve_vietnam_plan_fable/THESIS.md` is the thesis source of truth.
+`OWNER-GATE.md` holds the felt gate — the boxes only the owner may tick.
 
-## Next (make it a full game)
-- [ ] **Đông Hồ art pass proper** — woodblock outlines, printed-paper texture, the palette pushed to đỏ son/vàng nghệ
-      on điệp-shell ground; figures with the flat-perspective folk look.
-- [ ] **More authored arcs** — a second special pair (Chị Hoa GTM cho Chú Ba? Anh Tú apprenticing under Anh Vũ?);
-      per-character bloom scenes (a 2-beat vignette, not just a workshop pop).
-- [ ] **The law lock as a live beat** — a probe-like action ("hỏi thăm trên xã") that reveals next season's sky, teaching
-      test-before-you-bet at village scale.
-- [ ] **Endings pass** — authored diptychs per outcome-shape (all-bloomed / zeros-unturned / stamp-heavy / lonely-proof),
-      plus a "fates seen" replay hook.
-- [ ] Audio pass (pentatonic đàn-bầu-ish motif on bloom; gong on season), haptics.
-- [ ] sw.js + manifest → GitHub Pages publish (after the felt gate passes).
+## Era 1 — open engineering work
+- [ ] 390px real-device pass (canvas tap targets on small phones) — owner-gated, needs real hands.
 
-## Engineering hygiene
-- [x] check.js band (hunter > spreader > idle) — asserted in gate.sh; keep in sync with index.html math on ANY tuning.
+## Done
+- [x] check.js band (diagnosis > spreading > idling) — asserted in gate.sh; keep in sync with
+      index.html math on ANY tuning.
 - [x] NaN-safe save/resume + poisoned-save gate.
-- [ ] 390px real-device pass (canvas tap targets on small phones).
+- [x] sw.js + manifest + Actions-based Pages deploy (live at techeese.github.io/thua-so-khong).
+- [x] Full 16-season headless playthrough in VI and EN, zero console errors (gate.sh Gate 5).
+
+## Parked — needs an owner ask
+Ideas that arrive mid-era with no gate to close go to `MILESTONES.md` → *Candidate directions*,
+not here. They are raw material for the next synthesis, not a queue.

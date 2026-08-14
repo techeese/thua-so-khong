@@ -1,5 +1,32 @@
 # Changelog — Thừa Số Không
 
+## v0.27 — 2026-08-14 — the stranded round, shipped; and the loop rebuilt as convergent
+
+Closes: a working tree left dirty on 2026-07-02 · the v0.25 errand-governor's chaser bug ·
+LOOP.md's "LOOK-voice copy native pass" pointer.
+
+- **The chicken-chaser stops vanishing:** `_chaser` was assigned before `visit()`, and a story
+  visit landing in the same frame silently cleared it — the chase animation dropped mid-run.
+  It is now armed after the visit, and cleared when a chained leg picks a different errand.
+  *Evidence:* `execBeh` set `_chaser=p` inside the `beh===9` branch, upstream of the `visit()`
+  call that resets it.
+- **The dwell is real, not quantized:** errand dwell/chain resolution ran only on the governor's
+  cadence, so a 1.5–3s pause at a doorway rounded up to the next scheduler tick.
+  *Evidence:* `if(now<nextErrandAt) return;` gated the resolution loop as well as the spawn loop.
+- **Lesson motes capped at 9:** a large class could push one mote per student per season with no
+  ceiling. *Evidence:* the `studs.forEach` push had no length guard.
+- **The places speak better Vietnamese:** a native pass on the LOOK voices — the river no longer
+  says its water comes from heaven ("Sông này không đầy nhờ nước trời đâu. Mỗi nhà một gánh mà
+  đầy."), the market speaks in cause and effect, and the hụi is a *phiên*, not a *vòng*, wherever
+  the xóm names it. *Evidence:* LOOP.md's standing pointer; register drift flagged in v0.26.
+
+**The loop itself was rebuilt** (no game code): it had been dead 43 days because its continuity
+lived in a session rather than on disk, and v0.25–v0.26 sat undeployed because a push was treated
+as a ship. New: `done.sh` (machine-checkable termination), `OWNER-GATE.md` (the boxes only a human
+may tick), `MILESTONES.md` (eras + the synthesis protocol), LOOP.md v3, and a Stop-hook branch on
+`.improve-tsk-on`. The loop is now convergent within an era and infinite across eras.
+
+
 ## v0.26 — 2026-07-02 — LOOP v2, cycle 15: the places answer back (living-xóm plan, final batch)
 
 - **Hỏi thăm the places:** tap the river, the đình, or the market and the nearest neighbor walks over and answers

@@ -130,7 +130,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.26</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.27</span></div>
 </div>
 
 <!-- intro -->
@@ -197,7 +197,7 @@ var STR={
   nudge:{vi:"Bạn còn ⚡ đó! Chạm vào một người trước đã.",en:"You still have ⚡! Tap a person first."},
   unLink:{vi:"🤝 Bạn đã quen vài người — giờ có thể KẾT NỐI họ với nhau (nút mới trong thẻ người).",
         en:"🤝 You know a few people now — you can CONNECT them (new button on a person's card)."},
-  unHui:{vi:"🪙 Dòng sông là VỐN — và xóm có lệ GÓP HỤI: mỗi vòng, sông đầy thêm một chút (nút mới).",
+  unHui:{vi:"🪙 Dòng sông là VỐN — và xóm có lệ GÓP HỤI: mỗi phiên, sông đầy thêm một chút (nút mới).",
         en:"🪙 The river is CAPITAL — and the xóm keeps a HỤI pool: each round, the river rises a little (new button)."},
   unBuild:{vi:"🛠 Giờ có thể TỰ XÂY một sản phẩm của riêng mình (nút mới).",
         en:"🛠 You can now BUILD a product of your own (new button)."},
@@ -219,7 +219,7 @@ var STR={
   crushed:{vi:" — xưởng bị đình chỉ (một con dấu từ trên xuống).",en:" — workshop suspended (a stamp from above)."},
   shipped:{vi:"Bạn đã LÀM XONG sản phẩm của mình — cả xóm đều thấy. (+1 GAN cho mọi người)",en:"You SHIPPED your own product — the whole xóm saw it. (+1 NERVE for everyone)"},
   inspired:{vi:"“Nếu người ấy làm được…” (+1 GAN cho mọi người)",en:"“If they can do it…” (+1 NERVE for everyone)"},
-  huiDone:{vi:"Vòng hụi góp xong — ai cũng kêu hết tiền, mà ai cũng góp đủ. Sông đầy thêm một chút.",en:"The hụi round closes — everyone pleads poverty, everyone pays in full. The river rises a little."},
+  huiDone:{vi:"Phiên hụi góp xong — ai cũng kêu hết tiền, mà ai cũng góp đủ. Sông đầy thêm một chút.",en:"The hụi round closes — everyone pleads poverty, everyone pays in full. The river rises a little."},
   riverLow:{vi:"Dòng sông cạn — xưởng nào mở cũng chỉ là gánh hàng.",en:"The river runs low — any workshop stays a street stall."},
   talkFirst:{vi:"Chạm vào một người để trò chuyện.",en:"Tap a person to talk."},
   reveal:{vi:"Bạn ngồi nghe. Giờ bạn nhìn thấy các thừa số.",en:"You sit and listen. Now you can see the factors."}
@@ -347,7 +347,7 @@ function chatter(){
 // YEAR CARDS — each year, one lever is scarce. The diagnosis differs, not just the arithmetic.
 var YEAR_CARDS=[
   {em:"🌊",nv:"Năm lũ",ne:"the flood year",
-   fv:"🌊 Năm lũ — sông khó tự đầy, xóm trông cả vào vòng hụi.",fe:"🌊 A flood year — the river struggles to fill itself; the xóm leans on the hụi."},
+   fv:"🌊 Năm lũ — sông khó tự đầy, xóm trông cả vào hụi.",fe:"🌊 A flood year — the river struggles to fill itself; the xóm leans on the hụi."},
   {em:"📋",nv:"Năm xét kỹ",ne:"the strict year",
    fv:"📋 Năm xét kỹ — trời lâu quang, nhưng trên xã dán thông báo (nghe ngóng miễn phí).",fe:"📋 A strict year — the sky clears slowly, but the commune posts notices (asking around is free)."},
   {em:"🛤",nv:"Năm đường chợ",ne:"the market-road year",
@@ -566,9 +566,10 @@ function execBeh(p,beh,now){
   else if(beh===7){ dx=BEN.x+26; dy=peopleFloor(); }
   else if(beh===8){ if(!S.ships.length) beh=1; else { var sh3=S.ships[(p.id+S.season)%S.ships.length]; dx=sh3.x-40; dy=sh3.y+26; } }
   else if(beh===9){ var c2=chicks[0],bd=1e9; chicks.forEach(function(c3){ var dd=Math.hypot(c3.x-p.x,c3.y-p.y); if(dd<bd){bd=dd;c2=c3;} });
-    dx=c2.x; dy=c2.y-6; _chaser=p; }
+    dx=c2.x; dy=c2.y-6; }
   if(beh===1){ dx=p.hx; dy=p.hy; }
   visit(p,dx+(Math.random()-0.5)*(beh===3?4:30),dy,dur);
+  if(beh===9) _chaser=p;   // assigned AFTER visit() — a story visit clears it, so re-arm here
   p.amb=1; p.beh=beh;
   if(beh===3) p.chain=1;   // faltering always turns back home
 }
@@ -596,7 +597,7 @@ function errandTick(now){
       nextErrandAt=now+5000; return; } }
   if(now<beatUntil) return;
   if(S.luat<4){ nextErrandAt=now+7000; return; }   // the storm huddle owns the screen
-  if(now<nextErrandAt) return;
+  // dwell/chain resolution runs every eligible frame — the 1.5-3s dwell is REAL, not quantized to errand cadence
   var walkers=0;
   for(var i3=0;i3<S.cast.length;i3++){ var q3=S.cast[i3]; if(!q3.amb) continue;
     if(q3.vUntil>now){ walkers++; continue; }
@@ -606,9 +607,11 @@ function errandTick(now){
     if(q3.beh===5&&Math.random()<0.25){   // arriving at a friend's — sometimes they talk
       var mt=S.pairs.filter(function(pr){return pr[0]===q3.id||pr[1]===q3.id;})[0];
       if(mt) pairTalkAt(Math.min(mt[0],mt[1])+"-"+Math.max(mt[0],mt[1]),false); }
-    if(q3.chain||((q3.legs|0)<2&&Math.random()<0.35)){ q3.legs=(q3.legs|0)+1; var nb=q3.chain?1:pickBeh(q3); q3.chain=0; execBeh(q3,nb,now); walkers++; }
+    if(q3.chain||((q3.legs|0)<2&&Math.random()<0.35)){ q3.legs=(q3.legs|0)+1; var nb=q3.chain?1:pickBeh(q3); q3.chain=0;
+      execBeh(q3,nb,now); if(_chaser===q3&&nb!==9)_chaser=null; walkers++; }
     else { q3.amb=0; q3.beh=0; q3.legs=0; if(_chaser===q3)_chaser=null; }
   }
+  if(now<nextErrandAt) return;
   if(walkers>=(S.season<4?1:2)){ nextErrandAt=now+4000; return; }
   var pool=S.cast.filter(function(p4){ return active(p4)&&p4.known&&!p4.arriveT&&!(p4.vUntil>now)&&S.sel!==p4.id&&!p4.amb; });
   if(!pool.length){ nextErrandAt=now+4000; return; }
@@ -622,6 +625,7 @@ function p_setV(p,until){ p.vUntil=until; }
 
 function peopleFloor(){ return Math.min(H-70, H-(26+S.von*5.5)-30); }   // nobody stands in the river
 function visit(p,x,y,ms){ if(!p||p.gone) return;
+  if(_chaser===p) _chaser=null;   // interrupted mid-chase: the chickens calm down
   p.beh=0;
   p.vx=Math.max(40,Math.min(W-40,x)); p.vy=Math.max(230,Math.min(peopleFloor(),y));
   p.vUntil=performance.now()+(ms||5000);
@@ -1077,14 +1081,14 @@ cv.addEventListener("click",function(e){
   if(!near) return;
   var LOOK={
     r:[ [S.von<=2,"“Sông cạn thế này, thuyền nào dám về…”","“A river this thin — what boat would dare come home…”"],
-        [S.von>=7,"“Nước đầy, cá về. Đất này sống nhờ con nước.”","“Full water, the fish return. This land lives by the river.”"],
-        [true,"“Sông đầy hay cạn là chuyện của cả xóm, không phải của trời.”","“Full or thin, the river is the xóm's doing — not heaven's.”"] ],
-    d:[ [!S.un.hui,"“Mai họp phiên hụi ở đây đấy. Nhà nào cũng góp một tay.”","“The hụi circle meets here tomorrow. Every house puts in a hand.”"],
-        [S.luat<4,"“Mái đình chưa dột bao giờ. Giông mấy cũng qua.”","“The đình roof has never leaked. Every storm passes.”"],
-        [true,"“Chuyện gì lớn của xóm cũng bắt đầu ở sân này.”","“Everything that matters in this xóm starts in this yard.”"] ],
-    c:[ [S.von<=2,"“Chợ vắng vì sông cạn. Tiền không tự mọc trên sạp đâu.”","“The stall is bare because the river is thin. Money doesn't grow on the counter.”"],
+        [S.von>=7,"“Nước đầy, cá về. Đất này sống nhờ con nước.”","“High water, the fish come home. This land lives by the river.”"],
+        [true,"“Sông này không đầy nhờ nước trời đâu. Mỗi nhà một gánh mà đầy.”","“Rain never filled this river. Every house carries its water down.”"] ],
+    d:[ [!S.un.hui,"“Sắp họp phiên hụi ở sân này đấy. Nhà nào cũng góp một tay.”","“The hụi circle meets in this yard soon. Every house puts in a hand.”"],
+        [S.luat<4,"“Mái đình chưa dột bao giờ. Giông to mấy rồi cũng qua.”","“The đình roof has never leaked. Every storm passes.”"],
+        [true,"“Chuyện lớn của xóm, chuyện nào cũng bắt đầu từ cái sân này.”","“Everything that matters in this xóm starts in this yard.”"] ],
+    c:[ [S.von<=2,"“Sông cạn thì chợ vắng thôi. Tiền có tự mọc trên sạp đâu.”","“A thin river makes a bare stall. Money doesn't grow on the counter.”"],
         [tierSum()>=4,"“Hàng xóm làm, chợ xóm bán — thế là nước lại về sông.”","“The xóm makes, the stall sells — and the water finds the river again.”"],
-        [true,"“Sạp này chờ hàng khéo. Ai làm ra thứ gì, mang ra đây.”","“This stall waits for skilled goods. Whoever makes something — bring it here.”"] ]
+        [true,"“Sạp này còn chờ đồ khéo tay. Nhà ai làm ra thứ gì, cứ mang ra đây.”","“This stall waits on fine handiwork. Whoever makes something — bring it here.”"] ]
   };
   var line=null; LOOK[zone].some(function(l3){ if(l3[0]){ line=l3; return true; } return false; });
   var zx=zone==="r"?BEN.x+40:zone==="d"?DINH.x:CHO.x, zy=zone==="r"?peopleFloor():zone==="d"?DINH.y+8:CHO.y-2;
@@ -1228,7 +1232,7 @@ function nextSeason(){
       var studs=S.cast.filter(function(q){ return q!==mai&&active(q)&&!q.started&&q.known&&q.tai<7&&!q._dripped; })
                       .sort(function(a2,b2){return a2.tai-b2.tai;}).slice(0,reach);
       studs.forEach(function(st2,si2){ st2.tai=Math.min(7,st2.tai+1);
-        if(maiShip){ motes.push({x0:maiShip.x,y0:maiShip.y-20,x1:st2.x,y1:st2.y-30,t:-si2*0.25});   // 📖 leaves HER workshop
+        if(maiShip&&motes.length<9){ motes.push({x0:maiShip.x,y0:maiShip.y-20,x1:st2.x,y1:st2.y-30,t:-si2*0.25});   // 📖 leaves HER workshop
           visit(st2,maiShip.x-30+si2*28,maiShip.y+26,5600); }                                       // and the students walk to the lesson
         floatOn(st2,"+1 "+t("tai")+" 📖","#2E4A62"); });
       if(studs.length&&!S.classSeen){ S.classSeen=true;
