@@ -379,3 +379,14 @@ that is now impossible because a gate catches it stays here, with the gate named
   the worst at 2.89:1. Audit the *small dim* text first, and remember the hints are not decoration: they
   are where this game states its arithmetic. Contrast needs no browser flag — pair each text node's
   computed colour with its effective background and do the maths (Gate 45).
+- **The long-idle dimension is clean — measured, so do not re-open it.** 6.4 simulated minutes of pure
+  idling (24,000 frames, nobody touching anything, a full river so the ripple layer is live): `amb`
+  holds at its cap of 18, `rain` at 62, the log at its cap, DOM nodes 228→229. Nothing accumulates and
+  nothing degrades. `ripples` looks like it grows on a short sample (2→8 over 48s) but oscillates around
+  a steady state over a long one (14→11→17) — it is river state, not a leak. Sample a suspected leak
+  over MINUTES before believing a short window.
+- **Forced-colors / Windows High Contrast is deliberately NOT attempted.** It is the one accessibility
+  mode headless Chrome cannot emulate (there is no flag, unlike `--force-prefers-reduced-motion`), and
+  the only meaningful fix — repainting the canvas in a high-contrast palette — would be shipped on a
+  stubbed `matchMedia` and never actually seen. A wrong high-contrast palette is worse than the default
+  one. If this is ever taken up, it needs a real Windows machine, not a probe.
