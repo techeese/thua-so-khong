@@ -81,6 +81,12 @@ for permission to build.
 
 ## Next (one paragraph — REPLACE it each round, never append)
 Era 1 machine gates are green as of v0.27; what remains is the owner's felt gate in
-`OWNER-GATE.md` (three playtest questions + real-device PWA/share/390px checks). The loop should
-report CONVERGED and stop rather than invent work. Standing owner directives if any round does
-open: less narration · simple opening · buildings mean something · ambient = silent and numberless.
+`OWNER-GATE.md` (three playtest questions + real-device PWA/share/390px checks), so the loop is in
+Gear 3 vigil and does not ship. Two vigil ticks have banked evidence in `lab/NOTES.md`: 390px tap
+reachability (eclipse 0, but place-taps stolen ~21% of the time at the market), and the attachment
+curve — personal voice per present villager falls 1.16 → 0.49 → 0.04 across seasons 2 / 8 / 14,
+because `chatter()` is unreachable (`nextSeason` rolls it at +1100ms inside the banner's own
+2200ms beat), leaving 22 authored bilingual strings dead. **The chatter defect is the one thing
+awaiting an owner verdict** — it qualifies under ship-budget (c) but Gear 3 may not fix it.
+Standing owner directives if any round does open: less narration · simple opening · buildings mean
+something · ambient = silent and numberless.
