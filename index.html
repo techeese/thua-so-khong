@@ -227,7 +227,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.73</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.74</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -302,9 +302,11 @@ var STR={
   sub:{vi:"mười nhân với không vẫn bằng không",en:"ten times zero is still zero"},
   hui:{vi:"Góp hụi",en:"Join hụi"}, build:{vi:"Tự xây",en:"Build yours"},
   pot:{vi:"Hốt hụi",en:"Take the pot"},
-  wrongTai:{vi:"“Cái này tôi làm được rồi mà… chuyện của tôi ở chỗ khác.”",en:"“This part I can already do… my trouble is somewhere else.”"},
-  wrongGan:{vi:"“Tôi đâu có sợ… chuyện của tôi ở chỗ khác.”",en:"“It isn't nerve I lack… my trouble is somewhere else.”"},
-  wrongBan:{vi:"“Bạn bè thì tôi không thiếu… chuyện của tôi ở chỗ khác.”",en:"“Friends I don't lack… my trouble is somewhere else.”"}, potH:{vi:"🌱 +6% · 1⚡",en:"🌱 +6% · 1⚡"},
+  // the shared answers to a hand carry a register: `vi` is the tôi voice, `em` the young voice (Ngân, Tú) — Vietnamese keeps its speaker in the pronoun, English does not (v0.74)
+  wrongTai:{vi:"“Cái này tôi làm được rồi mà… chuyện của tôi ở chỗ khác.”",em:"“Cái này em làm được rồi mà… chuyện của em ở chỗ khác.”",en:"“This part I can already do… my trouble is somewhere else.”"},
+  wrongGan:{vi:"“Tôi đâu có sợ… chuyện của tôi ở chỗ khác.”",em:"“Em đâu có sợ… chuyện của em ở chỗ khác.”",en:"“It isn't nerve I lack… my trouble is somewhere else.”"},
+  wrongBan:{vi:"“Bạn bè thì tôi không thiếu… chuyện của tôi ở chỗ khác.”",em:"“Bạn bè thì em không thiếu… chuyện của em ở chỗ khác.”",en:"“Friends I don't lack… my trouble is somewhere else.”"}, potH:{vi:"🌱 +6% · 1⚡",en:"🌱 +6% · 1⚡"},
+  reset:{vi:"chơi lại",en:"play again"}, resetAsk:{vi:"bỏ năm này? chạm lần nữa",en:"throw this year away? tap again"}, bigT:{vi:"chữ to",en:"larger text"},
   next:{vi:"MÙA SAU ▶",en:"NEXT SEASON ▶"},
   tai:{vi:"TÀI",en:"SKILL"}, gan:{vi:"GAN",en:"NERVE"}, ban:{vi:"BẠN",en:"ALLIES"},
   teach:{vi:"Dạy",en:"Teach"}, nerve:{vi:"Đêm thất bại",en:"Failure night"}, link:{vi:"Kết nối",en:"Connect"},
@@ -347,10 +349,20 @@ var STR={
   reveal:{vi:"Bạn ngồi nghe. Lời họ nói là manh mối — tay chạm vào đâu, con số hiện ra ở đó.",en:"You sit and listen. Their words are the clue — where your hand lands, that number shows."}
 };
 function t(k){return (STR[k]||{})[L]||"";}
+// v0.74 — register: the shared lines that answer a hand speak in the person's own voice. The young (Ngân, Tú) say em; everyone else tôi.
+// A line object may carry an `em` variant beside `vi`; inReg() picks it for a young speaker and leaves `en` alone (English has one "I").
+function reg(p){ return (p&&p.reg==="em")?"em":"tôi"; }
+function inReg(p,ln){ if(!ln||reg(p)!=="em"||!ln.em) return ln; return {vi:ln.em,en:ln.en}; }
+// v0.74 — a line spoken in ANSWER to a tap is kept in the log, the way the first meeting's words already are (💬 name: …):
+// after the bubble has gone it can still be read, and a reader without the canvas gets it at all. Ambient speech never comes here (charter 4).
+function say(p,ln){ if(!p||!ln) return; bubble(p,ln[L]||ln.vi||"");
+  if(ln.vi&&ln.en){ var st=function(x){ return String(x).replace(/^“|”$/g,"").replace(/^"|"$/g,""); }; logMsg("💬 "+p.name+": "+st(ln.vi),"💬 "+p.name+": "+st(ln.en)); } }
+// v0.74 — the name a roof answers to, in the language on screen: your own roof was saved as "bạn"/"you" at build time and read back verbatim after a language flip
+function ownerOf(sh){ return sh.yours?(L==="vi"?"bạn":"you"):sh.owner; }
 
 // ---------- the cast (authored people, each embodying a zero) ----------
 function makeCast(){ return [
-  {id:0,name:"Bé Ngân",tai:8,gan:1,ban:4,color:"#D97C8E",hat:false,young:true,hx:180,hy:330,
+  {id:0,name:"Bé Ngân",tai:8,gan:1,ban:4,color:"#D97C8E",hat:false,young:true,reg:"em",hx:180,hy:330,
    q:{vi:"“Em viết app từ lớp 9… nhưng bố bảo con gái học Y cho ổn định.”",en:"“I've coded since grade 9… but Dad says medicine is safer for a girl.”"},
    qh:{vi:"“Em nộp app lên trường rồi. Bố… chưa mắng.”",en:"“I submitted my app at school. Dad… didn't scold me.”"},
    qb:{vi:"“Xưởng nhỏ thôi — nhưng là của em.”",en:"“It's small — but it's mine.”"},
@@ -391,7 +403,7 @@ function makeCast(){ return [
    chatB:{vi:"“Hôm nay bán hết sớm.”",en:"“Sold out early today.”"},
    qc:{vi:"“Chợ vẫn họp. Mai tôi bày hàng lại.”",en:"“The market still meets. Tomorrow I set up again.”"},
    chat:[{vi:"“Hôm nay chợ đông.”",en:"“Busy market today.”"},{vi:"“Khách quen lại hỏi món mới.”",en:"“The regulars keep asking what's new.”"}],chatS:{vi:"“Chợ vắng — trời này ai đi mua gì.”",en:"“Empty market — who shops in this weather.”"}},
-  {id:5,name:"Anh Tú",tai:2,gan:8,ban:6,color:"#E3A63B",hat:false,hx:640,hy:360,
+  {id:5,name:"Anh Tú",tai:2,gan:8,ban:6,color:"#E3A63B",hat:false,reg:"em",hx:640,hy:360,
    q:{vi:"“Làm liều trước, học sau! …học gì trước nhỉ?”",en:"“Leap first, learn later! …learn what first, though?”"},
    qh:{vi:"“Hoá ra học cũng… đã như làm liều.”",en:"“Turns out learning is… as thrilling as leaping.”"},
    qb:{vi:"“Vẫn liều — nhưng lần này có nghề.”",en:"“Still a leap — but this time with a craft.”"},
@@ -492,7 +504,7 @@ function chatter(){
   }
   var here=S.cast.filter(active); if(!here.length) return;
   var p=here[Math.floor(Math.random()*here.length)];
-  if(p.crushCount>0&&!p.started&&p.qc) bubble(p,p.qc[L]);
+  if(p.crushCount>0&&!p.started&&p.gan<5&&p.qc) bubble(p,p.qc[L]);   // v0.74: the same gate quoteFor() uses — grief ends when the nerve is rebuilt; the street stopped agreeing with the card at GAN 5
   else if(S.luat<4&&p.chatS&&Math.random()<0.5) bubble(p,p.chatS[L]);
   else if(YEAR_CARDS[S.yearCard|0].chat&&Math.random()<0.22) bubble(p,YEAR_CARDS[S.yearCard|0].chat[L]);   // the year has its own small talk
   else if(Math.random()<0.35) bubble(p,CHAT_SEASONAL[S.season%4][L]);
@@ -571,7 +583,7 @@ function fresh(){
     p.zkey = (m===p.gan)?"gan":(m===p.tai)?"tai":"ban";   // their original zero — quotes evolve when it turns
     // YEAR VARIANTS — every run is a different year in the same xóm (authored zeros stay true)
     ["tai","gan","ban"].forEach(function(k){ if(k===p.zkey||p[k]<=1) return;
-      p[k]=Math.max(1,Math.min(10,p[k]+(Math.random()<0.5?-1:1))); });
+      p[k]=Math.max(p[p.zkey]+1,Math.min(10,p[k]+(Math.random()<0.5?-1:1))); });   // v0.74: never down ONTO the zero — Chú Ba's GAN 3 must not meet his BẠN 2, or the tag names the wrong factor beside his clue (ties broke toward GAN)
     p.btai=p.tai; p.bgan=p.gan; p.bban=p.ban;             // their nature — un-bloomed tending decays back toward it
     p.x=p.hx; p.y=p.hy; p.tx=p.hx; p.ty=p.hy; p.ph=Math.random()*6.28; });
   S.cast[6].arrives=5+Math.floor(Math.random()*4);        // the sampan comes when it comes (5–8)
@@ -867,7 +879,10 @@ var parts=[], bubbles=[], stamps=[];
 function petals(x,y,n,cols){ if(CALM) return;   // the bloom still announces itself in the banner, the log
   // and the roof that appears — the confetti is the one part of it that is only motion
   for(var i=0;i<n;i++) parts.push({x:x,y:y,vx:(Math.random()-.5)*2.2,vy:-1.5-Math.random()*2,r:3+Math.random()*4,rot:Math.random()*6.28,vr:(Math.random()-.5)*.3,life:1,col:cols[i%cols.length]}); }
-function bubble(p,txt){ bubbles.push({p:p,lay:layoutBubble(txt),at:performance.now(),until:performance.now()+3600,spk:true}); }   // spk: speech has its own lane — stat floats never crowd it out
+function bubDur(txt){ var n=String(txt||"").length; return Math.max(3000,Math.min(6200,1900+n*45)); }   // v0.74: ~45 ms a character — a three-word line 3 s, Anh Vũ's opener ~6 s; was a flat 3.6 s for both
+function bubble(p,txt){ var nw=performance.now();
+  bubbles.forEach(function(b){ if(b.spk&&b.p===p&&b.until>nw+280) b.until=nw+280; });   // v0.74: a person says one thing at a time — the older line fades as the new one lands (else the answer to a hand yielded under a still-living opener: 0.2 s seen)
+  bubbles.push({p:p,lay:layoutBubble(txt),at:nw,until:nw+bubDur(txt),spk:true}); }   // spk: speech has its own lane — stat floats never crowd it out
 function speechCount(){ var n=0; for(var i=0;i<bubbles.length;i++) if(bubbles[i].spk) n++; return n; }
 // a stamped-out roof leaves a mark on the ground for three seasons — the xóm remembers where it stood
 function scarAt(x,y){ S.scars=(S.scars||[]).filter(function(c){return Math.hypot(c.x-x,c.y-y)>20;}); S.scars.push({x:x,y:y,s:S.season}); S.scars=S.scars.slice(-8); }
@@ -1801,16 +1816,16 @@ cv.addEventListener("click",function(e){
     if(!spk) return;
     var TIERSAY=shipHit.yours
       ?[null,{vi:"“Xưởng của bạn đấy. Cả xóm đi ngang đều ngó vào.”",en:"“That's yours. The whole xóm looks in when they pass.”"}]
-      :[null,{vi:"“Gánh hàng thôi — mà là của tôi.”",en:"“Just a stall — but it's mine.”"},
+      :[null,{vi:"“Gánh hàng thôi — mà là của tôi.”",em:"“Gánh hàng thôi — mà là của em.”",en:"“Just a stall — but it's mine.”"},
              {vi:"“Có mái rồi. Còn phải vun tiếp.”",en:"“It has a roof now. Still needs tending.”"},
-             {vi:"“Người ta gọi là thương hiệu. Tôi vẫn gọi là cái xưởng.”",en:"“People call it a brand. I still call it the workshop.”"}];
+             {vi:"“Người ta gọi là thương hiệu. Tôi vẫn gọi là cái xưởng.”",em:"“Người ta gọi là thương hiệu. Em vẫn gọi là cái xưởng.”",en:"“People call it a brand. I still call it the workshop.”"}];   // v0.74: em variants for the young owners
     var sayW=TIERSAY[shipHit.yours?1:trW]||TIERSAY[1];
     if(!shipHit.yours&&spk&&spk.id===shipHit.pid){ var prU=prod(spk), trU=prU<300?1:prU<600?2:3;   // held down by the river, not by their hands — they say so
-      if(trU>trW) sayW={vi:"“Tay tôi đủ — nước thì chưa. Sông đầy hơn, mái này lên bậc.”",en:"“My hands are ready — the water isn't. Higher river, higher roof.”"};
+      if(trU>trW) sayW={vi:"“Tay tôi đủ — nước thì chưa. Sông đầy hơn, mái này lên bậc.”",em:"“Tay em đủ — nước thì chưa. Sông đầy hơn, mái này lên bậc.”",en:"“My hands are ready — the water isn't. Higher river, higher roof.”"};
       if(S.luat<4&&!shipHit.born&&(shipHit.shel|0)<=0&&(shipHit.age|0)<2) sayW={vi:"“Mái mới, trời này… mười lăm phần trăm là con dấu rơi. Có tấm bạt thì đỡ.”",en:"“A young roof, this sky… fifteen in a hundred the stamp falls. A tarp would help.”"};   // the exposed one asks, in effect, for the shelter hand
       else if((shipHit.shel|0)>0) sayW={vi:"“Có bạt rồi. Mưa cứ rơi — bạt còn "+(shipHit.shel|0)+" mùa.”",en:"“Tarped. Let it rain — the tarp holds "+(shipHit.shel|0)+" more season"+((shipHit.shel|0)===1?"":"s")+".”"}; }   // and the covered one says how long the cover lasts
     visit(spk,shipHit.x-30,shipHit.y+24,5200); voice(spk,0.06);
-    (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,ln[L]); },1300); })(spk,sayW);
+    (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) say(pp,ln); },1300); })(spk,inReg(spk,sayW));   // v0.74: register + kept in the log
     return;
   }
   // the frame of your own product, going up: tap it and a neighbour counts the hands with you
@@ -1819,7 +1834,7 @@ cv.addEventListener("click",function(e){
     var nf=null,ndf=1e9; S.cast.forEach(function(p){ if(!active(p)||!p.known) return; var d5=Math.hypot(p.x-mx,p.y-my); if(d5<ndf){ndf=d5;nf=p;} });
     if(!nf) return; var left=4-(S.build|0);
     visit(nf,150,468,5000); voice(nf,0.06);
-    (function(pp,n2){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,(L==="vi")?("“Gõ "+(4-n2)+" lần rồi — còn "+n2+" lần nữa là có mái. Cả xóm đang nhìn đấy.”"):("“"+(4-n2)+" hands in — "+n2+" more and it has a roof. The whole xóm is watching.”")); },1300); })(nf,left);
+    (function(pp,n2){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) say(pp,{vi:"“Gõ "+(4-n2)+" lần rồi — còn "+n2+" lần nữa là có mái. Cả xóm đang nhìn đấy.”",en:"“"+(4-n2)+" hands in — "+n2+" more and it has a roof. The whole xóm is watching.”"}); },1300); })(nf,left);   // v0.74: kept in the log
     return; }
   // hỏi thăm the PLACES — a curiosity tap sends the nearest neighbor over to answer, in their own voice
   var zone=(my<118)?"s":(my>H-(26+S.von*5.5))?"r":(Math.abs(mx-470)<85&&Math.abs(my-215)<62)?"d":(Math.abs(mx-CHO.x)<60&&Math.abs(my-(CHO.y-34))<40)?"c":(Math.abs(mx-80)<62&&my>150&&my<300)?"b":(mx>648&&mx<870&&my>436&&my<508)?"p":(mx>700&&my>318&&my<362)?"o":null;
@@ -1864,7 +1879,7 @@ cv.addEventListener("click",function(e){
   var zx=zone==="r"?BEN.x+40:zone==="d"?DINH.x:zone==="s"?near.hx:zone==="b"?112:zone==="p"?700:zone==="o"?820:CHO.x, zy=zone==="r"?peopleFloor():zone==="d"?DINH.y+8:zone==="s"?near.hy:zone==="b"?292:zone==="p"?436:zone==="o"?352:CHO.y-2;
   if(zone!=="s") visit(near,zx,zy,6000);   // asking about the sky: nobody walks anywhere — they answer from where they stand
   voice(near,0.06);
-  (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,(L==="vi")?ln[1]:ln[2]); },1400); })(near,line);
+  (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) say(pp,{vi:ln[1],en:ln[2]}); },1400); })(near,line);   // v0.74: kept in the log
 });
 function selectPerson(id){
   var p=S.cast[id]; S.sel=id;
@@ -1896,8 +1911,8 @@ function spend(k,who){ if(S.acts<=0) return false; S.acts--; S.hands=(S.hands|0)
 function guessAnswer(p,k){ if(!p||p.started||seenAll(p)) return; var m=Math.min(p.tai,p.gan,p.ban);
   if(m>3||p[k]===m) return;   // v0.44: any hand that is not on the weakest factor misses — the middle one too (Chú Ba's GAN 3 beside his BẠN 2 leaves the ceiling where it was)
   p.wrongSaid=p.wrongSaid||{}; if(p.wrongSaid[k]) return; p.wrongSaid[k]=true;
-  var line={tai:STR.wrongTai,gan:STR.wrongGan,ban:STR.wrongBan}[k];
-  (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,ln[L]); },900); })(p,line); }   // after the float, not over it
+  var line=inReg(p,{tai:STR.wrongTai,gan:STR.wrongGan,ban:STR.wrongBan}[k]);   // v0.74: in their register
+  (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) say(pp,ln); },900); })(p,line); }   // after the float, not over it — and kept in the log (v0.74)
 function actTeach(){ var p=cur(); if(!p||S.acts<=0||p.tai>=10||S.over||conBan(3)) return; if(!spend("teach",p))return;
   guessAnswer(p,"tai"); var rT=handRaise(); p.tai=Math.min(10,p.tai+rT); S.hintDone=true; beep(659*(1+(Math.random()-0.5)*0.015),0.08); floatOn(p,"+"+rT+" "+t("tai"),"#2E4A62"); renderSheet(); save(); }
 function actNerve(){ var p=cur(); if(!p||S.acts<=0||p.gan>=10||S.over||conBan(4)) return; if(!spend("nerve",p))return;
@@ -2041,7 +2056,7 @@ function see(p,k){ if(!p) return; if(!p.seen) p.seen={tai:false,gan:false,ban:fa
   // the row completes: three numbers touched, the multiplication readable — the person notices you noticed
   if(!was&&!p.started&&seenAll(p)&&!p._rowSeen&&S&&!S.over){ p._rowSeen=true; var ctok=runTok;
     setTimeout(function(){ if(S.over||runTok!==ctok||p.started) return;
-      bubble(p,(L==="vi")?"“Giờ thì bạn hiểu tôi rồi đấy.”":"“Now you know me.”"); voice(p,0.06);
+      say(p,inReg(p,{vi:"“Giờ thì bạn hiểu tôi rồi đấy.”",em:"“Giờ thì hiểu em rồi đó ha.”",en:"“Now you know me.”"})); voice(p,0.06);   // v0.74: in their register, kept in the log
       var zk=zeroOf(p); if(zk&&!S.rowSeenOnce){ S.rowSeenOnce=true;
         logMsg("🔎 "+p.name+" — cả ba thừa số đã hiện. Thừa số thấp nhất: "+zk+". Tay nào nâng đúng nó, tích mới chạy.",
                "🔎 "+p.name+" — all three factors showing. Lowest: "+zk+". Only the hand that raises it makes the product move."); }
@@ -2144,7 +2159,7 @@ function nextSeason(){
       if(s.born||s.shel>0) return;   // newborns stand one season; a tarp holds through the storm
       var risk=stampOdds((s.age|0)<2);
       if(Math.random()<risk){
-        var tr=shipTier(s); _rc.stamp++; _rc.hit.push(String(s.owner).split(" ").pop());
+        var tr=shipTier(s); _rc.stamp++; _rc.hit.push(String(ownerOf(s)).split(" ").pop());
         if(s.yours){ // your own product lives under the same sky — but you rebuild faster than the first time
           S.ships=S.ships.filter(function(o){return o!==s;}); scarAt(s.x,s.y);
           stampAt(s.x,s.y); S.built=false; S.build=2;
@@ -2209,7 +2224,7 @@ function nextSeason(){
     if(s.age>0&&s.age%4===0&&!s.yours&&fin(s.pid)){ var ow2=S.cast[s.pid]; if(ow2&&active(ow2)){ var yrs=s.age/4;
       (function(o3,sh3,y3){ var ctok=runTok; setTimeout(function(){ if(S.over||runTok!==ctok) return;
         visit(o3,sh3.x-30,sh3.y+24,4800); petals(sh3.x,sh3.y-24,10,["#E3A63B","#fffdf4"]);
-        bubble(o3,(L==="vi")?(y3===1?"“Tròn một năm rồi đấy.”":"“Đã "+y3+" năm — mái này quen tay tôi rồi.”"):(y3===1?"“A whole year now.”":"“"+y3+" years — this roof knows my hands.”"));
+        bubble(o3,(L==="vi")?(y3===1?"“Tròn một năm rồi đấy.”":"“Đã "+y3+" năm — mái này quen tay "+reg(o3)+" rồi.”"):(y3===1?"“A whole year now.”":"“"+y3+" years — this roof knows my hands.”"));
         beep(659,0.08,0.03); },2200+Math.random()*1200); })(ow2,s,yrs); } } });
 
   // ── the season closes: one dim ledger line so the log reads by season, not as one long scroll ──
@@ -2373,6 +2388,20 @@ function nextSeason(){
 }
 
 // ---------- ending ----------
+// v0.74 — six endings, six closing lines: the same refusal ("who will be Vietnam's Steve Jobs?") turned toward what this year actually showed. One line each, a question where a question is honest.
+var ENDL={
+  1:{vi:"Đừng hỏi “ai sẽ là Steve Jobs Việt Nam?” Xóm này vừa trả lời: không ai cả — sáu người, mỗi người một thừa số được xoay đúng chỗ.",
+     en:"Don't ask “who will be Vietnam's Steve Jobs?” This xóm just answered: no one — six people, each with one factor turned in the right place."},
+  2:{vi:"Đừng hỏi “ai sẽ là Steve Jobs Việt Nam?” Hãy hỏi: “còn ai trong xóm tôi vẫn đứng ở số không — và tay tôi còn xoay được bao nhiêu?”",
+     en:"Don't ask “who will be Vietnam's Steve Jobs?” Ask: “who in my xóm still stands at zero — and how far can my hand still turn it?”"},
+  3:{vi:"Đừng hỏi “ai sẽ là Steve Jobs Việt Nam?” Hãy hỏi: “thừa số nào đang bằng không ở chỗ tôi đứng — và tay tôi xoay được bao nhiêu?”",
+     en:"Don't ask “who will be Vietnam's Steve Jobs?” Ask: “which factor sits at zero where I stand — and how far can my own hand turn it?”"},
+  4:{vi:"Đừng hỏi “ai sẽ là Steve Jobs Việt Nam?” Một mái sáng đèn chưa phải là xóm — hãy hỏi: “thừa số nào đang bằng không ở nhà bên cạnh?”",
+     en:"Don't ask “who will be Vietnam's Steve Jobs?” One lit roof is not a xóm — ask: “which factor sits at zero next door?”"},
+  5:{vi:"Đừng hỏi “ai sẽ là Steve Jobs Việt Nam?” Mười sáu mùa không ai hỏi: “thừa số nào đang bằng không ở chỗ tôi đứng?” — mười nhân với không vẫn bằng không.",
+     en:"Don't ask “who will be Vietnam's Steve Jobs?” For sixteen seasons no one asked: “which factor sits at zero where I stand?” — ten times zero is still zero."},
+  6:{vi:"Đừng hỏi “ai sẽ là Steve Jobs Việt Nam?” Trời không thương mà mái vẫn đứng — hãy hỏi: “thừa số nào tay tôi xoay được, dù trời có ra sao?”",
+     en:"Don't ask “who will be Vietnam's Steve Jobs?” The sky showed no mercy and roofs still stand — ask: “which factor can my hand turn, whatever the sky does?”"}};
 // --- beat 1: the lantern harvest — the xóm lights what stands, one gong at a time ---
 var runTok=0;
 function startFinale(){
@@ -2539,9 +2568,7 @@ function endGame(){
     b.appendChild(det); }
   b.appendChild(chp);   // the village book is a footer between the stories and the question
   var bkE=document.createElement("div"); bkE.id="bookEnd"; bkE.className="book"; bkE.style.display="none"; b.appendChild(bkE);
-  document.getElementById("endLine").textContent=(L==="vi")
-    ? "Đừng hỏi “ai sẽ là Steve Jobs Việt Nam?” Hãy hỏi: “thừa số nào đang bằng không ở chỗ tôi đứng — và tay tôi xoay được bao nhiêu?”"
-    : "Don't ask “who will be Vietnam's Steve Jobs?” Ask: “which factor sits at zero where I stand — and how far can my own hand turn it?”";
+  document.getElementById("endLine").textContent=(ENDL[ti]||ENDL[3])[L];   // v0.74: the closing question turns to face the ending it closes
   // 📋 the ending as plain text — what a player pastes to a friend: title, year, tally, the arc, the book
   // the shared card also carries the run's shape and how the hands went — the two lines people compare
   var shStrip=(function(){ var hst=S.hist||[]; if(!hst.some(function(v){return v>0;})) return ""; var cells=[];
@@ -2730,7 +2757,7 @@ function renderRoster(){
     var nm=p.known?p.name:(L==="vi"?"?":"?");
     if(cls.indexOf(" cand")>=0){ tag=(tag?tag+" ":"")+"<small>+"+(pairCount(p.id)===0?2:1)+" "+t("ban")+"</small>"; }   // v0.49: while a link is armed, each candidate shows what THEY would gain — the first bond +2, every later one +1
     // three dots per known, un-bloomed person: which of TÀI · GAN · BẠN your hands have touched — the row's progress, at a glance
-    var dots=(p.known&&!p.started)?("<span class=\"sd\" title=\"TÀI · GAN · BẠN\">"+["tai","gan","ban"].map(function(k){ return "<i class=\""+k+((p.seen&&p.seen[k])?" on":"")+"\"></i>"; }).join("")+"</span>"):"";
+    var dots=(p.known&&!p.started)?("<span class=\"sd\" title=\""+t("tai")+" · "+t("gan")+" · "+t("ban")+"\">"+["tai","gan","ban"].map(function(k){ return "<i class=\""+k+((p.seen&&p.seen[k])?" on":"")+"\"></i>"; }).join("")+"</span>"):"";
     // what they're doing right now — the errand glyph, so the strip reads the road too (silent, numberless: a broom, a stall, a friend, a sprout)
     var doing=(p.known&&p.amb&&p.beh&&p.vUntil>performance.now())?(BEH_G[p.beh]||""):"";
     h+="<div class=\""+cls+"\" tabindex=\"0\" role=\"button\" data-id=\""+p.id+"\"><i style=\"background:"+p.color+"\"></i>"+nm+dots+(tag?" "+tag:"")+(doing?(" <span class=\"do\" title=\""+(L==="vi"?"đang bận":"busy")+"\">"+doing+"</span>"):"")+"</div>"; });
@@ -2747,6 +2774,7 @@ function renderLog(){
   logEdges();
 }
 function setLang(x){ L=x; document.documentElement.lang=x;
+  el("resetLink").textContent=t("reset"); el("bigBtn").title=t("bigT");   // v0.74: two strings that never followed the language
   document.querySelectorAll(".conL,#conLbl").forEach(function(e2){ var v2=e2.getAttribute("data-"+x); if(v2) e2.textContent=v2; });
   el("inTtl").textContent=STR.inTtl[L]; el("inTag").textContent=t("sub");
   if(el("helpOvl").classList.contains("show")) renderHelp();   // an open help card follows the language
@@ -2807,7 +2835,7 @@ el("seasonPill").onclick=function(){ if(!S||S.over) return;
 el("tierPill").onclick=function(){ if(!S||S.over||!S.ships.length) return; beep(523,0.05);
   S.looked=S.looked||{}; if(S.looked.tp===S.season) return; S.looked.tp=S.season;
   var rows=S.ships.slice().sort(function(a,b){return shipTier(b)-shipTier(a);}).map(function(s){ var tr=shipTier(s);
-    return s.owner+" "+(tr===1?"🪜":tr===2?"🪜🪜":"🪜🪜🪜"); });
+    return ownerOf(s)+" "+(tr===1?"🪜":tr===2?"🪜🪜":"🪜🪜🪜"); });
   logMsg("🪜 "+tierSum()+" bậc — "+rows.join(" · "), "🪜 "+tierSum()+" tiers — "+rows.join(" · ")); };
 el("actPill").onclick=function(){ if(!S||S.over) return; beep(523,0.05);
   S.looked=S.looked||{}; if(S.looked.ap===S.season) return; S.looked.ap=S.season;
@@ -2828,9 +2856,9 @@ var _resetArm=0;
 el("resetLink").onclick=function(e){ e.preventDefault();
   var midRun=S&&!S.over&&((S.season|0)>0||(S.hands|0)>0)&&!el("intro").classList.contains("show");
   if(midRun&&!(_resetArm&&performance.now()-_resetArm<3000)){ _resetArm=performance.now(); var lk=el("resetLink");   // not armed, or the arm lapsed
-    lk.textContent=(L==="vi")?"bỏ năm này? chạm lần nữa":"throw this year away? tap again"; lk.style.color="#C1443C"; beep(294,0.06);
-    setTimeout(function(){ if(performance.now()-_resetArm>=2900){ lk.textContent="chơi lại"; lk.style.color=""; } },3100); return; }
-  _resetArm=0; el("resetLink").style.color=""; el("resetLink").textContent="chơi lại";
+    lk.textContent=t("resetAsk"); lk.style.color="#C1443C"; beep(294,0.06);
+    setTimeout(function(){ if(performance.now()-_resetArm>=2900){ lk.textContent=t("reset"); lk.style.color=""; } },3100); return; }
+  _resetArm=0; el("resetLink").style.color=""; el("resetLink").textContent=t("reset");
   try{localStorage.removeItem(SAVE_KEY);}catch(_){} el("endOvl").classList.remove("show"); fresh(); S.sel=-1; setLang(L); el("intro").classList.add("show"); };
 
 // ---------- sổ tay: the help card, written from the rules that are live right now ----------

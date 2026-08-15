@@ -85,6 +85,7 @@ Rules:
 | `Gate 60` | 1 | the wind lands harder — in the restless-wind year a failure night is +3 GAN (float and hint say +3) and a first bond +3/+3; in a plain year +2 and +2/+2 (v0.73) |
 | `Gate 61` | 1 | a refusal outranks a bonus — the restless-wind year's `+3 GAN` shows when the hand is playable, but a hand the year has tied or a factor at its ceiling replaces it entirely; all five combinations locked, because the two sessions write this hint from opposite ends (v0.73) |
 | `Gate 62` | 1 | a dry river halves every ceiling — 10×3×10 at river 2 sprouts ≤4 %/season and the sheet says sông cạn; at river 3 the same row is back to 8 % with no dry line (v0.73) |
+| `Gate 63` | 1 | the narrative layer keeps its voice — a wrong hand on Chú Ba answers "tôi", on Bé Ngân "em", both kept in the log as 💬 lines; a bubble's life follows its length (3–6.2 s) and a speaker holds one bubble at a time; the street's grief gate is the card's (GAN 5 ends qc); "chơi lại", the Aa title, the roster tooltip and your own roof's name follow the language; 60 deals never let Ba's GAN meet his BẠN; six distinct closing lines each refusing the Steve Jobs question (v0.74) |
 
 ## Convergence gates — `done.sh`
 
@@ -143,3 +144,4 @@ Record here when an existing gate is made stricter, with the old and new thresho
   still reported intact — which happened twice, Gates 54 and 60, both from the concurrent session. A gate
   that is not written down is a gate the ratchet is not protecting. Negative-tested on the live gap:
   the tightened check failed with `unrecorded-in-ledger: Gate-60` before the row was added.
+- **Gate 12 (v0.74):** Bé Ngân's wrong-hand answer is matched in HER register (`STR.wrongTai.em`), and the gate now also asserts no bubble of hers contains the word `tôi`. Old: her line was the shared tôi line. New: the same four counts, plus `toiOnNgan=false`. Negative-tested by Gate 63's probe on the pre-v0.74 code (her line read "Cái này tôi…").

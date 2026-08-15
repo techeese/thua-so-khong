@@ -504,3 +504,16 @@ that is now impossible because a gate catches it stays here, with the gate named
   height to derive the reservation. If Gate 50 ever goes red after a font or seal change, this is why —
   raise the reservation rather than hunting elsewhere. Not changed now because working code should not be
   edited on a hunch.
+- **A one-speaker `chatter()` probe after `fresh()` has no speaker.** `fresh()` deals season 0, and everyone but
+  Ngân and Mai has `arrives ≥ 1`, so `active()` is false and `chatter()` returns before any branch — the probe
+  read "grief line not spoken" as a pass for the wrong reason (Gate 63, first run: `grief4=false`). Set
+  `arrives=0` (or the season) on the subject before rolling. Cost: one gate run.
+- **Shared reaction lines carry a hidden speaker.** Vietnamese puts the speaker in the pronoun (*tôi/em*), so a
+  string table entry that "works for everyone" is wrong for the young the moment they say it — Ngân said *tôi*
+  in every answer-to-a-hand line for forty versions while every authored line of hers said *em*. Any new line
+  spoken by "whoever is nearest" needs a register variant or a neutral phrasing; Gate 63 now checks the shared
+  answers, not the place lines (v0.74).
+- **Two sessions both claimed v0.73.** The audit session's CHANGELOG entry ("the ratchet checks both directions")
+  landed inside the mechanic loop's v0.73 commit ("a dry river halves every ceiling") while its `done.sh` /
+  `LANDMINES.md` edits stayed uncommitted; the next tick found a v0.74-in-progress it did not write. When two
+  loops share a tree, the version bump is a race — read `git diff` before bumping, and name what you carried.

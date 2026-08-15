@@ -93,7 +93,18 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.73 shipped: a dry river ≤2 halves every ceiling (Gate 62) — capital caps at its own near-zero like the
+**v0.74 shipped: the narrative layer keeps its voice (Gate 63; Gate 12 tightened) — an owner-directed tick from an
+in-session review of story / dialogue / text presentation / language. Register (`reg:"em"` on Ngân and Tú, `inReg`
+on every shared answer-to-a-hand line), tap-answers kept in the log (`say`), read-time bubbles (`bubDur` 3–6.2 s),
+the street's grief gate = the card's, four i18n edges (chơi lại · Aa title · roster tooltip · `ownerOf`), a jitter
+never lands on the authored zero (Ba's GAN/BẠN tie was 33/60 deals; `check.js` mirrored, band holds), six closing
+lines (`ENDL`). The concurrent session's v0.74-marked hunks (bound ≥85 % silent; PNG caption strip; `high8silent`;
+ratchet both ways) sat uncommitted through this tick's gate runs and were committed by that session as `cb6628a`,
+labelled v0.73 — the footer version is a race between loops (LANDMINES). Left open from the review, for synthesis not a tick: arcs for
+Mai/Vũ/Hoa/Tú; a third pair exchange; a register per zone for the place lines; a glossary in Sổ tay for EN;
+`<title>` untranslated; the 160 inline `L==="vi"?` ternaries vs 37 `STR` keys. Owner note for this tick: the
+owner said the other loops were stopped, yet two commits and a `check.js` edit landed while it ran — verified the tree
+by hash before committing.** **v0.73 shipped: a dry river ≤2 halves every ceiling (Gate 62) — capital caps at its own near-zero like the
 other three; the pot's after-state reads the river it leaves. (Was staged as `apply-dryriver.py` — `apply-dryriver.py`: chance, sheet reason, help, the pot's
 after-state at von−1, Gate 61) — ships the moment the box clears (load 10–19, six concurrent gate runs
 all evening). v0.72: the restless-wind year's hands land +3 (fade stays 50 %) — the third card with an identity

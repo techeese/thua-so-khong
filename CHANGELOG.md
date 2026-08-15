@@ -1,5 +1,51 @@
 # Changelog — Thừa Số Không
 
+## v0.74 — 2026-08-15 — the narrative layer keeps its voice
+
+Closes: an **owner directive given in session** — a deep review of the story / dialogue / text-presentation /
+language layers, then *"make the changes now"*. Six items, one commit. Found uncommitted in the tree at
+Step 0: the concurrent session's v0.74-marked hunks (a bound at 85 % prints nothing; the PNG caption strip;
+`high8silent`; ratchet both ways) — carried through every gate run here, then committed by that session
+itself as `cb6628a` ("v0.73 — the ratchet checks both directions") while this tick ran; nothing foreign
+rides in this commit. `check.js` in the working tree also holds that loop's in-progress `spreaderU`/`hunterT`
+strand — **not** shipped here; only this tick's one-line jitter mirror is staged from it.
+
+- **Register.** The lines that answer a *hand* were shared by all seven and hard-coded *tôi* — so Bé Ngân,
+  who says *em* in every authored line, said "Cái này **tôi** làm được rồi mà…" the moment you taught her,
+  and "Gánh hàng thôi — mà là của **tôi**" seconds after her own "…nhưng là của **em**". Vietnamese keeps
+  the speaker in the pronoun; English has one *I*. Fix: `reg:"em"` on Ngân and Tú, an `em` variant beside
+  `vi` on the shared lines (wrong-hand ×3, "now you know me", the three tier lines, the held-by-river line,
+  the anniversary), `inReg(p,line)` picks it. English untouched.
+- **Kept words.** A line spoken in *answer to a tap* — wrong hand, row complete, workshop, the frame of your
+  own product, the places — went only to the canvas and was gone in 3.6 s (and never reached a reader
+  without the canvas). `say(p,line)` now mirrors it into the log as `💬 name: …`, the format the first
+  meeting already used ("the words are the clue — kept in the log"). Ambient chatter and gossip do **not**
+  come to the log — charter 4.
+- **Reading time.** A bubble lived a flat 3.6 s whether it held three words or Anh Vũ's ninety-character
+  opener. `bubDur`: 1.9 s + 45 ms/char, clamped to [3 s, 6.2 s]. **And one voice at a time:** the screenshot
+  showed the wrong-hand answer *yielding* under Ngân's still-living opener (no room above a figure on the top
+  bank — pre-existing, and a longer opener made it worse: ~0.2 s seen). A new speech bubble now retires the same
+  speaker's older one (fades in 0.28 s). The two-slot lane, the rate and every other bubble are untouched.
+- **The street agrees with the card.** `chatter()` picked a crushed neighbour's grief line (`qc`) forever
+  while `quoteFor()` moved on once GAN reached 5. Same gate on both now.
+- **Language edges.** "chơi lại" never followed the language (three sites); the Aa button's title and the
+  roster's factor tooltip were Vietnamese-only; your own roof's name was saved as "bạn"/"you" at build time
+  and read back verbatim after a flip (`⬛ bạn — workshop suspended`). `ownerOf(ship)` resolves at render.
+- **Chú Ba's clue matches his tag.** The year jitter could drop his GAN 3 → 2 onto his BẠN 2; ties broke
+  toward GAN, so the roster named the wrong factor beside a quote about an heir — measured **33 of 60
+  deals**. A jitter now floors at zero+1 (`Math.max(p[p.zkey]+1, …)`); `check.js` mirrored; band holds
+  (hunter 12.5 · spreader 7.6 · linker 8.7 · idle 2.3).
+- **Six closing lines.** The ending's last line was one fixed thesis sentence for all six endings. `ENDL`
+  keeps the refusal ("who will be Vietnam's Steve Jobs?") and turns the question toward what the year
+  showed — one line each; ending 3 keeps the original.
+- *Evidence:* new **Gate 63** (all six items, one probe): `baTie=0 read=3000/6200 grief5=false grief4=true
+  baToi=true ngEm=true ngToi=false ngOne=true logBa=true logNg=true reset=play again/chơi lại aa=larger text
+  tip=SKILL · NERVE · ALLIES tier=…you 🪜 six=true`. Negative-tested on the old code: `baTie=33 grief5=true`
+  → red. **Gate 12** tightened to Ngân's register (Tightenings). Full suite green before commit.
+- Not done, by design: per-*person* variants (register split young/elder is two voices, not seven — the
+  owner's standing directive is *less narration*); place lines still share one register per zone; no arcs
+  added for Mai/Vũ/Hoa/Tú (an addition — belongs to synthesis, not a tick).
+
 ## gate repair — 2026-08-15 — Gate 21 stops flaking (engine tick, no product change)
 
 Closes: `done.sh` → *release gates RED — the world is honest about the ceiling: `WORLD_BAD … lifted=false`*,

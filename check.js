@@ -15,7 +15,7 @@ function makeCast(rnd){ return [
   // year variants (mirrors index.html fresh()): jitter non-zero stats ±1, authored zero stays true
   var m=Math.min(o.tai,o.gan,o.ban), zk=(m===o.gan)?"gan":(m===o.tai)?"tai":"ban";
   ["tai","gan","ban"].forEach(function(k){ if(k===zk||o[k]<=1) return;
-    o[k]=Math.max(1,Math.min(10,o[k]+(rnd()<0.5?-1:1))); });
+    o[k]=Math.max(o[zk]+1,Math.min(10,o[k]+(rnd()<0.5?-1:1))); });   // v0.74 (mirrors index.html): a jitter never lands ON the authored zero
   o.btai=o.tai; o.bgan=o.gan; o.bban=o.ban;
   if(idx===6) o.arrives=5+Math.floor(rnd()*4);
   if(idx===3) o.arrives=1; if(idx===1) o.arrives=2; if(idx===4) o.arrives=3; if(idx===5) o.arrives=4;   // the xóm gathers (mirrors index.html)

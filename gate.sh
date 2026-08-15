@@ -292,7 +292,7 @@ tmp=sys.argv[1]; html=open("index.html").read()
 drv=r"""
 <script>
 window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
-function wrongCount(){ return bubbles.filter(function(b){ return b.p===S.cast[0] && b.lay.lines.join(" ").indexOf(STR.wrongTai[L].slice(1,12))>=0; }).length; }
+function wrongCount(){ return bubbles.filter(function(b){ return b.p===S.cast[0] && b.lay.lines.join(" ").indexOf(STR.wrongTai.em.slice(1,12))>=0; }).length; }   // v0.74: Bé Ngân answers in HER register (em) — the tôi line on her would be a miss
 setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-v1");
   document.getElementById("startBtn").click();
@@ -302,8 +302,9 @@ setTimeout(function(){ try{
   setTimeout(function(){ var w1=wrongCount();
     actTeach(); setTimeout(function(){ var w2=wrongCount();
       actNerve(); setTimeout(function(){ var w3=wrongCount(), nerveWrong=bubbles.some(function(b){ return b.p===S.cast[0] && b.lay.lines.join(" ").indexOf(STR.wrongGan[L].slice(1,10))>=0; });
-        var ok = w0===0 && w1===1 && w2===1 && w3===1 && !nerveWrong;
-        document.title=(ok?"VOICE_OK":"VOICE_BAD")+" beforeDelay="+w0+" afterTeach="+w1+" secondTeach="+w2+" afterNerve="+w3+" nerveWrong="+nerveWrong;
+        var toiOnNgan=bubbles.some(function(b){ return b.p===S.cast[0] && /\btôi\b/.test(b.lay.lines.join(" ")); });   // v0.74: and never in the elders' voice
+        var ok = w0===0 && w1===1 && w2===1 && w3===1 && !nerveWrong && !toiOnNgan;
+        document.title=(ok?"VOICE_OK":"VOICE_BAD")+" beforeDelay="+w0+" afterTeach="+w1+" secondTeach="+w2+" afterNerve="+w3+" nerveWrong="+nerveWrong+" toiOnNgan="+toiOnNgan;
       },1200); },1200); },1200);
 }catch(e){ document.title="THREW: "+e.message; } },600);
 </script>"""
@@ -2006,6 +2007,58 @@ open(tmp+"/dry.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOF61
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/dry.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "DRY_OK" && pass "a dry river halves every ceiling: $T" || fail "a dry river halves every ceiling: $T"
+
+# Gate 63: the narrative layer keeps its voice (v0.74) — (a) a wrong hand on Chú Ba answers "tôi", on Bé Ngân "em", and both answers are kept in the log as 💬 lines;
+# (b) a bubble stays as long as it takes to read (a long line outlasts a short one, both inside [3 s, 6.2 s]); (c) the street's grief gate is the card's — a crushed
+# neighbour with GAN back at 5 no longer mutters qc, at GAN 4 still does; (d) "chơi lại", the Aa title, the roster tooltip and your own roof's name follow the language;
+# (e) 60 fresh deals never let Chú Ba's GAN meet his BẠN; (f) six distinct closing lines, each still refusing the Steve Jobs question.
+python3 - "$TMP" <<'PYEOF63'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+function said(p,re){ return bubbles.some(function(b){ return b.p===p && re.test(b.lay.lines.join(" ")); }); }
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click(); S.yearCard=2; S.nudged=true;
+  // (e) the deal
+  var tie=0; for(var i=0;i<60;i++){ fresh(); if(S.cast[1].gan<=S.cast[1].ban) tie++; } fresh(); S.yearCard=2; S.nudged=true;
+  // (b) reading time
+  var p0=S.cast[2]; bubbles.length=0; bubble(p0,"Ừ."); var d1=bubbles[0].until-bubbles[0].at; bubble(p0,"Sửa được mọi máy trong xóm — trừ đời mình. Cả ngày chỉ có máy nói chuyện với tôi, mà máy thì không biết cười."); var d2=bubbles[1].until-bubbles[1].at;
+  var readOk=d1>=3000&&d1<3600&&d2>d1+1500&&d2<=6200;
+  // (c) the grief gate — one active speaker, the die pinned high so the roll passes and no other branch fires
+  var _r=Math.random; S.cast.forEach(function(q){ q.gone=(q.id!==3); }); var vu=S.cast[3]; vu.arrives=0; vu.known=true; vu.started=false; vu.crushCount=1; vu.qc={vi:"“QC-LINE”",en:"“QC-LINE”"}; S.luat=6; S.pairs=[]; gossipQ.length=0;
+  Math.random=function(){ return 0.99; }; beatUntil=0;
+  vu.gan=5; bubbles.length=0; chatter(); var g5=said(vu,/QC-LINE/); var spoke5=bubbles.length>0;
+  vu.gan=4; bubbles.length=0; chatter(); var g4=said(vu,/QC-LINE/);
+  Math.random=_r; S.cast.forEach(function(q){ q.gone=false; });
+  var griefOk=!g5&&spoke5&&g4;
+  // (a) register, both ways, kept in the log
+  var ba=S.cast[1], ng=S.cast[0]; ba.known=true; ng.known=true; ba.tai=9; ba.gan=3; ba.ban=2; ng.tai=8; ng.gan=1; ng.ban=4; ba.wrongSaid={}; ng.wrongSaid={};
+  bubbles.length=0; S.acts=3; selectPerson(1); actTeach(); selectPerson(0); actTeach();
+  setTimeout(function(){ try{
+    var baToi=said(ba,/Cái này tôi làm được/), ngEm=said(ng,/Cái này em làm được/), ngToi=said(ng,/\btôi\b/);
+    var ngOne=bubbles.filter(function(b){ return b.p===ng&&b.spk&&b.until>performance.now(); }).length===1;   // one voice at a time: her opener has yielded to the answer
+    var logBa=S.log.some(function(m){return /^💬 Chú Ba: Cái này tôi/.test(m.vi)&&/^💬 Chú Ba: This part I can/.test(m.en);}), logNg=S.log.some(function(m){return /^💬 Bé Ngân: Cái này em/.test(m.vi);});
+    // (d) the language edges
+    S.built=true; S.tierTaught=true; S.ships.push({x:120,y:470,owner:"bạn",yours:true});   // saved by a Vietnamese session
+    setLang("en"); var resetEn=document.getElementById("resetLink").textContent, aaEn=document.getElementById("bigBtn").title;
+    var dots=document.querySelector("#roster .sd"); var tipEn=dots?dots.getAttribute("title"):"";
+    S.looked={}; document.getElementById("tierPill").onclick(); var tierLine=S.log[0]?S.log[0].en:"";
+    setLang("vi"); var resetVi=document.getElementById("resetLink").textContent;
+    // (f) six closing lines
+    var vs={},es={},ok6=true; [1,2,3,4,5,6].forEach(function(k){ var e=ENDL[k]; if(!e||!/Steve Jobs/.test(e.vi)||!/Steve Jobs/.test(e.en)) ok6=false; vs[e.vi]=1; es[e.en]=1; }); ok6=ok6&&Object.keys(vs).length===6&&Object.keys(es).length===6;
+    var langOk=resetEn==="play again"&&resetVi==="chơi lại"&&aaEn==="larger text"&&/SKILL · NERVE · ALLIES/.test(tipEn)&&/you 🪜/.test(tierLine)&&!/bạn/.test(tierLine);
+    var ok=tie===0&&readOk&&griefOk&&baToi&&ngEm&&!ngToi&&ngOne&&logBa&&logNg&&langOk&&ok6;
+    document.title=(ok?"VOICE74_OK":"VOICE74_BAD")+" baTie="+tie+" read="+d1+"/"+d2+" grief5="+g5+" grief4="+g4+" baToi="+baToi+" ngEm="+ngEm+" ngToi="+ngToi+" ngOne="+ngOne+" logBa="+logBa+" logNg="+logNg+" reset="+resetEn+"/"+resetVi+" aa="+aaEn+" tip="+tipEn+" tier="+tierLine.slice(0,20)+" six="+ok6;
+  }catch(e){ document.title="THREW: "+e.message; } },1400);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/voice74.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF63
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/voice74.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "VOICE74_OK" && pass "the narrative layer keeps its voice: $T" || fail "the narrative layer keeps its voice: $T"
 
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
