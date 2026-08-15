@@ -79,6 +79,8 @@ Rules:
 | `Gate 54` | 1 | the tier climb shows in the ledger — a season in which a bloomed roof's product crosses 300 ends with a divider carrying 🪜+1, and a season with no tier movement carries none (v0.68, `/loop 3m`; row added by the graphics loop after finding the gate present in `gate.sh` but absent here — `done.sh` only checks ledger→gate.sh) |
 | `Gate 55` | 1 | the pot names what stops it — the no-hụi year reads `🚫🪙 năm không hụi` and an unpaid circle reads `chưa góp hụi — góp rồi mới hốt được`, instead of both falling through to the generic `🌱 +6% · 1⚡` the button cannot deliver; bilingual, and the eligible state still shows its answer (v0.69) |
 | `Gate 56` | 1 | hụi and nghe ngóng name what stops them — 🪙 Góp hụi in a no-hụi year reads `🚫🪙 năm không hụi` and 🔍 Nghe ngóng once used reads `mùa này đã nghe`, instead of quoting a price they cannot honour; bilingual, and the working and already-covered states are untouched (v0.70) |
+| `Gate 57` | 1 | the strict year's stamps fall harder — under a heavy sky a young roof reads ⬛ 25% and an established one ⬛ 10% in the strict year (15/5 elsewhere), and a 0.20 roll erases the young stall only in the strict year (v0.70) |
+| `Gate 58` | 1 | a roof's word never prints over a name — a workshop's label registered itself but avoided nothing, so a roof and a villager drawn in either order could print over each other; measured over a real thirteen-season run at 390px, three distinct collisions before, zero after, non-vacuous (roof words must actually be drawn) (v0.71) |
 
 ## Convergence gates — `done.sh`
 

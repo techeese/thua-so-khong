@@ -42,6 +42,27 @@ That closes the fault this loop first met in v0.52. Four controls carried it —
 hand, the pot, and now these two — and every one of them was the same sentence: a disabled control
 advertising what it would have done.
 
+## v0.70 (mechanic half) — 2026-08-15 — the strict year's stamps fall harder
+
+> Code, `check.js` mirror and Gate 57 shipped inside the graphics session's `5e19c89` (its v0.70); this is the record.
+
+Closes: under the owner's standing `/loop 3m` directive, the smallest priced item on the parked list
+(`MILESTONES.md`): the year cards did not move a diagnosing player at all (hunter 6.96–6.99 across
+all six). The strict year 📋 already says *"notices are posted — tarp everything"* and *"clear skies
+don't last"*, and posts its forecast for free; its stamps fell like any other year's.
+
+- **`stampOdds()`** — the strict year's stamps: young roof **25 %**, established **10 %** (15/5 in every
+  other year); one source for the roll and for the sheet's ⬛ line, so the printed odds are the rolled
+  odds. Probe → shelter is now a real loop that year, and the sky has one year with a diagnostic
+  identity. Help card states it.
+- **Priced honestly** (`check.js` mirrored, 800 runs in the strict year): hunter 6.90 / 12.3 → **6.77
+  / 12.1**, idle 2.42 → 2.11; the sim never shelters, so a player who does loses less — which is the
+  point of the loop. Band across all cards holds.
+- *Evidence:* new **Gate 57** (`STRICT_OK young25 old10 plain15 strictErased plainStands`). Gate 23's
+  harness now pins a plain year (its assertions unchanged); the graphics session's new Gate 56 was
+  flaking on the same card draw (the strict year's free probe) and got the same one-line pin —
+  noted here since it is their gate. Gates green.
+
 ## v0.69 — 2026-08-15 — the pot names what stops it
 
 A graphics round from the owner's `/loop 5m` session. It opened by **paying a debt**: v0.68 shipped
