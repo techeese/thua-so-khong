@@ -19,6 +19,79 @@ argues for or against.
      **Measured:** …
      **Argues for/against:** <candidate era>  -->
 
+## 2026-08-15 — "watching the xóm IS reading the multiplication" — the errand governor as an information channel (`walks.py`)
+
+v0.25's owner batch shipped the errand governor with one stated purpose (CHANGELOG: *"factor-weighted
+walks to real buildings: watching the xóm IS reading the multiplication"* — fear walks to the đình
+door and turns back, loneliness haunts the river, mastery stares at the stall) and a standing
+directive, *buildings mean something*. Eight vigils have measured the label, the sheet, the zero
+and the telling; none has measured the walks. Harness `lab/walks.py`, output `lab/walks-out.txt`
+(gitignored): `execBeh` and `pickBeh` instrumented in paced headless 16-season runs, three players
+(`watcher` taps everyone and never acts — the player who only looks; `hunter`; `idle`), two
+pacings (5.2 s and 20 s per season), 4 runs each; `pickBeh()` sampled 3000× per (known, unstarted
+person, season) — 679 snapshots — to get each person's true walk distribution, then a Bayesian
+observer classifies the weakest factor from walks alone. Headless virtual time starves rAF, so
+the governor was driven at 4 Hz by timer (landmine appended).
+
+**Measured — the walks carry a real signal for two of the three factors, at a threshold the
+label does not use, and at a rate a player will see once or twice a run.**
+
+- **Signal (infinite-sample observer).** From a person's full walk distribution, an observer who
+  knows the class profiles names the zero: **GAN 82%, BẠN 65%, TÀI 100% (n=30), "no zero" 71%**
+  (4-way; chance ≈25%). The tells are real: `P(FALTER | gan≤3) = 0.14` vs **0.00** at gan≥4;
+  `P(river | ban≤3) = 0.17` vs 0.03. But **there is no low-TÀI walk** — `pickBeh` (`index.html:573`)
+  has no term that rises when TÀI falls; the market weight rises for TÀI≥7 (`P(market)` 0.07 → 0.28)
+  and watch-shop is flat (0.07/0.09/0.09). A low-TÀI zero is legible on the map only as the *absence*
+  of a walk a master makes; the 100% above is those 30 snapshots being the one person whose profile is
+  otherwise unremarkable, not a tell. Cô Liên's BẠN-zero is confused with a TÀI-master 59/240 times
+  because her TÀI 10 sends her to the market more than her BẠN 1 sends her to the river.
+- **Finite samples.** A player does not see the distribution; at 20 s/season a `watcher` sees
+  **7.8 walks per known person per run** (hunter 9.4). Classifying from k drawn walks: **k=3 →
+  GAN 66% / BẠN 51% / none 31%; k=9 → 81% / 61% / 52%; k=30 → 82% / 63% / 69%.** At the 5.2 s
+  pacing every prior probe used, the run has **1.8–4.5 errands total** — the walk layer is close to
+  absent for a fast player. Signature walks per run at 20 s: **FALTER 1.0–1.8, river 1.0–2.8**, all
+  by Bé Ngân and Cô Liên respectively (the two authored zeros); market 0.8–5.0. `idle` sees only
+  forced arrival chains (21 of 21 errands by unknown people) because **the errand pool requires
+  `p.known`** (`:611`): a person you have not tapped never walks, so the walk cannot be the reason you
+  tap them.
+- **Threshold mismatch — the walk and the label disagree on what a zero is.** The label prints
+  `số không: gan` at min ≤3 (`zeroOf`, `:1035`); the falter fires only at gan≤2 (`pickBeh`:
+  `p.gan<=2?3:2`): **`P(FALTER | gan==3) = 0.00` (n=27) while the label under the same name says
+  "số không: gan"; at gan≤2 it is 0.18.** River likewise: `P(river | ban==3) = 0.03` (n=152) vs 0.31 at
+  ban≤2. A gan-3 / ban-3 person is labelled a zero and walks like everyone else; the two systems that
+  claim to show the same fact draw the line one point apart.
+- **Redundancy.** Of 231 errands by known people, **37% (86) were performed by someone already
+  carrying the printed `số không:` label** under their name; 31 of those were the label's own
+  signature walk, 53 neutral, 2 another factor's. Because walks require `known` and the label prints
+  on `known && !started`, **every walk that carries a factor tell is performed under a text label
+  stating that factor** — the walk never precedes the label, only accompanies it. And 63% of errands
+  are `home` / `đình-sit` / `own-shop` / `chick`, which carry no factor at all.
+- **Variance and locks.** Runs at the same pacing ranged 3–42 errands (watcher @20 s) — the storm
+  huddle (`S.luat<4` returns before any errand, `:597`) and the beat lock silence the governor for
+  whole seasons; under storm only 2–9 of ~100 errands fired.
+
+**Reading it.** The governor does what v0.25 said for GAN and BẠN — a faltering child and a woman
+alone at the landing are real, class-separable tells — but (a) TÀI has no walk, so one of the three
+zeros is mute on the map; (b) the tell fires at ≤2 while the label calls ≤3 a zero, so the two
+"reading" surfaces disagree at exactly the boundary; (c) the pool's `known` gate means the walk is
+never the first thing you learn about anyone — the label always got there first; (d) at the pace a
+player actually plays, the number of signature walks per run is one or two, by the two people whose
+zeros are already authored into their arrival scenes. "Buildings mean something" holds for the
+đình door and the river landing and does not hold for the market as a *reading* — the stall is where
+TÀI-10 goes, not where TÀI-1 fails to go.
+
+**Argues for:** the reductive era on the zero — a surface that distinguishes 0 from 3 *as it happens*
+would have to reconcile these two thresholds anyway; and the "either make it a factor or stop
+presenting it" logic from `fourth.js` applies here to the market. **Argues against:** an era that
+adds more walk behaviours or buildings — the channel is sample-starved before it is signal-starved,
+and every tell it does carry is under a text label saying the same thing. If a synthesis wants the
+walks to be the reading, the *label* is the thing to remove, not the walk to add — and that is a
+balance decision (decide.js measured `labelOnly` at 92% of the hunter's blooms).
+
+**Not shipped, per Gear 3.** `index.html` untouched. Small item with evidence for a Gear 1 tick or
+the owner: the falter/river thresholds (≤2) vs `zeroOf` (≤3) — one of them is a copy of a rule that
+moved.
+
 ## 2026-08-15 — is the thesis told, or felt? a telling audit (`tell.py`)
 
 Owner gate #3 says the thesis must arrive *"without the game ever telling you."* Charter constraint

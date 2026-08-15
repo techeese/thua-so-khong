@@ -161,3 +161,9 @@ that is now impossible because a gate catches it stays here, with the gate named
   year — after four contributions a reload re-enables the button for a fifth (+1 river, one more act).
   Found by reading, not by a gate (`lab/fourth.js`, 2026-08-15); not shipped, per Gear 3. Generalises
   the NaN entry above: a sanitize bound must reference the rule's function, not a literal copy of it.
+- **Headless Chrome under `--virtual-time-budget` starves `requestAnimationFrame` — anything driven only
+  from the rAF loop (the errand governor `errandTick`, bubble expiry, effects) never runs.** A probe that
+  hooks `execBeh` and reads 0 errands in 24 runs is measuring the harness, not the game. Drive the
+  rAF-only systems by `setInterval` in the driver (`lab/walks.py` calls `errandTick(performance.now())`
+  at 4 Hz). Cost: one full 24-run sweep on 2026-08-15 that read "the walk layer never fires."
+  `chatprobe.py` already noted the same starvation for bubbles; this generalises it to every rAF-only path.
