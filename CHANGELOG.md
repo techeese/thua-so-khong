@@ -18,6 +18,25 @@ lands *before* the circle looks; the lift filter is `!started`, so `lifted` read
   why this is convergent work and not polish. Recorded in `GATES-LEDGER.md` → Tightenings and
   `LANDMINES.md`.
 
+## v0.72 — 2026-08-15 — the wind lands harder
+
+Closes: under the owner's standing `/loop 3m` directive, the third card identity from the parked
+list. The restless-wind year 🌾 kept its downside (fade 50 %) but its upside — *"a sprout near the
+surface pushes twice as hard"* (momentum cap 0.15) — was muted by v0.38's ceiling, which momentum
+cannot cross. The card was half a card.
+
+- **`handRaise()`** — in the wind, every hand lands harder: teach and nerve **+3**, a first bond
+  **+3/+3** (later bonds +1 as always); floats and hints say +3. Fade stays 50 %: the wind is strong
+  both ways, and *concentrate until they bloom* is the year's whole lesson. Card line and help
+  updated.
+- **Priced honestly** (`check.js` mirrored, 800 wind-year runs): hunter 6.94 / 11.7 → **6.98 /
+  14.2**, misreader 6.92 / 11.6 → 6.97 / 14.0, spreader 4.86 / 6.9 → 5.46 / 9.1, linker / maxer /
+  idle unchanged. Every band clause holds; the wind becomes the diagnostician's best year for
+  tiers — a windfall year, at the price of the fastest fade.
+- *Evidence:* new **Gate 60** (`WIND_OK windNerve=3 plainNerve=2 windBond=3/3 plainBond=2/2`);
+  Gates 32, 36 and 42 now pin a plain year (assertions unchanged — the card draw would otherwise
+  move them). Gates green.
+
 ## v0.71 — 2026-08-15 — a roof's word never prints over a name
 
 A graphics round from the owner's `/loop 5m` session, on the **looking** half of the method. A plain

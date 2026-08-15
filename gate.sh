@@ -932,7 +932,7 @@ window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
 function chip(id){ var c=document.querySelector('#roster .rc[data-id="'+id+'"]'); return c?c.textContent:""; }
 setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-v1");
-  document.getElementById("startBtn").click();
+  document.getElementById("startBtn").click(); S.yearCard=2;   // a plain year: the restless-wind year's hands land +3 (v0.72) and would move this assertion
   S.season=2; S.cast[0].known=true; S.cast[2].known=true; S.cast[3].known=true; S.un.link=true; S.acts=3;
   S.pairs=[[3,4]];   // Anh Vũ already has one bond (with Chị Hoa)
   selectPerson(0); render(); var mai0=chip(2), vu0=chip(3), off=!/\+\d/.test(mai0)&&!/\+\d/.test(vu0);
@@ -1028,7 +1028,7 @@ drv=r"""
 window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
 setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-v1");
-  document.getElementById("startBtn").click();
+  document.getElementById("startBtn").click(); S.yearCard=2;   // a plain year: the restless-wind year's hands land +3 (v0.72) and would move this assertion
   var ng=S.cast[0]; ng.tai=8; ng.gan=1; ng.ban=4; selectPerson(0); S.acts=3; actNerve();
   var ml=document.getElementById("multLine").textContent, nh=document.getElementById("nerveHint").textContent, th=document.getElementById("teachHint").textContent;
   var ok=/(trần|ceiling) ≤ 8%/.test(ml)&&/(trần|ceiling) ≤ 25%/.test(nh)&&!/(trần|ceiling)/.test(th)&&!/→ \d+%/.test(nh+th+ml);
@@ -1266,7 +1266,7 @@ window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
 setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-v1");
   var offered=document.querySelectorAll('.con[data-c="4"]').length>=1;
-  document.getElementById("startBtn").click();
+  document.getElementById("startBtn").click(); S.yearCard=2;   // a plain year: the restless-wind year's hands land +3 (v0.72) and would move this assertion
   var ng=S.cast[0]; selectPerson(0); S.acts=3; S.constraint=4; renderSheet();
   var g0=ng.gan, a0=S.acts; actNerve(); var refused=(ng.gan===g0&&S.acts===a0), struck=document.getElementById("nerveBtn").style.textDecoration.indexOf("line-through")>=0;
   save(); fresh(); var okLoad=load(); var carried=(S.constraint===4);
@@ -1924,6 +1924,28 @@ open(tmp+"/flood.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOF58
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/flood.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "FLOOD_OK" && pass "the flood year's river never rises on its own: $T" || fail "the flood year's river never rises on its own: $T"
+
+# Gate 60: the wind lands harder — in the restless-wind year a failure night is +3 GAN (float and hint say +3), a first bond +3/+3; in a plain year +2 and +2.
+python3 - "$TMP" <<'PYEOF60'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  function nerveGain(yc){ fresh(); S.yearCard=yc; var ng=S.cast[0]; ng.gan=1; selectPerson(0); S.acts=3; renderSheet(); var h=document.getElementById("nerveHint").textContent; actNerve(); return [ng.gan-1,h]; }
+  function bondGain(yc){ fresh(); S.yearCard=yc; S.un.link=true; var a=S.cast[0], b=S.cast[2]; a.known=true; b.known=true; a.ban=4; b.ban=4; S.pairs=[]; selectPerson(0); S.acts=3; actLink(); completeLink(2); return [a.ban-4,b.ban-4]; }
+  var w=nerveGain(5), p=nerveGain(2), wb=bondGain(5), pb=bondGain(2);
+  var ok = w[0]===3 && /\+3 GAN/.test(w[1]) && p[0]===2 && /\+2 GAN/.test(p[1]) && wb[0]===3 && wb[1]===3 && pb[0]===2 && pb[1]===2;
+  document.title=(ok?"WIND_OK":"WIND_BAD")+" windNerve="+w[0]+" hint="+w[1].slice(0,10)+" plainNerve="+p[0]+" windBond="+wb.join("/")+" plainBond="+pb.join("/");
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/wind.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF60
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/wind.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "WIND_OK" && pass "the wind lands harder: $T" || fail "the wind lands harder: $T"
 
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }

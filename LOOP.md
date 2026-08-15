@@ -93,7 +93,8 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.71: in a flood year the river never rises on its own — paying in beats not paying in for the first
+**v0.72: the restless-wind year's hands land +3 (fade stays 50 %) — the third card with an identity
+(Gate 60; hunter 6.98/14.2). v0.71: in a flood year the river never rises on its own — paying in beats not paying in for the first
 time (6.91/11.7 vs 6.69/11.3; Gate 59). v0.70: the strict year's stamps fall harder (25/10; Gate 57).**
 **Looking tick: constraint 4 validated end-to-end (Ngân's fate follows witnessed blooms; 8.6⚡/bloom);
 pair-spam banded at 5.84/10.4 — semi-diagnostic, under the hunter, left open. v0.66: the fade odds print beside a raised, un-bloomed row (Gate 51). v0.64: a paid forecast prints next season's stamp odds on the sheet (Gate 49). v0.62: the tier pill reads N/max — the ladder has a visible top (Gate 47). v0.61: the ceiling names a tied hand (Gate 46); v0.57 validated in the game — a tending player

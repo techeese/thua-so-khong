@@ -45,6 +45,7 @@ function run(strategy,seed){
   for(var season=0;season<16;season++){
     var here=cast.filter(function(c){return activeSim(c,season);});
     var actsN=(season===0)?2:((luat<4&&stormStreak<=2)?2:3);   // s0 deals 2 hands (v0.25); storm tax + adaptation (streak from PREVIOUS tick) — <=2 mirrors index.html (v0.50: grader-classified defect, was <2)
+    var R2=(yc===5)?3:2;   // v0.72: the restless-wind year's hands land harder (mirrors index.html handRaise)
     for(var a=0;a<actsN;a++){
       function communal(target){                  // failure night lifts everyone crushed (mirrors index.html actNerve)
         cast.forEach(function(o){ if(o!==target&&activeSim(o,season)&&o.crushedOnce&&!o.started) o.gan=Math.min(10,o.gan+1); });
@@ -53,29 +54,29 @@ function run(strategy,seed){
         var best=null,bm=99;
         here.forEach(function(c){ if(c.started)return; var m=Math.min(c.tai,c.gan,c.ban); if(m<bm){bm=m;best=c;} });
         if(best&&strategy==="misreader"&&!best.touched&&rnd()<0.3){ best.touched=true;
-          if(best.tai>=best.gan&&best.tai>=best.ban) best.tai=Math.min(10,best.tai+2); else if(best.gan>=best.ban){ best.gan=Math.min(10,best.gan+2); communal(best); } else best.ban=Math.min(10,best.ban+2); }
-        else if(best){ best.touched=true; if(best.gan<=best.tai&&best.gan<=best.ban){ best.gan=Math.min(10,best.gan+2); communal(best); }
-          else if(best.tai<=best.ban) best.tai=Math.min(10,best.tai+2);
-          else best.ban=Math.min(10,best.ban+2); }
+          if(best.tai>=best.gan&&best.tai>=best.ban) best.tai=Math.min(10,best.tai+R2); else if(best.gan>=best.ban){ best.gan=Math.min(10,best.gan+R2); communal(best); } else best.ban=Math.min(10,best.ban+R2); }
+        else if(best){ best.touched=true; if(best.gan<=best.tai&&best.gan<=best.ban){ best.gan=Math.min(10,best.gan+R2); communal(best); }
+          else if(best.tai<=best.ban) best.tai=Math.min(10,best.tai+R2);
+          else best.ban=Math.min(10,best.ban+R2); }
       } else if(strategy==="__unused__"){
         var best=null,bm=99;
         here.forEach(function(c){ if(c.started)return; var m=Math.min(c.tai,c.gan,c.ban); if(m<bm){bm=m;best=c;} });
-        if(best){ if(best.gan<=best.tai&&best.gan<=best.ban){ best.gan=Math.min(10,best.gan+2); communal(best); }
-          else if(best.tai<=best.ban) best.tai=Math.min(10,best.tai+2);
-          else best.ban=Math.min(10,best.ban+2); }
+        if(best){ if(best.gan<=best.tai&&best.gan<=best.ban){ best.gan=Math.min(10,best.gan+R2); communal(best); }
+          else if(best.tai<=best.ban) best.tai=Math.min(10,best.tai+R2);
+          else best.ban=Math.min(10,best.ban+R2); }
       } else if(strategy==="maxer"){          // polish the strong: raise the HIGHEST factor of the highest-product unbloomed person (anti-diagnosis)
         var mx=null,mxv=-1; here.forEach(function(c){ if(c.started)return; var pv=c.tai*c.gan*c.ban; if(pv>mxv){mxv=pv;mx=c;} });
-        if(mx){ var kx=(mx.tai>=mx.gan&&mx.tai>=mx.ban)?"tai":(mx.gan>=mx.ban)?"gan":"ban"; mx[kx]=Math.min(10,mx[kx]+2); if(kx==="gan") communal(mx); }
+        if(mx){ var kx=(mx.tai>=mx.gan&&mx.tai>=mx.ban)?"tai":(mx.gan>=mx.ban)?"gan":"ban"; mx[kx]=Math.min(10,mx[kx]+R2); if(kx==="gan") communal(mx); }
       } else if(strategy==="spreader"){           // effort everywhere, no diagnosis
         var c2=here[Math.floor(rnd()*here.length)], k=["tai","gan","ban"][Math.floor(rnd()*3)];
-        if(c2&&!c2.started){ c2[k]=Math.min(10,c2[k]+2); if(k==="gan") communal(c2); }
+        if(c2&&!c2.started){ c2[k]=Math.min(10,c2[k]+R2); if(k==="gan") communal(c2); }
       } else if(strategy==="linker"){             // spam Kết nối BLINDLY — random pairs, no diagnosis.
         // (was lowest-BẠN-sorted "semi-diagnostic"; with the v0.20 two-person opening that became near-optimal
         //  play and stopped measuring link-SPAM. Random pairing is the honest non-diagnostic strategy.)
         var un=here.filter(function(c){return !c.started;});
         if(un.length>=2){ var iA2=Math.floor(rnd()*un.length), iB2=(iA2+1+Math.floor(rnd()*(un.length-1)))%un.length;
           var A=un[iA2],B=un[iB2];
-          var gA2=(A.links|0)===0?2:1, gB2=(B.links|0)===0?2:1;
+          var gA2=(A.links|0)===0?R2:1, gB2=(B.links|0)===0?R2:1;
           var iA=cast.indexOf(A),iB=cast.indexOf(B);
           var ky=Math.min(iA,iB)+"-"+Math.max(iA,iB);
           if(pairsSet[ky]){ gA2=1; gB2=1; } else { pairsSet[ky]=true; A.links=(A.links|0)+1; B.links=(B.links|0)+1; }
