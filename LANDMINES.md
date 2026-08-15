@@ -74,6 +74,16 @@ that is now impossible because a gate catches it stays here, with the gate named
 - **The `gate.sh` full-run driver advances all 16 seasons synchronously**, so it cannot observe
   anything that depends on real dwell time (ambient life, errand walks, chatter). Timing-dependent
   behaviour needs a paced probe with real seconds per season.
+- **A villager can bloom TWICE in one run** — a crush clears `started`, and the same person blooms
+  again later. Any per-run rate computed by counting bloom *events* over run count over-counts:
+  `lab/zerohunt.js` first reported Anh Vũ blooming in **103.8% of runs**. The >100% is the lucky
+  case; the same bug silently inflates every rate below 100%. Count distinct runs (a `first` flag on
+  the event), not events.
+- **`check.js`'s band gate proves diagnosis WINS, not that the weakest factor DECIDES.** They are
+  different claims and only the first is gated. Measured 2026-08-15: `idle` — a player who never
+  acts — still blooms 3.44 of 7 workshops, and a strategy the gate does not test (`schoolfirst`)
+  scores inside the gate's own margins. Do not cite a green `band` gate as evidence about the
+  thesis; cite it as evidence about strategy ordering.
 
 ## Game internals
 

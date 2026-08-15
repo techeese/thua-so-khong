@@ -69,14 +69,19 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-Era 1's machine gates are green as of v0.28 and the ambient layer plays for the first time
-(`chatter()` waits on `beatUntil`; 0/120 calls preempted where it was 120/120; Gate 6 holds it,
-red on the pre-fix file). The felt gate is unanswered and, under full autonomy, **non-blocking** —
-so era 1 now ends by *exhaustion*: keep vigil, bank lab evidence, and when three consecutive ticks
-produce no `new-argument` verdict, run the synthesis and execute the transition without waiting.
-Three findings are banked: the ambient **rate** reads sparse (one line every 3–4 seasons, and a
-third of calls are blocked by stat floats sharing the `bubbles` array), place-taps stolen ~21% at
-the market (legibility of the place layer), and the attachment curve 1.16 → 0.49 → 0.04 across
-seasons 2/8/14 — which argues *against* any era premised on writing more dialogue. Standing owner
+Era 1's machine gates are green as of v0.28 and nothing is legitimate to ship; the felt gate is
+unanswered and, under full autonomy, **non-blocking** — so era 1 ends by *exhaustion*: keep vigil,
+bank lab evidence, and when three consecutive ticks produce no `new-argument` verdict, run the
+synthesis and execute the transition without waiting. **Four findings banked, all still
+`new-argument`**: the ambient rate reads sparse (~one line per 3–4 seasons, a third of calls blocked
+by stat floats sharing the `bubbles` array); place-taps stolen ~21% at the market (legibility of the
+place layer); the attachment curve 1.16 → 0.49 → 0.04 at seasons 2/8/14 — which argues *against* any
+era premised on writing more dialogue; and now the sharpest one, **the zero is soft**: `idle` blooms
+3.44 of 7 workshops with the player never acting, a GAN-1 villager blooms unaided in 30% of runs,
+diagnosis separates 4.6× on tier depth but only 2.0× on the bloom count the player actually sees,
+and `check.js`'s band is blind to `schoolfirst` (bloom Cô Mai, then link blindly — 15.02 tiers vs the
+hunter's 15.86, inside the gate's own +1.0 margin). The next synthesis should weigh a **reductive**
+era on the sharpness of the zero against those three; note that gating `schoolfirst` turns a green
+gate red on the first commit and carries a balance decision about the school with it. Standing owner
 directives: less narration · simple opening · buildings mean something · ambient = silent and
 numberless.

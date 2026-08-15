@@ -19,6 +19,107 @@ argues for or against.
      **Measured:** …
      **Argues for/against:** <candidate era>  -->
 
+## 2026-08-15 — does the multiplication actually *decide*? (`zerohunt.js`)
+
+Three previous vigils measured the game's **voice** (chatter rate, attachment curve) and its **hands**
+(390px reach). This one goes at the charter itself. Constraint 3 says *any system that lets a player
+route around a zero is off-limits* — and nothing has ever tested it. `check.js` tests a **strategy
+band** (hunter > spreader > linker > idle), which is a different claim: it says diagnosis *wins*, not
+that the weakest factor *decides*.
+
+Harness: `check.js`'s sim verbatim (first re-verified undrifted from `index.html` at v0.28 — only two
+read-only conditionals entered the file since `check.js` was written), plus per-bloom provenance
+(*was that person's authored weakest factor ever raised by a player act before the bloom fired?*),
+three adversarial anti-diagnostic strategies, and subsystem ablations. 6000 runs per strategy.
+
+**1 · The fable's zero is a 1, and 14 seasons turn a 1 into a coin flip.** `chance()` is
+`prod/1000·0.9·(0.6+0.4·von/10)`, rolled every season for every present villager whether or not the
+player has ever looked at them. Frozen, unhelped:
+
+| the person | per season | P(bloom in 14 tries) |
+|---|---|---|
+| 1×9×9 = 81 (Bé Ngân's shape) | 5.3 – 7.3% | **53 – 65%** |
+| 1×8×4 = 32 (Cô Liên's shape) | 2.1 – 2.9% | 25 – 34% |
+| 0×10×10 = 0 (only reachable by a **crush**) | 0.00% | **0.0%** |
+
+Measured in play, `idle` — the player does *nothing at all*, all 16 seasons — still blooms **3.44 of
+7** workshops. Bé Ngân (GAN 1) blooms unaided in **30.4%** of runs, Cô Liên (BẠN 1) in 20.9%, Chị Hoa
+(TÀI 2) in 60.8%. The hunter's **marginal** blooms over doing nothing are **3.55 of 6.99 — half of
+what a diagnosing player earns, they would have got by watching.** The literal ×0 exists in exactly
+one place: a crushed villager driven to GAN 0, where the roll is exactly zero forever.
+
+**2 · The separation is real, but it lives in the channel the player doesn't see.**
+
+| | blooms/run | tiers/run |
+|---|---|---|
+| hunter (diagnose the zero) | 6.99 | **15.86** |
+| linker (blind pairs) | 6.80 | 14.54 |
+| spreader | 6.25 | 11.21 |
+| maxer (feed the strongest) | 4.93 | 7.14 |
+| avoider (**raise the weakest person's strongest factor**) | 4.75 | **6.13** |
+| idle | 3.44 | 3.44 |
+
+Diagnosis separates **4.6× on tier depth** and only **2.0× on bloom count**. A bloom is a banner, a
+gong and a petal burst; a tier is a pill most players never read. **The thesis is proven in the
+quiet channel and only hinted at in the loud one** — which is a sharper reading of owner gate #3
+("the thesis lands from play alone") than any amount of writing would give.
+
+**3 · The provenance number, and it is the charter's own question.** Share of blooms that fired
+while the player had *never once* raised that person's authored weakest factor:
+
+| strategy | routed | min factor was still ≤2 at bloom |
+|---|---|---|
+| hunter | 5.4% | 0.0% |
+| linker | 58.4% | 10.5% |
+| spreader | 39.3% | 13.0% |
+| **avoider** | **99.9%** | **25.1%** |
+| idle | 100% | 36.0% |
+
+A quarter of the avoider's blooms happen with the weakest factor still at 1 or 2. Strictly, this is
+not *routing around* a zero — 1×9×9 is 81, not 0, so the arithmetic is honest and the constraint is
+not violated. What it does say is that **the game's zero is soft**: the fable's absolute (`10×0=0`)
+is only ever reached through a crush, and the authored cast starts at 1, where patience substitutes
+for diagnosis about half the time.
+
+**4 · The school is an automated diagnostician — and the release band cannot see it.** `schoolfirst`
+(diagnose exactly *one* person, Cô Mai, until her class opens; then link blindly forever, never
+diagnosing again) scores **6.79 blooms / 15.02 tiers** against the hunter's 6.99 / 15.86. **88.9%**
+of its routed blooms had their TÀI fed by the school or the mentor drip rather than by the player.
+Ablations confirm the school is the carrier — the hunter's margin over the best non-diagnostic
+strategy goes **0.84 → 2.13** with the school off, and **→ 2.82** with school and momentum both off.
+
+Re-running `check.js`'s own band predicate (`check.js:132-136`) with `schoolfirst` added to the field:
+
+```
+PASS  hunter.n  > spreader.n + 0.5      6.99 vs 6.75
+PASS  hunter.ts > linker.ts   + 1.0    15.86 vs 15.54
+PASS  idle.n   <= 4.0                   3.44
+FAIL  hunter.ts > schoolfirst.ts + 1.0 15.86 vs 16.02      ← not in the gate at all
+FAIL  hunter.n  > schoolfirst.n  + 0.5  6.99 vs  7.29      ← not in the gate at all
+```
+
+The band is not broken — it is **blind**. Its margins were calibrated against three strategies
+someone thought of, and the most natural non-diagnostic line in the actual game ("bloom the teacher,
+then just introduce people") lands inside them. Note the trap for whoever picks this up: adding
+`schoolfirst` to `check.js` would turn a green gate red *on the first commit*, and the only fix is a
+design decision about Cô Mai's class. That is a ratchet with a balance question attached, not a free
+gate. The v0.17 note at `check.js:137` already recorded the smell ("Cô Mai's school legitimately
+compounds… margin recalibrated 1.5→1.0") — this is the number under that intuition.
+
+**Argues for:** an era about **the sharpness of the zero** — the game's weakest link is currently a
+1, softened further by a class that quietly fixes TÀI, and the evidence of diagnosis lands in tier
+depth rather than in anything the player sees. The reductive version is the strong one: make the
+authored floors bite (a true 0 in the cast, or a `prod` floor that idles at ~0), cut the free
+blooms, and let the loud channel carry the thesis. **Argues against:** any era that adds a *new*
+compensating system — the school already shows what an automated diagnostician does to the band, and
+a second one would erase it. Also argues against treating `check.js`'s green as proof of the thesis:
+it proves diagnosis wins a race, not that the weakest factor decides a life.
+
+**Not shipped, per Gear 3.** `index.html` and `check.js` both untouched; the whole probe is a copy in
+`lab/zerohunt.js` (gitignored), output `lab/zerohunt-out.txt`.
+
+**Verdict:** new-argument
+
 ## 2026-08-15 — the attachment curve, and a dead ambient channel (`attach8.py`)
 
 Owner gate #2 says *"You care about someone by season 8."* Last tick measured the **reachable**
