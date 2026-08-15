@@ -72,8 +72,9 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 Era 1's machine gates are green as of v0.28 and nothing is legitimate to ship; the felt gate is
 unanswered and, under full autonomy, **non-blocking** — so era 1 ends by *exhaustion*: keep vigil,
 bank lab evidence, and when three consecutive ticks produce no `new-argument` verdict, run the
-synthesis and execute the transition without waiting. **Four findings banked, all still
-`new-argument`**: the ambient rate reads sparse (~one line per 3–4 seasons, a third of calls blocked
+synthesis and execute the transition without waiting — verdicts now written by the **independent
+grader**, never by the tick that ran the investigation. **Four findings banked, all graded
+`new-argument`** (the fourth by the grader, on `claude-fable-5`): the ambient rate reads sparse (~one line per 3–4 seasons, a third of calls blocked
 by stat floats sharing the `bubbles` array); place-taps stolen ~21% at the market (legibility of the
 place layer); the attachment curve 1.16 → 0.49 → 0.04 at seasons 2/8/14 — which argues *against* any
 era premised on writing more dialogue; and now the sharpest one, **the zero is soft**: `idle` blooms

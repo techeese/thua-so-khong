@@ -119,6 +119,7 @@ it proves diagnosis wins a race, not that the weakest factor decides a life.
 `lab/zerohunt.js` (gitignored), output `lab/zerohunt-out.txt`.
 
 **Verdict:** new-argument
+*Grader:* No prior entry (voice/attach8, thumb390, chatprobe) and no parked candidate in MILESTONES.md addresses the softness of the zero or a reductive floor-tightening era; the closest prior is only the check.js:137 v0.17 margin note, which this quantifies and extends into a candidate that did not exist before.
 
 ## 2026-08-15 — the attachment curve, and a dead ambient channel (`attach8.py`)
 
