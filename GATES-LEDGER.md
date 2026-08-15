@@ -44,6 +44,7 @@ Rules:
 | `bilingual-parity` | 1 | every player-facing string carries VI and EN |
 | `live-equals-repo` | 1 | the deployed version string matches the repo — a push is not a ship |
 | `no-open-directives` | 1 | an owner note in `OWNER-GATE.md` forces Gear 1 and cannot be ignored |
+| `no-open-defects` | 1 | a grader-classified defect forces Gear 1 — the loop's own licence to ship what it found |
 | `loop-structure` | 1 | the engine stays mechanism-only and every loop document is tracked in git |
 
 ## Proxy gates — measurable stand-ins for felt questions

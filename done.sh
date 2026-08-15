@@ -132,6 +132,32 @@ if [ "${NDIR:-0}" != "0" ]; then
   printf '%s\n' "$DIRECTIVES" | tail -n +2
 else ok "no open owner directives"; fi
 
+# 8. Open defects  [gate:no-open-defects] — the loop's OWN licence to ship.
+#    A lab finding the GRADER classified as a defect turns this gate red, which forces Gear 1 and
+#    lets the loop fix what it found without waiting for an owner directive or an era. Without
+#    this the loop could prove something was broken and still not be allowed to touch it — which
+#    is exactly what happened with chatter(): found in the lab, fixable only after the owner
+#    intervened. The grader classifies, never the investigator; closed by a `> FIXED` line.
+DEF=$(python3 - <<'PY2'
+import io,re
+try: s=io.open('lab/NOTES.md',encoding='utf-8').read()
+except Exception: print('0'); raise SystemExit
+blocks=re.split(r'^## ',s,flags=re.M)[1:]
+open_=[]
+for b in blocks:
+    m=re.search(r'^\*\*Defect:\*\*\s*yes\s*[-—]?\s*(.*)$',b,flags=re.M)
+    if m and not re.search(r'^> *FIXED',b,flags=re.M):
+        open_.append(m.group(1).strip()[:80])
+print(len(open_))
+for t in open_[:3]: print('   ↳ '+t)
+PY2
+)
+NDEF=$(printf '%s' "$DEF" | head -1)
+if [ "${NDEF:-0}" != "0" ]; then
+  no "$NDEF open defect(s) the grader flagged — fix and close with '> FIXED v0.N' in lab/NOTES.md"
+  printf '%s\n' "$DEF" | tail -n +2
+else ok "no open defects"; fi
+
 echo
 echo "── owner gates — ADVISORY under full autonomy ─────────"
 # grep -c prints 0 and exits 1 when nothing matches — no `|| echo 0` fallback, that double-prints.

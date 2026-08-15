@@ -41,8 +41,15 @@ Session runs in `/Users/Admin/Desktop/coding`; all game commands run in `thua-so
 ## The ship budget — every item must close something
 
 An item may enter a round only if it (a) turns a red `done.sh` gate green, (b) answers an open
-`OWNER-GATE.md` directive, (c) fixes a real defect with evidence, or (d) is named era work in
-`MILESTONES.md`.
+`OWNER-GATE.md` directive, (c) fixes a **grader-classified defect** from `lab/NOTES.md`, or (d) is
+named era work in `MILESTONES.md`.
+
+Clause (c) is the loop's own licence to ship. A lab entry carries a `**Defect:** yes — …` line only
+if the *grader* put it there; that trips the `no-open-defects` gate, which forces Gear 1 and makes
+the fix obligatory. Close it with `> FIXED v0.N` under the entry once shipped and live-verified.
+Without this the loop could prove something was broken and still not be allowed to touch it — which
+is exactly what happened with `chatter()`: found in the lab, fixable only after the owner
+intervened.
 
 **"It's ART's turn on the compass" is not sufficient cause** — that clause is what turned cycles
 9–15 into lateral drift. Unjustified ideas go to `MILESTONES.md` → *Candidate directions*, as raw
