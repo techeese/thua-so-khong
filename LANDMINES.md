@@ -424,3 +424,17 @@ that is now impossible because a gate catches it stays here, with the gate named
   Chrome floors window width near 500px, so a `@media (max-width:400px)` rule can never be exercised
   here; a container query can, by constraining the container in the probe. This turned an unverifiable
   fix into a gated one.
+- **The three "hardest combination" candidates are measured and clean — do not re-open.** English at
+  320px with a tied hand, every villager bloomed at 10/10/10, and the Sổ tay in English at 320: page
+  `bodySW=320`, sheet clean, roster scrolls with its fade cue, help body has no horizontal overflow.
+- **The product sparkline is CORRECT — leave it linear.** `▁▂▃▄▅▆▇█` scaled linearly against
+  `max(history, current)` looked broken in a forced state (a flat row of the lowest block) because that
+  state slammed products to 1000 while the recorded history held single digits. In real play it reads
+  well: a faded villager gives `▇▇▇▇▇█▇▆▅▄▃▃▂▃▃▄` (7 glyphs, the decline and recovery both visible), and
+  a villager nobody ever tended gives a flat `████████████████`, which is TRUE rather than broken.
+  **Do not "fix" it to a log scale** — worked through on paper, log compresses exactly the wash-back the
+  strip exists to show (`▁▁▂▆█▅▃▂` linear vs `▃▅▆██▇▇▆` log for the same rise-and-fall).
+- **A forced state is not a play state, and it has now invented three defects.** The buried label was
+  real, but the "tiling floats" (sync-loop), the "dark rectangle" (the ox-cart) and this flat sparkline
+  were all artifacts of probes that jam the world into a shape play never produces. Before believing a
+  visual defect found in a forced state, reproduce it in a played-out run.
