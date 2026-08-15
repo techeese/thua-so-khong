@@ -1,5 +1,21 @@
 # Changelog — Thừa Số Không
 
+## gate repair — 2026-08-16 — Gates 26 and 33 pinned to a plain year; the whole gate file swept for card flakes (engine tick, no product change)
+
+Closes: `done.sh` → *release gates RED — a ceiling is not an empty hand: `CEILV_BAD … live='+3 GAN'`* on
+committed v0.74. Same root as last night's Gate 49: since **v0.72** the restless-wind year (card 5) lands every
+hand at **+3**, and a probe whose fresh start draws the card at random meets it one run in six.
+
+- Instead of fixing one gate and waiting for the next, every stanza that does not already pin `S.yearCard` was
+  run under **all six cards forced** (`window._pendYc` before `startBtn`, 27 stanzas × 6 = 162 runs). Two flake on
+  card 5 and no other: **Gate 26** (`RUNG_BAD teach → 400` for 360) and **Gate 33** (`+3 GAN`); both now set
+  `S.yearCard=2` right after the start, the project's existing "a plain year" convention. Verified 7/7 each,
+  including three forced card-5 runs.
+- One more flake surfaced that is **not** card-shaped: **Gate 25** (elbow room) reads `simUntouched=false` with
+  `p.x` drifting ~1 px under its wander pin, on any card, about one run in four. Left open on purpose — different
+  mechanism, next convergent item; recorded in `LANDMINES.md`.
+- Nothing in `index.html` moved; live == repo unaffected. Recorded in `GATES-LEDGER.md` → Tightenings.
+
 ## gate repair — 2026-08-15 — Gate 49 stops flaking, and now checks the strict year (engine tick, no product change)
 
 Closes: `done.sh` → *release gates RED — a paid forecast prints next season's odds: `FORECAST_BAD unread=true

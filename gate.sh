@@ -751,7 +751,7 @@ drv=r"""
 window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
 setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-v1");
-  document.getElementById("startBtn").click();
+  document.getElementById("startBtn").click(); S.yearCard=2;   // a plain year: the restless-wind year's hands land +3 (v0.72) and a fresh start draws the card at random — measured: this stanza fails under card 5 and no other
   var mai=S.cast[2]; mai.known=true; mai.started=true; mai.seen={tai:true,gan:true,ban:true}; mai.tai=7; mai.gan=5; mai.ban=8;   // 280
   S.ships.push({x:420,y:300,owner:mai.name,pid:2,age:2}); S.von=5; S.acts=3; selectPerson(2); renderSheet();
   var t1=document.getElementById("teachHint").textContent, n1=document.getElementById("nerveHint").textContent;   // teach → 9×5×8=360 ↑tier 2 · nerve → 7×7×8=392 ↑tier 2
@@ -959,7 +959,7 @@ drv=r"""
 window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
 setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-v1");
-  document.getElementById("startBtn").click();
+  document.getElementById("startBtn").click(); S.yearCard=2;   // a plain year: the restless-wind year's hands land +3 (v0.72) and a fresh start draws the card at random — measured: this stanza fails under card 5 and no other
   for(var s=0;s<5;s++){ S.acts=3; S.nudged=true; nextSeason(); }
   var p=S.cast[0]; p.known=true; p.started=false; p.seen={tai:true,gan:true,ban:true};
   p.tai=10; p.gan=5; p.ban=5;

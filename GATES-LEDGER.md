@@ -150,3 +150,7 @@ Record here when an existing gate is made stricter, with the old and new thresho
   are added: with `S.yearCard=1` the young roof prints `⬛ 25%` and the established one `⬛ 10%`. Old: four
   assertions, flaking about one run in six. New: six assertions, deterministic. Negative-tested: forcing the
   strict year on the old assertions reproduces the observed failure.
+- **Gates 26 and 33 (gate repair, 2026-08-16):** the fresh run's year card is pinned to 2 (a plain year) right
+  after the start, so the `→ 360` / `+2 GAN` assertions cannot flake when card 5 (hands +3 since v0.72) is
+  drawn. Old: same assertions, failing one run in six. New: same assertions, deterministic; verified under every
+  forced card. Sweep note: of 27 unpinned stanzas run under all six cards, only these two moved with the card.

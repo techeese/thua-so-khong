@@ -523,3 +523,10 @@ that is now impossible because a gate catches it stays here, with the gate named
   that reads a number the year card can move (stamp odds, the free forecast, market-road pay, quiet-hands
   fade) must set `S.yearCard` explicitly after `startBtn.click()`. Same lesson as Gate 21's bloom die: if the
   stanza passes alone in a worktree and fails inside `gate.sh`, it is dice, not the diff.
+- **Sweep, don't whack-a-mole: when one gate flakes on a random draw, run every unpinned stanza under every
+  value of that draw.** After Gates 21, 49 and 33 each cost a tick, a 162-run matrix (27 unpinned stanzas ×
+  6 forced year cards via `window._pendYc` before `startBtn.click()`) found the full set in nine minutes:
+  Gates 26 and 33 on card 5, nothing else card-shaped. It also exposed **Gate 25 as flaky on no card at all**
+  — `simUntouched=false`, `p.x` off by ~1 px despite the per-frame `p.tx=p.x` wander pin, roughly one run in
+  four — which is a different mechanism (something in `drawScene`/behaviour still writes `p.x`) and is the
+  open item for the next tick that finds it red.
