@@ -19,6 +19,51 @@ argues for or against.
      **Measured:** …
      **Argues for/against:** <candidate era>  -->
 
+## 2026-08-15 — does `check.js` still mirror `index.html`? formula grid says yes; one hand-dealing rule says no (`mirror.js`)
+
+**Why this, why now.** `done.sh` has carried one ⏭ line for days — *check.js older than index.html — confirm no math
+changed since 2026-08-15* — and no tick had confirmed it. `check.js` was last committed at fbf292b (16:22);
+ten `index.html` commits landed after it (v0.43–v0.48). If the mirror drifted, Gate 0 (the band) is
+asserting the thesis against a game that no longer exists.
+
+**Method (`lab/mirror.js`).**
+- **A.** Extract `hasZero / vonMul / tierCap / ceilOf / chance` *by name from `index.html`'s source* (brace-balanced,
+  comments stripped, `S`/`prod` stubbed) and `vonMul / tierCap / ceilOf / chance` from `check.js`; evaluate both on
+  the full grid tai,gan,ban ∈ 1..10 × mom ∈ {0, .03, .09, .15} × river 1..10 = 40 000 cells × 10 rivers.
+- **B.** Read the sim's season loop rule-by-rule against `nextSeason()`; for the one rule that differs, patch the
+  sim in memory and run the whole band both ways (6 strategies × 1200 seeds), and count the seasons where the two
+  rules disagree.
+
+**Measured.**
+- **A. 0 mismatches, max |Δ| = 0.** Every capping clause, the ceiling table, the river multiplier and the tier cap
+  are identical. `shipTier`'s product thresholds (<300 / <600) match `check.js tierOf`. Read-through of the rest:
+  storm risk 0.15/0.05 by age<2 · step-down gan−2 / erasure gan−3 · fadeP 0.35/0.175/0.5 · law drift
+  (0.25/0.33 · 0.10/0.25 · 0.12/0.20) · elder clock, girl ≥11 GAN<3, returnee ≥13 BẠN<4 · class breadth TÀI<7 ·
+  momentum +0.03/+0.05 capped 0.09/0.15 · Tết +0.03 · flywheel Σtier ≥ 4 (6 in a flood year) — all still equal.
+  v0.43–v0.48 changed printing (↑bậc, guess-answer, pot price, dots, hatch) and `shelCovers()`; none of it is
+  math the sim carries.
+- **B. The storm tax is off by one season.** `index.html:2065` — `S.acts=(S.luat<4 && S.stormStreak<=2)?2:3`, streak
+  incremented for the *current* season first, so the third hand returns on the **3rd** consecutive storm season.
+  `check.js:47` — `(luat<4&&stormStreak<2)?2:3`, same inclusive streak (it is bumped after the roll for the
+  coming season), so the sim returns the hand on the **2nd**. Its comment says *"mirrors index.html order"*; it
+  mirrors the order and not the threshold. Effect: the sim deals one extra hand in **6 115 of 108 000 seasons
+  (5.66 %)**, always in the second season of a storm arc. Band under the sim's rule: hunter 6.97/16.1 · spreader
+  5.33/9.9 · linker 6.06/13.0 · idle 2.47/2.5 · misreader 6.98/16.0 · maxer 3.41/5.0 — **ok=true**. Under the game's
+  rule: hunter 6.97/16.0 · spreader 5.32/9.8 · linker 6.09/13.0 · idle 2.47/2.5 · misreader 6.99/15.9 · maxer
+  3.40/5.0 — **ok=true**. Largest move 0.1 tier; every margin the band asserts holds with room.
+
+**What it means.** The ⏭ line can be read as green for the arithmetic: nothing since fbf292b moved a formula the band
+depends on. The one true drift is older than v0.43 (the storm-adaptation rule has read `<2` since the streak was
+added) and is *conservative in the wrong direction* — the sim is one hand kinder to every strategy in a storm arc,
+which slightly overstates blooms across the board rather than favouring one opponent. Not band-relevant at this
+size; relevant to any era (Y, "a fair opponent") that wants to price hands per season exactly, since it inflates
+the hand budget the instrument thinks a storm year has.
+
+**Argues for/against.** Argues *for* keeping Gate 0's number as evidence through the current era; argues that the
+`checkjs-fresh` skip should be answered by a mirror harness like this one rather than by reading commit dates.
+Not a proposal — recorded so the next synthesis or a Gear-1 tick with a licence knows the exact line
+(`check.js:47`, `<2` → `<=2`) and that the band survives it.
+
 ## 2026-08-15 — the speech lane, measured: v0.46 rescues zero chatter() calls, because floats are dead before chatter can fire (`lane.py`, `lane-settle.py`, `lane-src.py`)
 
 **Question.** v0.46 gave speech its own lane — `chatter()`/`pairTalkAt()` now count `speechCount()`

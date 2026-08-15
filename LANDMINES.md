@@ -296,3 +296,9 @@ that is now impossible because a gate catches it stays here, with the gate named
   (`mid.html`, `f.html` in `mktemp` dirs) that belonged to the owner's `/loop 5m` session mid-ship —
   its gate run would read red once for no reason. Practice: kill only your own PIDs (keep the
   `subprocess` handles, or match on your own temp path), never by process name.
+- **"mirrors index.html" in a `check.js` comment is a claim, not a check.** The storm-tax line has read
+  `stormStreak<2` against the game's `<=2` for as long as the streak has existed, under a comment saying it mirrors
+  the game's order — it mirrors the order and not the threshold (`lab/mirror.js`, 2026-08-15: 5.66 % of seasons
+  over-dealt; band unaffected). Practice: `done.sh`'s ⏭ *check.js older than index.html* is answered by extracting
+  the game's functions by name and grid-comparing (`lab/mirror.js` does it in ~1 min), not by re-reading comments
+  or commit dates.
