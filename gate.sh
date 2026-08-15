@@ -1036,10 +1036,10 @@ echo "$T" | grep -q "BOUND_OK" && pass "a partial row prints its bound: $T" || f
 # Gate 35: you can tap what you can see — the machine half of the owner gate "390px hands · canvas tap
 # targets all reachable". v0.45's elbow-room nudge moves a figure on the paper (drawX) without touching
 # the simulation (p.x), and the hit test was still aimed at p.x: 13 CSS px adrift at 390, one tap in
-# seven selecting the neighbour. Asserts three things at a true 390: the thumb target is at least 22
-# CSS px of radius, tapping each villager where they are DRAWN selects that villager, and every active
-# villager owns a reachable patch of canvas rather than being buried under a neighbour's zone.
-python3 - "$TMP" <<'PYEOF35'
+# seven selecting the neighbour. This dispatches REAL click events on the canvas at each villager's
+# DRAWN position and reads S.sel — an earlier draft reimplemented the hit test inside the probe and so
+# passed on the broken build, which is worth remembering: a gate must exercise the shipped path.
+python3 - "$TMP" <<'PYEOFTAP'
 import sys
 tmp=sys.argv[1]; html=open("index.html").read()
 drv=r"""
@@ -1052,33 +1052,59 @@ setTimeout(function(){ try{
   for(var s=0;s<7;s++){ S.acts=3; S.nudged=true; nextSeason(); }
   S.cast.forEach(function(p){ p.known=true; p.arriveT=0; });   // nobody mid arrival-slide
   var act=S.cast.filter(function(p){ return active(p)&&!p.gone; });
-  act.slice(0,4).forEach(function(p,i){ p.x=p.tx=p.hx=460+i*12; p.y=p.ty=p.hy=420; p.amb=0; p.vUntil=0; });
+  // all on ONE spot: the nudge is at full stretch here, so drawX and p.x are furthest apart and a
+  // hit test aimed at p.x cannot tell them apart at all — the sharpest form of the bug.
+  act.slice(0,4).forEach(function(p){ p.x=p.tx=p.hx=500; p.y=p.ty=p.hy=420; p.amb=0; p.vUntil=0; });
   for(var f=0;f<60;f++){ act.forEach(function(p){ p.tx=p.x; p.ty=p.y; p.arriveT=0; }); drawScene(1000+f*16); }
-  var r=document.getElementById("cv").getBoundingClientRect(), k=r.width/W;
-  var hitR=Math.max(34, 22*(W/r.width));
-  function pick(mx,my){ var best=-1,bd=1e9;
-    S.cast.forEach(function(p){ if(!active(p)) return;
-      var px=(p.drawX!==undefined?p.drawX:p.x);
-      var d=Math.hypot(px-mx,p.y-4-my); if(d<hitR&&d<bd){bd=d;best=p.id;} });
-    return best; }
-  // 1. tap each villager where they are drawn
-  var missed=0;
-  act.forEach(function(p){ if(pick((p.drawX!==undefined?p.drawX:p.x), p.y)!==p.id) missed++; });
-  // 2. raster the whole canvas: everyone must own some reachable ground
-  var area={}; act.forEach(function(p){ area[p.id]=0; });
-  for(var gx=0; gx<W; gx+=8) for(var gy=200; gy<H; gy+=8){ var id=pick(gx,gy); if(id>=0) area[id]++; }
-  var minArea=1e9, orphan=0;
-  act.forEach(function(p){ var a=area[p.id]|0; if(a<minArea) minArea=a; if(a===0) orphan++; });
-  var thumbCss=hitR*k;
-  var ok = thumbCss>=21.5 && missed===0 && orphan===0 && minArea>=4 && act.length>=5;
+  var cv2=document.getElementById("cv"), r=cv2.getBoundingClientRect();
+  var kx=r.width/W, ky=r.height/H;
+  var hitR=Math.max(34, 22*(W/r.width)), thumbCss=hitR*kx;
+  S.linking=null;
+  function tapLogical(lx,ly){
+    var ev=new MouseEvent("click",{clientX:r.left+lx*kx, clientY:r.top+ly*ky, bubbles:true});
+    cv2.dispatchEvent(ev);
+  }
+  var missed=0, detail=[];
+  act.forEach(function(p){
+    S.sel=-1; S.linking=null;
+    var dx=(p.drawX!==undefined?p.drawX:p.x);
+    tapLogical(dx, p.y);                       // tap the body you can actually see
+    var got=S.sel;
+    if(got!==p.id){ missed++; detail.push(p.id+"→"+got+"@off"+Math.abs(dx-p.x).toFixed(0)); }
+  });
+  var ok = thumbCss>=21.5 && missed===0 && act.length>=5;
   document.title=(ok?"TAP_OK":"TAP_BAD")+" thumbCss="+thumbCss.toFixed(1)+" villagers="+act.length
-    +" tappedWhereDrawnMissed="+missed+" unreachable="+orphan+" minTapCells="+minArea;
+    +" tappedWhereDrawnMissed="+missed+(detail.length?(" :: "+detail.join(",")):"");
 }catch(e){ document.title="THREW: "+e.message; } },700);
 </script>"""
 open(tmp+"/tp.html","w").write(html.replace("</body>",drv+"</body>"))
-PYEOF35
+PYEOFTAP
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=600,900 --virtual-time-budget=9000 --dump-dom "file://$TMP/tp.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "TAP_OK" && pass "you can tap what you can see: $T" || fail "you can tap what you can see: $T"
+
+# Gate 37: the fate warnings do not tell — at season 9 Bé Ngân's medical-school line names GAN in the log only if her GAN has been touched;
+# untouched, the log says she talks of medical school and nothing about the factor (her bubble is the clue either way).
+python3 - "$TMP" <<'PYEOF37'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  function warnAt9(seen){ fresh(); S.nudged=true; S.season=8; var ng=S.cast[0]; ng.known=true; ng.gan=1; ng.started=false; ng.seen={tai:false,gan:seen,ban:false};
+    S.cast.forEach(function(q){ if(q!==ng){ q.known=false; q.started=true; } }); S.nganWarned=false; nextSeason();
+    var line=S.log.filter(function(m){ return /trường Y|medical school/.test(m.vi+m.en); })[0]; return line?(line.vi+" | "+line.en):"(none)"; }
+  var unseen=warnAt9(false), seen=warnAt9(true);
+  var ok = /trường Y\./.test(unseen) && !/GAN/.test(unseen) && /GAN/.test(seen) && /NERVE/.test(seen);
+  document.title=(ok?"TELL_OK":"TELL_BAD")+" unseen="+unseen.slice(0,60)+" | seen="+seen.slice(0,80);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/tell.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF37
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/tell.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "TELL_OK" && pass "the fate warnings do not tell: $T" || fail "the fate warnings do not tell: $T"
 
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }

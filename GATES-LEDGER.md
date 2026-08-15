@@ -58,6 +58,8 @@ Rules:
 | `Gate 33` | 1 | a ceiling is not an empty hand — a verb switched off because its factor stands at 10 names the ceiling and promises no delta, keeps that face when the hands also run out, and is visually distinct from a verb merely unaffordable; bilingual (v0.52) |
 | `Gate 34` | 1 | every GAN move prints — an erased stall floats −3 GAN ⬛ on its owner, a stepped-down shop −2 GAN ⬛, and finishing your own roof +1 GAN 🛠 on everyone you have met (v0.51) |
 | `Gate 36` | 1 | a partial row prints its bound — with one factor seen the sheet says trần ≤ ceilOf(it), the hand on the lowest seen factor says the bound it would reach, hands on unseen factors stay silent, and still no `→ N%` anywhere until the row is known (v0.53) |
+| `Gate 35` | 1 | you can tap what you can see — at a true 390px the thumb target is ≥22 CSS px of radius and a real click dispatched at each villager's DRAWN position selects that villager; negative-tested by putting the hit test back on `p.x`, which misses 3 of 4 (v0.54) |
+| `Gate 37` | 1 | the fate warnings do not tell — Bé Ngân's season-9 line (and Cô Liên's at 11) names the factor in the log only if it has been touched; untouched, the log states the fact and the person's bubble stays the clue (v0.54) |
 
 ## Convergence gates — `done.sh`
 

@@ -196,7 +196,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.53</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.54</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -599,7 +599,11 @@ function renderChron(){
   var yr=document.getElementById("ycRow"), yb=document.getElementById("ycChips");
   if(yr&&yb){ yr.style.display=c.length?"block":"none"; var seenY={}; c.forEach(function(r){ if(r&&Number.isFinite(r.yc)) seenY[r.yc]=1; });
     var hh=""; YEAR_CARDS.forEach(function(y,i){ var ok=!!seenY[i];
-      hh+="<button class=\"con yc"+(window._pendYc===i?" on":"")+"\" data-y=\""+i+"\""+(ok?"":" disabled")+" title=\""+(ok?(L==="vi"?y.nv:y.ne):"?")+"\">"+(ok?y.em:"🂠")+"<small class=\"conL\">"+(ok?(L==="vi"?y.nv:y.ne).replace(/^(Năm |the )/,""):"?")+"</small></button>"; });
+      // a lived year's chip carries your best in it — most tiers left standing, and how many times you've lived it — so the choice is informed
+      var best=null, times=0; c.forEach(function(r){ if(!r||r.yc!==i) return; times++; if(!best||(r.ts|0)>(best.ts|0)) best=r; });
+      var sub=ok?((L==="vi"?y.nv:y.ne).replace(/^(Năm |the )/,"")+(best?(" · "+(best.ts|0)+(L==="vi"?" bậc":" t")+(times>1?(" ×"+times):"")):"")):"?";
+      var ttl=ok?((L==="vi"?y.nv:y.ne)+(best?(" — "+(L==="vi"?"tốt nhất: ":"best: ")+((L==="vi")?best.tv:best.te)+" · "+(best.nB|0)+(L==="vi"?" xưởng · ":" workshops · ")+(best.ts|0)+(L==="vi"?" bậc":" tiers")+(times>1?((L==="vi"?" · đã sống ":" · lived ")+times+(L==="vi"?" lần":"×")):"")):"")):"?";
+      hh+="<button class=\"con yc"+(window._pendYc===i?" on":"")+"\" data-y=\""+i+"\""+(ok?"":" disabled")+" title=\""+ttl.replace(/"/g,"&quot;")+"\">"+(ok?y.em:"🂠")+"<small class=\"conL\">"+sub+"</small></button>"; });
     yb.innerHTML=hh; }
   if(!c.length){ el2.textContent=""; return; }
   var last=c[c.length-1];
@@ -2117,8 +2121,9 @@ function nextSeason(){
     if(S.season===11 && !rooted && !S.lienWarned){ S.lienWarned=true;
       bubble(lien,conBan(2)?((L==="vi")?"“Năm nay không ai nối ai với ai… chắc tôi lại vào Nam.”":"“No one ties anyone to anyone this year… maybe I'll head south again.”")
                             :((L==="vi")?"“Chắc tôi lại vào Nam…”":"“Maybe I'll head south again…”"));
-      logMsg("Cô Liên nhắc chuyện vào Nam — thừa số BẠN của cô vẫn gần số không.",
-             "Cô Liên talks of heading south again — her ALLIES factor still sits near zero."); }
+      var liSeen=!!(lien.seen&&lien.seen.ban);   // v0.54: same rule as every label — the factor is named only once a hand has touched it
+      logMsg("Cô Liên nhắc chuyện vào Nam"+(liSeen?" — thừa số BẠN của cô vẫn gần số không.":"."),
+             "Cô Liên talks of heading south again"+(liSeen?" — her ALLIES factor still sits near zero.":".")); }
     if(S.season>=13 && !rooted){ lien.gone=true; if(S.sel===6){S.sel=-1;}
       boat={t0:performance.now()+400,dur:5200,x0:52,x1:W+80,col:lien.color,who:6};   // and the same sampan carries her out, slowly, the whole xóm watching
       logMsg(conBan(2)?"🛶 Cô Liên lặng lẽ rời xóm — năm không kết nối, chẳng ai được phép giữ.":"🛶 Cô Liên lặng lẽ rời xóm — không ai giữ.",
@@ -2140,7 +2145,8 @@ function nextSeason(){
     var dared=ngan.gan>=3;   // only nerve holds her — a bond does not route around this zero
     if(S.season===9&&!dared&&!S.nganWarned){ S.nganWarned=true;
       bubble(ngan,(L==="vi")?"“Bố nộp hồ sơ trường Y cho em rồi…”":"“Dad's filed my medical-school papers…”");
-      logMsg("Bé Ngân nhắc chuyện trường Y — thừa số GAN của em vẫn gần số không.","Bé Ngân talks of medical school — her NERVE factor still sits near zero."); }
+      var ngSeen=!!(ngan.seen&&ngan.seen.gan);   // v0.54: name the factor only if you have seen it — otherwise her line is the clue, not the log
+      logMsg("Bé Ngân nhắc chuyện trường Y"+(ngSeen?" — thừa số GAN của em vẫn gần số không.":"."),"Bé Ngân talks of medical school"+(ngSeen?" — her NERVE factor still sits near zero.":".")); }
     if(S.season>=11&&!dared){ ngan.leaving=true;
       visit(ngan,W-40,346,5200);   // she walks to the road's end, the whole xóm watching, and is gone
       bus={t0:performance.now(),wait:4800,dur:2600};   // 🚌 the xe đò idles at the road's end while she walks; it pulls out the moment she's aboard

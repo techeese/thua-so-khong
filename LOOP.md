@@ -93,7 +93,7 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.53: a partial row prints its bound — trần ≤ ceilOf(lowest seen), on the sheet and on the hand
+**v0.54: the fate warnings name the factor only if it has been touched (Gate 37). v0.53: a partial row prints its bound — trần ≤ ceilOf(lowest seen), on the sheet and on the hand
 that would move it (Gate 36); no point answer until the row is known. v0.51: every GAN move prints — step-down −2, erasure −3, your roof's +1 (Gate 34). v0.50: the grader's `check.js:47` mirror defect closed (`<=2`), band holds; the tarp says how long it
 holds. v0.49: while a link is armed each candidate chip prints +2/+1 BẠN (Gate 32); the lab found v0.46's
 speech lane rescued 0/480 calls (harmless, ineffective — the blocks were speech). v0.48: shelter tarps every standing roof (Gate 23 tightened) — the late game's "hold what you built"
@@ -141,20 +141,22 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **the brief is close to spent, and
-the loop should say so rather than pad.** Every surface it set out to review is done — crowding
-(v0.45), the three overlays (v0.39/v0.40/v0.42), the roster strip (v0.36), the factor bars and log
-(v0.47), the dot vocabulary (v0.48), the verb row's disabled states (v0.52). The float-density
-question is **closed as measured, not a defect**: paced play gives mean 3.4 concurrent bubbles, max
-11–13, peak canvas coverage 9.3% — the alarming screenshot was a sync-loop artifact, and this entry
-exists so nobody re-opens it. What is left is cosmetic preference, not defect: if a tick finds only
-that, the honest move is to report it and ship nothing (the ship budget explicitly allows a round to
-ship nothing, and *"it's ART's turn on the compass" is not sufficient cause*). Two things a future
-graphics tick could still legitimately measure rather than eyeball: whether the 390px canvas tap
-targets really are all reachable (the last unticked half of the owner gate *390px hands*), and whether
-the ending card's density hurts a first-time reader. **Do not attempt a seeded whole-run gate** —
-built, measured and discarded in v0.45; gate the mechanism. Before adding any gate, run `./done.sh`
-and take the next id above the highest in BOTH `gate.sh` and the ledger. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **the brief is spent for drawing and
+now pays off only in measurement.** v0.54 is the proof: the still-unticked owner gate *390px hands*
+was measured rather than eyeballed, and it exposed a regression this loop had itself shipped in v0.45
+— the hit test aimed at `p.x` while the nudge moved `drawX`, so one tap in seven picked the neighbour.
+Every drawing surface is done (crowding v0.45 · overlays v0.39/40/42 · roster strip v0.36 · factor
+bars and log v0.47 · dots v0.48 · verb states v0.52 · tap targets v0.54). The float-density question
+is **closed as measured, not a defect** (paced play: mean 3.4 bubbles, peak coverage 9.3%). What is
+left: the **felt** halves of the owner gates, which only the owner can tick, and one measurable
+question — whether the ending card's density hurts a first-time reader. **If a tick finds only
+cosmetic preference, ship nothing and say so**; the ship budget allows it and *"it's ART's turn on the
+compass" is not sufficient cause*. Two standing rules earned the hard way: **do not attempt a seeded
+whole-run gate** (built, measured, discarded in v0.45 — gate the mechanism), and **never let a gate
+reimplement the logic it tests** (Gate 35's first draft passed on the broken build; dispatch real
+events and negative-test against a deliberately broken copy). Before adding any gate, run `./done.sh`
+and take the next id above the highest in BOTH `gate.sh` and the ledger — and give its heredoc a
+unique tag, since `PYEOF35` was already taken by the other session and silently broke extraction. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

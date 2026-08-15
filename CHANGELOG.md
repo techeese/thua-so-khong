@@ -1,5 +1,43 @@
 # Changelog — Thừa Số Không
 
+## v0.54 — 2026-08-15 — you can tap what you can see
+
+A graphics round from the owner's `/loop 5m` session, taking on the still-unticked half of the owner
+gate **"390px hands — real thumbs, canvas tap targets all reachable"**. Measuring it turned up a
+regression this loop had itself introduced.
+
+- **The hit test was aimed at a body that is no longer there.** v0.45's elbow-room nudge moves a
+  villager on the paper (`drawX`) deliberately *without* touching the simulation (`p.x`) — but the
+  canvas click handler still measured from `p.x`. Measured at a true 390px: the drawn figure sits up
+  to **34 logical px (13.1 CSS px)** from its own tap point, and **one tap in seven selected the
+  neighbour instead**. You tapped the person you could see and got someone else. The handler now aims
+  at the drawn figure, as does the workshop's fallback speaker search.
+- *Evidence:* new **Gate 35**. It dispatches **real click events** on the canvas at each villager's
+  drawn position and reads `S.sel`; it also holds the thumb target itself at ≥22 CSS px of radius, so
+  nobody can quietly shrink it. `TAP_OK thumbCss=22.0 villagers=7 tappedWhereDrawnMissed=0`.
+- **Negative-tested, and it took two tries to make it honest.** The first draft reimplemented the hit
+  test *inside the probe*, so it passed on the broken build — a gate asserting only its own copy of the
+  logic. Rewritten to dispatch real clicks, and then verified against a scratch copy with the hit test
+  put back on `p.x`: `TAP_BAD tappedWhereDrawnMissed=3 :: 1→0@off34, 2→0@off24, 3→0@off24`. The gate
+  fails on the bug it was written for.
+
+This answers the machine half of that owner gate. The felt half — real thumbs on a real phone — stays
+the owner's to tick, and the gate does not pretend otherwise.
+
+## v0.54 — 2026-08-15 — the fate warnings do not tell
+
+Closes: under the owner's standing `/loop 3m` directive (twenty queued fires of it, treated as one
+tick), the last two places the game handed over a diagnosis for free. Since v0.33 every label, tag
+and hint names a factor only once a hand has touched it — but Bé Ngân's season-9 warning and Cô Liên's
+season-11 warning wrote *"thừa số GAN/BẠN … vẫn gần số không"* into the log regardless.
+
+- **The factor is named only if seen.** Untouched, the log says *Bé Ngân nhắc chuyện trường Y.* /
+  *Cô Liên nhắc chuyện vào Nam.* — the fact, not the answer — and the person's own bubble (*"Bố nộp
+  hồ sơ trường Y cho em rồi…"*, *"Chắc tôi lại vào Nam…"*) stays the clue. Touched, the log reads as
+  before. Subtraction, not addition; nothing else changed.
+- *Evidence:* new **Gate 37** (`TELL_OK unseen="…trường Y." seen="…GAN…"`). Gates green,
+  hash-bracketed. No balance changed.
+
 ## v0.53 — 2026-08-15 — a partial row prints its bound
 
 Closes: under the owner's standing `/loop 3m` directive, the arithmetic a half-known row already
