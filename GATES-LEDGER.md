@@ -34,6 +34,8 @@ Rules:
 | `Gate 9` | 1 | the print fits a phone — at a true 390px nothing outside the `overflow-x:auto` roster crosses the edge (`bodySW≤390`), no two speech bubbles print over each other however many neighbours talk at once, and the season banner scales with `LKF` like every other text on the block (v0.32) |
 | `Gate 10` | 1 | the pot — hốt hụi pays one member from the river: river −1, that sprout +0.06 momentum, once a season, only after paying in, never past a zero, never below river 1 (v0.32) |
 | `Gate 11` | 1 | the factors are hidden until touched — a fresh talk shows `? × ? × ?` and no per-verb answer, one hand on GAN reveals GAN alone, answers appear only once the row is known, a bloom shows everything (v0.33) |
+| `Gate 12` | 1 | a hand in the wrong place gets an answer — teach Bé Ngân on her strongest factor while GAN sits at 1 and she says so in her own voice once, ~0.9s after the float; a second teach says nothing more; nerve (the zero) draws no such line (v0.34) |
+| `Gate 13` | 1 | the names stay readable — six villagers jammed into 150px of the far bank produce no label printed over another villager's label and no label crossing the printed frame; overlap measured on the true ink box, not an estimate (v0.34) |
 
 ## Convergence gates — `done.sh`
 

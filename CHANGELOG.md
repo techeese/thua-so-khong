@@ -1,5 +1,54 @@
 # Changelog — Thừa Số Không
 
+## v0.34 — 2026-08-15 — the wrong place answers back
+
+Closes: the second half of v0.33 under the owner's standing `/loop 3m` directive. Hiding the row made
+the first hand a guess; a wrong guess was answered by a bare number (*TÀI 10*) and nothing else — the
+price was paid silently. Charter: *systems teach; the narrator does not explain.* So the person does.
+
+- **`guessAnswer(p,k)`.** When a hand lands on a person's *strongest* factor while a real zero (≤3)
+  sits elsewhere in their row — and only while the row is still unknown, i.e. you were guessing —
+  they answer ~0.9s after the float, once per factor, in one line and no number: *“Cái này tôi làm
+  được rồi mà… chuyện của tôi ở chỗ khác.”* (TÀI) · *“Tôi đâu có sợ… chuyện của tôi ở chỗ khác.”*
+  (GAN) · *“Bạn bè thì tôi không thiếu… chuyện của tôi ở chỗ khác.”* (BẠN). The right hand draws no
+  line: the +2 and the number are its answer. Wired into teach, nerve and the linker's own BẠN.
+- **Anh Vũ's opening line now carries his clue.** Every other cast quote pointed at that person's
+  zero (Dad/medicine → GAN; back-as-a-guest → BẠN; a product of my OWN → TÀI); his — *"I can fix
+  every machine — except my own life"* — read as nerve while his row hides BẠN 3. Now: *"…Cả ngày
+  chỉ có máy nói chuyện với tôi."* / *"All day, only the machines talk to me."*
+- *Evidence:* new **Gate 12** (`VOICE_OK beforeDelay=0 afterTeach=1 secondTeach=1 afterNerve=1
+  nerveWrong=false`). Fourteen gates green, hash-bracketed; band untouched (no math changed).
+
+### Carried in the same commit — the graphics round (`/loop 5m`): the names stay readable
+
+Follows the `LOOP.md` pointer left by v0.32: *person labels and the `số không: X` tags overlap each
+other on the right bank*. The screenshot was unambiguous — six villagers on the far bank printed
+`×0 số không: GANGAN`, two red hints stamped on top of one another, and only three of the six had a
+name at all.
+
+The cause: `lblR`, the per-frame collision list, only ever registered the **name** line. The red
+zero-hint below it and the workshop's own word (`gánh` / `xưởng` / `thương hiệu`) were painted
+without being recorded, so a neighbour's name could print straight through either, and two hints
+could never see each other. On a clash the villager was dropped and went nameless.
+
+- **Both lines are measured and registered**, so a name, a hint and a workshop word all take part in
+  the same collision test.
+- **A clashing label ladders down into clear ground** — up to four steps — instead of being dropped.
+  The villager you are talking to is never suppressed: if the ground below is full it looks for clear
+  air *above*, and prints in place only if there is nowhere clear at all.
+- **Labels are clamped inside the printed frame**, as speech bubbles were in v0.32. A name on the far
+  bank used to bleed past the border of the print.
+
+*Evidence* — the hunk isolated onto v0.32, because the mechanic round was uncommitted in the same
+tree and a plain before/after would have measured both at once: six villagers jammed into 150px of
+far bank, **cross-owner label overlaps 4 → 0**, **labels crossing the printed frame 2 → 0**. Overlap
+is measured on the true ink box (`actualBoundingBoxAscent/Descent`); an estimated box counts each
+villager's own name/hint pair as a collision, which is how a first pass at this produced a confident
+and worthless "9 → 4". How many villagers get named in that jam is unchanged at 3 of 6 — the crowd is
+denser than the bank can label, and those who do not fit still yield rather than print gibberish.
+
+New **Gate 13 — the names stay readable**: `LABEL_OK labels=7 cross=0 bleed=0`.
+
 ## v0.33 — 2026-08-15 — the numbers hide until your hand touches them
 
 Closes: the open owner gate *"Diagnosis feels like play — finding which factor is zero is the fun
@@ -30,9 +79,6 @@ guest"* → BẠN; *"only lack a product of my OWN"* → TÀI) and did no work.
   afterNerve=?/3/? all=true hint2="→ 9%"`). Gates 7 and 10 harnesses now set the row as learned
   before asserting (assertions unchanged). Band unchanged (hunter 6.98 / spreader 5.97 / linker 6.74
   / idle 2.80). Twelve gates green, hash-bracketed. Sheet screenshot read: `? × 3 × ? = ?`.
-- **Provenance:** the `/loop 5m` graphics session's in-tree work at commit time ships here under
-  owner authority, unreviewed.
-
 ## v0.32 — 2026-08-15 — the print fits a phone, and it is gated
 
 A graphics round from the owner's `/loop 5m` session (*"review it and make some

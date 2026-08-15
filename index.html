@@ -52,6 +52,7 @@
   .roster .rc.sel i{border-color:#f5ead0}
   .roster .rc small{font-weight:600;font-size:10px;color:var(--red)} .roster .rc.sel small{color:#EFB7C4}
   .roster .rc.cand{outline:2px dashed var(--leaf);outline-offset:1px}
+  .roster .rc .sd{font-size:8px;letter-spacing:1px;color:var(--dim);margin-left:1px;vertical-align:1px} .roster .rc.sel .sd{color:#EFB7C4}
   canvas{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
   .armed{background:var(--leaf)!important;color:#fff!important}
   .con{font-size:12px;padding:5px 8px} .con small{display:block;font-size:10px}
@@ -151,7 +152,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.33</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.34</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -222,7 +223,10 @@ var L="vi";
 var STR={
   sub:{vi:"mười nhân với không vẫn bằng không",en:"ten times zero is still zero"},
   hui:{vi:"Góp hụi",en:"Join hụi"}, build:{vi:"Tự xây",en:"Build yours"},
-  pot:{vi:"Hốt hụi",en:"Take the pot"}, potH:{vi:"🌱 +6% · sông −1 · 1⚡",en:"🌱 +6% · river −1 · 1⚡"},
+  pot:{vi:"Hốt hụi",en:"Take the pot"},
+  wrongTai:{vi:"“Cái này tôi làm được rồi mà… chuyện của tôi ở chỗ khác.”",en:"“This part I can already do… my trouble is somewhere else.”"},
+  wrongGan:{vi:"“Tôi đâu có sợ… chuyện của tôi ở chỗ khác.”",en:"“It isn't nerve I lack… my trouble is somewhere else.”"},
+  wrongBan:{vi:"“Bạn bè thì tôi không thiếu… chuyện của tôi ở chỗ khác.”",en:"“Friends I don't lack… my trouble is somewhere else.”"}, potH:{vi:"🌱 +6% · sông −1 · 1⚡",en:"🌱 +6% · river −1 · 1⚡"},
   next:{vi:"MÙA SAU ▶",en:"NEXT SEASON ▶"},
   tai:{vi:"TÀI",en:"SKILL"}, gan:{vi:"GAN",en:"NERVE"}, ban:{vi:"BẠN",en:"ALLIES"},
   teach:{vi:"Dạy",en:"Teach"}, nerve:{vi:"Đêm thất bại",en:"Failure night"}, link:{vi:"Kết nối",en:"Connect"},
@@ -291,7 +295,7 @@ function makeCast(){ return [
    qc:{vi:"“Hai mươi năm dạy học, chưa ai đóng cửa lớp của tôi.”",en:"“Twenty years teaching — no one ever shut my classroom.”"},
    chat:[{vi:"“Học trò cũ vừa ghé thăm.”",en:"“An old student dropped by.”"},{vi:"“Chấm bài xong lại muốn viết.”",en:"“Every stack of grading makes me want to write.”"}],chatS:{vi:"“Trời này, học trò đến lớp ướt hết.”",en:"“Weather like this, the kids arrive soaked.”"}},
   {id:3,name:"Anh Vũ",tai:5,gan:6,ban:3,color:"#5a7d62",hat:true,hx:300,hy:420,
-   q:{vi:"“Sửa được mọi máy trong xóm — trừ đời mình.”",en:"“I can fix every machine in this xóm — except my own life.”"},
+   q:{vi:"“Sửa được mọi máy trong xóm — trừ đời mình. Cả ngày chỉ có máy nói chuyện với tôi.”",en:"“I can fix every machine in this xóm — except my own life. All day, only the machines talk to me.”"},
    qh:{vi:"“Hoá ra xóm này khối người khéo tay — hơn tôi tưởng nhiều.”",en:"“Turns out this xóm is full of clever hands — far more than I thought.”"},
    qb:{vi:"“Tiệm sửa–chế của tôi. Hỏng gì cứ mang tới.”",en:"“My fix-and-make shop. Bring me anything broken.”"},
    qt:{vi:"“Tiệm có thợ phụ rồi. Tôi chỉ còn sửa cái khó.”",en:"“The shop has helpers now. I only fix the hard ones.”"},
@@ -1311,7 +1315,9 @@ function workshop(s,now){
   ctx.font=FONT_LBL; ctx.fillStyle="#2B2320"; ctx.textAlign="center";
   var word=tr===1?(L==="vi"?"gánh":"stall"):tr===2?(L==="vi"?"xưởng":"shop"):(L==="vi"?"thương hiệu":"brand");
   var lbl=(S.sel===s.pid||s.yours)?(word+" "+s.owner):word;
-  haloText(lbl, x, y+30*sc+11+(LKF-1)*6);
+  // the workshop's own word was never registered either, so a villager's name printed straight through it
+  var lblW=ctx.measureText(lbl).width, lblX=Math.max(16+lblW/2,Math.min(W-16-lblW/2,x)), lblY=y+30*sc+11+(LKF-1)*6;
+  haloText(lbl, lblX, lblY); lblR.push([lblX,lblY,lblW]);
   ctx.textAlign="left";
 }
 function person(p,now){
@@ -1395,8 +1401,11 @@ function person(p,now){
   var ny=ly2, ok=false;
   for(var t2=0;t2<4;t2++){ var cy=ly2+t2*13*LKF;
     if(!hits(nx,cy,lw) && !(hint&&hits(hx2,cy+gap,hw))){ ny=cy; ok=true; break; } }
+  // the one you are talking to is never suppressed — if the ground below is full, look for clear air above
+  if(!ok && S.sel===p.id) for(var t4=1;t4<3;t4++){ var uy=ly2-t4*13*LKF;
+    if(!hits(nx,uy,lw) && !(hint&&hits(hx2,uy+gap,hw))){ ny=uy; ok=true; break; } }
   if(ok||S.sel===p.id){
-    if(!ok) ny=ly2;   // the one you are talking to always prints, in place, whatever else is there
+    if(!ok) ny=ly2;   // nowhere clear at all: print in place rather than leave them nameless
     haloText(p.name,nx,ny); lblR.push([nx,ny,lw]);
     if(hint){
       ctx.font=FONT_HINT; ctx.fillStyle="#C1443C";
@@ -1530,10 +1539,16 @@ function unlockCheck(){
 
 // ---------- actions ----------
 function spend(){ if(S.acts<=0) return false; S.acts--; S.hands=(S.hands|0)+1; render(); return true; }   // every hand is counted — the ending asks what they bought
+// 🔎 a hand in the wrong place gets an answer in the person's own voice — once per factor, only while you were still guessing (row unknown), and only
+// when the hand landed on their STRONGEST factor while a real zero (≤3) sat elsewhere. No number, no narrator: the number arrives with the float; the sentence is theirs.
+function guessAnswer(p,k){ if(!p||p.started||seenAll(p)) return; var m=Math.min(p.tai,p.gan,p.ban), M=Math.max(p.tai,p.gan,p.ban);
+  if(m>3||p[k]!==M||p[k]===m) return; p.wrongSaid=p.wrongSaid||{}; if(p.wrongSaid[k]) return; p.wrongSaid[k]=true;
+  var line={tai:STR.wrongTai,gan:STR.wrongGan,ban:STR.wrongBan}[k];
+  (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,ln[L]); },900); })(p,line); }   // after the float, not over it
 function actTeach(){ var p=cur(); if(!p||S.acts<=0||p.tai>=10||S.over||conBan(3)) return; if(!spend())return;
-  p.tai=Math.min(10,p.tai+2); S.hintDone=true; beep(659*(1+(Math.random()-0.5)*0.015),0.08); floatOn(p,"+2 "+t("tai"),"#2E4A62"); renderSheet(); save(); }
+  guessAnswer(p,"tai"); p.tai=Math.min(10,p.tai+2); S.hintDone=true; beep(659*(1+(Math.random()-0.5)*0.015),0.08); floatOn(p,"+2 "+t("tai"),"#2E4A62"); renderSheet(); save(); }
 function actNerve(){ var p=cur(); if(!p||S.acts<=0||p.gan>=10||S.over) return; if(!spend())return;
-  p.gan=Math.min(10,p.gan+2); S.hintDone=true; beep(440*(1+(Math.random()-0.5)*0.015),0.08); floatOn(p,"+2 "+t("gan"),"#C1443C");
+  guessAnswer(p,"gan"); p.gan=Math.min(10,p.gan+2); S.hintDone=true; beep(440*(1+(Math.random()-0.5)*0.015),0.08); floatOn(p,"+2 "+t("gan"),"#C1443C");
   // a failure night is communal — everyone who has fallen listens, and fears a little less
   var lifted=0;
   S.cast.forEach(function(o){ if(o!==p&&active(o)&&o.crushCount>0&&!o.started&&o.gan<10){ o.gan=Math.min(10,o.gan+1); lifted++;
@@ -1557,7 +1572,7 @@ function completeLink(otherId){
   // the FIRST close friend changes a person (+2); every later connection adds a little (+1) — no pair-farming
   function linksOf(id){ return S.pairs.filter(function(pr){return pr[0]===id||pr[1]===id;}).length; }
   var gA=again?1:(linksOf(a.id)===0?2:1), gB=again?1:(linksOf(b.id)===0?2:1);
-  a.ban=Math.min(10,a.ban+gA); b.ban=Math.min(10,b.ban+gB); S.hintDone=true;
+  guessAnswer(a,"ban"); a.ban=Math.min(10,a.ban+gA); b.ban=Math.min(10,b.ban+gB); S.hintDone=true;
   if(!again) S.pairs.push(key);
   floatOn(a,"+"+gA+" "+t("ban"),"#6C8F3D"); floatOn(b,"+"+gB+" "+t("ban"),"#6C8F3D"); beep(587,0.08);
   logMsg(again?("🤝 "+a.name+" và "+b.name+" — họ đã quen nhau rồi."):("🤝 "+a.name+" — "+b.name+"."),
@@ -1654,7 +1669,16 @@ function actBuild(){ if(!S.un.build||S.over||S.acts<=0||S.built) return; if(!spe
   }
   render(); renderSheet(); save();
 }
-function see(p,k){ if(!p) return; if(!p.seen) p.seen={tai:false,gan:false,ban:false}; p.seen[k]=true; }
+function see(p,k){ if(!p) return; if(!p.seen) p.seen={tai:false,gan:false,ban:false};
+  var was=seenAll(p); p.seen[k]=true;
+  // the row completes: three numbers touched, the multiplication readable — the person notices you noticed
+  if(!was&&!p.started&&seenAll(p)&&!p._rowSeen&&S&&!S.over){ p._rowSeen=true; var ctok=runTok;
+    setTimeout(function(){ if(S.over||runTok!==ctok||p.started) return;
+      bubble(p,(L==="vi")?"“Giờ thì bạn hiểu tôi rồi đấy.”":"“Now you know me.”"); voice(p,0.06);
+      var zk=zeroOf(p); if(zk&&!S.rowSeenOnce){ S.rowSeenOnce=true;
+        logMsg("🔎 "+p.name+" — cả ba thừa số đã hiện. Thừa số thấp nhất: "+zk+". Tay nào nâng đúng nó, tích mới chạy.",
+               "🔎 "+p.name+" — all three factors showing. Lowest: "+zk+". Only the hand that raises it makes the product move."); }
+    },1400); } }
 function seenAll(p){ return !!p&&(p.started||(!!p.seen&&p.seen.tai&&p.seen.gan&&p.seen.ban)); }   // a bloom shows everything; until then, only what your hands (or the season) have touched
 function floatOn(p,txt,col){ bubbles.push({p:p,lay:layoutBubble(txt),at:performance.now(),until:performance.now()+1200});
   // every number that floats over a person is a number the player has now SEEN — teach, nerve, link, drip, class, witness, fade, the elder's clock
@@ -2191,7 +2215,9 @@ function renderRoster(){
     var cls="rc"+(p.known?"":" unk")+(S.sel===p.id?" sel":"")+((S.linking!=null&&S.linking!==p.id&&p.known&&!pairExists(S.linking,p.id))?" cand":"");
     var z=(p.known&&!p.started)?zeroOf(p):null, tag=p.started?(tierOf(p)>=3?"🪜🪜🪜":tierOf(p)===2?"🪜🪜":"🌸"):(z?("<small>"+(hasZero(p)?"×0 ":"")+z+"</small>"):((p.known&&(p.mom||0)>0)?"🌱":""));
     var nm=p.known?p.name:(L==="vi"?"?":"?");
-    h+="<div class=\""+cls+"\" data-id=\""+p.id+"\"><i style=\"background:"+p.color+"\"></i>"+nm+(tag?" "+tag:"")+"</div>"; });
+    // three dots per known, un-bloomed person: which of TÀI · GAN · BẠN your hands have touched — the row's progress, at a glance
+    var dots=(p.known&&!p.started)?("<span class=\"sd\" title=\"TÀI · GAN · BẠN\">"+["tai","gan","ban"].map(function(k){ return (p.seen&&p.seen[k])?"●":"○"; }).join("")+"</span>"):"";
+    h+="<div class=\""+cls+"\" data-id=\""+p.id+"\"><i style=\"background:"+p.color+"\"></i>"+nm+dots+(tag?" "+tag:"")+"</div>"; });
   if(box.innerHTML!==h) box.innerHTML=h;
 }
 function renderLog(){

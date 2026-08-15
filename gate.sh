@@ -284,6 +284,76 @@ PYEOF11
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/h.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "HIDDEN_OK" && pass "hidden until touched: $T" || fail "hidden until touched: $T"
 
+# Gate 12: a hand in the wrong place gets an answer — teach Bé Ngân (her strongest factor, while GAN sits at 1) and she says so in her
+# own voice ~0.9s later; a second teach says nothing more; nerve (the zero) draws no such line.
+python3 - "$TMP" <<'PYEOF12'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+function wrongCount(){ return bubbles.filter(function(b){ return b.p===S.cast[0] && b.lay.lines.join(" ").indexOf(STR.wrongTai[L].slice(1,12))>=0; }).length; }
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  var ng=S.cast[0]; ng.tai=8; ng.gan=1; ng.ban=4;
+  selectPerson(0); S.acts=3;
+  actTeach(); var w0=wrongCount();                       // nothing yet — the answer follows the float
+  setTimeout(function(){ var w1=wrongCount();
+    actTeach(); setTimeout(function(){ var w2=wrongCount();
+      actNerve(); setTimeout(function(){ var w3=wrongCount(), nerveWrong=bubbles.some(function(b){ return b.p===S.cast[0] && b.lay.lines.join(" ").indexOf(STR.wrongGan[L].slice(1,10))>=0; });
+        var ok = w0===0 && w1===1 && w2===1 && w3===1 && !nerveWrong;
+        document.title=(ok?"VOICE_OK":"VOICE_BAD")+" beforeDelay="+w0+" afterTeach="+w1+" secondTeach="+w2+" afterNerve="+w3+" nerveWrong="+nerveWrong;
+      },1200); },1200); },1200);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/v.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF12
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=8000 --dump-dom "file://$TMP/v.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "VOICE_OK" && pass "the wrong place answers: $T" || fail "the wrong place answers: $T"
+
+# Gate 13: the names stay readable — six villagers jammed into 150px of the far bank must produce no
+# label printed over another villager's label, and no label crossing the printed frame.
+# Overlap is measured on the TRUE ink box (actualBoundingBox*), not an estimate: a coarser box counts
+# each villager's own name/hint pair as a collision and the number stops meaning anything.
+python3 - "$TMP" <<'PYEOF12'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+var _lbl=[],_pid=-1;
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<7;s++){ try{ S.acts=3; nextSeason(); }catch(e){} }
+  var _oh=haloText;
+  haloText=function(txt,x,y){ var m=ctx.measureText(txt);
+    _lbl.push({x:x-m.width/2,y:y-m.actualBoundingBoxAscent,w:m.width,
+               h:m.actualBoundingBoxAscent+m.actualBoundingBoxDescent,pid:_pid}); return _oh(txt,x,y); };
+  var _op=person;
+  person=function(p,now){ _pid=p.id; try{ return _op(p,now); } finally{ _pid=-1; } };
+  var crowd=S.cast.filter(function(p){return !p.gone;});
+  crowd.forEach(function(p,i){ p.known=true; p.started=false; p.amb=0; p.beh=1;
+    p.tai=2; p.gan=1; p.ban=8; p.x=760+i*30; p.hx=p.x; p.drawX=p.x; p.y=430; p.hy=430; });
+  bubbles=[]; S.banner=null; S.sel=crowd[0].id;
+  setTimeout(function(){
+    _lbl.length=0; drawScene(performance.now());
+    var cross=0,bleed=0,i,j;
+    for(i=0;i<_lbl.length;i++){ var l=_lbl[i]; if(l.x<9||l.x+l.w>W-9) bleed++;
+      for(j=i+1;j<_lbl.length;j++){ var a=_lbl[i],b=_lbl[j];
+        if(a.pid===b.pid&&a.pid>=0) continue;   // a villager's own name over their own hint is the design's line spacing
+        if(a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y) cross++; } }
+    var ok = cross===0 && bleed===0 && _lbl.length>=4;
+    document.title=(ok?"LABEL_OK":"LABEL_BAD")+" labels="+_lbl.length+" cross="+cross+" bleed="+bleed;
+  },800);
+}catch(e){ document.title="THREW: "+e.message; } },500);
+</script>"""
+open(tmp+"/l.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF12
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=600,900 --virtual-time-budget=9000 --dump-dom "file://$TMP/l.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "LABEL_OK" && pass "the names stay readable: $T" || fail "the names stay readable: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."
