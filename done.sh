@@ -62,6 +62,28 @@ else
                                                 || no "live is ${LIVE_V:-unreachable}, repo is $REPO_V — shipped work is invisible"
 fi
 
+# 7. Open owner directives — a note under "OWNER NOTES BELOW" outranks everything and MUST open
+#    Gear 1. Without this the loop reads the note, finds every gate green, and goes back to vigil.
+#    A directive is a `## ` heading in the notes section; it is closed by a `> RESOLVED …` line
+#    under it (the loop writes that when it ships the work).
+DIRECTIVES=$(python3 - <<'PY'
+import io,re
+try: s=io.open('OWNER-GATE.md',encoding='utf-8').read()
+except Exception: print(0); raise SystemExit
+notes=s.split('<!-- OWNER NOTES BELOW -->',1)
+if len(notes)<2: print(0); raise SystemExit
+blocks=re.split(r'^## ',notes[1],flags=re.M)[1:]
+open_=[b.split('\n',1)[0].strip() for b in blocks if not re.search(r'^> *RESOLVED',b,flags=re.M)]
+print(len(open_))
+for t in open_[:3]: print('   ↳ '+t[:88])
+PY
+)
+NDIR=$(printf '%s' "$DIRECTIVES" | head -1)
+if [ "${NDIR:-0}" != "0" ]; then
+  no "$NDIR open owner directive(s) — these outrank every gate"
+  printf '%s\n' "$DIRECTIVES" | tail -n +2
+else ok "no open owner directives"; fi
+
 echo
 echo "── owner gates (OWNER-GATE.md) ────────────────────────"
 # grep -c prints 0 and exits 1 when nothing matches — no `|| echo 0` fallback, that double-prints.
