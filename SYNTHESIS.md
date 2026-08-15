@@ -1019,3 +1019,42 @@ reality:** blocked by X like everything else; collides with no owner surface unt
 in substance, the ladder is blocked on X, and the loop reports the ladder as owner-blocked and keeps
 converging (Gear 1) — it does not propose forms (§31) and does not climb to L4 on a counter that X
 makes unexecutable.
+
+## 34. Review — candidate Y "a fair opponent" · **REJECTED 3/3** · but the review found a defect candidate
+
+- **Drift — REJECT.** M₁ is chosen, not measured (today's fair gap 0.49; a single price knob yields
+  M₁ anywhere in [0.6, 8.9] — "measured then frozen" is the loop picking its bar); the meta-gate has
+  no floor (any clause > 0.49 is RED on the snapshot — proves novelty, not difficulty); the clause
+  is a *difference*, so a reward for being right (+3) passes it while making the game strictly
+  easier (hunter 16.16 → 19.47, 7.00/7); `maxerU < 0.6` unreachable by the named lever jointly with
+  M₁; ε unstated (the null gate that killed B); the misreader guard is toothless (errs on ~2 of 25
+  acts); `checkjs-fresh` is a timestamp compare, not a fidelity check. Precedent: ledgered
+  `tiers.maxer < 0.4·hunter` passes at 0.31 only because the sim's maxer wastes acts on capped
+  factors — cap-faithful **maxerU is 0.83–0.88**.
+- **Thesis — REJECT.** Y is an era of the loop's instrument, not of the game (LADDER: a gate is L1);
+  the frozen margins are unreachable by the one lever Y licenses and reachable only by gutting the
+  world-lifts the record calls thesis-TRUE; the band stays false after Y (`whoNear` — highest
+  product, own min — scores +1.24 *above* the hunter and Y adds no clause for it); a subtractive
+  fine inside a multiplicative thesis teaches "avoid the fee" (§3 routed, §2 scolds).
+- **Substance — REJECT.** Two of three steps ship nothing to a stranger; step 3 is fenced to
+  constants; no visible channel exists for a tier-pill difference; **the true half needs no era and
+  no X**: re-ran the shipped sim on today's math — `spreaderU` 6.76/15.55 (Δ0.55 vs a `+3` clause),
+  `maxerU` 5.65/14.15 = **88 %** of hunter tiers while shipped Gate 0 certifies `maxer < 0.4·hunter`
+  at 0.31 on a cap-unfaithful maxer — *a shipped rubber stamp, a defect, Gear-1-licensable*; the
+  lab's Δ0.33/98 % numbers are two versions stale. *Backs the null: file spreaderU/maxerU as a
+  defect, tighten Gate 0 as convergence, report the ladder owner-blocked.*
+
+**Disposition.** Synthesis 6 ends with no survivor. Per §31/§33 the loop does **not** climb: X
+blocks execution of anything, forms are not proposed, and this synthesis is recorded (not counted
+as a fresh exhaustion — its one candidate was an instrument, which the thesis critic rightly calls
+L1). **The ladder is owner-blocked; the loop keeps converging.**
+
+**What the review produced instead:** the numbers were reproduced by the loop in `lab/fairopp.js`
+(shipped `check.js` + two fair strategies, N=4000): fair gap **0.46 tiers** vs a `+3` clause on the
+wasteful spreader; **maxerU/hunter 0.878** vs a `< 0.4` clause satisfied at 0.31 by the wasteful
+maxer. Recorded in `lab/NOTES.md` **without a verdict** — the independent grader decides whether a
+gate that passes by its opponent's waste is a *defect*; if it is, tightening Gate 0 with the fair
+opponents becomes Gear 1 work the loop must do (ratchet-up: the old clauses stay; new clauses are
+added at margins the *current* game meets — a rubber stamp replaced by a bar it can barely clear is
+still a bar; and the drift critic's warning stands: no clause may be a bare difference that a
+reward could inflate — bound it with `misreaderU` and an idle ceiling).

@@ -19,6 +19,42 @@ argues for or against.
      **Measured:** …
      **Argues for/against:** <candidate era>  -->
 
+## 2026-08-15 — the band's opponents are wasteful: a fair spreader sits 0.46 tiers under the hunter and a cap-faithful maxer keeps 88 % (`fairopp.js`)
+
+**Provenance.** Two independent critics reviewing candidate Y (`SYNTHESIS.md` §32–34) each extended
+`check.js` in a `/tmp` copy and reported the same shape of number; this entry reproduces it in
+`lab/fairopp.js` — `check.js` verbatim plus two strategies and two accumulators, no other change,
+so the numbers are the shipped sim's own.
+
+**Built.** `spreaderU`: every act lands — an unstarted person, a factor below 10, chosen at random
+(the shipped `spreader` picks any person including bloomed ones and any factor including capped
+ones, so ~half its acts are no-ops — `decide.js` §1 measured 50.7 %). `maxerU`: highest-product
+unstarted person, its highest factor *that is still below 10* (the shipped `maxer` keeps hitting
+a factor already at 10 once the strongest is capped — a no-op the assertion counts as play).
+
+**Measured (N=4000 seeds; N=1200 in parentheses, the gate's own N).**
+- hunter **6.98 blooms / 16.16 tiers** (6.97 / 16.10)
+- spreader (shipped, wasteful) 9.9 tiers → gate clause `tiers.hunter > tiers.spreader + 3` holds by **6.2**
+- **spreaderU 6.78 / 15.69** (6.76 / 15.55) → fair gap **0.46 tiers** (0.55); blooms −0.20
+- maxer (shipped, cap-unfaithful) 5.0 tiers → clause `tiers.maxer < 0.4·tiers.hunter` holds at **0.31**
+- **maxerU 5.65 / 14.18** (5.65 / 14.15) → **maxerU/hunter = 0.878** (0.879)
+- misreader (v0.35 clause) unchanged at 6.98
+
+**Observation.** Both Gate 0 clauses that are supposed to prove "diagnosis beats non-diagnosis"
+pass by the *waste* of the opponent, not by the diagnosis of the hunter: remove the waste and the
+spreader gap shrinks 6.2 → 0.46 (the `+3` clause would be red), and anti-diagnosis on both axes
+keeps 88 % of rooted depth (the `< 0.4` clause would be red at 0.6, 0.7 or 0.8). This is the
+`decide.js` §1 finding, re-measured after v0.38's ceilings (which moved it 0.33 → 0.46 — the
+ceilings help, a little) and stated as a property of the *shipped gate*, not of the game: the
+gate's own opponents are straw. Nothing here says the game is easy; it says the band cannot tell.
+
+**Argues for:** an instrument that uses fair opponents with a stated margin (the six pass
+conditions recorded in `SYNTHESIS.md` §9.2 and §30). **Argues against:** citing Gate 0 as proof
+that "the multiplication teaches itself" until its opponents land their acts.
+
+**Harness:** `lab/fairopp.js` — `node lab/fairopp.js` prints a `FAIR:` line beside the shipped
+band. Gitignored except this note.
+
 ## 2026-08-15 — three floors, one word: what "số không" means after v0.30/v0.31 (`threefloors.js`)
 
 Between 15:06 and 15:27 the owner's two other sessions shipped v0.29–v0.31: the zero now **bites**
