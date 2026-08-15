@@ -1608,7 +1608,7 @@ cv.addEventListener("click",function(e){
     return;
   }
   // hỏi thăm the PLACES — a curiosity tap sends the nearest neighbor over to answer, in their own voice
-  var zone=(my<118)?"s":(my>H-(26+S.von*5.5))?"r":(Math.abs(mx-470)<85&&Math.abs(my-215)<62)?"d":(Math.abs(mx-CHO.x)<60&&Math.abs(my-(CHO.y-34))<40)?"c":(Math.abs(mx-80)<62&&my>150&&my<300)?"b":null;
+  var zone=(my<118)?"s":(my>H-(26+S.von*5.5))?"r":(Math.abs(mx-470)<85&&Math.abs(my-215)<62)?"d":(Math.abs(mx-CHO.x)<60&&Math.abs(my-(CHO.y-34))<40)?"c":(Math.abs(mx-80)<62&&my>150&&my<300)?"b":(mx>648&&mx<870&&my>436&&my<508)?"p":(mx>700&&my>318&&my<362)?"o":null;
   if(!zone) return;
   S.looked=S.looked||{}; if(S.looked[zone]===S.season) return;
   S.looked[zone]=S.season;
@@ -1616,6 +1616,15 @@ cv.addEventListener("click",function(e){
   S.cast.forEach(function(p){ if(!active(p)||!p.known) return; var d2=Math.hypot(p.x-mx,p.y-my); if(d2<nd){nd=d2;near=p;} });
   if(!near) return;
   var LOOK={
+    p:[ [S.season%4===0,"“Mạ mới cấy. Nước có, đất có — còn lại là chờ.”","“Seedlings just planted. Water, soil — the rest is waiting.”"],
+        [S.season%4===1,"“Lúa đang con gái. Trời cứ thế này thì được.”","“The rice is in its green. Sky like this and we're fine.”"],
+        [S.season%4===2&&S.luat<4,"“Lúa chín mà mưa. Gặt vội thôi.”","“Ripe rice, and rain. We cut fast.”"],
+        [S.season%4===2,"“Lúa chín. Ai rảnh thì ra gặt phụ.”","“It's ripe. Whoever's free comes to cut.”"],
+        [true,"“Gốc rạ thôi. Ruộng nghỉ, người cũng nghỉ.”","“Just stubble. The field rests, so do we.”"] ],
+    o:[ [S.yearCard===2,"“Đường mới — hàng ra tới huyện được giá gấp đôi.”","“The new road — goods reach the district at double the price.”"],
+        [S.cast.some(function(q){return q.gone;}),"“Đường này đưa người về, rồi cũng đưa người đi.”","“This road brings people home. It takes them away too.”"],
+        [S.cast.some(function(q){return q.id!==6&&!q.gone&&q.arrives===S.season+1;}),"“Mai lại có người về xóm đấy.”","“Someone comes home tomorrow.”"],
+        [true,"“Ai trong xóm cũng từng đi con đường này về.”","“Everyone in this xóm came home down this road.”"] ],
     b:[ [S.baFade&&!S.cast[1].started&&!S.apprentice,"“Chú Ba hay ngồi gốc đa này kể chuyện men gốm. Dạo này ít kể.”","“Chú Ba used to sit under this banyan and talk glaze. Less, lately.”"],
         [S.cast[6].gone,"“Cô Liên hồi nhỏ trèo cây đa này suốt. Giờ lại đi rồi.”","“Cô Liên climbed this banyan as a kid. Gone again now.”"],
         [S.pairs.length>=3,"“Bao nhiêu mối trong xóm này, mối nào cũng buộc từ gốc đa.”","“Every bond in this xóm was tied under this banyan first.”"],
@@ -1636,7 +1645,7 @@ cv.addEventListener("click",function(e){
         [true,"“Sạp này còn chờ đồ khéo tay. Nhà ai làm ra thứ gì, cứ mang ra đây.”","“This stall waits on fine handiwork. Whoever makes something — bring it here.”"] ]
   };
   var line=null; LOOK[zone].some(function(l3){ if(l3[0]){ line=l3; return true; } return false; });
-  var zx=zone==="r"?BEN.x+40:zone==="d"?DINH.x:zone==="s"?near.hx:zone==="b"?112:CHO.x, zy=zone==="r"?peopleFloor():zone==="d"?DINH.y+8:zone==="s"?near.hy:zone==="b"?292:CHO.y-2;
+  var zx=zone==="r"?BEN.x+40:zone==="d"?DINH.x:zone==="s"?near.hx:zone==="b"?112:zone==="p"?700:zone==="o"?820:CHO.x, zy=zone==="r"?peopleFloor():zone==="d"?DINH.y+8:zone==="s"?near.hy:zone==="b"?292:zone==="p"?436:zone==="o"?352:CHO.y-2;
   if(zone!=="s") visit(near,zx,zy,6000);   // asking about the sky: nobody walks anywhere — they answer from where they stand
   voice(near,0.06);
   (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,(L==="vi")?ln[1]:ln[2]); },1400); })(near,line);

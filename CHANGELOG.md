@@ -67,7 +67,10 @@ says what the storm will roll against their roof.
 - **The shelter button says what it covers** — *(1⚡ · 2 mái)* — like the hụi's *×0.65→0.72* and
   the sheet's *→ N%*.
 - *Evidence:* new **Gate 23** (`LAW_OK clear=true young15=true old5=true shelCost="(1⚡ · 1 mái)"
-  tarped0=true`). Twenty-four gates green, hash-bracketed; no balance changed.
+  tarped0=true`). Twenty-four gates green, hash-bracketed; no balance changed. Honest note: in the
+  bracket loop one run went red on a *stable* hash (the failing line was not captured), then nine
+  consecutive green runs on the same file — a timing flake somewhere in the headless harness, not
+  reproduced; recorded here so the next red is chased, not shrugged off.
 
 ## v0.40 — 2026-08-15 — the world keeps the ceiling's word, and lifts BẠN (the mechanic half of v0.40)
 
