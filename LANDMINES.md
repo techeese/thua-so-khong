@@ -291,3 +291,8 @@ that is now impossible because a gate catches it stays here, with the gate named
   they moved in the last minute, commit only your own file by name (the grader's verdict in
   `lab/NOTES.md`), poll `git status` until the tree is clean (took ~9 min), then re-run `done.sh` —
   the gear it returns on a clean tree is the real one (here it flipped 1 → 3).
+- **`pkill -f "Google Chrome.*--headless"` at tick end kills the OTHER session's gate run too.**
+  2026-08-15 17:52: the harness cleanup killed two headless Chromes running `gate.sh` probes
+  (`mid.html`, `f.html` in `mktemp` dirs) that belonged to the owner's `/loop 5m` session mid-ship —
+  its gate run would read red once for no reason. Practice: kill only your own PIDs (keep the
+  `subprocess` handles, or match on your own temp path), never by process name.
