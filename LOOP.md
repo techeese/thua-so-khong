@@ -105,11 +105,13 @@ the pot pays out (Gate 10); "price for being wrong" re-measured and found paid b
 now a **graphics** loop (*"review it and make some upgrade/change/adjustment in the graphic,
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
-carried from the other. Next for the graphics loop, in order: **person labels and the `số không: X`
-tags overlap each other and the palm on the right bank** when three villagers stand close — the
-de-overlap treatment bubbles just got, applied to `haloText`; the far bank is tasteful but nearly
-invisible under a heavy sky — decide whether that is the point or too timid; the roster strip
-scrolls with no affordance that it scrolls. Remaining mechanic bank: the ending card calling a ≤3-factor person
+carried from the other. Label de-overlap **shipped in v0.34** (Gate 13: cross-overlaps 4 → 0, frame
+bleed 2 → 0 on a six-villager jam). Next for the graphics loop, in order: **the bank is denser than
+it can label** — in that same jam only 3 of 6 villagers get a name, the rest still yield; decide
+whether the answer is a quieter tag, labels on demand, or spreading the crowd, and note that v0.33's
+hidden factors already cut how much there is to print; the far bank is tasteful but nearly invisible
+under a heavy sky — decide whether that is the point or too timid; the roster strip scrolls with no
+affordance that it scrolls. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; a blind-hunter in `check.js` is
 **identical to the hunter by construction** (every authored zero is the quote's clue and jitter keeps
 it the minimum) — so band the *misreader* instead if anything: a hunter whose first hand on each
