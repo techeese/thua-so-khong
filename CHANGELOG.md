@@ -18,6 +18,45 @@ lands *before* the circle looks; the lift filter is `!started`, so `lifted` read
   why this is convergent work and not polish. Recorded in `GATES-LEDGER.md` → Tightenings and
   `LANDMINES.md`.
 
+## v0.65 — 2026-08-15 — the ending title never runs under the stamp
+
+A graphics round from the owner's `/loop 5m` session, alternating back to **measuring** after a looking
+tick. The combination that had never been varied was the densest surface in the hardest conditions:
+the **ending card, in English, at 320px**.
+
+- **A wrapping title ran straight under the corner stamp.** The `.seal` is absolutely placed at the
+  card's top-right and the `h2` is full-width and centred, so *"It bloomed through the storms"* — one
+  line on a 520px card, **two** on a 288px one — put its second line under the stamp: **51×24px of
+  overlap**, reproducible across runs. Fixing that then exposed a second case the first sample had
+  missed: even at 520px the long title reaches the stamp by **6px**.
+- **Two rules, one for each case.** On a wide card the title reserves the stamp's width on *both* sides,
+  so it stays optically centred and can never reach the corner. On a narrow card there is no room beside
+  the stamp at all, so the title drops below it and takes the full width back. The stamp keeps its
+  corner in both.
+- **Keyed off the card, not the viewport.** A headless probe cannot make a window narrower than ~500px,
+  so a viewport media query here could never be verified — the card is a CSS container and the rule is a
+  container query, which a probe *can* drive by constraining the overlay. This is the same class of
+  problem as forced-colors, solved rather than declined.
+- *Evidence:* new **Gate 50**, at card widths **288px and 520px** in English, measured on the title's
+  **line boxes** rather than the `h2` element box — the box is full width and centred, so it always spans
+  the seal and always reports a collision whether or not any ink is there (my first measurement said
+  `collides=true` at both widths and meant nothing). Negative-tested with the rules removed:
+  `SEAL_BAD overlapArea=1240` at 288px and `150` at 520px.
+
+## v0.64 — 2026-08-15 — a paid forecast prints next season's odds
+
+Closes: under the owner's standing `/loop 3m` directive, the gap in the probe → shelter loop. A
+season's stamps roll against the *current* sky, so what a bought forecast (☁️ next season) tells you
+is which roof to tarp **for next season** — but v0.41's `⬛ 15%` line printed only under a heavy sky
+today, so the player who paid a hand to know saw nothing on the roof they were deciding about.
+
+- **`stormLine()` reads the forecast.** Clear today + a paid heavy forecast → *⬛ 15% mùa tới* on a
+  young roof, *⬛ 5% mùa tới* on an established one (a newborn is one season older by then, so it
+  counts as young, not immune); a heavy sky today still says *mùa này*; an unread forecast prints
+  nothing — you paid for the number, and now you get it where the hand goes.
+- *Evidence:* new **Gate 49** (`FORECAST_OK unread=true young=true old=true today=true`); Gate 23
+  still green. Gates green, hash-bracketed. No balance changed.
+
 ## v0.63 — 2026-08-15 — a name is never buried by a body
 
 A graphics round from the owner's `/loop 5m` session. Two ticks had found nothing, so this one went

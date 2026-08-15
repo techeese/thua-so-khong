@@ -412,3 +412,15 @@ that is now impossible because a gate catches it stays here, with the gate named
   the ending card. The intro and the Sổ tay inherit it correctly: at 673/433/353px tall the intro's
   Begin button and the Sổ tay's Đóng button are both reachable, the intro card never outgrows the
   window, and the Sổ tay's own 88vh cap plus inner scroll (v0.42) handles its case.
+- **A centred full-width heading always "collides" with an absolutely-placed corner element — measure
+  the LINE BOXES.** The ending card's `h2` spans the whole card, so its element box overlaps the seal at
+  every width and the first measurement reported `collides=true` on both a 288px and a 520px card,
+  which was true and useless. `Range.selectNodeContents(h2).getClientRects()` gives the actual line
+  boxes; only those tell you whether any ink is under the stamp.
+- **A container query cannot style its own container.** `#endOvl .card{container-type:inline-size}` plus
+  `@container{ #endOvl .card{...} }` silently does nothing — the rule must target a DESCENDANT (here the
+  `h2`). Cost one round of "the fix is applied but the measurement has not moved".
+- **Prefer a container query to a viewport media query in anything a probe must verify.** Headless
+  Chrome floors window width near 500px, so a `@media (max-width:400px)` rule can never be exercised
+  here; a container query can, by constraining the container in the probe. This turned an unverifiable
+  fix into a gated one.

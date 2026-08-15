@@ -1521,6 +1521,89 @@ PYEOFBURY
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,800 --virtual-time-budget=9000 --dump-dom "file://$TMP/by.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "BURY_OK" && pass "a name is never buried by a body: $T" || fail "a name is never buried by a body: $T"
 
+# Gate 49: a paid forecast prints next season's odds — clear sky today, forecast heavy and read: a young roof's sheet says ⬛ 15% mùa tới, an
+# established one ⬛ 5% mùa tới; the same forecast unread prints nothing; a heavy sky today still says mùa này.
+python3 - "$TMP" <<'PYEOF48'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.season=6; S.acts=3; S.un.probe=true;
+  var mai=S.cast[2], vu=S.cast[3]; mai.known=true; vu.known=true; mai.started=true; vu.started=true;
+  S.ships.push({x:420,y:300,owner:mai.name,pid:2,age:0,shel:0}); S.ships.push({x:300,y:420,owner:vu.name,pid:3,age:5,shel:0});
+  S.luat=6; S.luatNext=2; S.probeSeen=false; selectPerson(2); var unread=document.getElementById("multLine").textContent, none=!/⬛|🛡/.test(unread);
+  S.probeSeen=true; renderSheet(); var young=document.getElementById("multLine").textContent, y15=/⬛ 15% (mùa tới|next season)/.test(young);
+  selectPerson(3); var old=document.getElementById("multLine").textContent, o5=/⬛ 5% (mùa tới|next season)/.test(old);
+  S.luat=2; renderSheet(); var today=document.getElementById("multLine").textContent, t5=/⬛ 5% (mùa này|this season)/.test(today);
+  var ok=none&&y15&&o5&&t5;
+  document.title=(ok?"FORECAST_OK":"FORECAST_BAD")+" unread="+none+" young="+y15+" old="+o5+" today="+t5;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/fc.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF48
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/fc.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "FORECAST_OK" && pass "a paid forecast prints next season's odds: $T" || fail "a paid forecast prints next season's odds: $T"
+
+# Gate 50: the ending title never runs under the stamp — the seal is absolutely placed in the card's
+# top-right and the title is full-width and centred, so an English title that WRAPS ran straight under
+# it: measured 51×24px of overlap on a 288px card ("It bloomed through the storms" takes two lines
+# there, one line at 520px, which is why it never showed on desktop) and 6px of touch even at 520px.
+# Measured on the TITLE'S LINE BOXES, not the h2 element box — the box is full width and centred, so it
+# always spans under the seal and always reports a collision whether or not any ink is there.
+# The card is a CSS container: a headless probe cannot make a window narrower than ~500px, so a
+# viewport media query here could never be verified, while a container query can.
+python3 - "$TMP" <<'PYEOFSEAL'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+for name,width in (("s320",320),("s560",560)):
+    drv=("<style>html,body{width:%dpx;margin:0 auto}\n.ovl{left:calc(50%% - %dpx)!important;right:auto!important;width:%dpx!important}</style>\n"
+         % (width,width//2,width)) + r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1"); localStorage.removeItem("thua-so-khong-chronicle");
+  setLang("en");
+  document.getElementById("startBtn").click();
+  for(var seas=0; seas<16; seas++){
+    for(var i=0;i<7;i++){ var c=S.cast[i]; if(c&&!c.known&&(c.arrives===undefined||S.season>=c.arrives)&&!c.gone) selectPerson(i); }
+    var un=S.cast.filter(function(p){return p.known&&!p.started&&!p.gone;});
+    un.sort(function(a,b){return Math.min(a.tai,a.gan,a.ban)-Math.min(b.tai,b.gan,b.ban);});
+    if(un.length){ var t=un[0]; selectPerson(t.id);
+      var mk=Math.min(t.tai,t.gan,t.ban);
+      if(mk===t.gan) actNerve(); else if(mk===t.tai) actTeach(); else if(S.un.link&&un.length>1){ actLink(); completeLink(un[1].id); } else actTeach(); }
+    S.nudged=true; nextSeason(); if(S.over) break;
+  }
+  setTimeout(function(){ try{
+    var card=document.querySelector("#endOvl .card");
+    var seal=card.querySelector(".seal"), h2=card.querySelector("h2");
+    var s=seal.getBoundingClientRect();
+    var rg=document.createRange(); rg.selectNodeContents(h2);
+    var lines=[].slice.call(rg.getClientRects()).filter(function(r){ return r.width>1&&r.height>1; });
+    var worst=0;
+    lines.forEach(function(t){
+      var a=Math.max(0,Math.min(s.right,t.right)-Math.max(s.left,t.left));
+      var b=Math.max(0,Math.min(s.bottom,t.bottom)-Math.max(s.top,t.top));
+      if(a>1&&b>1&&a*b>worst) worst=a*b; });
+    var ok = lines.length>=1 && worst===0;
+    document.title=(ok?"SEAL_OK":"SEAL_BAD")+" cardW="+Math.round(card.getBoundingClientRect().width)
+      +" lines="+lines.length+" overlapArea="+Math.round(worst)+" title='"+h2.textContent.slice(0,26)+"'";
+  }catch(e2){ document.title="THREW2: "+e2.message; } },9500);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+    open(tmp+"/"+name+".html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOFSEAL
+SEALFAIL=0; SEALMSG=""
+for W in s320 s560; do
+  T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=700,1000 --virtual-time-budget=26000 --dump-dom "file://$TMP/$W.html" 2>/dev/null | grep -o "<title>[^<]*</title>" | head -1)
+  echo "$T" | grep -q "SEAL_OK" || { SEALFAIL=1; SEALMSG="$SEALMSG [$W → $T]"; }
+done
+[ "$SEALFAIL" -eq 0 ] && pass "the ending title never runs under the stamp (card 288px and 520px, EN)" \
+                      || fail "the ending title never runs under the stamp:$SEALMSG"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

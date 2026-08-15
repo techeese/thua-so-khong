@@ -142,6 +142,19 @@
     border-radius:8px;transform:rotate(7deg);color:#C1443C;display:flex;flex-direction:column;
     align-items:center;justify-content:center;font:700 20px Georgia;opacity:.92;pointer-events:none}
   .seal small{font:700 10px Georgia;letter-spacing:1px}
+  /* An ending title that WRAPS ran straight under the corner stamp: measured 51×24px of overlap on a
+     288px card in English, where "It bloomed through the storms" takes two lines (one line on a 520px
+     card, which is why this never showed on desktop). The card is a container now, so the fix keys off
+     the CARD's width rather than the viewport — a headless probe cannot make a window narrower than
+     ~500px, so a viewport media query here could never be verified. When there is no room beside the
+     stamp, the content simply starts below it; the stamp keeps its corner. */
+  #endOvl .card{container-type:inline-size}
+  /* wide card: the title keeps clear of the stamp by reserving its width on BOTH sides, so it stays
+     optically centred and a long English title cannot reach into the corner (measured 6px of touch
+     at 520px before this). Narrow card: no room beside the stamp at all, so the title goes below it
+     and takes the full width back. */
+  #endOvl .card h2{padding:0 62px}
+  @container (max-width:380px){ #endOvl .card h2{margin-top:56px;padding:0} }
   .card .tag{text-align:center;font-style:italic;color:var(--red);font-weight:700;margin-bottom:12px}
   .card p{font-size:14px;margin:8px 0}
   .card .go{width:100%;background:var(--red);color:#fff;margin-top:10px;padding:12px;font-size:16px}
@@ -210,7 +223,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.63</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.65</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -674,7 +687,27 @@ function renderBook(box){
         st2.textContent=cells.slice(0,4).join("")+" │ "+cells.slice(4,8).join("")+" │ "+cells.slice(8,12).join("")+" │ "+cells.slice(12,16).join("");
         d.parentNode.insertBefore(st2,d.nextSibling); }); }
     box.appendChild(d); });
+  // the book travels: copy it as text to carry to another device, paste one in to merge — the years are yours, not this browser's
+  var tools=document.createElement("div"); tools.style.cssText="justify-content:center;gap:8px;margin-top:5px;border-top:1px dashed rgba(43,35,32,.35);padding-top:5px";
+  var ex=document.createElement("button"); ex.className="con"; ex.textContent=(L==="vi")?"📋 chép sổ":"📋 copy book"; ex.title=(L==="vi")?"chép cả sổ thành chữ — dán vào máy khác":"copy the whole book as text — paste it on another device";
+  var im=document.createElement("button"); im.className="con"; im.textContent=(L==="vi")?"📥 dán sổ":"📥 paste book"; im.title=(L==="vi")?"dán sổ đã chép từ máy khác — gộp vào sổ này":"paste a book copied elsewhere — merged into this one";
+  ex.onclick=function(ev){ ev.stopPropagation(); var txt="TSK-SỔ:"+btoa(unescape(encodeURIComponent(JSON.stringify(loadChron())))); var okc=legacyCopy(txt);
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(function(){ ex.textContent=(L==="vi")?"đã chép ✓":"copied ✓"; },function(){ ex.textContent=okc?((L==="vi")?"đã chép ✓":"copied ✓"):((L==="vi")?"không chép được":"couldn't copy"); }); }
+    else ex.textContent=okc?((L==="vi")?"đã chép ✓":"copied ✓"):((L==="vi")?"không chép được":"couldn't copy"); beep(659,0.05); };
+  im.onclick=function(ev){ ev.stopPropagation(); var got=null; try{ got=window.prompt((L==="vi")?"Dán sổ xóm (bắt đầu bằng TSK-SỔ:)":"Paste a village book (starts with TSK-SỔ:)"); }catch(e){}
+    var n=importBook(got); im.textContent=n<0?((L==="vi")?"không đọc được":"couldn't read"):((L==="vi")?("gộp "+n+" năm ✓"):("merged "+n+" year"+(n===1?"":"s")+" ✓")); beep(n<0?294:659,0.06);
+    if(n>0){ renderChron(); renderBook(box); } };
+  tools.appendChild(ex); tools.appendChild(im); box.appendChild(tools);
 }
+// merge a pasted book: only well-formed records, only ones not already here; returns the number added, or -1 if unreadable
+function importBook(txt){ try{ if(!txt) return -1; txt=String(txt).trim(); if(txt.indexOf("TSK-SỔ:")!==0) return -1;
+    var arr=JSON.parse(decodeURIComponent(escape(atob(txt.slice(7))))); if(!Array.isArray(arr)) return -1;
+    var cur=loadChron(), have={}; cur.forEach(function(r){ have[JSON.stringify(r)]=1; }); var added=0;
+    arr.forEach(function(r){ if(!r||typeof r!=="object"||!fin(r.ti)||r.ti<1||r.ti>6) return; var rec={ti:r.ti|0,tv:String(r.tv||""),te:String(r.te||""),yc:fin(r.yc)?cl(r.yc,0,YEAR_CARDS.length-1,0):0,cn:fin(r.cn)?cl(r.cn,0,9,0):0,nB:fin(r.nB)?cl(r.nB,0,9,0):0,ts:fin(r.ts)?cl(r.ts,0,30,0):0};
+      ["wk","then","now","hs","st","sc"].forEach(function(k){ if(r[k]!==undefined&&(typeof r[k]==="string"||fin(r[k]))) rec[k]=r[k]; });
+      if(Array.isArray(r.h)) rec.h=r.h.slice(0,16).map(function(v){return fin(v)?cl(v,0,15,0):0;});
+      var key=JSON.stringify(rec); if(have[key]) return; have[key]=1; cur.push(rec); added++; });
+    if(added){ saveChron(cur.slice(-10)); } return added; }catch(e){ return -1; } }
 document.addEventListener("click",function(ev){
   var tgt=ev.target; if(!tgt||!tgt.closest) return;
   if(tgt.closest("#chronLine")){ var bk=document.getElementById("bookIntro"); if(!bk) return;
@@ -870,7 +903,8 @@ function execBeh(p,beh,now){
   else if(beh===7){ dx=BEN.x+26; dy=peopleFloor(); }
   else if(beh===8){ if(!S.ships.length) beh=1; else { var sh3=S.ships[(p.id+S.season)%S.ships.length]; dx=sh3.x-40; dy=sh3.y+26; } }
   else if(beh===10){ dx=p.hx+6; dy=p.hy+14; dur=5000+Math.random()*2000; }   // beside their own sprout
-  else if(beh===12){ dx=668+Math.random()*170; dy=438; dur=6000+Math.random()*2500; S.harv=Math.min(44,(S.harv|0)+4); }   // at the paddy's edge — and four more tufts come down
+  else if(beh===12){ dx=668+Math.random()*170; dy=438; dur=6000+Math.random()*2500; var h0=S.harv|0; S.harv=Math.min(44,h0+4);   // at the paddy's edge — and four more tufts come down
+    if(h0<44&&S.harv>=44) gossip("“Gặt xong rồi. Năm nay lúa được.”","“Harvest's in. A good year for rice.”",-1); }   // the last tuft down: the xóm says so
   else if(beh===11){ var ms=learnMaster(p); if(!ms) beh=1; else { var msh=null; S.ships.forEach(function(sh){ if(sh.pid===ms.id) msh=sh; });
     dx=(msh?msh.x:ms.hx)+(p.hx<ms.hx?-34:34); dy=(msh?msh.y+24:ms.hy+8); dur=6500+Math.random()*2500; } }   // 11 LEARN — a low-TÀI neighbour goes to watch the most skilled pair of hands at work
   else if(beh===9){ var c2=chicks[0],bd=1e9; chicks.forEach(function(c3){ var dd=Math.hypot(c3.x-p.x,c3.y-p.y); if(dd<bd){bd=dd;c2=c3;} });
@@ -1742,7 +1776,8 @@ cv.addEventListener("click",function(e){
     var sayW=TIERSAY[shipHit.yours?1:trW]||TIERSAY[1];
     if(!shipHit.yours&&spk&&spk.id===shipHit.pid){ var prU=prod(spk), trU=prU<300?1:prU<600?2:3;   // held down by the river, not by their hands — they say so
       if(trU>trW) sayW={vi:"“Tay tôi đủ — nước thì chưa. Sông đầy hơn, mái này lên bậc.”",en:"“My hands are ready — the water isn't. Higher river, higher roof.”"};
-      if(S.luat<4&&!shipHit.born&&(shipHit.shel|0)<=0&&(shipHit.age|0)<2) sayW={vi:"“Mái mới, trời này… mười lăm phần trăm là con dấu rơi. Có tấm bạt thì đỡ.”",en:"“A young roof, this sky… fifteen in a hundred the stamp falls. A tarp would help.”"}; }   // the exposed one asks, in effect, for the shelter hand
+      if(S.luat<4&&!shipHit.born&&(shipHit.shel|0)<=0&&(shipHit.age|0)<2) sayW={vi:"“Mái mới, trời này… mười lăm phần trăm là con dấu rơi. Có tấm bạt thì đỡ.”",en:"“A young roof, this sky… fifteen in a hundred the stamp falls. A tarp would help.”"};   // the exposed one asks, in effect, for the shelter hand
+      else if((shipHit.shel|0)>0) sayW={vi:"“Có bạt rồi. Mưa cứ rơi — bạt còn "+(shipHit.shel|0)+" mùa.”",en:"“Tarped. Let it rain — the tarp holds "+(shipHit.shel|0)+" more season"+((shipHit.shel|0)===1?"":"s")+".”"}; }   // and the covered one says how long the cover lasts
     visit(spk,shipHit.x-30,shipHit.y+24,5200); voice(spk,0.06);
     (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,ln[L]); },1300); })(spk,sayW);
     return;
@@ -1940,9 +1975,10 @@ function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notic
 // NOTE: ships are never `born` while the player holds the controls (born is set and cleared within one nextSeason tick),
 // so the born checks below are belt-and-braces, not a reachable state. In a strict year, notices are posted — tarp EVERYTHING.
 // ⬛ the law's number, printed where it can be acted on: under a heavy sky a roof's stamp odds this season (young 15 %, established 5 %; a tarp 0 %; a newborn stands its first season)
-function stormLine(p){ if(!p.started||S.luat>=4) return ""; var sh=null; S.ships.forEach(function(w){ if(w.pid===p.id) sh=w; }); if(!sh) return "";
-  var pct=sh.born?0:(sh.shel|0)>0?0:((sh.age|0)<2?15:5);
-  return " · "+((sh.shel|0)>0?"🛡 ":"⬛ ")+pct+"%"+(L==="vi"?" mùa này":" this season")+((sh.shel|0)>0?((L==="vi"?" · bạt còn ":" · tarp holds ")+(sh.shel|0)+(L==="vi"?" mùa":" season"+((sh.shel|0)===1?"":"s"))):""); }   // v0.50: how long the tarp holds
+function stormLine(p){ if(!p.started) return ""; var now=S.luat<4, next=!now&&S.probeSeen&&S.luatNext<4; if(!now&&!next) return "";   // v0.64: a paid forecast prints next season's odds — that is the roof you are deciding about
+  var sh=null; S.ships.forEach(function(w){ if(w.pid===p.id) sh=w; }); if(!sh) return "";
+  var pct=(now&&sh.born)?0:(sh.shel|0)>0?0:((sh.age|0)<(now?2:1)?15:5);   // next season the roof is one season older and no longer newborn
+  return " · "+((sh.shel|0)>0?"🛡 ":"⬛ ")+pct+"%"+(now?(L==="vi"?" mùa này":" this season"):(L==="vi"?" mùa tới":" next season"))+((sh.shel|0)>0?((L==="vi"?" · bạt còn ":" · tarp holds ")+(sh.shel|0)+(L==="vi"?" mùa":" season"+((sh.shel|0)===1?"":"s"))):""); }   // v0.50: how long the tarp holds
 function shelCovers(s){ return (s.shel|0)<=0 && !s.born; }   // v0.48: one hand tarps EVERY standing roof (a newborn stands its first season on its own) — the sheet prints ⬛ 5% on an established roof, so the hand must be able to answer it
 function shelTarget(){ var best=null; S.ships.forEach(function(s){ if(!shelCovers(s)) return; if(!best||(s.age|0)<(best.age|0)) best=s; }); return best; }
 function actShel(){ if(S.acts<=0||S.over||!shelTarget()) return; if(!spend("shel"))return;
@@ -2139,8 +2175,8 @@ function nextSeason(){
       if(dv) b.push("🌊"+(dv>0?"+":"")+dv); if(_rc.fade) b.push((lang==="vi"?"phai ":"faded ")+_rc.fade);
       if(_rc.dealt>0) b.push("⚡"+_rc.used+"/"+_rc.dealt+(_rc.idle?(lang==="vi"?" (trống "+_rc.idle+")":" ("+_rc.idle+" unused)"):""));
       return b.length?(" · "+b.join(" ")):""; }
-    var yr=" "+(2026+Math.floor(S.season/4))+(_rc.sky?(" "+_rc.sky):"");
-    S.log.unshift({vi:"── "+STR.seasons.vi[S.season%4]+yr+bits("vi")+" ──",en:"── "+STR.seasons.en[S.season%4]+yr+bits("en")+" ──",div:true});
+    var yr=" "+(2026+Math.floor(S.season/4))+(_rc.sky?(" "+_rc.sky):""), sg=["✿","☼","❦","❄"][S.season%4]+" ";   // the divider signs like the print does
+    S.log.unshift({vi:"── "+sg+STR.seasons.vi[S.season%4]+yr+bits("vi")+" ──",en:"── "+sg+STR.seasons.en[S.season%4]+yr+bits("en")+" ──",div:true});
     S.hist=(S.hist||[]).slice(0,S.season); S.hist[S.season]=(Math.min(3,_rc.bloom)*4)+Math.min(3,_rc.stamp);   // one small int per season: blooms×4 + stamps — the run's timeline, for the ending
     S.cast.forEach(function(q){ q.pr16=(q.pr16||[]).slice(0,S.season); q.pr16[S.season]=Math.min(1000,prod(q)); });   // and each person's product at the season's close — their arc, season by season
     S.log=S.log.slice(0,24); renderLog(); })();
@@ -2761,6 +2797,9 @@ function renderHelp(){
          vi?"Vài cặp là hơn +BẠN: 🏺 Ngân–Ba (nghề truyền, TÀI Ngân lớn mỗi mùa) · 🔧 Vũ–Tú · 🧺 Ba–Hoa (gốm ra chợ, +sông) · 🎨 Ngân–Liên · 📚 Mai–Hoa (lớp đông hơn) · 👜 Hoa–Liên (mẫu ra chợ, +sông). Sợi vàng trên bản đồ là mối đã kết."
            :"Some pairs are more than +ALLIES: 🏺 Ngân–Ba (craft passes, her SKILL grows each season) · 🔧 Vũ–Tú · 🧺 Ba–Hoa (ceramics to market, +river) · 🎨 Ngân–Liên · 📚 Mai–Hoa (bigger class) · 👜 Hoa–Liên (patterns to market, +river). A gold thread on the map is a bond made.");
   h+=sec(vi?"Năm nay: "+yc.em+" "+yc.nv:"This year: "+yc.em+" "+yc.ne, (vi?yc.fv:yc.fe)+(S.constraint?("<br>⛓ "+(vi?CONSTRAINTS[S.constraint].nv:CONSTRAINTS[S.constraint].ne)):""));
+  h+=sec(vi?"Đọc tranh":"Reading the print",
+         vi?"🌱 mầm bên cửa — người ấy đang nhú (càng cao càng gần), nụ hồng = đã tới trần đà · sợi vàng có chữ — mối duyên đã kết; sợi xanh đứt — quen thường · cờ trên mái mang màu chủ; hai cờ = thương hiệu · dấu chân đứt nét — mái bị con dấu, mờ dần ba mùa · khói — lò Chú Ba đang cháy (mùa đông nhà nào cũng có) · xe đò mờ cuối đường / thuyền mờ ở bến — một người sắp đi, nếu bạn không giữ · giấy dán ở đình — trời mùa tới · đèn đỏ dưới mái đình — số phiên hụi · vạch trên cây thước sông — mực nước cho xưởng lên bậc · dây néo trên nóc — xóm quen giông (3⚡ lại) · ×0 dưới tên — một thừa số bằng 1."
+           :"🌱 a sprout at the door — pushing (taller = closer), a pink bud = at the momentum cap · a gold thread with a glyph — an authored bond; dashed green — an ordinary one · a roof's pennant is its owner's colour; two pennants = a brand · a dashed footprint — a stamped roof, fading over three seasons · smoke — Chú Ba's kiln lit (every hearth in winter) · a faded bus at the road's end / boat at the landing — someone parked to leave, unless you hold them · the slip on the đình — next season's sky · red lanterns under its eave — hụi rounds closed · marks on the river gauge — the water a shop / brand needs · ropes on the roofs — the xóm used to storms (3⚡ back) · ×0 under a name — a factor at 1.");
   h+=sec(vi?"Chạm và phím":"Taps and keys",
          vi?"Chạm người · xưởng · trời · sông · đình · chợ · cây đa — ai đó sẽ trả lời. Chạm các thẻ trên đầu (mùa · ⚡ · 🪜). Bàn phím: 1–7 chọn người, ←/→, D N L G, H B P S, ␣ mùa sau, Esc, M, ? mở sổ này."
            :"Tap a person · workshop · sky · river · đình · market · banyan — someone answers. Tap the header pills (season · ⚡ · 🪜). Keys: 1–7 pick, ←/→, D N L G, H B P S, ␣ next season, Esc, M, ? opens this.");

@@ -71,6 +71,8 @@ Rules:
 | `Gate 46` | 1 | a tied hand is named at the ceiling — when the factor that caps a known row is this year's tied hand, the sheet says "tay ấy bị trói năm nay"; with no tie the line ends at the percentage (v0.61) |
 | `Gate 47` | 1 | the ladder has a top — the tier pill reads N/21 with the whole xóm present, N/22 once your own stall stands, N/18 after a neighbour has left; the left number is the live tierSum (v0.63) |
 | `Gate 48` | 1 | a name is never buried by a body — with villagers staggered down the bank (the arrangement the elbow-room nudge does not touch), every label is painted after every body: asserted by paint order, not geometry, and non-vacuous (at least one body-overlap must exist). 4 of 4 were buried before, including a ×0 zero-tag (v0.63) |
+| `Gate 49` | 1 | a paid forecast prints next season's odds — clear sky today with the forecast read: a young roof reads ⬛ 15% mùa tới, an established one ⬛ 5% mùa tới; unread, nothing; a heavy sky today still says mùa này (v0.65) |
+| `Gate 50` | 1 | the ending title never runs under the stamp — measured on the title's LINE BOXES (not the full-width h2 box, which always spans the seal) at card widths 288px and 520px in English: zero overlap. Was 51×24px on the narrow card and 6px even on the wide one (v0.65) |
 
 ## Convergence gates — `done.sh`
 
