@@ -64,6 +64,8 @@ Rules:
 | `Gate 39` | 1 | a card taller than the window still has a way out — at a true 390px and three viewport heights (673/533/433) the ending card's `Chơi lại` button is reachable by scrolling the overlay; it was unreachable at the two short heights before, the overlay having no scroll at all (v0.56) |
 | `Gate 40` | 1 | the print fits a phone held sideways — in landscape the canvas is capped at ≤72% of viewport height (the stylesheet's 70vh intent, which `fit()`'s inline height had been silently overriding since it was written), aspect preserved so nothing crops, and in portrait/desktop it still fills its container's width (v0.57) |
 | `Gate 41` | 1 | witnessed courage stops at 5 — when a neighbour blooms, a known person at GAN 4 rises to 5 (float printed), a known person at GAN 5 stays 5 (no float), an unknown person is untouched (v0.57) |
+| `Gate 42` | 1 | the year no one dared — with constraint 4 tied the failure night is refused (no hand, GAN unchanged, button struck through), the intro offers the fourth tied hand, a save carries it back; without it the failure night works (v0.58) |
+| `Gate 43` | 1 | Reduce Motion is obeyed by the print — with `prefers-reduced-motion: reduce` the drifting petals, rain streaks, bloom confetti and idle bob all stop (0/0/0/0.0) while the motes keep flying, and without it they all still run; asserted by running the same probe under both settings (v0.59) |
 
 ## Convergence gates — `done.sh`
 

@@ -204,7 +204,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.57</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.59</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -226,6 +226,7 @@
         <button class="con" data-c="1">🚫🪙 <small class="conL" data-vi="không hụi" data-en="no hụi">không hụi</small></button>
         <button class="con" data-c="2">🚫🤝 <small class="conL" data-vi="không kết nối" data-en="no linking">không kết nối</small></button>
         <button class="con" data-c="3">🚫📖 <small class="conL" data-vi="không dạy" data-en="no teaching">không dạy</small></button>
+        <button class="con" data-c="4">🚫🏮 <small class="conL" data-vi="không ai dám" data-en="no one dared">không ai dám</small></button>
       </div>
     </div>
     <button class="go" id="startBtn">Bắt đầu / Begin</button>
@@ -253,6 +254,7 @@
         <button class="con" data-c="1">🚫🪙 <small class="conL" data-vi="không hụi" data-en="no hụi">không hụi</small></button>
         <button class="con" data-c="2">🚫🤝 <small class="conL" data-vi="không kết nối" data-en="no linking">không kết nối</small></button>
         <button class="con" data-c="3">🚫📖 <small class="conL" data-vi="không dạy" data-en="no teaching">không dạy</small></button>
+        <button class="con" data-c="4">🚫🏮 <small class="conL" data-vi="không ai dám" data-en="no one dared">không ai dám</small></button>
       </div>
     </div>
     <div id="shareRow" style="display:flex;gap:6px;justify-content:center;margin-top:8px">
@@ -697,7 +699,7 @@ function load(){
       var sn=fin(c.sn)?(c.sn|0):7; p.seen={tai:!!(sn&1),gan:!!(sn&2),ban:!!(sn&4)};   // a save from before v0.33 has seen everything
       var ws=fin(c.ws)?(c.ws|0):0; p.wrongSaid={tai:!!(ws&1),gan:!!(ws&2),ban:!!(ws&4)}; });   // v0.55: an answer already given is not given twice after a refresh
     S.cast[6].arrives=cl(s.arr,2,8,6); S.baFadeStart=cl(s.baf,5,9,8);   // 2 / 5: the reunion year pulls both clocks early — the clamp must admit that on reload
-    S.stormCount=cl(s.sc,0,16,0); S.stormStreak=cl(s.ss,0,16,0); S.yearCard=fin(s.yc)?cl(s.yc,0,5,0):S.yearCard; S.constraint=fin(s.cn)?cl(s.cn,0,3,0):0; S.gtmPays=fin(s.gp)?cl(s.gp,0,2,0):(s.gtmPaid?1:0);
+    S.stormCount=cl(s.sc,0,16,0); S.stormStreak=cl(s.ss,0,16,0); S.yearCard=fin(s.yc)?cl(s.yc,0,5,0):S.yearCard; S.constraint=fin(s.cn)?cl(s.cn,0,4,0):0; S.gtmPays=fin(s.gp)?cl(s.gp,0,2,0):(s.gtmPaid?1:0);
     S.lienWarned=S.season>=11; S.tetSeen=S.season>=4; S.hoardSeen=S.season>=2; S.placesTold=S.season>=3; S.baFade=S.season>=(S.baFadeStart||8); S.baRescued=S.baFade&&(pairExists(0,1)||S.cast[1].started); S.stormSeen=S.season>0; S.tierTaught=S.ships.length>0||S.season>1; S.lienNgan=pairExists(0,6); S.classSeen=S.cast[2].started; S.revealSeen=S.cast.some(function(p){return p.known;});
     if(Array.isArray(s.ships)) S.ships=s.ships.filter(function(w){return w&&fin(w.x)&&fin(w.y)&&typeof w.owner==="string";});
     S.ships.forEach(function(w){ w.age=cl(w.age,0,99,2); w.shel=cl(w.shel,0,2,0); });
@@ -794,13 +796,25 @@ function fit(){ DPR=window.devicePixelRatio||1;
   buildGround(); }
 window.addEventListener("resize",fit);
 
+// 🕊 Reduce Motion: the OS asks for less movement and, until now, exactly one button obeyed while
+// the whole xóm kept drifting, raining and bobbing. Decoration yields; MEANING does not — the
+// errand walks, the coins to the đình, the books leaving Cô Mai's roof all still move, because
+// watching them IS reading the multiplication. What stops is weather and idle wobble.
+var CALM=false;
+(function(){ try{ var mq=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)");
+  if(!mq) return; CALM=!!mq.matches;
+  var on=function(e){ CALM=!!e.matches; };
+  if(mq.addEventListener) mq.addEventListener("change",on); else if(mq.addListener) mq.addListener(on);
+}catch(e){} })();
 var parts=[], bubbles=[], stamps=[];
-function petals(x,y,n,cols){ for(var i=0;i<n;i++) parts.push({x:x,y:y,vx:(Math.random()-.5)*2.2,vy:-1.5-Math.random()*2,r:3+Math.random()*4,rot:Math.random()*6.28,vr:(Math.random()-.5)*.3,life:1,col:cols[i%cols.length]}); }
+function petals(x,y,n,cols){ if(CALM) return;   // the bloom still announces itself in the banner, the log
+  // and the roof that appears — the confetti is the one part of it that is only motion
+  for(var i=0;i<n;i++) parts.push({x:x,y:y,vx:(Math.random()-.5)*2.2,vy:-1.5-Math.random()*2,r:3+Math.random()*4,rot:Math.random()*6.28,vr:(Math.random()-.5)*.3,life:1,col:cols[i%cols.length]}); }
 function bubble(p,txt){ bubbles.push({p:p,lay:layoutBubble(txt),at:performance.now(),until:performance.now()+3600,spk:true}); }   // spk: speech has its own lane — stat floats never crowd it out
 function speechCount(){ var n=0; for(var i=0;i<bubbles.length;i++) if(bubbles[i].spk) n++; return n; }
 // a stamped-out roof leaves a mark on the ground for three seasons — the xóm remembers where it stood
 function scarAt(x,y){ S.scars=(S.scars||[]).filter(function(c){return Math.hypot(c.x-x,c.y-y)>20;}); S.scars.push({x:x,y:y,s:S.season}); S.scars=S.scars.slice(-8); }
-function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); shake=1; beat(2400); beep(85,0.35,0.07); buzz(60); }
+function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); shake=CALM?0:1; beat(2400); beep(85,0.35,0.07); buzz(60); }
 var shake=0, glows=[], lanterns=[];
 var dlBuf=[]; function dlCmp(a,b){ return a.z-b.z; }
 var lblR=[];   // per-frame label rects — clustered villagers don't print gibberish
@@ -810,7 +824,8 @@ var DINH={x:470,y:265}, CHO={x:560,y:490}, BEN={x:80,y:H-75};   // đình steps 
 // ⛓ constraint runs — the player ties one of their own hands; removing a verb forces new diagnosis
 var CONSTRAINTS={1:{g:"🚫🪙",nv:"năm không hụi",ne:"the no-hụi year"},
                  2:{g:"🚫🤝",nv:"năm không kết nối",ne:"the no-linking year"},
-                 3:{g:"🚫📖",nv:"năm không dạy",ne:"the no-teaching year"}};
+                 3:{g:"🚫📖",nv:"năm không dạy",ne:"the no-teaching year"},
+                 4:{g:"🚫🏮",nv:"năm không ai dám",ne:"the year no one dared"}};   // v0.58: no failure nights — nerve comes only from the xóm (a witnessed bloom, to 5): courage caught, never taught
 function conBan(n){ return (S.constraint|0)===n; }
 
 // ===== the living xóm: ONE global errand governor (v0.25) =====
@@ -956,7 +971,7 @@ function drawScene(now){
   var seas=S.season%4;
   // a restless-wind year drifts in EVERY season, and the drift runs — the sky you can't touch, made visible
   var windy=(S.yearCard===5);
-  if((seas===0||seas===2||windy)&&amb.length<(windy?18:14)&&Math.random()<(windy?0.34:0.25))
+  if(!CALM&&(seas===0||seas===2||windy)&&amb.length<(windy?18:14)&&Math.random()<(windy?0.34:0.25))
     amb.push({x:Math.random()*W,y:-8,vx:0.3+Math.random()*0.5,vy:0.35+Math.random()*0.5,rot:Math.random()*6.28,
               col:(seas===0)?"#EFB7C4":(seas===2)?"#D99A3B":"#C9B48A",r:3+Math.random()*3,w:windy?2.6:1});
 
@@ -1302,6 +1317,7 @@ function drawScene(now){
   cicadaAudio(!storm&&S.luat>=6&&seas===1&&!S.over);   // and a clear summer has cicadas
   if(storm||coming){
     var want=storm?(4-S.luat)*22:10, spawnX0=coming?W-140:0, spawnW=coming?140:W;
+    if(CALM) want=0;   // a heavy sky still greys and still costs a hand — it just stops streaking
     for(var rr=0; rr<3&&rain.length<want; rr++) rain.push({x:spawnX0+Math.random()*spawnW,y:-10-Math.random()*40,vy:9+Math.random()*4,l:10+Math.random()*8});
   }
   if(rain.length){
@@ -1530,7 +1546,7 @@ function person(p,now){
       p.tx=cx2+(Math.random()-0.5)*rw; p.ty=cy2+(Math.random()-0.5)*rh;   // storms huddle people near their own roof
       p.tx=Math.max(40,Math.min(W-40,p.tx)); p.ty=Math.max(230,Math.min(peopleFloor(),p.ty)); } }
   else { var spd=(visiting?1.4:0.45)*(window._pnF||1); p.x+=dx/d*spd; p.y+=dy/d*spd; }
-  var bob=Math.sin(now*0.006+p.ph)*(d>2?2.2:0.8);
+  var bob=CALM?0:Math.sin(now*0.006+p.ph)*(d>2?2.2:0.8);
   var beh=(p.vUntil>now&&p.beh)?p.beh:0, atT=beh&&d<6;
   if(atT){ if(beh===2) bob*=0.4; else if(beh===7) bob*=0.3; }
   var awk=p.arriveT?Math.min(1,(now-p.arriveT)/1800):1;
@@ -1776,7 +1792,7 @@ function guessAnswer(p,k){ if(!p||p.started||seenAll(p)) return; var m=Math.min(
   (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,ln[L]); },900); })(p,line); }   // after the float, not over it
 function actTeach(){ var p=cur(); if(!p||S.acts<=0||p.tai>=10||S.over||conBan(3)) return; if(!spend("teach",p))return;
   guessAnswer(p,"tai"); p.tai=Math.min(10,p.tai+2); S.hintDone=true; beep(659*(1+(Math.random()-0.5)*0.015),0.08); floatOn(p,"+2 "+t("tai"),"#2E4A62"); renderSheet(); save(); }
-function actNerve(){ var p=cur(); if(!p||S.acts<=0||p.gan>=10||S.over) return; if(!spend("nerve",p))return;
+function actNerve(){ var p=cur(); if(!p||S.acts<=0||p.gan>=10||S.over||conBan(4)) return; if(!spend("nerve",p))return;
   guessAnswer(p,"gan"); p.gan=Math.min(10,p.gan+2); S.hintDone=true; beep(440*(1+(Math.random()-0.5)*0.015),0.08); floatOn(p,"+2 "+t("gan"),"#C1443C");
   // a failure night is communal — everyone who has fallen listens, and fears a little less
   var lifted=0;
@@ -2165,7 +2181,8 @@ function nextSeason(){
       visit(ngan,W-40,346,5200);   // she walks to the road's end, the whole xóm watching, and is gone
       bus={t0:performance.now(),wait:4800,dur:2600};   // 🚌 the xe đò idles at the road's end while she walks; it pulls out the moment she's aboard
       (function(){ var ctok=runTok; setTimeout(function(){ if(runTok!==ctok) return; ngan.gone=true; ngan.leaving=false; if(S.sel===0){ S.sel=-1; renderSheet(); } render(); save(); },4800); })();
-      logMsg("🚌 Bé Ngân lên tỉnh học Y — bố em đã thắng. Không ai giúp em dám.","🚌 Bé Ngân left for medical school in the city — her father won. No one helped her dare.");
+      logMsg(conBan(4)?"🚌 Bé Ngân lên tỉnh học Y — năm không ai dám, chẳng ai được phép giúp em dám.":"🚌 Bé Ngân lên tỉnh học Y — bố em đã thắng. Không ai giúp em dám.",
+             conBan(4)?"🚌 Bé Ngân left for medical school — the year no one dared; no one was allowed to help her dare.":"🚌 Bé Ngân left for medical school in the city — her father won. No one helped her dare.");
       banner("🚌 …",1800); gong(147,1.0,0.04);
       gossip("“Con Ngân đi học Y rồi. Nó có muốn đâu.”","“Ngân's gone to study medicine. She never wanted to.”",0); }
   }
@@ -2334,7 +2351,7 @@ function endGame(){
   var seenYc={}; ch.forEach(function(r){ if(r&&fin(r.yc)) seenYc[r.yc]=1; });
   var ycRow=["🌊","📋","🛤","🍵","🧧","🌾"].map(function(g,gi){ return seenYc[gi]?g:"·"; }).join("");
   var seenCn={}; ch.forEach(function(r){ if(r&&r.cn) seenCn[r.cn]=1; });
-  var cnRow=Object.keys(seenCn).length?(" · ⛓ "+[1,2,3].map(function(n){return seenCn[n]?CONSTRAINTS[n].g:"·";}).join("")):"";
+  var cnRow=Object.keys(seenCn).length?(" · ⛓ "+[1,2,3,4].map(function(n){return seenCn[n]?CONSTRAINTS[n].g:"·";}).join("")):"";
   chp.textContent="📜 "+(L==="vi"?"kết đã thấy ":"endings seen ")+row+" "+nSeen+"/6 · "+ycRow+cnRow
     +(next?(" — "+((L==="vi")?HINTS[next].vi:HINTS[next].en)):"")+(L==="vi"?" · mở sổ ▾":" · open ▾");
   // --- beat 3: epilogues, three highest-signal; the rest fold away ---
@@ -2519,7 +2536,8 @@ function renderSheet(){
         return "<small style=\"letter-spacing:.5px\">"+(L==="vi"?"tích qua các mùa: ":"product by season: ")+vs.map(function(v){ return bars[Math.min(7,Math.round(v/mx*7))]; }).join("")+" "+(L==="vi"?"→ ":"→ ")+prod(p)+"</small>"; })():"");
   el("teachBtn").disabled=S.acts<=0||p.tai>=10||S.over||conBan(3);   // tending doesn't stop at the bloom — tiers keep the verbs alive
   el("teachBtn").style.textDecoration=conBan(3)?"line-through 2px #C1443C":""; el("teachBtn").style.opacity="";
-  el("nerveBtn").disabled=S.acts<=0||p.gan>=10||S.over;
+  el("nerveBtn").disabled=S.acts<=0||p.gan>=10||S.over||conBan(4);
+  el("nerveBtn").style.textDecoration=conBan(4)?"line-through 2px #C1443C":"";
   el("linkBtn").style.display=S.un.link?"":"none";
   el("linkBtn").disabled=S.acts<=0||S.over||conBan(2);
   el("linkBtn").style.textDecoration=conBan(2)?"line-through 2px #C1443C":""; el("linkBtn").style.opacity="";

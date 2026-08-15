@@ -358,3 +358,9 @@ that is now impossible because a gate catches it stays here, with the gate named
   `nextSeason()`, pin that person's own dice (wrap `chance` for them, restore after) — and before hunting a
   regression, run the failing stanza alone 10× against HEAD in a worktree; if it passes, it is the dice,
   not the diff. Reproduce the flake by forcing `Math.random=()=>0` before you fix it.
+- **One `prefers-reduced-motion` rule in the stylesheet is not support.** This project had exactly one —
+  on a button's pulse — which made the setting look handled while a canvas full of drifting petals, rain,
+  bobbing figures and bloom confetti ignored it entirely. A canvas cannot be reached by a media query at
+  all: read the preference in JS (`matchMedia`, and listen for `change`, because a viewer can flip it
+  mid-run) and branch the spawners. When you do, calm **decoration** and keep **meaning** — freezing the
+  errand walks and the motes would have destroyed the channel the whole game teaches through.

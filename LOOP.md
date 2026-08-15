@@ -93,7 +93,8 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.57: a witnessed bloom lifts GAN only to 5 — every world-lift now has a ceiling (Gate 41); priced:
+**v0.58: a fourth tied hand — 🚫🏮 the year no one dared (no failure nights; nerve only from the xóm,
+to 5) (Gate 42). v0.57: a witnessed bloom lifts GAN only to 5 — every world-lift now has a ceiling (Gate 41); priced:
 hunter 6.89/12.3, band holds. v0.55: guess-answers and the circle's first line persist across a refresh (Gate 38); measured: the six
 year cards do not move the hunter (6.96–6.99 / 15.5–16.6) — story and spreader-price only, for the
 balance era to weigh. v0.54: the fate warnings name the factor only if it has been touched (Gate 37). v0.53: a partial row prints its bound — trần ≤ ceilOf(lowest seen), on the sheet and on the hand
@@ -144,27 +145,24 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **v0.58's tick shipped nothing, on
-purpose, and that is the result — not a gap.** The pointer's method (pick a dimension the loop has
-never varied and measure it) was applied to three of them and all three came back clean:
-**device pixel ratio** — the backing store scales exactly at 1×/2×/3×, same aspect, no distortion, no
-DPR-specific bug; **320px width** — `bodySW=320`, zero elements over the edge, and the same at 360;
-**English at 320px**, the longest strings on the narrowest screen — also clean (the four "overflows"
-that probe reports are the known `position:fixed` overlay artifact, already a landmine: `.ovl` spans
-the viewport, not an injected body width). One real thing was measured and **declined**: the world's
-bottom edge lands 2.3 logical px past the backing store, because `aspect-ratio` governs the border box
-while the raster is sized from the content box — it clips a sliver of the river under the rounded
-border, it is invisible, and it is **pre-existing** (identical on v0.56), so fixing it would be
-preference, not repair. Dimensions still unvaried: a run left idle for many minutes (timer/beat
-accumulation), a save restored mid-run at a different viewport, and reduced-motion / high-contrast
-system settings. **If a tick finds only cosmetic preference, ship nothing and say so** — the ship
-budget allows it and *"it's ART's turn on the compass" is not sufficient cause*; that clause is what
-turned cycles 9–15 into drift. Rules earned the hard way: no seeded whole-run gate (v0.45); never let
-a gate reimplement the logic it tests (Gate 35's first draft passed on the broken build); negative-test
-every new gate against a deliberately broken copy; check modals at short HEIGHTS; "scroll to the bottom
-and look" is not a reachability test (use `scrollIntoView`); an inline style set by JS silently kills a
-media query (v0.57); and sizing a responsive element from JS freezes it. Give each gate a unique
-heredoc tag. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: v0.59 answered the owner's repeated
+ask after a ship-nothing tick — the method held, and **Reduce Motion** turned out to hide a real gap
+(one stylesheet rule on a button while the whole canvas ignored the setting). The rule that keeps
+paying: **pick a dimension the loop has never varied and measure it.** Measured and clean, do not
+re-open without a new reason: device pixel ratio (1×/2×/3×, exact), 320px and 360px width, English at
+320px, and float density in paced play. Measured and **declined** as invisible and pre-existing: the
+world's bottom edge falling 2.3 logical px past the backing store. Still unvaried: **a run left idle
+for many minutes** (timer/beat accumulation — the most likely of the remainder), a save restored at a
+different viewport, and high-contrast / forced-colors. Accessibility is now a live seam worth walking:
+Reduce Motion is done, but nothing has checked focus-visible outlines, keyboard-only play end to end,
+or whether the canvas has any text alternative at all. **If a tick finds only cosmetic preference, ship
+nothing and say so** — and the owner has now twice asked again after such a tick, so report the finding
+plainly and keep going rather than stopping. Rules earned the hard way: no seeded whole-run gate
+(v0.45); never let a gate reimplement the logic it tests (Gate 35's first draft passed on the broken
+build); negative-test every new gate against a deliberately broken copy; check modals at short HEIGHTS;
+`scrollIntoView` per element, not scroll-to-bottom; an inline style set by JS silently kills a media
+query (v0.57); sizing a responsive element from JS freezes it; and take the PEAK of a transient
+(motes finish their flight inside the measuring window). Give each gate a unique heredoc tag. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

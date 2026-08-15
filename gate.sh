@@ -1252,6 +1252,82 @@ PYEOF39
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/wit.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "WITNESS_OK" && pass "witnessed courage stops at 5: $T" || fail "witnessed courage stops at 5: $T"
 
+# Gate 42: the year no one dared — with constraint 4 tied, the failure night is refused (no hand spent, GAN unchanged, button struck through),
+# the intro offers the fourth tied hand, and a save carries constraint 4 back; without it the failure night works.
+python3 - "$TMP" <<'PYEOF42'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  var offered=document.querySelectorAll('.con[data-c="4"]').length>=1;
+  document.getElementById("startBtn").click();
+  var ng=S.cast[0]; selectPerson(0); S.acts=3; S.constraint=4; renderSheet();
+  var g0=ng.gan, a0=S.acts; actNerve(); var refused=(ng.gan===g0&&S.acts===a0), struck=document.getElementById("nerveBtn").style.textDecoration.indexOf("line-through")>=0;
+  save(); fresh(); var okLoad=load(); var carried=(S.constraint===4);
+  S.constraint=0; selectPerson(0); S.acts=3; renderSheet(); var g1=S.cast[0].gan; actNerve(); var works=(S.cast[0].gan===g1+2);
+  var ok=offered&&refused&&struck&&okLoad&&carried&&works;
+  document.title=(ok?"DARE_OK":"DARE_BAD")+" offered="+offered+" refused="+refused+" struck="+struck+" carried="+carried+" worksWithout="+works;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/dare.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF42
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/dare.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "DARE_OK" && pass "the year no one dared: $T" || fail "the year no one dared: $T"
+
+# Gate 43: Reduce Motion is obeyed by the print, not just by one button — the OS setting reached exactly
+# one CSS animation while the whole xóm kept drifting, raining, bobbing and throwing confetti. Runs the
+# SAME probe twice, with and without --force-prefers-reduced-motion, and asserts the decoration stops
+# AND that meaning still moves: the errand walks and the motes (coins to the đình, books off Cô Mai's
+# roof) are how the xóm says what it is doing, so freezing everything would be the wrong fix.
+python3 - "$TMP" <<'PYEOFCALM'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<6;s++){ S.acts=3; S.nudged=true; nextSeason(); }
+  S.cast.forEach(function(p){ p.known=true; p.arriveT=0; });
+  var act=S.cast.filter(function(p){return active(p)&&!p.gone;});
+  act.forEach(function(p){ p.tx=p.x; p.ty=p.y; p.vUntil=0; p.amb=0; });
+  S.luat=2;                            // a heavy sky, so rain would spawn
+  petals(400,300,26,["#D97C8E"]);      // a celebration burst
+  motes.length=0; motes.push({x0:100,y0:100,x1:400,y1:300,t:-0.3,g:"🪙"});   // meaning in flight
+  var maxAmb=0,maxParts=0,maxRain=0,maxMotes=0,bob=0,prev=null;
+  for(var f=0;f<120;f++){
+    act.forEach(function(p){ p.tx=p.x; p.ty=p.y; });
+    drawScene(3000+f*16);
+    maxAmb=Math.max(maxAmb,amb.length); maxParts=Math.max(maxParts,parts.length); maxRain=Math.max(maxRain,rain.length);
+    maxMotes=Math.max(maxMotes,motes.length);   // the mote finishes its flight inside the window — take the peak, not the leftovers
+    var p0=act[0], b=CALM?0:Math.sin((3000+f*16)*0.006+p0.ph)*0.8;
+    if(prev!==null) bob+=Math.abs((p0.y+b)-prev);
+    prev=p0.y+b;
+  }
+  document.title="CALM_R query="+(matchMedia("(prefers-reduced-motion: reduce)").matches)+" CALM="+CALM
+    +" amb="+maxAmb+" parts="+maxParts+" rain="+maxRain+" bob="+bob.toFixed(1)+" motes="+maxMotes;
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/cm.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOFCALM
+NORM=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,780 --virtual-time-budget=9000 --dump-dom "file://$TMP/cm.html" 2>/dev/null | grep -o "CALM_R[^<]*" | head -1)
+RED=$("$CHROME"  --headless --disable-gpu --no-sandbox --force-prefers-reduced-motion --window-size=1000,780 --virtual-time-budget=9000 --dump-dom "file://$TMP/cm.html" 2>/dev/null | grep -o "CALM_R[^<]*" | head -1)
+CALMOK=1
+echo "$NORM" | grep -q "CALM=false" || CALMOK=0
+echo "$RED"  | grep -q "CALM=true"  || CALMOK=0
+# normal: decoration is alive
+echo "$NORM" | grep -qE "amb=[1-9]" || CALMOK=0
+echo "$NORM" | grep -qE "parts=[1-9]" || CALMOK=0
+# reduce: decoration is still, meaning still moves
+echo "$RED" | grep -q "amb=0 parts=0 rain=0 bob=0.0" || CALMOK=0
+echo "$RED" | grep -qE "motes=[1-9]" || CALMOK=0
+[ "$CALMOK" -eq 1 ] && pass "Reduce Motion is obeyed by the print: [normal $NORM] [reduce $RED]" \
+                    || fail "Reduce Motion is obeyed by the print: [normal $NORM] [reduce $RED]"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

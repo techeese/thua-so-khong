@@ -18,6 +18,45 @@ lands *before* the circle looks; the lift filter is `!started`, so `lifted` read
   why this is convergent work and not polish. Recorded in `GATES-LEDGER.md` → Tightenings and
   `LANDMINES.md`.
 
+## v0.59 — 2026-08-15 — Reduce Motion reaches the print
+
+A graphics round from the owner's `/loop 5m` session, on the last unvaried dimension that turned out to
+hide something: the OS **Reduce Motion** setting.
+
+- **The setting reached exactly one button.** `@media (prefers-reduced-motion: reduce)` existed in the
+  stylesheet — for the "next season" button's pulse, and nothing else. The canvas, which is where all
+  the motion actually is, never asked. Measured with the preference forced on: the browser reports
+  `reduce=true` and the xóm carried on drifting petals, streaking rain, bobbing on the spot and
+  throwing 48-particle confetti at every bloom.
+- **Decoration yields; meaning does not.** A `CALM` flag now reads the preference (and keeps reading it —
+  a viewer can flip the setting mid-run) and four decorative layers stand down: drifting petals and
+  leaves, rain streaks, the idle bob, and the bloom confetti. What still moves is what *says* something:
+  the errand walks, and the motes — coins going to the đình, books leaving Cô Mai's roof — because
+  watching those **is** reading the multiplication. A heavy sky still greys and still costs a hand; it
+  just stops streaking. A bloom still announces itself in the banner, the log and the roof that appears;
+  only the confetti goes.
+- *Evidence:* new **Gate 43**, which runs the **same probe twice** — with and without
+  `--force-prefers-reduced-motion` — and asserts both directions at once:
+  normal `amb=14 parts=26 rain=44 bob=6.1 motes=1` · reduce `amb=0 parts=0 rain=0 bob=0.0 motes=1`.
+  The `motes=1` on both sides is the clause that matters: it proves the fix calmed the decoration
+  rather than freezing the game, which would have been the easy wrong answer.
+
+## v0.58 — 2026-08-15 — the year no one dared
+
+Closes: under the owner's standing `/loop 3m` directive, the fourth tied hand — the one v0.57 makes
+meaningful. Three constraint years existed (no hụi · no linking · no teaching); nerve had none,
+because with witnessed courage unbounded a no-nerve year would have played itself.
+
+- **🚫🏮 Năm không ai dám.** No failure nights all year: nerve comes only from the xóm — a witnessed
+  bloom, +1 to everyone you have met, up to 5 — and from your own roof. Bé Ngân at GAN 1 cannot be
+  nerved; she reaches 5 only if four neighbours bloom in front of her before season 11, and her
+  leaving line names the year (*"…năm không ai dám, chẳng ai được phép giúp em dám."*). Courage
+  caught, never taught: the same puzzle as the no-teaching year's TÀI zeros, on the factor the fable
+  is most about. Offered on the intro's tied-hand row and the ending's replay row; save clamp 0–4;
+  the endings-seen row shows all four glyphs.
+- *Evidence:* new **Gate 42** (`DARE_OK offered=true refused=true struck=true carried=true
+  worksWithout=true`). Gates green, hash-bracketed. Band unchanged (constraints are not banded).
+
 ## v0.57 — 2026-08-15 — the print fits a phone held sideways
 
 A graphics round from the owner's `/loop 5m` session. The pointer said this brief was close to spent
