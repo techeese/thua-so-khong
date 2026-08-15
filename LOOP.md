@@ -78,28 +78,31 @@ Era 1's machine gates are green as of v0.28 and nothing is legitimate to ship; t
 unanswered and, under full autonomy, **non-blocking** — so era 1 ends by *exhaustion*: keep vigil,
 bank lab evidence, and when three consecutive ticks produce no `new-argument` verdict, run the
 synthesis and execute the transition without waiting — verdicts written by the **independent
-grader**, never by the tick that ran the investigation. **Seven findings banked, all seven graded; the
-seventh (`fourth.js`) came back `new-argument`, so the exhaustion count resets to 0 of 3 — vigil
-continues.** The bank: the ambient
-layer reads sparse and shares a 2-slot queue with numeric stat floats; place-taps are stolen ~21% at
-the market; the attachment curve runs 1.16 → 0.49 → 0.04 at seasons 2/8/14, arguing against any era
-premised on writing more dialogue; the zero is **soft** (`idle` blooms 3.44 of 7; the band is blind
-to `schoolfirst`); the zero is **unwitnessed** (0.0% of hunter runs meet a literal 0, the elder's
-clock is invisible to every "someone fell" system, and "số không" is printed for any factor ≤3); the
-zero is **priceless in the wrong sense** (a wrong factor costs ~8% of tiers, a wrong person costs
-nothing or pays, an inverted player keeps 98%; the band's 4.65-tier margin is 93% the spreader's
-waste, a fair `spreaderU` sits at −0.33); and **the fourth factor is not a factor** — the river enters
-the math once, as a 0.64–1.0 multiplier that cannot zero anyone; its whole range moves the hunter's
-blooms by 0.00; it reaches 10 in 100% of diagnosing runs, 56% of it from the flywheel that blooms
-feed; the hụi verb costs the hunter 0.70 tiers for 0.00 blooms in every year card including the
-flood year, and its `🌱 X%` float shows the same integer 62% of the time (81% for the people nearest
-zero); `riverLow` promises a tier mechanic that does not exist; and the "không hụi" vow prices at ≥0.
-The next synthesis should weigh a **reductive** era on the zero — floors that bite, a surface that
-distinguishes 0 from 3 as it happens, a **price for being wrong**, and **either make capital a factor
-or stop presenting it as one** (drop the hụi verb, the vow, the sheet's river tag and `riverLow`) —
-against the voice, place-legibility and attachment candidates; note that `schoolfirst`, a fair
-`spreaderU`, and a capital that bites each turn the band gate red on the first commit and carry a
-balance decision. Two small defects with evidence, unshipped per Gear 3, for a Gear 1 tick or the
-owner: `cl(s.hui,0,3,0)` vs `huiMax()`=4 in a flood year, and the `riverLow` copy. Standing owner
-directives: less narration · simple opening · buildings mean something · ambient = silent and
-numberless.
+grader**, never by the tick that ran the investigation. **Eight findings banked, seven graded; the
+seventh (`fourth.js`) came back `new-argument` (exhaustion count 0 of 3); the eighth (`tell.py`,
+the telling audit) awaits its verdict.** The bank: the ambient layer reads sparse and shares a
+2-slot queue with numeric stat floats; place-taps are stolen ~21% at the market; the attachment
+curve runs 1.16 → 0.49 → 0.04 at seasons 2/8/14, arguing against any era premised on writing more
+dialogue; the zero is **soft** (`idle` blooms 3.44 of 7; the band is blind to `schoolfirst`); the
+zero is **unwitnessed** (0.0% of hunter runs meet a literal 0, the elder's clock is invisible to
+every "someone fell" system, and "số không" is printed for any factor ≤3); the zero is **priceless
+in the wrong sense** (a wrong factor costs ~8% of tiers, a wrong person costs nothing or pays, an
+inverted player keeps 98%); **the fourth factor is not a factor** (the river enters the math once
+as a 0.64–1.0 multiplier that cannot zero anyone; the hụi verb costs 0.70 tiers for 0.00 blooms;
+`riverLow` promises a mechanic that does not exist); and **the thesis is told, not felt, at the
+frame and the ending** — the full sentence sits in the header from t=0 for all sixteen seasons,
+play itself is nearly silent on it (1.2 tell-lines in 383 narrator words per hunter run, 0.0 in
+bubbles — the "less narration" directive has landed mid-run), 65% of the hunter's narrator beats
+carry ≥2 lines and 21% carry 4–6, and the 155-word ending card states the thesis in words while,
+for an idle player, listing as bloomed 62% people whose weakest factor is ≤3 and printing a `× 1`
+beside "bloomed" in 6/6 runs. The next synthesis should weigh a **reductive** era on the zero —
+floors that bite (which would also make the ending's arithmetic agree with its sentence), a surface
+that distinguishes 0 from 3 as it happens, a **price for being wrong**, **either make capital a
+factor or stop presenting it as one**, and **subtract the tagline from the header** so the sentence
+can arrive instead of being announced — against the voice, place-legibility, attachment and
+endings-pass candidates; note that `schoolfirst`, a fair `spreaderU`, and a capital that bites each
+turn the band gate red on the first commit and carry a balance decision. Small defects with
+evidence, unshipped per Gear 3, for a Gear 1 tick or the owner: `cl(s.hui,0,3,0)` vs `huiMax()`=4
+in a flood year; the `riverLow` copy; the ending card calling a ≤3-factor person bloomed beside its
+own `×` arithmetic. Standing owner directives: less narration · simple opening · buildings mean
+something · ambient = silent and numberless.

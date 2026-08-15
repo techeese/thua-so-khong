@@ -19,6 +19,73 @@ argues for or against.
      **Measured:** …
      **Argues for/against:** <candidate era>  -->
 
+## 2026-08-15 — is the thesis told, or felt? a telling audit (`tell.py`)
+
+Owner gate #3 says the thesis must arrive *"without the game ever telling you."* Charter constraint
+2 says *"one line per beat."* Both are claims about how many words the game spends **saying** the
+arithmetic — measurable, unlike whether the player feels it. Two lenses: a static pass over every
+authored bilingual string, and 6 paced headless 16-season runs per player (`hunter` tends the
+weakest factor of the weakest known person; `idle` never taps), recording every `logMsg` /
+`banner` / `bubble` / `floatOn` and the ending card's DOM. A string is a **thesis-tell** if it
+names *thừa số · số không · bằng không · phép nhân · nhân với · ×* (EN: *factor · zero ·
+multipl· · ×*). Harness `lab/tell.py`, output `lab/tell-out.txt` (both gitignored).
+
+**Measured — the game tells the thesis at second zero, then almost never during play, then in a
+155-word block at the end.**
+
+- **Always-on.** The full sentence *"mười nhân với không vẫn bằng không"* is the header subtitle
+  (`index.html:96`, `subttl`) — on screen every second of every run — and the intro card's tagline
+  (`:140`). Owner gate #3 is unmet **by the frame, before the first tap**: the game does not let
+  the arithmetic arrive, it prints it above the canvas for sixteen seasons.
+- **Static corpus.** 141 bilingual pairs; **5 (3.5%)** are thesis-tells: the tagline, the title,
+  the reveal line (`Bạn ngồi nghe. Giờ bạn nhìn thấy các thừa số.`), and two Cô Liên lines
+  (`:1375`, `:1506`). Every villager quote, every ambient line, every seasonal line is thesis-free.
+- **In play.** Hunter: **31.8 narrator lines / 383 words** per run, of which **1.2 lines** are
+  thesis-tells — the reveal at season 0 (6/6 runs) and Cô Liên's departure line at season 11
+  (1/6). Idle: 17.2 lines / 194 words, **0.8** tells, first at season 11. Bubbles: 47.2 per hunter
+  run, **0.0** thesis-tells; floats 46.7. The play layer honours the constraint almost perfectly —
+  between the intro and the ending the multiplication is spoken once (the reveal) and then shown,
+  not said. Narration also decays hard: hunter log words per season run 60 → 58 (s3) → 5 (s10) → 0
+  (s15); the back half of a run is nearly silent (see attach8: this is the same sag).
+- **One line per beat — measured.** Grouping `logMsg` calls that land within 60 virtual ms as one
+  beat: hunter **35% single-line, 25% two, 18% three, 21% four-to-six lines**; idle 67% / 21% /
+  9% / 3%. Season resolution is where the stacks come from (bloom + tier + class + link + hụi all
+  fire in one synchronous burst) — the log shows up to six narrator lines at once, ~65% of the
+  hunter's beats carry two or more.
+- **The ending is the telling surface.** 6/6 runs both players: card of **150–158 words** (the
+  intro is 34), **3.3 (hunter) / 4.2 (idle) thesis-tell lines**, the `×` arithmetic beat in 100%
+  of runs, and the unconditional closing line *"Đừng hỏi 'ai sẽ là Steve Jobs Việt Nam?' Hãy hỏi:
+  'thừa số nào đang bằng không…'"* (`:1535`) in 100% of runs — the only place the game names a
+  great man, and it does so to every player regardless of what they did.
+- **And the ending can tell the thesis and its counterexample on the same card.** The card lists
+  *Đã nảy mầm* by name and prints one villager's `tai × gan × ban`. Idle, 6 runs: **16 of 26 people
+  the card calls bloomed (62%) have a weakest factor ≤3 — the game's own "số không" threshold
+  (`zeroOf`, `:1035`)** — and the `×` beat itself shows a factor ≤3 in **6/6** runs (`Cô Liên
+  10×6×1 ✿`, `Anh Tú 2×9×7 ✿`, `Bé Ngân 7×1×3` "the numbers never moved" beside a bloom list).
+  Hunter: 4 of 41 (10%; `Cô Liên 10×10×3 ✿`). Cause is the known soft zero — `chance()` (`:419`)
+  is `prod/1000·0.9·(0.6+0.4·von/10)+mom`, continuous in the product, so 10×6×1=60 still rolls —
+  but the *new* fact is where it surfaces: the one screen that says "ten times zero is still zero"
+  in words prints, in the same notation, a 1 that bloomed. A player who reads the card the way it
+  asks to be read sees the sentence refuted by its own arithmetic.
+
+**Reading it.** The telling problem is not the narrator — play is close to silent on the thesis
+and the standing "less narration" directive has largely landed mid-run. It is the **frame**
+(tagline on screen from t=0) and the **ending** (a 155-word block that both states the thesis and,
+for the player who did nothing, contradicts it in numbers). Owner gate #3, as worded, cannot be
+ticked while `subttl` and `inTag` carry the sentence; that is a design decision, not a bug.
+
+**Argues for:** the reductive era on the zero already on the synthesis table gains a surface
+argument — floors that bite would make the ending's arithmetic *agree* with its sentence, and
+subtracting the tagline from the header (keep it for the og card / title only) is the cheapest way
+to let the thesis arrive rather than be announced. Also argues for an **endings pass** that treats
+the card as the second-longest text in the game — a "one line per beat" audit of season resolution
+would fold in. **Argues against:** any era that adds explanatory copy anywhere; the play layer is
+already the quietest surface, and the two places the game lectures are both outside play.
+
+**Not shipped, per Gear 3.** `index.html` untouched. Two candidate items for a Gear 1 tick or the
+synthesis: (1) the header/intro tagline vs owner gate #3; (2) the ending card can list a ≤3-factor
+person as bloomed and print `× 1` beside "bloomed" — either the floor or the copy must move.
+
 ## 2026-08-15 — the fourth factor: is capital a factor? the river and the hụi against the thesis (`fourth.js`)
 
 The charter's thesis names **four** multiplying factors — *"Talent (TÀI), nerve (GAN), connection (BẠN),
