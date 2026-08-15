@@ -80,6 +80,8 @@ the ship budget's clause (c), and it is exactly the kind of thing Gear 3 must ha
 rather than quietly fix — see the `OWNER:` line in the tick report. Harness: `lab/attach8.py`,
 output `lab/attach8-out.txt` (both gitignored).
 
+**Verdict:** new-argument
+
 ## 2026-08-15 — 390px tap-reachability audit (`thumb390.py`, `zoneblame.py`)
 
 Rasterised the real tap resolver (`index.html:1061-1097`) over the whole 960×600 logical plane at a
@@ -118,6 +120,8 @@ than letting the villager pass win by proximity; or make the places visibly tapp
 390px and eclipse is at zero. That worry is now retired with a number.
 
 **Not shipped, per Gear 3.** `index.html` untouched. Harnesses live in `lab/` (gitignored).
+
+**Verdict:** new-argument
 
 ## 2026-08-15 — the ambient layer, measured after the fix (`chatprobe.py`)
 
@@ -165,3 +169,6 @@ without touching a single probability.
   simultaneous bubbles can overlap at 480px. Both are pre-existing `drawBubble` placement
   behaviour shared with arrival quotes — but the ambient layer will now surface them far more
   often than it used to. Candidate work, not this round's.
+
+**Verdict:** new-argument
+

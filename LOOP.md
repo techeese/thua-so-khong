@@ -1,94 +1,82 @@
-# LOOP.md — the improve-and-ship loop's constitution (v3)
+# LOOP.md — the binding contract
 
-> Rewritten 2026-08-14 after an audit: the loop had been dead 43 days, two versions were pushed but
-> never deployed, and an iteration was stranded uncommitted. v3 makes the loop **convergent within
-> an era and infinite across eras**, and moves its continuity onto disk.
-> Playbook: `.claude/skills/improve-thua-so-khong/SKILL.md`. Scope: this repo ONLY.
+The engine (`.claude/skills/improve-thua-so-khong`) knows only mechanism. **This file tells it what
+this project's mechanism operates on.** Read it first, every tick.
 
-## The shape
+> v4 · 2026-08-15 — owner set the loop to **fully autonomous, end to end**: it closes eras, picks
+> the next one, and executes transitions without waiting for a human. The safeguards that replace
+> the owner's signature are the charter lock, the gates ratchet, and adversarial era review.
+> Owner's words: *"it will produce a game you didn't choose ⇒ it is ok. I want to see after so
+> many iteration, what the game transforms into."*
 
-```
-   era opens ──▶ convergent iterations ──▶ done.sh: CONVERGED
-        ▲                                        │
-        │                                        ▼
-   owner picks ◀────── SYNTHESIS.md ◀──── the era closes
-```
+## Documents — read in this order
 
-Each era has a **closed** definition of done (`done.sh` + `OWNER-GATE.md`). New work is opened by a
-**synthesis** and an owner's choice, never by a compass rotating because the loop had nothing to do.
-Eras are recorded in `MILESTONES.md`. Current era: **1 — "The fable is playable"**.
+| file | what it is | who may write it |
+|---|---|---|
+| `CHARTER.md` | what the game is for; the four constraints | **owner only** (hash-locked) |
+| `OWNER-GATE.md` | owner directives + the felt gate | owner writes; loop may only add `> RESOLVED` |
+| `LOOP.md` | this contract | owner (and deliberate meta-sessions) |
+| `LANDMINES.md` | traps that already blew up once | **loop, append-only** |
+| `GATES-LEDGER.md` | the ratchet — gates may be added, never removed | **loop, append-only** |
+| `MILESTONES.md` | eras, synthesis protocol, transition manifest | loop |
+| `HISTORY.md` | one entry per era — the observation deck | loop, at transitions only |
+| `CHANGELOG.md` · `ROADMAP.md` · `lab/NOTES.md` | the running record | loop |
 
-## The loop runs forever — in one of three gears
+## Commands — the interface the engine calls
 
-Owner's standing rule: **the improvement loop never stops.** But always-running is not
-always-shipping. `done.sh` picks the gear:
+| command | contract |
+|---|---|
+| `./done.sh` | exit **0** = Gear 1 CONVERGE · **10** = Gear 3 VIGIL · **20** = Gear 2 SYNTHESIZE |
+| `./gate.sh` | exit 0 = safe to ship (~20s) |
+| gear file | write `1`/`2`/`3` to `/Users/Admin/Desktop/coding/.claude/tsk-gear` each tick |
+| ship | bump footer version in `index.html` · CHANGELOG · one commit · push · **curl the live URL** |
+| deploy check | `gh run list --workflow=pages.yml --limit 1`, then verify the live version string |
 
-| verdict | gear | the work | touches `index.html`? |
-|---|---|---|---|
-| exit 0 | **1 · CONVERGE** | grind the red gates green, ship, fast cadence | **yes** |
-| exit 20, no `SYNTHESIS.md` | **2 · SYNTHESIZE** | propose 3–4 candidate next eras | no |
-| exit 10 or 20 | **3 · VIGIL** | watchdog + `lab/` prototypes, slow cadence | **never** |
-
-Gear 3 is how the loop runs forever without drifting. The **watchdog** re-runs the gates and
-re-checks the live URL every tick — rot is real, and any red gate immediately re-opens Gear 1
-(this is what would have caught the six-week outage). The **lab** does unbounded evidence-gathering
-and prototyping in `lab/`, which is gitignored and **never ships** — it is raw material for the
-owner's next pick. A quiet vigil tick that finds nothing is a **successful** tick.
-
-A lab prototype that looks worth shipping still does not get shipped. It becomes a candidate and
-waits. That boundary is the whole difference between infinite development and drift.
-
-## Invariants (never ship without)
-1. `./gate.sh` green — band · syntax · fresh run · poisoned save · 16-season VI+EN.
-   Band = **diagnosis > spreading > idling**.
-2. `check.js` mirrors any `index.html` math change, same numbers.
-3. Bilingual VI/EN for every player-facing string.
-4. Thesis-safe: no great-man affordance · no lecturing (one line per beat) · the multiplication
-   stays the core · ambient life is silent and numberless.
-5. Version bump + CHANGELOG + push + **live-URL verified**. A push is not a ship.
-   One commit per iteration = one revert unit.
+Session runs in `/Users/Admin/Desktop/coding`; all game commands run in `thua-so-khong/`.
 
 ## The ship budget — every item must close something
-An item may enter a round only if it (a) turns a red `done.sh` gate green, (b) answers a quoted
-owner directive or `OWNER-GATE.md` note, (c) fixes a real defect with evidence, or (d) is named in
-`Next` below as convergent work for this era.
+
+An item may enter a round only if it (a) turns a red `done.sh` gate green, (b) answers an open
+`OWNER-GATE.md` directive, (c) fixes a real defect with evidence, or (d) is named era work in
+`MILESTONES.md`.
 
 **"It's ART's turn on the compass" is not sufficient cause** — that clause is what turned cycles
 9–15 into lateral drift. Unjustified ideas go to `MILESTONES.md` → *Candidate directions*, as raw
 material for the next synthesis.
 
 **Subtraction is a first-class item.** Every standing owner directive here is reductive — *less
-narration · simple opening · ambient = silent + numberless*. v0.17 was a de-lecture pass and it was
-one of the best rounds shipped.
+narration · simple opening · ambient = silent and numberless*. v0.17 was a de-lecture pass and one
+of the best rounds shipped.
 
-**A round may ship nothing.** Review is unbounded; changing is not. Two dry rounds with all machine
-gates green means converged — run `done.sh` and halt properly.
+**A round may ship nothing.** Review is unbounded; changing is not.
+
+## Autonomy — full, with three hard limits
+
+The loop closes eras, picks the next, and executes transitions on its own. It never waits.
+It cannot:
+
+1. **Change `CHARTER.md`.** Hash-locked. If a synthesis concludes the charter is the limit, it says
+   so in `SYNTHESIS.md` and stops — that conversation is the owner's.
+2. **Remove or weaken a gate.** `GATES-LEDGER.md` is append-only and verified every tick.
+3. **Open an era that survived no criticism.** Adversarial review must pass first
+   (`MILESTONES.md` → transition manifest).
+
+Everything else is ship-then-veto. Owner directives, whenever they appear, outrank all of it.
 
 ## The gradient
-Owner words > red machine gates > reviewed defects > named era work. Everything else waits for a
-synthesis.
 
-## Autonomy
-Ship-then-veto for everything except the narrow halts below. The loop never blocks on the owner
-for permission to build.
-
-## Halt-and-ask
-- gates fail twice on the same change
-- identity-level changes: camera, thesis, cast removal, the language pair
-- anything outward-facing beyond this repo and its Pages site
-- `done.sh` exits 10 (CONVERGED) or 20 (ERA COMPLETE)
-- **choosing the next era** — never ship-then-veto, always the owner's call
+Owner words > red machine gates > reviewed defects > named era work > synthesis candidates.
 
 ## Next (one paragraph — REPLACE it each round, never append)
-v0.28 shipped the one round the owner's 2026-08-15 directive authorised: `chatter()`'s roll now
-waits on `beatUntil` instead of a fixed +1100ms, so the ambient layer plays for the first time —
-0/120 calls preempted where it was 120/120, 4.5 bubbles per run, and 20 authored lines heard that
-no player had ever reached. `gate.sh` Gate 6 ("the xóm has a voice") holds it, red on the pre-fix
-file. That directive is now RESOLVED, which returns the loop to **Gear 3 vigil**: era 1's machine
-gates are green and all that remains is the owner's felt gate in `OWNER-GATE.md` (three playtest
-questions + real-device PWA/share/390px checks), now to be answered on a build whose xóm speaks.
-Two things wait for an owner word, neither shippable in vigil: the ambient **rate** reads sparse
-(one line every 3–4 seasons; a third of calls are also blocked by stat floats sharing the
-`bubbles` array), and the 390px place-tap occlusion measured at ~21% of market taps. Standing
-owner directives if any round does open: less narration · simple opening · buildings mean
-something · ambient = silent and numberless.
+
+Era 1's machine gates are green as of v0.28 and the ambient layer plays for the first time
+(`chatter()` waits on `beatUntil`; 0/120 calls preempted where it was 120/120; Gate 6 holds it,
+red on the pre-fix file). The felt gate is unanswered and, under full autonomy, **non-blocking** —
+so era 1 now ends by *exhaustion*: keep vigil, bank lab evidence, and when three consecutive ticks
+produce no `new-argument` verdict, run the synthesis and execute the transition without waiting.
+Three findings are banked: the ambient **rate** reads sparse (one line every 3–4 seasons, and a
+third of calls are blocked by stat floats sharing the `bubbles` array), place-taps stolen ~21% at
+the market (legibility of the place layer), and the attachment curve 1.16 → 0.49 → 0.04 across
+seasons 2/8/14 — which argues *against* any era premised on writing more dialogue. Standing owner
+directives: less narration · simple opening · buildings mean something · ambient = silent and
+numberless.

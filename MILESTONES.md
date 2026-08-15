@@ -51,10 +51,64 @@ because it costs nothing to ship and happens once per era.
    its `done.sh` gates would be, and honestly — what it would cost and what it might ruin.
    At least one candidate must be **reductive** (an era that makes the game smaller and sharper),
    and at least one must be **a real swing** (something that changes what the game is).
-5. **Write it to `SYNTHESIS.md`** and halt. The owner picks. The loop does not pick for itself —
-   choosing the next era is the one judgment that is never ship-then-veto.
-6. On the owner's pick: append the new era here, write its gates into `done.sh` and
-   `OWNER-GATE.md`, clear `SYNTHESIS.md`, re-arm the loop.
+5. **Write it to `SYNTHESIS.md`.** Then, under full autonomy, **pick one yourself** — and defend
+   the pick against the adversarial review below before anything is written.
+
+## How an era ends — three ways, all routing to synthesis
+
+| | condition | detected by |
+|---|---|---|
+| **Completed** | every gate green, felt gate included | `done.sh` exit 20 |
+| **Exhausted** | converged, and the lab has stopped producing new arguments | 3 consecutive vigil ticks with no `new-argument` verdict |
+| **Superseded** | the owner says so | an `OWNER-GATE.md` directive, any time |
+
+Under full autonomy the felt gate is **non-blocking**, so *exhausted* is the normal ending.
+
+**Measuring exhaustion.** Every `lab/NOTES.md` entry must end with a verdict line:
+
+```
+**Verdict:** new-argument | confirms-known | dry
+```
+
+`new-argument` = opens or strengthens a candidate era. `confirms-known` = re-measures something
+settled. `dry` = nothing worth recording. Three ticks without a `new-argument` means the cheap
+evidence is gone and the frame itself is now the limit. A rising ratio of *argues-against* to
+*argues-for* is the same signal, earlier.
+
+## Adversarial era review — what replaces the owner's signature
+
+Before a transition executes, spawn **3 independent critics** on the chosen candidate, each
+briefed to attack it and to **default to rejecting**:
+
+1. *Does this era make success easier to achieve than the last one?* (the drift lens)
+2. *Does it abandon or route around a `CHARTER.md` constraint?* (the thesis lens)
+3. *Is this ambition, or is it lateral motion dressed as ambition — would a stranger see the game
+   get better, or just different?* (the substance lens)
+
+**Majority reject → the transition does not execute.** Record why in `SYNTHESIS.md`, pick the
+runner-up or re-synthesize, and try again next tick. A candidate that cannot survive three
+critics was never worth an era.
+
+## The transition manifest — one commit, all of it
+
+A transition rewrites the loop's own definition of success. It happens **atomically** so a bad era
+is one `git revert` away, and it happens **completely** so it can never half-apply.
+
+Write `TRANSITION-PLAN.md` first (every file, every section, exact before/after), then execute all
+of the following in **one commit**, tagged `era-N-closed`:
+
+- [ ] `MILESTONES.md` — close the old era (what shipped, what it cost, how it ended); open the new
+- [ ] `HISTORY.md` — append the closed era's entry **with a fresh screenshot committed**
+- [ ] `done.sh` — add the new era's machine gates
+- [ ] `GATES-LEDGER.md` — append every new gate; **remove nothing**
+- [ ] `OWNER-GATE.md` — add the new era's felt questions (never delete the old ones)
+- [ ] `ROADMAP.md` — the new era's engineering queue
+- [ ] `LOOP.md` — replaced `Next` pointer
+- [ ] `lab/NOTES.md` — mark the findings that fed the pick as spent
+- [ ] `SYNTHESIS.md` and `TRANSITION-PLAN.md` — deleted
+- [ ] `CHARTER.md` — **never touched.** Verify the lock still passes before committing.
+
+Then re-run `./done.sh`; the new era should return Gear 1 with real work.
 
 ## Candidate directions parked for future synthesis
 
