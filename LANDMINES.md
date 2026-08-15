@@ -235,3 +235,14 @@ that is now impossible because a gate catches it stays here, with the gate named
   the same tick. Gate 17 (the girl's clock) flaked 1-in-3 on exactly this, 2026-08-15, and looked
   like a mechanic regression. Pin with `started=true` on the others, not `known=false`.
 
+- **A synthesis can "exhaust" a layer by choosing badly.** Syntheses 1–2 (2026-08-15) proposed only
+  tick-sized mechanic/UI candidates; the owner's two interactive loops shipped each one within minutes,
+  the critics rejected each as "defined around done work", and the counter hit `failed_syntheses=2` →
+  the loop escalated to L3 · FORM. The L3 critics found the escalation unearned: `MILESTONES.md`
+  → *Candidate directions* had parked the genuinely era-scale directions (endings pass, Đông Hồ art
+  pass proper, audio pass) and no round had put one to critics; Era 1 had no executed transition, so
+  L3's "≥2 completed eras" was met by zero. Cost: one wasted synthesis, five critics, a ladder state
+  edit and its correction. Practice: before declaring a layer exhausted, list the parked directions
+  and show each was reviewed or is tick-shippable; **a red counter earned by candidate selection is
+  not exhaustion**. And under two live owner loops, no candidate expressible as ticks survives —
+  propose only what a tick cannot ship, or say nothing survives *because* of the process, not the game.
