@@ -52,7 +52,10 @@ that came first.
   pushed while the card is up are cleared, and the identical push with the card hidden survives, so
   the guard is conditional and not a blanket mute.
 
-## v0.41 — 2026-08-15 — the law's number is printed
+## v0.41 → shipped inside v0.42 — 2026-08-15 — the law's number is printed (mechanic half)
+
+> The footer reads **v0.42**: the graphics session bumped and committed (`baf037f`) while this entry
+> was being written, and this session's commit `6b8da33` carried that footer. Same day, same tree.
 
 Closes: under the owner's standing `/loop 3m` directive, the last surface where a number the player can
 act on was not printed. Measured first (`check.js`, 1200 runs): ~6 of 16 seasons are storm seasons,
