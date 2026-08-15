@@ -393,3 +393,61 @@ every season is one where someone's clock is running.
 **Review round 3 (this tick if time allows, else next):** three critics briefed to reject. Majority
 reject → `failed_syntheses=2` → **escalation to L3 is earned** (`LADDER.md`), and the next synthesis
 happens at FORM with 5 critics.
+
+## 13. Review round 3 — candidate G "eight seasons" · **REJECTED 3/3**
+
+- **Drift — REJECT.** Falsified by hand: `sed 's/season<16/season<8/'` on `check.js` → hunter 5.25 /
+  spreader 3.23 / linker 3.38 / idle 1.59, tiers 10.3/5.2/5.8/1.6, maxer 2.7 — **every v0.38 Gate 0
+  clause passes untouched**, so nothing forces re-derivation and G *is* tick-shippable. Halving
+  widens hunter/spreader (1.31 → 1.63; gap 1.63 → 2.02 vs a fixed +0.5) — the 16-season back half
+  is where the discrimination is hardest. `idle ≤ 4.0` stops binding at 1.59; river reaches 10 in
+  17.2 % of 8-season hunter runs, so "≤ 60 %" licenses making capital 3.5× easier while reading as
+  a ratchet. Attachment ≥ 0.5 is today's 0.49 at s8 with the tail amputated, and `chatter()`'s
+  one-line fix inflates it for free. Gate 5 has no 16-season assertion to keep (its loop breaks on
+  `S.over`), so the "legacy assertion" is retirement without the ledger's marking. Ngân's s11 and
+  Liên's s13 clocks never fire at 8 — the green band above is a game with the fates gone.
+- **Thesis — REJECT.** Run length is genuinely waived by the charter (conceded). But G halves the
+  observation channel v0.36/v0.37 built (walks and bubbles are cadence × runtime → errands/run and
+  4.5 bubbles/run both halve) — the owner-reserved rate change routed through the denominator. With
+  16–24 hands across seven people even a hunter cannot reach every clock, so fates fire regardless
+  of play — narration, not consequence — and G has no fate-discrimination clause. H is
+  charter-required (§2; `tell.py`: 62 % of idle's "bloomed" have min ≤3 beside `×`) and should not
+  be ballast for G — ship it as a tick.
+- **Substance — REJECT.** **Ladder violation:** `LADDER.md` puts run length in the L3·FORM row;
+  passing G at L2 would *consume* the escalation instead of earning it, and G cannot be argued at L3
+  yet (needs ≥ 2 completed eras). The attachment evidence names a mechanism (`chatter()` dead) that
+  G's number edit stands in for; the river evidence is misread (the full 1→10 range moves blooms by
+  0.00); both ratchet clauses pass before code; N=0 8-season probes vs the lab's N=6000. F's deferral
+  is dishonest — LOOP.md clause (e) licenses reviewed additions and LOOP.md's own bank names *"the
+  book remembers on run 2+"*. *Backs F, or `fourth.js`'s subtraction; otherwise fail, record
+  `failed_syntheses=2`, and take run length to L3 with 5 critics.*
+
+**Disposition:** G does not transition. Because two critics across rounds 2–3 explicitly back F and
+F has never been reviewed, synthesis 2 is **not yet** declared dead — escalation must be earned by a
+recorded rejection, not chosen by skipping the runner-up. **Round 4 reviews F.**
+
+Recorded for whoever holds the licence (not the loop, which cannot approve its own proposals):
+**H — remove the t=0 tagline; ending card = the arithmetic, no great-man line** — is
+charter-required per the thesis critic and tick-sized; it belongs to a grader-raised proposal or an
+owner note, not to an era.
+
+## 14. Runner-up for round 4 — **F · "Cuốn sổ nhớ" (the book remembers)**, re-scoped
+
+- **The xóm remembers you; you do not rescue it** (charter §1). Run 2+ opens on the same block with
+  the scars of run 1: the person you left at a zero is the first the sampan brings, *with the same
+  zero*; a workshop that stood keeps a weathered roof; a fate that fired leaves a mark (Ngân's
+  empty desk at the school, Liên's landing post). Nothing narrates the connection.
+- **Adds:** save-shape for `memory` (fates, zeros left, roofs) — NaN-safe, `fin()`-guarded; cast
+  seeding from memory; three silent scars on the block; **one** authored line per fate on return,
+  in the person's voice, no number (Ngân: *"Em về nghỉ hè."*). No counters. No new verbs.
+- **Removes:** the chronicle's tally UI (endings seen 6/6, cards seen, constraints seen).
+- **Cadence, band, ambient rate: untouched.** `check.js` unchanged; every existing gate kept.
+- **Gates (ratchet-up):** memory probe — run 2 seeded from run 1 in ≥ 3 measured ways (first
+  arrival = the run-1 zero left, same factor at the same value; roof age carried; scar drawn);
+  return-line probe (fires once, no digit); NaN-safe load with a run-1 save of every prior schema
+  version; a *tell* budget: return adds ≤ 1 line per fate and ≤ 0 to the t=0 frame; the tally UI
+  gone (probe asserts absence of the counter strings).
+- **Cost, honest:** authored lines under *less narration* (bounded at one per fate, and they are
+  the same fates the owner shipped as v0.35–v0.36); save migration risk (a landmine class here);
+  danger of a return-hero arc — the gates above make the block remember *you* only as scars, never
+  as a name.
