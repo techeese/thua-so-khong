@@ -308,3 +308,13 @@ that is now impossible because a gate catches it stays here, with the gate named
   measured mean 3.4 concurrent bubbles, max 11–13, peak coverage 9.3%. Before "fixing" anything that
   looks visually crowded in a probe, re-measure it paced; `gate.sh` Gate 6 already documents why a
   tight sync loop cannot observe anything that depends on dwell time.
+- **A gate that reimplements the logic it is testing passes on the broken build.** Gate 35's first
+  draft copied the canvas hit test into the probe and asserted against its own copy; it went green on
+  code that mis-selected one villager in seven. Rewritten to dispatch real `MouseEvent`s at the canvas
+  and read `S.sel`, it fails as it should. **Exercise the shipped path, never a paraphrase of it** —
+  and negative-test every new gate against a deliberately broken copy before trusting it.
+- **`drawX` and `p.x` are different truths and both have callers.** The v0.45 nudge separates them on
+  purpose (drawing moves, simulation does not). Anything that answers *"which villager is at this
+  point on screen"* — hit tests, tooltips, anything spatial the player aims at — must read `drawX`;
+  anything about where a villager actually IS in the world reads `p.x`. Getting it backwards is
+  invisible in a screenshot and only shows up when a thumb misses.

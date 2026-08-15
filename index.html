@@ -2659,7 +2659,7 @@ function renderHelp(){
       if(p.id===0&&!p.started&&S.season>=9&&p.gan<3) threat=" 🚌";
       if(p.id===6&&!p.started&&S.season>=10&&p.ban<4&&!S.pairs.some(function(pr){return pr[0]===6||pr[1]===6;})) threat=" 🛶";
       if(p.id===1&&!p.started&&S.baFade&&!S.apprentice) threat=" 🕯";
-      rows.push("<b>"+p.name+"</b> — "+st+threat); });
+      rows.push("<span class=\"stRow\" data-sel=\""+p.id+"\" style=\"cursor:pointer;text-decoration:underline dotted\"><b>"+p.name+"</b></span> — "+st+threat); });   // the name is a way to the person
     h+=sec(vi?"📍 Xóm lúc này":"📍 The xóm now",
       (STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4))+" · "+S.acts+"⚡ · "+(vi?"sông ":"river ")+S.von+"/10 ("+(vi?"bậc tối đa ":"tier cap ")+cap+")"
        +"<br>"+rows.join("<br>")));
@@ -2704,6 +2704,8 @@ el("helpBody").addEventListener("scroll",helpEdges,{passive:true});
 el("log").addEventListener("scroll",logEdges,{passive:true});
 el("helpBtn").onclick=function(){ helpToggle(); }; el("helpClose").onclick=function(){ helpToggle(false); };
 el("helpOvl").addEventListener("click",function(ev){ if(ev.target===el("helpOvl")) helpToggle(false); });   // tap the paper margin to close
+el("helpBody").addEventListener("click",function(ev){ var r=ev.target.closest?ev.target.closest(".stRow"):null; if(!r||!S||S.over) return;   // 📍 a name on the status page: close the notes, open the card
+  var id=+r.getAttribute("data-sel"); if(!fin(id)||!S.cast[id]||!active(S.cast[id])) return; helpToggle(false); selectPerson(id); });
 // ---------- keyboard (desktop play) ----------
 // 1–7 talk to a person · ←/→ cycle · D dạy · N đêm · L kết nối · H hụi · O hốt hụi · B xây · P nghe ngóng · S che chắn · Space/Enter mùa sau · Esc thôi · M mute
 document.addEventListener("keydown",function(ev){
