@@ -450,3 +450,16 @@ that is now impossible because a gate catches it stays here, with the gate named
   fixed in v0.52, the tied hand in v0.68. When touching any of them, re-check all four — Gate 53 asserts
   they stay mutually distinguishable, including that an unaffordable verb still SHOWS its answer,
   because running out of hands is temporary and must not erase what the verb would do.
+- **A co-editing session's full-file write can silently drop your working-tree hunks — check they
+  still exist before you gate, and again before you commit.** 2026-08-15 22:05: this session's two
+  `index.html` hunks (a `🪜±N` tier delta in the season ledger) vanished from the working tree when
+  the graphics session wrote its `v0.68` — which had *taken the gate* for the feature (Gate 54) and
+  re-implemented the code its own way (`tierDelta(_rc.tb)`), so HEAD stayed green by luck of
+  ordering. Costs: a 45-minute background `gate.sh` (eight concurrent runs, load ~10) that had to be
+  killed, and a re-apply script that failed its own assertions against text that no longer existed.
+  Practice: `grep` your marker strings in the working file right before `gate.sh` and right before
+  `git add`; if they are gone, read HEAD before re-applying — the other session may have shipped
+  the same thing under a different name.
+- **Eight concurrent `gate.sh` runs make every run take 40+ minutes; kill only your own by PID.**
+  Find yours by walking `ps -o ppid` up to your session's `claude` process; never `pkill` by name
+  (see above). While load is that high, gate once, commit on a stable hash, and skip retry loops.
