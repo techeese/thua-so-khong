@@ -147,28 +147,29 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **the richest seam right now is
-auditing what the OTHER session ships.** v0.67 found the Aa larger-text control reaching the whole DOM
-and none of the canvas — the same shape as Reduce Motion in v0.59. Standing rule: **when the mechanic
-loop adds an accessibility control or any new chrome, assume it does not reach the canvas until
-measured**, and fold the request into `LKF` (text) or a `CALM`-style flag (motion). Not yet audited
-from their recent work: the per-verb `trần ≤ N%` ceiling lines, the tied-hand strike-through, the
-`gánh/xưởng/thương hiệu` tier words, and whatever lands next — look at the header for controls that
-did not exist last tick. Alternate with looking at the game itself; both keep producing. Measured and
-clean, do not re-open: DPR, 320/360px, English at 320, long-idle, clipped text, verb-row raggedness,
-float density paced, overlay reachability at short heights, big-text layout at 320/390, the three
-hardest combinations (EN+tied hand+all bloomed, Sổ tay EN at 320). Declined with reasons: the 2.3px
-bottom-edge clip; forced-colors (but v0.65 showed a container query can rescue an unverifiable viewport
-rule — re-read that if it matters); the product sparkline is CORRECT as linear, do not "fix" it to log.
-Not graphics, ask first: canvas `role`/`aria-label`, keyboard-only play end to end. **If a tick finds
-only cosmetic preference, ship nothing and say so.** Rules earned the hard way: no seeded whole-run
-gate; never let a gate reimplement the logic it tests; negative-test every new gate; when a fix changes
-DRAW ORDER assert paint order; measure a centred heading by its LINE BOXES; a container query cannot
-style its own container; check modals at short HEIGHTS; `scrollIntoView` per element; an inline style
-set by JS kills a media query; sizing a responsive element from JS freezes it; take the PEAK of a
-transient; assert ACTIVATION with focusability; a forced state is not a play state (it has invented
-three defects now); and an unfamiliar shape means read the code (the ox-cart). Heredoc tags collide —
-grep first. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **keep auditing what the OTHER
+session ships — two ticks, two finds.** v0.67: the Aa larger-text control reached the whole DOM and
+none of the canvas. v0.68: a verb tied by the year's constraint still advertised the `+2` it could not
+deliver, with only a strike-through to say otherwise. Standing rules from those: **assume a new
+accessibility control does not reach the canvas until measured** (fold it into `LKF` for text or a
+`CALM`-style flag for motion), and **"disabled" is four states here** — live, unaffordable, at its
+ceiling, tied by the year — each needing its own voice, with Gate 53 keeping them distinguishable. Not
+yet audited from their work: the per-verb `trần ≤ N%` bound line, the `gánh/xưởng/thương hiệu` tier
+words on the map, the pot's `chưa hiểu người ta` state, and anything new in the header. Alternate with
+LOOKING at the game — v0.63's buried zero-tag came from a screenshot, not a probe. Measured and clean,
+do not re-open: DPR, 320/360px, EN at 320, long-idle, clipped text, verb-row raggedness, float density
+paced, overlay reachability at short heights, big-text layout, the three hardest combinations.
+Declined with reasons: the 2.3px bottom-edge clip; forced-colors (but a container query can rescue an
+unverifiable viewport rule — v0.65); the sparkline is CORRECT as linear. Not graphics, ask first:
+canvas `role`/`aria-label`, keyboard-only play end to end. **If a tick finds only cosmetic preference,
+ship nothing and say so.** Rules earned the hard way: no seeded whole-run gate; never let a gate
+reimplement the logic it tests; negative-test every new gate; when a fix changes DRAW ORDER assert paint
+order; measure a centred heading by its LINE BOXES; a container query cannot style its own container;
+check modals at short HEIGHTS; `scrollIntoView` per element; an inline style set by JS kills a media
+query; sizing a responsive element from JS freezes it; take the PEAK of a transient; assert ACTIVATION
+with focusability; a forced state is not a play state (three invented defects so far); an unfamiliar
+shape means read the code. Heredoc tags collide — grep first; and re-read the source block before
+editing, since the mechanic loop rewrites these lines often. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

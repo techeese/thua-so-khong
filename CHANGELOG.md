@@ -18,6 +18,29 @@ lands *before* the circle looks; the lift filter is `!started`, so `lifted` read
   why this is convergent work and not polish. Recorded in `GATES-LEDGER.md` → Tightenings and
   `LANDMINES.md`.
 
+## v0.68 — 2026-08-15 — a hand the year tied says so
+
+A graphics round from the owner's `/loop 5m` session, continuing the audit of the mechanic loop's
+recent work. The tied-hand years (`🚫📖 năm không dạy` and its three siblings) had a strike-through and
+nothing else.
+
+- **A verb the year has tied still advertised what it would do.** With the no-teaching constraint in
+  play, 📖 Dạy was disabled and struck through — but its hint still read `+2 TÀI · 1⚡ → 15%`, a promise
+  it cannot keep this year, and the thin red line was the only thing saying otherwise. That is exactly
+  the fault v0.52 fixed for a factor at its ceiling, in a different disguise.
+- **The tied verb now names the year** — `🚫📖 năm không dạy` / `🚫📖 the no-teaching year`, and the
+  right constraint per verb (🏮 Đêm thất bại reads `🚫🏮 năm không ai dám`). It reuses the existing
+  `CONSTRAINTS` strings, so no new player-facing text entered the file and bilingual parity is
+  untouched.
+- *Evidence:* new **Gate 53** asserts all **four** verb states stay distinguishable, so a fix for one
+  can never collapse another: `live '+2 TÀI · 1⚡ → 17%'@1 · noHand@0.45 · cap 'TÀI 10 · hết mức' ·
+  tied '🚫📖 năm không dạy'@0.45/strike · tiedEN 'the no-teaching year' · nerveTied '🚫🏮 năm không ai
+  dám'`. It also holds the clause that an **unaffordable** verb keeps telling you what it would do —
+  running out of hands is temporary and must not erase the answer.
+
+The audit also cleared two of the mechanic loop's other additions: the strike-through itself is a real
+and distinct visual state, and the big-text mode's layout holds at 320px and 390px (v0.67).
+
 ## v0.67 — 2026-08-15 — Aa reaches the print
 
 A graphics round from the owner's `/loop 5m` session, on the **looking** half of the method — and what

@@ -444,3 +444,9 @@ that is now impossible because a gate catches it stays here, with the gate named
   its ×0 tags and its percentages — untouched. When the other session ships an accessibility control,
   assume it does NOT reach the canvas until measured, and fold the request into `LKF` (text) or a
   `CALM`-style flag (motion) so the whole scene follows.
+- **"Disabled" is not one state — this game has four, and each needs its own voice.** A verb can be
+  live, unaffordable (no hands), at its ceiling (factor 10), or tied by the year's constraint. Three of
+  them were once rendered identically or advertised a delta they could not deliver: the ceiling was
+  fixed in v0.52, the tied hand in v0.68. When touching any of them, re-check all four — Gate 53 asserts
+  they stay mutually distinguishable, including that an unaffordable verb still SHOWS its answer,
+  because running out of hands is temporary and must not erase what the verb would do.

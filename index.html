@@ -226,7 +226,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.67</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.68</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -414,6 +414,9 @@ function shipTier(s){ if(s.yours) return 1;
   var p=S.cast[s.pid]; if(!p) return 1;
   var pr=prod(p); return Math.min(tierCap(), pr<300?1:pr<600?2:3); }
 function tierSum(){ return S.ships.reduce(function(a,s){return a+shipTier(s);},0); }
+function shipKey(s){ return s.yours?"y":String(s.pid); }
+function tierBase(){ var m={}; S.ships.forEach(function(s){ m[shipKey(s)]=shipTier(s); }); return m; }   // each standing roof's tier, as of the deal
+function tierDelta(base){ var d=0; S.ships.forEach(function(s){ var k=shipKey(s); if(base&&fin(base[k])) d+=shipTier(s)-base[k]; }); return d; }   // how far those same roofs have moved since
 // reserved ground: the village furniture a workshop must not crush
 var FURNITURE=[[508,453,104,64],[174,223,104,72],[624,213,104,72],[804,238,104,72],[382,142,176,90],[46,182,120,120],[860,340,90,90]];
 function shipSpot(p){
@@ -555,7 +558,7 @@ function fresh(){
      linking:null, banner:null, banners:[], luatNext:3, probeSeen:false, baFade:false,
      un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false, stormSeen:false, tierTaught:false, lienNgan:false, stormCount:0, stormStreak:0, classSeen:false, revealSeen:false,
      log:[], over:false, scars:[], hands:0, idle:0, vb:{}, hist:[], potSeason:false, potSeen:false};
-  S._hs0=0;
+  S._hs0=0; S._tb={};
   lanterns=[]; runTok++;      // invalidate ALL deferred callbacks from the previous run
   parts=[]; stamps=[]; glows=[]; bubbles=[]; amb=[]; pendQ=[]; motes=[]; rain=[]; ripples=[]; flock=null; smoke=[]; boat=null; gossipQ=[]; cart=null; bus=null;
   beatUntil=0; nextErrandAt=0; _chaser=null;
@@ -750,13 +753,13 @@ function load(){
       var ws=fin(c.ws)?(c.ws|0):0; p.wrongSaid={tai:!!(ws&1),gan:!!(ws&2),ban:!!(ws&4)}; });   // v0.55: an answer already given is not given twice after a refresh
     S.cast[6].arrives=cl(s.arr,2,8,6); S.baFadeStart=cl(s.baf,5,9,8);   // 2 / 5: the reunion year pulls both clocks early — the clamp must admit that on reload
     S.stormCount=cl(s.sc,0,16,0); S.stormStreak=cl(s.ss,0,16,0); S.yearCard=fin(s.yc)?cl(s.yc,0,5,0):S.yearCard; S.constraint=fin(s.cn)?cl(s.cn,0,4,0):0; S.gtmPays=fin(s.gp)?cl(s.gp,0,2,0):(s.gtmPaid?1:0);
-    S.lienWarned=S.season>=11; S.tetSeen=S.season>=4; S.hoardSeen=S.season>=2; S.placesTold=S.season>=3; S.baFade=S.season>=(S.baFadeStart||8); S.baRescued=S.baFade&&(pairExists(0,1)||S.cast[1].started); S.stormSeen=S.season>0; S.tierTaught=S.ships.length>0||S.season>1; S.lienNgan=pairExists(0,6); S.classSeen=S.cast[2].started; S.revealSeen=S.cast.some(function(p){return p.known;});
+    S.lienWarned=S.season>=11; S.tetSeen=S.season>=4; S.hoardSeen=S.season>=2; S.placesTold=S.season>=3; S.trungSeen=S.season>=3; S.fullSaid=S.von>=10; S.baFade=S.season>=(S.baFadeStart||8); S.baRescued=S.baFade&&(pairExists(0,1)||S.cast[1].started); S.stormSeen=S.season>0; S.tierTaught=S.ships.length>0||S.season>1; S.lienNgan=pairExists(0,6); S.classSeen=S.cast[2].started; S.revealSeen=S.cast.some(function(p){return p.known;});
     if(Array.isArray(s.ships)) S.ships=s.ships.filter(function(w){return w&&fin(w.x)&&fin(w.y)&&typeof w.owner==="string";});
     S.ships.forEach(function(w){ w.age=cl(w.age,0,99,2); w.shel=cl(w.shel,0,2,0); });
     S.scars=Array.isArray(s.scars)?s.scars.filter(function(c){return c&&fin(c.x)&&fin(c.y)&&fin(c.s);}).map(function(c){return {x:c.x,y:c.y,s:cl(c.s,0,15,0)};}).slice(-8):[];
     if(Array.isArray(s.log)) S.log=s.log.filter(function(m){return m&&(typeof m.vi==="string"||typeof m.en==="string");});
     // a returning player has already been introduced — recompute unlocks/flags from state, skip the teaching beats
-    S.apprentice=pairExists(0,1); S.duo=pairExists(3,5); S.gtm=pairExists(1,4); S.maiHoa=pairExists(2,4); S.hoaLien=pairExists(4,6); S.gtmPaid=!!s.gtmPaid; S.hoaLienPaid=!!s.hlp; S.hands=fin(s.hs)?cl(s.hs,0,64,0):0; S.idle=fin(s.idl)?cl(s.idl,0,64,0):0; S._hs0=Math.max(0,(S.hands|0)-Math.max(0,3-(S.acts|0)));   // on resume, assume the missing hands of this season were spent this season S.vb={}; if(Array.isArray(s.vb)) VERBS.forEach(function(k,i){ S.vb[k]=fin(s.vb[i])?cl(s.vb[i],0,64,0):0; }); S.hist=Array.isArray(s.hist)?s.hist.slice(0,16).map(function(v){return fin(v)?cl(v,0,15,0):0;}):[];
+    S.apprentice=pairExists(0,1); S.duo=pairExists(3,5); S.gtm=pairExists(1,4); S.maiHoa=pairExists(2,4); S.hoaLien=pairExists(4,6); S.gtmPaid=!!s.gtmPaid; S.hoaLienPaid=!!s.hlp; S.hands=fin(s.hs)?cl(s.hs,0,64,0):0; S.idle=fin(s.idl)?cl(s.idl,0,64,0):0; S._hs0=Math.max(0,(S.hands|0)-Math.max(0,3-(S.acts|0))); S._tb=tierBase(); /* on resume: the season's missing hands count as spent this season; roofs count from now */ S.vb={}; if(Array.isArray(s.vb)) VERBS.forEach(function(k,i){ S.vb[k]=fin(s.vb[i])?cl(s.vb[i],0,64,0):0; }); S.hist=Array.isArray(s.hist)?s.hist.slice(0,16).map(function(v){return fin(v)?cl(v,0,15,0):0;}):[];
     S.un={link:S.cast.filter(function(p){return p.known;}).length>=2||S.pairs.length>0,
           hui:S.season>=2, build:S.season>=4||S.build>0||S.built,
           probe:S.ships.length>0||S.season>2};
@@ -1581,6 +1584,7 @@ function workshop(s,now){
     beep(vt,0.1,0.05); setTimeout(function(){beep(vt*1.5,0.14,0.05);},110); buzz(15);
     // …and the owner steps to their door and says so — a rung climbed is a moment, not a scale pop
     var ow3=(!s.yours&&fin(s.pid))?S.cast[s.pid]:null;
+    if(ow3) gossip("“Xưởng nhà "+ow3.name+" lên bậc rồi kìa.”","“"+ow3.name+"'s workshop went up a tier.”",ow3.id);   // the xóm notices a rung the way it notices a stamp
     if(ow3&&active(ow3)&&!(ow3.vUntil>now)){ visit(ow3,x-30,y+24,4200);
       var lineT=(tr===3)?(ow3.qt||{vi:"“Người ta gọi là thương hiệu.”",en:"“People call it a brand.”"}):{vi:"“Có mái rồi. Còn phải vun tiếp.”",en:"“It has a roof now. Still needs tending.”"};
       (function(o4,ln4){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok){ bubble(o4,ln4[L]); voice(o4,0.06); } },900); })(ow3,lineT); }
@@ -1652,6 +1656,13 @@ function person(p,now){
   else { ctx.fillStyle="#3a2a1e"; ctx.beginPath(); ctx.arc(0,-18,9.4,Math.PI,2*Math.PI); ctx.fill(); }
   if(p.elder){ ctx.strokeStyle="#e8e0d0"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(-3,-10); ctx.quadraticCurveTo(0,-5,3,-10); ctx.stroke(); }
   ctx.restore();
+  // 🏮 Trung thu: the young one carries her star lantern to the banyan — the festival in a hand
+  if(p.young&&S.season%4===2&&p.vUntil>now&&p.vx<140&&p.vy>260&&!S.over){ var lsw=Math.sin(now*0.005+p.ph)*2;
+    ctx.strokeStyle="#3a2a1e"; ctx.lineWidth=1.4; ctx.beginPath(); ctx.moveTo(x+9,y-2); ctx.lineTo(x+14+lsw,y-20); ctx.stroke();
+    ctx.fillStyle="#C1443C"; ink(1.3); ctx.beginPath();
+    for(var sk=0;sk<5;sk++){ var a1=-Math.PI/2+sk*2*Math.PI/5, a2=a1+Math.PI/5; ctx.lineTo(x+14+lsw+Math.cos(a1)*5,y-24+Math.sin(a1)*5); ctx.lineTo(x+14+lsw+Math.cos(a2)*2.2,y-24+Math.sin(a2)*2.2); }
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle="rgba(227,166,59,"+(0.25+0.15*Math.sin(now*0.01)).toFixed(3)+")"; ctx.beginPath(); ctx.arc(x+14+lsw,y-24,9,0,6.28); ctx.fill(); }   // its glow
   // micro-poses: the errand is readable at a glance, wordlessly
   if(atT){
     if(beh===6 && Math.sin(now*0.011+p.ph)>0.94){ ink(2.2);   // the hammer flick
@@ -1806,7 +1817,9 @@ cv.addEventListener("click",function(e){
   S.cast.forEach(function(p){ if(!active(p)||!p.known) return; var d2=Math.hypot(p.x-mx,p.y-my); if(d2<nd){nd=d2;near=p;} });
   if(!near) return;
   var LOOK={
-    p:[ [S.season%4===0,"“Mạ mới cấy. Nước có, đất có — còn lại là chờ.”","“Seedlings just planted. Water, soil — the rest is waiting.”"],
+    p:[ [S.season%4===2&&(S.harv|0)>=44,"“Gặt xong cả rồi. Rơm phơi đầy sân.”","“All cut. Straw drying in every yard.”"],
+        [S.season%4===2&&(S.harv|0)>0,"“Gặt được "+Math.round((S.harv|0)/44*100)+"% rồi. Còn ai rảnh không?”","“"+Math.round((S.harv|0)/44*100)+"% cut. Anyone else free?”"],
+        [S.season%4===0,"“Mạ mới cấy. Nước có, đất có — còn lại là chờ.”","“Seedlings just planted. Water, soil — the rest is waiting.”"],
         [S.season%4===1,"“Lúa đang con gái. Trời cứ thế này thì được.”","“The rice is in its green. Sky like this and we're fine.”"],
         [S.season%4===2&&S.luat<4,"“Lúa chín mà mưa. Gặt vội thôi.”","“Ripe rice, and rain. We cut fast.”"],
         [S.season%4===2,"“Lúa chín. Ai rảnh thì ra gặt phụ.”","“It's ripe. Whoever's free comes to cut.”"],
@@ -1950,6 +1963,7 @@ function completeLink(otherId){
 // every đồng travels the same road: a coin flies to the river, the gauge shimmers
 function riverRise(n,sx,sy,dly){ if(S.von>=10) return;
   S.von=Math.min(10,S.von+n); S._vonAt=performance.now();
+  if(S.von>=10&&!S.fullSaid){ S.fullSaid=true; gossip("“Sông đầy rồi. Xưởng nào cũng lên được bậc.”","“The river's full. Any roof can climb now.”",-1); }   // the water reaching the top is a thing the xóm says once
   if(motes.length<6) motes.push({x0:sx,y0:sy,x1:W/2,y1:H-58,t:-(dly||0.4),g:"🪙"}); }
 function huiMax(){ return (S.yearCard===0)?4:3; }   // a flood year leans harder on the hụi
 function actHui(){ if(!S.un.hui||S.over||S.acts<=0||S.hui>=huiMax()||conBan(1)) return; if(!spend("hui"))return;
@@ -2031,7 +2045,7 @@ function nextSeason(){
   S.linking=null;
   flushPend(true);   // any pending lessons land BEFORE this season's burst, not inside it
   var _preActive=S.cast.filter(active).map(function(p){return p.id;});
-  var _rc={von0:S.von, bloom:0, stamp:0, fade:0, sky:S.luat<4?"☁️":(S.luat>=7?"☀️":""), who:[], hit:[]};   // the season's ledger — one recap line closes each season in the log; the sky it ran under is part of it
+  var _rc={von0:S.von, tb:S._tb||{}, bloom:0, stamp:0, fade:0, sky:S.luat<4?"☁️":(S.luat>=7?"☀️":""), who:[], hit:[]};   // the season's ledger — one recap line closes each season in the log; the sky it ran under is part of it
   if(S.acts>0){ S.idle=(S.idle|0)+S.acts; _rc.idle=S.acts; }   // hands left on the table this season — counted, shown at the end, never carried
   _rc.used=(S.hands|0)-(S._hs0|0); _rc.dealt=_rc.used+(S.acts|0);   // hands used of hands dealt — the ledger's first number
   // one gentle first-turn nudge: don't let a new player skip past their whole hand
@@ -2188,7 +2202,8 @@ function nextSeason(){
   (function(){ var dv=S.von-_rc.von0;
     function bits(lang){ var b=[];
       if(_rc.bloom) b.push("🌸"+(_rc.who.length?_rc.who.join(","):_rc.bloom)); if(_rc.stamp) b.push("⬛"+(_rc.hit.length?_rc.hit.join(","):_rc.stamp));   // the ledger names them: 🌸Mai ⬛Ba
-      if(dv) b.push("🌊"+(dv>0?"+":"")+dv); if(_rc.fade) b.push((lang==="vi"?"phai ":"faded ")+_rc.fade);
+      if(dv) b.push("🌊"+(dv>0?"+":"")+dv); var dts=tierDelta(_rc.tb); if(dts) b.push("🪜"+(dts>0?"+":"")+dts);   // v0.68: the tier climb shows in the season's ledger — roofs standing at the deal, and how far they moved (a new roof is a 🌸, an erased one a ⬛ — not a 🪜)
+      if(_rc.fade) b.push((lang==="vi"?"phai ":"faded ")+_rc.fade);
       if(_rc.dealt>0) b.push("⚡"+_rc.used+"/"+_rc.dealt+(_rc.idle?(lang==="vi"?" (trống "+_rc.idle+")":" ("+_rc.idle+" unused)"):""));
       return b.length?(" · "+b.join(" ")):""; }
     var yr=" "+(2026+Math.floor(S.season/4))+(_rc.sky?(" "+_rc.sky):""), sg=["✿","☼","❦","❄"][S.season%4]+" ";   // the divider signs like the print does
@@ -2201,7 +2216,7 @@ function nextSeason(){
   nightAt=performance.now();   // a night passes between seasons — the print dims, lamps show, the new season dawns
   // ☁️ storm tax: under a heavy sky the xóm spends a hand bracing roofs — but after two seasons the roofs are braced
   if(S.luat<4){ S.stormCount=(S.stormCount|0)+1; S.stormStreak=(S.stormStreak|0)+1; } else { S.stormStreak=0; }
-  S.acts=(S.luat<4 && S.stormStreak<=2)?2:3; S._hs0=S.hands|0;   // the season's hand is dealt — count from here
+  S.acts=(S.luat<4 && S.stormStreak<=2)?2:3; S._hs0=S.hands|0; S._tb=tierBase();   // the season's hand is dealt — count hands from here, and each standing roof's tier (a hand's climb belongs to the season it was spent in)
   if(S.acts===2&&!S.stormSeen){ S.stormSeen=true;
     logMsg("☁️ Mùa giông — ai cũng bận chống nhà (chỉ còn 2⚡).","☁️ Storm season — everyone is bracing their homes (only 2⚡)."); }
   if(S.luat<4&&S.stormStreak===3){ logMsg("Nhà đã chằng néo xong — xóm quen giông rồi (3⚡).","The roofs are braced — the xóm is used to storms now (3⚡)."); }
@@ -2289,6 +2304,19 @@ function nextSeason(){
   if(S.season===15){ banner((L==="vi")?"🏮 Mùa cuối":"🏮 Last season",1700);
     logMsg("🏮 Mùa cuối. Sau mùa này xóm thắp đèn cho những gì còn đứng.",
            "🏮 The last season. After this, the xóm lights lanterns for what still stands."); }
+  // 🏮 Trung thu — every autumn the xóm gathers under the banyan's lanterns after dark; the young one carries a lantern. No numbers move: it is the year's other festival, seen.
+  if(S.season%4===2&&S.season>0){
+    (function(){ var ctok=runTok, who=S.cast.filter(function(p){return active(p)&&p.known;});
+      setTimeout(function(){ if(S.over||runTok!==ctok) return;
+        banner("🏮 Trung thu",1800);
+        who.forEach(function(p,i){ visit(p,60+((i*23)%70),275+((i%2)*14),5600); });
+        petals(80,215,14,["#E3A63B","#C1443C","#D97C8E"]); gong(330,0.9,0.03);
+        if(who.length&&!S.trungSeen){ S.trungSeen=true; var yng=S.cast[0];
+          if(active(yng)&&yng.known) bubble(yng,(L==="vi")?"“Đèn ông sao của em sáng nhất!”":"“My star lantern's the brightest!”");
+          logMsg("🏮 Trung thu — cả xóm ra gốc đa xem đèn. Không ai làm gì cả — mà ai cũng có mặt.","🏮 Mid-autumn — the xóm gathers under the banyan to see the lanterns. Nobody does anything — and everyone is there."); }
+        gossip("“Trăng năm nay tròn.”","“The moon's full this year.”",-1);
+      },2600); })();
+  }
   // 🧧 Tết — every new calendar year the xóm gathers at the đình; lì xì is a push, not a gift: only a sprout already pushing takes it
   if(S.season>0&&S.season%4===0){
     banner("🧧 Tết "+(2026+Math.floor(S.season/4)),2000);
@@ -2641,7 +2669,7 @@ function renderSheet(){
     var lk=S.pairs.filter(function(pr){return pr[0]===p.id||pr[1]===p.id;}).length, gL=lk===0?2:1;
     var vs=[after(2,0,0),after(0,2,0),after(0,0,gL)], hints=[el("teachHint"),el("nerveHint"),el("linkHint")], base=[STR.teachH[L],STR.nerveH[L],(gL===2?STR.linkH[L]:STR.linkH[L].replace("+2","+1"))];
     var known=seenAll(p);   // the per-verb answer needs the whole row — until then the verb is a guess, and the guess is the game
-    var FK=["tai","gan","ban"], BTN=[el("teachBtn"),el("nerveBtn"),el("linkBtn")];
+    var FK=["tai","gan","ban"], BTN=[el("teachBtn"),el("nerveBtn"),el("linkBtn")], BAN=[3,4,2];   // which constraint ties each hand
     vs.forEach(function(q,i){ var same=(q.tai===p.tai&&q.gan===p.gan&&q.ban===p.ban);   // a maxed factor: nothing to add
       var tNow=p.started?Math.min(tierCap(),prod(p)<300?1:prod(p)<600?2:3):0, tQ=p.started?Math.min(tierCap(),prod(q)<300?1:prod(q)<600?2:3):0;   // the hand that crosses a threshold says so — and the river's cap is honoured, so a held tier does not promise a rung it cannot climb
       // A factor already at 10 disabled its verb and greyed it exactly like "you have no hands left",
@@ -2649,9 +2677,14 @@ function renderSheet(){
       // face. Say which: the verb names the ceiling instead of a delta it cannot deliver.
       var capped=same&&known;
       if(BTN[i]) BTN[i].classList.toggle("maxed",!!capped);
+      // A verb the YEAR has tied still advertised "+2 TÀI · 1⚡ → 15%" — a promise it cannot keep, with
+      // only a thin strike-through to say otherwise. Same rule as the ceiling (v0.52): name what stops
+      // you instead of a delta you cannot deliver. This hand is tied by the year, not by this person.
+      var tied=conBan(BAN[i]);
       // a partial row: the hand on the lowest SEEN factor moves the ceiling's bound — say the bound it would reach (≤); hands on unseen factors stay silent
       var bound=""; if(!known&&!same&&!p.started&&p.seen&&p.seen[FK[i]]){ var sm=seenMin(p); if(sm!==null&&p[FK[i]]===sm){ var m2=Math.min(q.tai,q.gan,q.ban), sm2=null; ["tai","gan","ban"].forEach(function(k){ if(p.seen[k]&&(sm2===null||q[k]<sm2)) sm2=q[k]; }); bound=(L==="vi"?" · trần ≤ ":" · ceiling ≤ ")+Math.round(ceilOf(sm2)*100)+"%"; } }   // no arrow: a bound is not an answer (Gate 11 keeps "no → until the row is known")
-      hints[i].textContent=capped?(t(FK[i])+" 10 · "+(L==="vi"?"hết mức":"maxed"))
+      hints[i].textContent=tied?(CONSTRAINTS[BAN[i]].g+" "+(L==="vi"?CONSTRAINTS[BAN[i]].nv:CONSTRAINTS[BAN[i]].ne))
+        :capped?(t(FK[i])+" 10 · "+(L==="vi"?"hết mức":"maxed"))
         :(base[i]+((same||!known)?bound:(p.started?(" → "+prod(q)+(tQ>tNow?((L==="vi"?" ↑bậc ":" ↑tier ")+tQ):"")):(" → "+Math.round(chance(q)*100)+"%")))); });   // the reading stays yours — no verb is bolded
   })();
 }

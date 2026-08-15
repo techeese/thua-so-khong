@@ -1667,6 +1667,76 @@ PYEOFAA
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=600,1000 --virtual-time-budget=12000 --dump-dom "file://$TMP/aa.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "AA_OK" && pass "Aa reaches the print: $T" || fail "Aa reaches the print: $T"
 
+# Gate 53: a hand the YEAR tied says so — a verb banned by the year's constraint still advertised
+# "+2 TÀI · 1⚡ → 15%", a promise it cannot keep, with only a thin strike-through to say otherwise. Same
+# rule the ceiling got in v0.52: name what stops you instead of a delta you cannot deliver. Asserts all
+# four states stay distinguishable — live, unaffordable, at its ceiling, tied by the year — so a fix for
+# one never collapses another, and that the tied hint is bilingual and names the RIGHT constraint.
+python3 - "$TMP" <<'PYEOFTIED'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<5;s++){ S.acts=3; S.nudged=true; nextSeason(); }
+  var p=S.cast[0]; p.known=true; p.started=false; p.seen={tai:true,gan:true,ban:true};
+  p.tai=6; p.gan=6; p.ban=6; selectPerson(0);
+  function look(id){ var e=document.getElementById(id), cs=getComputedStyle(e), h=e.querySelector("small");
+    return {op:+(+cs.opacity).toFixed(2), strike:cs.textDecorationLine.indexOf("line-through")>=0,
+            hint:(h?h.textContent.trim():"")}; }
+  S.constraint=0; S.acts=3; render(); renderSheet(); var live=look("teachBtn");
+  S.acts=0; render(); renderSheet(); var noHand=look("teachBtn");
+  S.acts=3; p.tai=10; render(); renderSheet(); var cap=look("teachBtn");
+  p.tai=6; S.constraint=3; render(); renderSheet(); var tied=look("teachBtn");
+  setLang("en"); render(); renderSheet(); var tiedEN=look("teachBtn");
+  setLang("vi"); S.constraint=4; render(); renderSheet(); var nerve=look("nerveBtn");
+  var ok = /\+2/.test(live.hint) && live.op>0.9
+        && /\+2/.test(noHand.hint) && noHand.op<0.6 && !noHand.strike     // an empty hand still tells you what it would do
+        && /10/.test(cap.hint) && !/\+2/.test(cap.hint)                    // the ceiling names itself
+        && tied.strike && /không dạy/.test(tied.hint) && !/\+2/.test(tied.hint)
+        && /no-teaching/.test(tiedEN.hint)                                 // bilingual, from the existing CONSTRAINTS strings
+        && /không ai dám/.test(nerve.hint)                                 // and the RIGHT constraint per verb
+        && tied.hint!==cap.hint && tied.hint!==noHand.hint;
+  document.title=(ok?"TIED_OK":"TIED_BAD")+" live='"+live.hint+"'@"+live.op
+    +" noHand@"+noHand.op+" cap='"+cap.hint+"' tied='"+tied.hint+"'@"+tied.op+"/strike="+tied.strike
+    +" tiedEN='"+tiedEN.hint+"' nerveTied='"+nerve.hint+"'";
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/td.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOFTIED
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=12000 --dump-dom "file://$TMP/td.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "TIED_OK" && pass "a hand the year tied says so: $T" || fail "a hand the year tied says so: $T"
+
+# Gate 54: the tier climb shows in the ledger — a season in which a bloomed roof's product crosses 300 ends with a divider carrying 🪜+1; a season with
+# no tier movement carries no 🪜.
+python3 - "$TMP" <<'PYEOF52'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+function lastDiv(){ var d=S.log.filter(function(m){return m.div;})[0]; return d?d.vi:""; }
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.nudged=true; S.season=6; S.luat=6; S.luatNext=6; S.von=10;
+  var mai=S.cast[2]; S.cast.forEach(function(q){ q.started=true; q.known=false; }); mai.known=true; mai.tai=8; mai.gan=6; mai.ban=6;   // 288 — a stall, one hand from a shop
+  S.ships.push({x:420,y:300,owner:mai.name,pid:2,age:2,shel:0});
+  nextSeason(); var quiet=lastDiv(), noLadder=!/🪜/.test(quiet);
+  S.acts=3; selectPerson(2); actTeach();   // 10×6×6 = 360 → tier 2 at river 10
+  nextSeason(); var climbed=lastDiv(), plus1=/🪜\+1/.test(climbed);
+  var ok=noLadder&&plus1;
+  document.title=(ok?"LEDGER_OK":"LEDGER_BAD")+" quiet="+noLadder+" climbed="+plus1+" :: "+climbed;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/ledger.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF52
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/ledger.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "LEDGER_OK" && pass "the tier climb shows in the ledger: $T" || fail "the tier climb shows in the ledger: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."
