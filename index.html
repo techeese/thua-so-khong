@@ -226,7 +226,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.70</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.71</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -501,7 +501,7 @@ function chatter(){
 // YEAR CARDS — each year, one lever is scarce. The diagnosis differs, not just the arithmetic.
 var YEAR_CARDS=[
   {em:"🌊",nv:"Năm lũ",ne:"the flood year",
-   fv:"🌊 Năm lũ — sông khó tự đầy, xóm trông cả vào hụi.",fe:"🌊 A flood year — the river struggles to fill itself; the xóm leans on the hụi.",
+   fv:"🌊 Năm lũ — sông không tự đầy, xóm trông cả vào hụi.",fe:"🌊 A flood year — the river will not fill itself; the xóm leans on the hụi.",
    chat:{vi:"“Lũ rút rồi mà sông vẫn đục.”",en:"“The flood's gone but the river's still murky.”"}},
   {em:"📋",nv:"Năm xét kỹ",ne:"the strict year",
    fv:"📋 Năm xét kỹ — trời lâu quang, nhưng trên xã dán thông báo (nghe ngóng miễn phí).",fe:"📋 A strict year — the sky clears slowly, but the commune posts notices (asking around is free).",
@@ -594,7 +594,7 @@ function fresh(){
   if(S.yearCard===4){ S.cast[6].arrives=2; S.baFadeStart=5; }   // the reunion year: both people-clocks come early
   S.luatNext=driftLuat(S.luat);
   S.log.unshift((S.yearCard===0&&(S.constraint|0)===1)
-    ?{vi:"🌊 Năm lũ — sông khó tự đầy, mà năm nay bạn không góp hụi. Chỉ rễ sâu mới gọi được nước.",
+    ?{vi:"🌊 Năm lũ — sông không tự đầy, mà năm nay bạn không góp hụi. Chỉ rễ sâu mới gọi được nước.",
       en:"🌊 A flood year — and you've sworn off the hụi. Only deep roots call the water now."}
     :{vi:YEAR_CARDS[S.yearCard].fv,en:YEAR_CARDS[S.yearCard].fe});
 }
@@ -1611,7 +1611,16 @@ function workshop(s,now){
   var lbl=(S.sel===s.pid||s.yours)?(word+" "+s.owner+((S.sel===s.pid&&(s.age|0)>0)?(" · "+(s.age|0)+(L==="vi"?" mùa":" s")):"")):word;   // the selected owner's roof says how many seasons it has stood
   // the workshop's own word was never registered either, so a villager's name printed straight through it
   var lblW=ctx.measureText(lbl).width, lblX=Math.max(16+lblW/2,Math.min(W-16-lblW/2,x)), lblY=y+30*sc+11+(LKF-1)*6;
-  lblQ.push({t:lbl,x:lblX,y:lblY,f:FONT_LBL,c:"#2B2320",o:-1}); lblR.push([lblX,lblY,lblW]);
+  // A workshop's word REGISTERED in lblR but never avoided anything, so whichever of a roof and a
+  // villager was drawn second printed over the other: measured 3 distinct collisions in ordinary play
+  // at 390px, including "Bé Ngân" and "xưởng Cô Mai · 9 mùa" merging into one unreadable run.
+  // Same ladder the names got, and the same courtesy: if there is nowhere clear, the word yields —
+  // the roof is still there to be seen, and a name matters more than the word under it.
+  var wsY=lblY, wsOk=false;
+  for(var wt=0; wt<4; wt++){ var wcy=lblY+wt*13*LKF;
+    var clash=lblR.some(function(r){ return Math.abs(r[1]-wcy)<13*LKF && Math.abs(r[0]-lblX)<(r[2]+lblW)/2+6; });
+    if(!clash){ wsY=wcy; wsOk=true; break; } }
+  if(wsOk){ lblQ.push({t:lbl,x:lblX,y:wsY,f:FONT_LBL,c:"#2B2320",o:-1}); lblR.push([lblX,wsY,lblW]); }
   ctx.textAlign="left";
 }
 function person(p,now){
@@ -2188,7 +2197,7 @@ function nextSeason(){
       logMsg("🌊 Xưởng đã đủ vững — dòng sông bắt đầu tự đầy.","🌊 The workshops stand firm — the river begins to fill itself."); } }
   // structural drift — beyond your hands (the pre-rolled forecast becomes the sky)
   S.luat=S.luatNext; S.luatNext=driftLuat(S.luat); S.probeSeen=false; S.potSeason=false;
-  if(S.season%4===3 && !(S.yearCard===0&&S.season===3)) riverRise(1,W-20,340,0.4);   // the era slowly rises — capital walks in down the road
+  if(S.season%4===3 && S.yearCard!==0) riverRise(1,W-20,340,0.4);   // v0.71: in a flood year the river never rises on its own — the card always said "the xóm leans on the hụi"; now the hand that pays in is the right one (priced: hunter 6.83/12.8 → 6.69/11.3 without hụi, 6.91/11.7 with)   // the era slowly rises — capital walks in down the road
   if(S.von<=3 && S.season===5) logMsg(STR.riverLow.vi,STR.riverLow.en);
   // workshops age; tarps weather down
   S.ships.forEach(function(s){ s.age=(s.age|0)+1; s.born=false; if(s.shel>0)s.shel--;

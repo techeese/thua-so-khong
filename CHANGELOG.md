@@ -18,6 +18,29 @@ lands *before* the circle looks; the lift filter is `!started`, so `lifted` read
   why this is convergent work and not polish. Recorded in `GATES-LEDGER.md` → Tightenings and
   `LANDMINES.md`.
 
+## v0.71 — 2026-08-15 — a roof's word never prints over a name
+
+A graphics round from the owner's `/loop 5m` session, on the **looking** half of the method. A plain
+screenshot of a late run at 390px showed the map reading **"Bé gánh Cô Mai · 9 mùa"** — a villager's
+name and a workshop's word merged into one unreadable line.
+
+- **Villager labels ladder around each other; workshop words never did.** Since v0.63 a roof's word
+  *registers* itself in the collision list, so names avoid it — but it avoids nothing itself, so whichever
+  of a roof and a villager was drawn second printed over the first. Measured over an ordinary
+  thirteen-season run at 390px, sampling 40 frames: **three distinct collisions**, including the one the
+  screenshot caught.
+- **The word now takes the same ladder, and the same courtesy.** It tries four steps down for clear
+  ground and, finding none, **yields** — the roof is still there to be seen, and a name matters more than
+  the word beneath it. *Measured before → after: 3 → 0 distinct collisions across 80 frames.*
+- *Evidence:* new **Gate 58**, which plays a real thirteen-season run rather than posing a scene, and is
+  non-vacuous — roof words must actually have been drawn (200 of them) for a clean result to count.
+  **Gate 13 could not have caught this**: its scenario is a forced crowd on the far bank with no
+  workshops in it, which is exactly why the looking half of the method exists.
+
+Two housekeeping notes: my new gate first landed as a **duplicate Gate 57** — the mechanic loop had taken
+that id since my last look, and I read the maximum as free rather than checking. Renumbered to 58 before
+committing, and `done.sh`'s uniqueness check confirms the ledger is clean.
+
 ## v0.70 — 2026-08-15 — hụi and nghe ngóng name what stops them
 
 A graphics round from the owner's `/loop 5m` session, finishing the sweep v0.69's pointer set out. The
@@ -41,6 +64,26 @@ branches in its hint.**
 That closes the fault this loop first met in v0.52. Four controls carried it — the ceiling, the tied
 hand, the pot, and now these two — and every one of them was the same sentence: a disabled control
 advertising what it would have done.
+
+## v0.71 — 2026-08-15 — in a flood year the river is yours to fill
+
+Closes: under the owner's standing `/loop 3m` directive, the second card identity from the parked
+list. The flood year 🌊 was "slow start, same finish": river 1 and a tier cap of 1 until the water
+came — and it always came, because the year-end rises carried it to 10 regardless, so the hunter's
+tiers in a flood year were the *highest* of all six cards (16.6). Its own line — *"the xóm leans on
+the hụi"* — was decoration.
+
+- **The flood year's river never rises on its own.** No year-end +1 all year (before, only season
+  3's was skipped); the river moves only when the xóm moves it — hụi (max 4 that year), the pot back
+  down, market trips, and the flywheel once six tiers stand. Card line tightened: *sông không tự
+  đầy* (will not fill itself).
+- **Priced honestly** (`check.js` mirrored, 800 flood-year runs): hunter without hụi 6.83 / 12.8 →
+  **6.69 / 11.3**; a hunter who pays in each season until 4 → **6.91 / 11.7** — the first year in
+  which paying into the hụi *beats* not paying in; spreader 7.1 → 5.1 tiers, idle 2.39 → 2.32. Band
+  across all cards holds. Capital decides this year the only way the ceiling lets it: as the tier
+  cap and the late multiplier (see `MILESTONES.md`).
+- *Evidence:* new **Gate 59** (`FLOOD_OK flood@3=3 flood@7=3 plain@3=4 plain@7=4`); id 58 was the
+  graphics session's, checked before committing. Gates green.
 
 ## v0.70 (mechanic half) — 2026-08-15 — the strict year's stamps fall harder
 

@@ -129,7 +129,7 @@ function run(strategy,seed){
     else if(yc===1){ if(r<0.10) luat=Math.min(10,luat+1); else if(r<0.25) luat=Math.max(1,luat-1); }
     else { if(r<0.12) luat=Math.min(10,luat+1); else if(r<0.20) luat=Math.max(1,luat-1); }
     if(luat<4){ stormStreak++; } else { stormStreak=0; }   // streak carries into the NEXT tick's acts (mirrors index.html order)
-    if(season%4===3 && !(yc===0&&season===3)) von=Math.min(10,von+1);
+    if(season%4===3 && yc!==0) von=Math.min(10,von+1);   // v0.71: flood year — the river never rises on its own (mirrors index.html)
     // 🧧 Tết (mirrors index.html): a sprout already pushing gets one more shove — idle knows no one, so no lì xì
     if(season%4===3 && strategy!=="idle") cast.forEach(function(p){ if(activeSim(p,season+1)&&!p.started&&p.tai*p.gan*p.ban>=100&&(p.mom||0)>0)
       p.mom=Math.min((yc===5)?0.15:0.09,(p.mom||0)+0.03); });

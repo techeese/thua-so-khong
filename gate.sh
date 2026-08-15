@@ -1826,7 +1826,7 @@ setTimeout(function(){ try{
   document.getElementById("startBtn").click();
   for(var s=0;s<8;s++){ S.acts=3; S.nudged=true; nextSeason(); }
   S.cast.forEach(function(p){ p.known=true; });
-  S.un.hui=true; S.un.probe=true; S.acts=3; S.constraint=0; S.probeSeen=false; S.hui=1; S.von=5;
+  S.un.hui=true; S.un.probe=true; S.acts=3; S.constraint=0; S.probeSeen=false; S.hui=1; S.von=5; S.yearCard=2;   // a plain year: in the strict year the probe is free ("(miễn phí)") and the ⚡ assertion below flakes on the card draw
   selectPerson(1);
   function hui(){ render(); renderSheet(); return document.getElementById("huiCost").textContent.trim(); }
   function prb(){ render(); renderSheet(); return document.getElementById("probeCost").textContent.trim(); }
@@ -1848,6 +1848,82 @@ open(tmp+"/sw.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOFSWEEP
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=12000 --dump-dom "file://$TMP/sw.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "SWEEP_OK" && pass "hụi and nghe ngóng name what stops them: $T" || fail "hụi and nghe ngóng name what stops them: $T"
+
+# Gate 58: a roof's word never prints over a name — villager labels ladder around each other (Gate 13),
+# but a WORKSHOP's word only registered itself and avoided nothing, so whichever of a roof and a villager
+# was drawn second printed over the first. Measured in ORDINARY PLAY at 390px: three distinct collisions,
+# including "Bé Ngân" and "xưởng Cô Mai · 9 mùa" merging into one unreadable run. Gate 13 could not catch
+# it because its scenario is a forced crowd on the far bank with no workshops in it — this one plays a
+# real thirteen-season run and watches every frame.
+python3 - "$TMP" <<'PYEOFWS'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<style>html,body{width:390px;margin:0 auto}</style>
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+var LBL=[], PID=-1;
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var seas=0; seas<13; seas++){
+    for(var i=0;i<7;i++){ var c=S.cast[i]; if(c&&!c.known&&(c.arrives===undefined||S.season>=c.arrives)&&!c.gone) selectPerson(i); }
+    var un=S.cast.filter(function(p){return p.known&&!p.started&&!p.gone;});
+    un.sort(function(a,b){return Math.min(a.tai,a.gan,a.ban)-Math.min(b.tai,b.gan,b.ban);});
+    if(un.length){ var t=un[0]; selectPerson(t.id);
+      var mk=Math.min(t.tai,t.gan,t.ban);
+      if(mk===t.gan) actNerve(); else if(mk===t.tai) actTeach(); else actTeach(); }
+    if(S.un.build&&!S.built&&S.acts>0) actBuild();
+    S.nudged=true; nextSeason(); if(S.over) break;
+  }
+  bubbles=[]; S.banner=null;
+  var _oh=haloText, _op=person;
+  haloText=function(t,x,y){ var m=ctx.measureText(t);
+    var owner=(typeof lblOwner!=="undefined")?lblOwner:PID;
+    LBL.push({o:owner,t:t,x:x-m.width/2,y:y-m.actualBoundingBoxAscent,
+              w:m.width,h:m.actualBoundingBoxAscent+m.actualBoundingBoxDescent});
+    return _oh(t,x,y); };
+  person=function(p,now){ PID=p.id; try{ return _op(p,now); } finally{ PID=-1; } };
+  var bad=[], roofWords=0;
+  for(var f=0;f<40;f++){ LBL.length=0; drawScene(5000+f*40);
+    LBL.forEach(function(l){ if(l.o<0) roofWords++; });
+    for(var i=0;i<LBL.length;i++) for(var j=i+1;j<LBL.length;j++){
+      var a=LBL[i],b=LBL[j]; if(a.o===b.o) continue;
+      if(a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y){
+        var k="'"+a.t.slice(0,14)+"'×'"+b.t.slice(0,14)+"'";
+        if(bad.indexOf(k)<0) bad.push(k); } } }
+  var ok = bad.length===0 && roofWords>0;   // roofWords>0 keeps it non-vacuous: words were actually drawn
+  document.title=(ok?"ROOFWORD_OK":"ROOFWORD_BAD")+" roofWordsDrawn="+roofWords+" collisions="+bad.length
+    +(bad.length?(" :: "+bad.slice(0,4).join(" | ")):"");
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/rw.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOFWS
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=600,1250 --virtual-time-budget=26000 --dump-dom "file://$TMP/rw.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "ROOFWORD_OK" && pass "a roof's word never prints over a name: $T" || fail "a roof's word never prints over a name: $T"
+
+# Gate 59: in a flood year the river never rises on its own — a year-end (season 3 → 4, 7 → 8) leaves the river where it was; in a plain year it rises by one.
+python3 - "$TMP" <<'PYEOF58'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  function yearEnd(yc,season){ fresh(); S.nudged=true; S.yearCard=yc; S.season=season; S.luat=6; S.luatNext=6; S.von=3;
+    S.cast.forEach(function(q){ q.started=true; q.known=false; }); S.ships.length=0;   // no roofs → no flywheel, no market trips: only the year-end rise can move the river
+    nextSeason(); return S.von; }
+  var f3=yearEnd(0,3), f7=yearEnd(0,7), p3=yearEnd(2,3), p7=yearEnd(2,7);
+  var ok=f3===3&&f7===3&&p3===4&&p7===4;
+  document.title=(ok?"FLOOD_OK":"FLOOD_BAD")+" flood@3="+f3+" flood@7="+f7+" plain@3="+p3+" plain@7="+p7;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/flood.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF58
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/flood.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "FLOOD_OK" && pass "the flood year's river never rises on its own: $T" || fail "the flood year's river never rises on its own: $T"
 
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
