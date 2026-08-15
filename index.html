@@ -76,9 +76,12 @@
   .armed{background:var(--leaf)!important;color:#fff!important}
   .con{font-size:12px;padding:5px 8px} .con small{display:block;font-size:10px}
   .con.on{background:var(--red);color:#fff}
+  /* a phone held sideways: cap the print by WIDTH so aspect-ratio brings the height under 70vh with
+     nothing cropped. The old rule capped HEIGHT, which fit()'s inline style silently overrode — the
+     landscape adaptation never once ran. CSS owns the box now; fit() only sizes the raster. */
   @media (orientation:landscape) and (max-height:520px){
-    canvas{width:auto;max-width:100%;height:min(70vh,62.5vw);margin:0 auto} }
-  canvas{display:block;width:100%;border:3px solid var(--ink);border-radius:14px;background:var(--paper);touch-action:manipulation}
+    canvas{max-width:calc(70vh * 960 / 600);margin:0 auto} }
+  canvas{display:block;width:100%;aspect-ratio:960/600;border:3px solid var(--ink);border-radius:14px;background:var(--paper);touch-action:manipulation}
   /* action bar */
   .bar{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center}
   .bar .next{background:var(--red);color:#fff;flex:1;min-width:150px;padding:11px;font-size:15px}
@@ -201,7 +204,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.56</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.57</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -782,9 +785,12 @@ function gong(f,d,v){ if(META.muted) return; try{ if(!_ac)_ac=new (window.AudioC
 // ---------- canvas ----------
 var cv=document.getElementById("cv"), ctx=cv.getContext("2d");
 var W=960,H=600,DPR=1;
-function fit(){ var w=cv.clientWidth||cv.parentElement.clientWidth||W; DPR=window.devicePixelRatio||1;
-  // backing store sized to the DISPLAYED width, not the logical world — 8× fewer pixels per frame on phones
-  cv.width=Math.round(w*DPR); cv.height=Math.round(w*H/W*DPR); cv.style.height=(w*H/W)+"px";
+function fit(){ DPR=window.devicePixelRatio||1;
+  // the stylesheet owns the box (width:100% + aspect-ratio, capped in landscape); this only matches the
+  // backing store to whatever box CSS ended up giving us. Writing style.width/height here is what made
+  // the landscape cap dead code, and a px width also stops the canvas tracking layout between resizes.
+  var w=cv.clientWidth||cv.parentElement.clientWidth||W, h=cv.clientHeight||w*H/W;
+  cv.width=Math.round(w*DPR); cv.height=Math.round(h*DPR);
   buildGround(); }
 window.addEventListener("resize",fit);
 
@@ -1992,8 +1998,9 @@ function nextSeason(){
       },2600); })(p);
       logMsg("🌸 "+p.name+STR.bloomed.vi, "🌸 "+p.name+STR.bloomed.en);
       gossip("“Nhà "+p.name+" mở xưởng rồi kìa!”","“"+p.name+" opened a workshop — did you see?”",p.id);
-      // a bloom inspires the people who WITNESSED it with you — those you've met
-      var wit=[]; S.cast.forEach(function(q){ if(q.id!==p.id&&q.known&&active(q)&&q.gan<10){ q.gan=Math.min(10,q.gan+1); wit.push(q); } else if(q.id!==p.id&&q.known) q.gan=Math.min(10,q.gan+1); });
+      // a bloom inspires the people who WITNESSED it with you — those you've met — but only up to GAN 5 (v0.57): courage is caught from a
+      // neighbour the way skill is caught in Cô Mai's class (to 7) and a seat at the circle (to 3) — the xóm gets you near, your hand gets you there
+      var wit=[]; S.cast.forEach(function(q){ if(q.id!==p.id&&q.known&&active(q)&&q.gan<5){ q.gan=Math.min(5,q.gan+1); wit.push(q); } });
       (function(ws){ var ctok=runTok; setTimeout(function(){ if(S.over||runTok!==ctok) return; ws.forEach(function(q){ floatOn(q,"+1 "+t("gan")+" 🌸","#C1443C"); }); },1500); })(wit);   // the witnesses' courage, seen — after the bloom's own moment
       if(S.cast.filter(function(q){return q.started;}).length===1) logMsg(STR.inspired.vi,STR.inspired.en);
       if(!S.lawSeen){ S.lawSeen=true; S.un.probe=true;                            // the first stamp teaches the law itself — only the new button gets a line
@@ -2692,8 +2699,8 @@ function renderHelp(){
          vi?"Xưởng theo tích của chủ: &lt;300 gánh hàng (bậc 1) · &lt;600 xưởng (bậc 2) · ≥600 thương hiệu (bậc 3). Vun tiếp sau khi nở để lên bậc. Chạm vào xưởng để nghe chủ nói."
            :"A workshop follows its owner's product: &lt;300 stall (tier 1) · &lt;600 shop (tier 2) · ≥600 brand (tier 3). Keep tending after the bloom to rise. Tap a workshop to hear its owner.");
   h+=sec(vi?"Ba số không, ba gương mặt":"Three zeros, three faces",
-         vi?"🕯 TÀI — nghề Chú Ba lụi dần từ năm thứ hai nếu chưa có người nối · 🚌 GAN — Bé Ngân lên tỉnh học Y sau mùa 11 nếu GAN vẫn dưới 3 · 🛶 BẠN — Cô Liên vào Nam sau mùa 13 nếu chưa ai giữ. Số không nào cũng có một cái tên."
-           :"🕯 SKILL — Chú Ba's craft fades from year two unless it passes on · 🚌 NERVE — Bé Ngân leaves for medical school after season 11 if her NERVE stays under 3 · 🛶 ALLIES — Cô Liên goes back south after season 13 if no one holds her. Every zero has a name.");
+         vi?"🕯 TÀI — nghề Chú Ba lụi dần từ năm thứ hai nếu chưa có người nối · 🚌 GAN — Bé Ngân lên tỉnh học Y sau mùa 11 nếu GAN vẫn dưới 3 · 🛶 BẠN — Cô Liên vào Nam sau mùa 13 nếu chưa ai giữ. Số không nào cũng có một cái tên. Xóm cũng đỡ một tay: một xưởng nở thì ai bạn đã gặp +1 GAN (đến 5) · lớp Cô Mai +1 TÀI (đến 7) · vòng hụi +1 BẠN (đến 3) — xóm đưa bạn đến gần, tay bạn đưa đến nơi."
+           :"🕯 SKILL — Chú Ba's craft fades from year two unless it passes on · 🚌 NERVE — Bé Ngân leaves for medical school after season 11 if her NERVE stays under 3 · 🛶 ALLIES — Cô Liên goes back south after season 13 if no one holds her. Every zero has a name. The xóm lends a hand too: a bloom gives everyone you have met +1 NERVE (to 5) · Cô Mai's class +1 SKILL (to 7) · the hụi circle +1 ALLIES (to 3) — the xóm gets you near, your hand gets you there.");
   h+=sec(vi?"Mối duyên":"Bonds",
          vi?"Vài cặp là hơn +BẠN: 🏺 Ngân–Ba (nghề truyền, TÀI Ngân lớn mỗi mùa) · 🔧 Vũ–Tú · 🧺 Ba–Hoa (gốm ra chợ, +sông) · 🎨 Ngân–Liên · 📚 Mai–Hoa (lớp đông hơn) · 👜 Hoa–Liên (mẫu ra chợ, +sông). Sợi vàng trên bản đồ là mối đã kết."
            :"Some pairs are more than +ALLIES: 🏺 Ngân–Ba (craft passes, her SKILL grows each season) · 🔧 Vũ–Tú · 🧺 Ba–Hoa (ceramics to market, +river) · 🎨 Ngân–Liên · 📚 Mai–Hoa (bigger class) · 👜 Hoa–Liên (patterns to market, +river). A gold thread on the map is a bond made.");
@@ -2764,7 +2771,7 @@ else {
   // first visit, no save, no book: the page speaks the visitor's language — ?lang= wins, then the browser's; a returning player's saved choice is never touched (load() sets L)
   try{ var ql=(new URLSearchParams(location.search).get("lang")||"").toLowerCase();
     if(ql==="en"||ql==="vi") L=ql;
-    else if(!loadChron().length){ var nl=((navigator.language||navigator.userLanguage||"")+"").toLowerCase(); if(nl&&nl.indexOf("vi")!==0) L="en"; } }catch(e){}
+    else if(!loadChron().length&&location.protocol!=="file:"){ var nl=((navigator.language||navigator.userLanguage||"")+"").toLowerCase(); if(nl&&nl.indexOf("vi")!==0) L="en"; } }catch(e){}   // a local file keeps the authored default (the gates and the workbench read Vietnamese); the live site greets the visitor
   setLang(L);
   // 🔗 a challenge link: ?y=<year card>&c=<constraint> pre-ties the intro's chips — a friend's ending pastes the same year, the same tied hand.
   // Only when no run is in progress (a resumed xóm is never overridden), and only for a year the book already holds — face-down years stay face-down.

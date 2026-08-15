@@ -103,7 +103,7 @@ function run(strategy,seed){
       if(p.started||!activeSim(p,season)) return;
       if(rnd()<chance(p,von)){ p.started=true; p.age=0; p.born=true; p.mom=0;
         // inspiration reaches only people you've met — active strategies know everyone PRESENT, idle knows no one
-        if(strategy!=="idle") cast.forEach(function(o){ if(o!==p&&activeSim(o,season)) o.gan=Math.min(10,o.gan+1); }); }
+        if(strategy!=="idle") cast.forEach(function(o){ if(o!==p&&activeSim(o,season)&&o.gan<5) o.gan=Math.min(5,o.gan+1); }); }   // v0.57: witnessed courage lifts GAN only to 5 (mirrors index.html)
       else if(p.tai*p.gan*p.ban>=100&&Math.min(p.tai,p.gan,p.ban)>1&&chance(p,von)<ceilOf(Math.min(p.tai,p.gan,p.ban))-1e-9){ p.mom=Math.min((yc===5)?0.15:0.09,(p.mom||0)+((yc===5)?0.05:0.03)); }   // restless-wind year: a sprout near the surface pushes harder
     });
     // the girl leaves if her nerve stays near zero (mirrors index.html: season ≥11 after the increment, GAN <3, not bloomed)

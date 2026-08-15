@@ -62,6 +62,8 @@ Rules:
 | `Gate 37` | 1 | the fate warnings do not tell — Bé Ngân's season-9 line (and Cô Liên's at 11) names the factor in the log only if it has been touched; untouched, the log states the fact and the person's bubble stays the clue (v0.54) |
 | `Gate 38` | 1 | mechanic state survives a refresh — a guess-answer already given and the circle's first-time line round-trip through save/load; an older save without the fields loads them unset, not as garbage (v0.55) |
 | `Gate 39` | 1 | a card taller than the window still has a way out — at a true 390px and three viewport heights (673/533/433) the ending card's `Chơi lại` button is reachable by scrolling the overlay; it was unreachable at the two short heights before, the overlay having no scroll at all (v0.56) |
+| `Gate 40` | 1 | the print fits a phone held sideways — in landscape the canvas is capped at ≤72% of viewport height (the stylesheet's 70vh intent, which `fit()`'s inline height had been silently overriding since it was written), aspect preserved so nothing crops, and in portrait/desktop it still fills its container's width (v0.57) |
+| `Gate 41` | 1 | witnessed courage stops at 5 — when a neighbour blooms, a known person at GAN 4 rises to 5 (float printed), a known person at GAN 5 stays 5 (no float), an unknown person is untouched (v0.57) |
 
 ## Convergence gates — `done.sh`
 

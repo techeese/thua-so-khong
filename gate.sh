@@ -1177,6 +1177,77 @@ done
 [ "$ENDFAIL" -eq 0 ] && pass "a card taller than the window still has a way out (390px @ 3 heights)" \
                      || fail "a card taller than the window still has a way out: $ENDMSG"
 
+# Gate 40: the print fits a phone held sideways — the stylesheet caps the canvas at 70vh in landscape
+# so the xóm and the hands both fit, but fit() wrote style.height INLINE and beat it, so the cap never
+# took effect: a 303px-tall viewport got a 511px-tall canvas and you saw sky and roof-tops, with the
+# river, the roster and every button below the fold. Asserts the cap holds in landscape AND that the
+# print still fills its width in portrait, so honouring the cap cannot shrink the ordinary case.
+python3 - "$TMP" <<'PYEOFLAND'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<4;s++){ S.acts=3; S.nudged=true; nextSeason(); }
+  var cv2=document.getElementById("cv"), r=cv2.getBoundingClientRect();
+  var land=window.matchMedia("(orientation:landscape) and (max-height:520px)").matches;
+  // the parent's clientWidth INCLUDES its padding; compare against the content box or this can never match
+  var pp=getComputedStyle(cv2.parentElement);
+  var avail=cv2.parentElement.clientWidth-parseFloat(pp.paddingLeft||0)-parseFloat(pp.paddingRight||0);
+  var aspect=(r.width>0)?(r.width/r.height):0;
+  var wantAspect=Math.abs(aspect-(W/H))<0.02;                 // never crop or stretch the block
+  var capOk = land ? (r.height<=innerHeight*0.72 && r.height<=innerHeight) : true;
+  var fillsOk = land ? true : (r.width>=avail-2);              // portrait/desktop still uses the full width
+  var ok = wantAspect && capOk && fillsOk;
+  document.title=(ok?"LAND_OK":"LAND_BAD")+" landscape="+land+" win="+innerWidth+"x"+innerHeight
+    +" canvas="+Math.round(r.width)+"x"+Math.round(r.height)+" aspectOk="+wantAspect
+    +" capOk="+capOk+" fillsWidthOk="+fillsOk;
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/ld.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOFLAND
+LFAIL=0; LMSG=""
+for WH in 844,390 740,360 600,900 1000,780; do
+  T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=$WH --virtual-time-budget=8000 --dump-dom "file://$TMP/ld.html" 2>/dev/null | grep -o "<title>[^<]*</title>" | head -1)
+  echo "$T" | grep -q "LAND_OK" || { LFAIL=1; LMSG="$LMSG [$WH → $T]"; }
+done
+[ "$LFAIL" -eq 0 ] && pass "the print fits a phone held sideways (2 landscape · 2 upright)" \
+                   || fail "the print fits a phone held sideways:$LMSG"
+
+# Gate 41: witnessed courage stops at 5 — when a neighbour blooms, a known person at GAN 4 rises to 5 (float printed), a known person at GAN 5 stays 5
+# (no float), and an unknown person is untouched.
+python3 - "$TMP" <<'PYEOF39'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+function floats(p,str){ return bubbles.filter(function(b){ return b.p===p && b.lay.lines.join(" ").indexOf(str)>=0; }).length; }
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.nudged=true; S.season=4; S.luat=6; S.luatNext=6; S.von=10;
+  var mai=S.cast[2], vu=S.cast[3], hoa=S.cast[4], tu=S.cast[5];
+  S.cast.forEach(function(q){ q.started=true; q.known=false; });               // nobody else rolls or witnesses
+  mai.started=false; mai.known=true; mai.tai=10; mai.gan=9; mai.ban=10; mai.mom=0;   // ~0.85 — she blooms this tick
+  vu.started=false; vu.known=true; vu.gan=4; vu.tai=1; vu.ban=1;             // GAN 4 → 5 (a zero row: she cannot bloom, only witness)
+  hoa.started=false; hoa.known=true; hoa.gan=5; hoa.tai=1; hoa.ban=1;        // GAN 5 → stays 5
+  tu.started=false; tu.known=false; tu.gan=4; tu.tai=1; tu.ban=1;            // unknown → untouched
+  var R=Math.random; Math.random=function(){ return 0.5; };                  // Mai's 0.85 lands; the zero rows return 0 regardless
+  nextSeason(); Math.random=R;
+  var ok = mai.started && vu.gan===5 && hoa.gan===5 && tu.gan===4;
+  setTimeout(function(){ var f4=floats(vu,"+1 GAN"), f5=floats(hoa,"+1 GAN"); ok=ok&&f4===1&&f5===0;
+    document.title=(ok?"WITNESS_OK":"WITNESS_BAD")+" bloomed="+mai.started+" vu4to="+vu.gan+" hoa5to="+hoa.gan+" tuUnknown="+tu.gan+" floats4="+f4+" floats5="+f5; },2000);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/wit.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF39
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/wit.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "WITNESS_OK" && pass "witnessed courage stops at 5: $T" || fail "witnessed courage stops at 5: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

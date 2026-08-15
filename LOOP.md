@@ -93,7 +93,8 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.55: guess-answers and the circle's first line persist across a refresh (Gate 38); measured: the six
+**v0.57: a witnessed bloom lifts GAN only to 5 — every world-lift now has a ceiling (Gate 41); priced:
+hunter 6.89/12.3, band holds. v0.55: guess-answers and the circle's first line persist across a refresh (Gate 38); measured: the six
 year cards do not move the hunter (6.96–6.99 / 15.5–16.6) — story and spreader-price only, for the
 balance era to weigh. v0.54: the fate warnings name the factor only if it has been touched (Gate 37). v0.53: a partial row prints its bound — trần ≤ ceilOf(lowest seen), on the sheet and on the hand
 that would move it (Gate 36); no point answer until the row is known. v0.51: every GAN move prints — step-down −2, erasure −3, your roof's +1 (Gate 34). v0.50: the grader's `check.js:47` mirror defect closed (`<=2`), band holds; the tarp says how long it
@@ -143,23 +144,22 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **every question this brief could
-answer by measurement has now been answered.** v0.54 measured the tap targets and found a regression
-this loop had shipped; v0.56 measured the ending card's density and found the real defect underneath
-it — on a short viewport the card's own "Chơi lại" button was UNREACHABLE, the overlay having no
-scroll. Both were invisible to the eye and only fell out of measuring. Every drawing surface is done
-(crowding v0.45 · overlays v0.39/40/42 · roster strip v0.36 · factor bars and log v0.47 · dots v0.48 ·
-verb states v0.52 · tap targets v0.54 · overlay reachability v0.56), and float density is closed as
-measured-not-a-defect. **What is left is the owner's to judge, not the loop's to draw**: the felt
-halves of the OWNER-GATE questions (does diagnosis feel like play, do you care about someone by season
-8, does the thesis land from play alone, real thumbs on a real phone, the installed-PWA and share-card
-checks). A graphics tick that finds only cosmetic preference should **ship nothing and say so** — the
-ship budget allows it and *"it's ART's turn on the compass" is not sufficient cause*; that clause is
-what turned cycles 9–15 into drift. Rules earned the hard way and not to be relearned: **no seeded
-whole-run gate** (v0.45); **never let a gate reimplement the logic it tests** (Gate 35's first draft
-passed on the broken build); **negative-test every new gate** against a deliberately broken copy;
-**check modals at short HEIGHTS, not just narrow widths** (v0.56); and give each gate a unique heredoc
-tag, since `PYEOF35` collided silently. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **the last three ticks each found a
+real defect that no amount of looking would have caught, and all three came from measuring a dimension
+nobody had measured before.** v0.54: tap targets aimed at `p.x` while the nudge moved `drawX`. v0.56:
+a modal taller than a short viewport with no scroll — found only by varying HEIGHT. v0.57: a landscape
+media query that had never once applied, because `fit()`'s inline height beat the stylesheet — found
+only by checking whether the rule changed anything. The lesson is now the pointer: **pick a dimension
+the loop has never varied and measure it.** Ones still unvaried: device pixel ratio (retina/2×, where
+the backing-store maths in `fit()` is the obvious suspect), a genuinely narrow phone (320px, not 390),
+very long villager names in EN, and a run left idle for many minutes (timer/beat accumulation). Every
+drawing surface is done and float density is closed as measured-not-a-defect. **If a tick finds only
+cosmetic preference, ship nothing and say so** — the ship budget allows it and *"it's ART's turn on
+the compass" is not sufficient cause*. Rules earned the hard way: no seeded whole-run gate (v0.45);
+never let a gate reimplement the logic it tests (Gate 35's first draft passed on the broken build);
+negative-test every new gate against a deliberately broken copy; check modals at short HEIGHTS; and
+"scroll to the bottom and look" is not a reachability test — use `scrollIntoView` per element. Give
+each gate a unique heredoc tag. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

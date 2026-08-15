@@ -1,5 +1,62 @@
 # Changelog — Thừa Số Không
 
+## v0.57 — 2026-08-15 — the print fits a phone held sideways
+
+A graphics round from the owner's `/loop 5m` session. The pointer said this brief was close to spent
+and that a tick finding only preference should ship nothing — so this one went looking for something
+measurable, and found a landscape adaptation the project had **written but never run**.
+
+- **The stylesheet's landscape cap had never once taken effect.** `@media (orientation:landscape) and
+  (max-height:520px)` caps the canvas at `min(70vh, 62.5vw)` so the xóm and the hands both fit on a
+  phone held sideways. But `fit()` set `cv.style.height` **inline**, and an inline style beats a
+  stylesheet — so the cap was dead code from the day it was written. Measured at 844×390 (viewport
+  844×303): a **511px-tall canvas in a 303px-tall window**. What you actually saw was sky and the tops
+  of four roofs — no river, no roster, no buttons, nothing playable without scrolling.
+- **CSS owns the box now; `fit()` only sizes the raster.** The rule caps the print by *width*
+  (`max-width:calc(70vh*960/600)`) so `aspect-ratio:960/600` brings the height under 70vh with nothing
+  cropped — capping height alone would have cut the river off the bottom. `fit()` no longer writes any
+  style at all; it matches the backing store to whatever box CSS gives it. *Measured before → after:*
+  canvas **511 → 212px** at 844×390, **446 → 202** at 740×360, page scroll height **1108 → 809**.
+  Upright is unchanged in kind — the canvas still fills its container.
+- **The first attempt at this was wrong and the gates caught it.** Deriving the box in `fit()` and
+  writing `style.width` in px fixed landscape but replaced a *responsive* CSS width with a frozen one:
+  the canvas stopped tracking layout between resize events, and Gate 9 went red with `bodySW=610` at
+  the 390px probe. Letting the stylesheet own the box is both the smaller change and the correct one.
+- *Evidence:* new **Gate 40**, run at **four viewports** — two landscape, two upright — asserting the
+  cap holds in landscape, the aspect never distorts, and the print still fills its width when upright,
+  so honouring the cap cannot shrink the ordinary case. Negative-tested against a copy with the old
+  `fit()`: `LAND_BAD canvas=824x511 capOk=false`.
+
+Two dead ends are worth recording as well, since both looked like defects and were not: every control
+*is* reachable in landscape by ordinary page scrolling (an earlier probe said otherwise, but it only
+tried scrolling to the document bottom, which puts a mid-page button *above* the viewport), and the
+ending card's ~200 words are density, not a defect — v0.56 already shipped the reachability problem
+underneath them.
+
+## v0.57 — 2026-08-15 — the xóm gets you near, your hand gets you there
+
+Closes: under the owner's standing `/loop 3m` directive, the one world-lift with no ceiling. Cô Mai's
+class lifts TÀI to 7; the hụi circle lifts BẠN to 3; but a witnessed bloom lifted GAN by +1 to
+everyone you had met, **all the way to 10** — the world finished nerve for you, which is why the
+back half of a good run had nothing left to do with its hands (v0.48's measurement: 21 of the last
+24 hands idle) and why the tier climb came free.
+
+- **A witnessed bloom lifts GAN only up to 5.** Same shape as the other two lifts; the float still
+  prints on everyone it reaches (and reveals GAN); above 5, nerve is a hand. Help card names all
+  three lifts and their ceilings in one line.
+- **Priced honestly** (`check.js` mirrored, 1200 seeded runs): hunter 6.97 / 16.0 → **6.89 / 12.3**,
+  misreader 6.99 / 15.9 → 6.90 / 12.2, spreader 5.32 / 9.8 → 5.09 / 7.7, linker 6.09 / 13.0 → 5.75 /
+  9.4, maxer 3.40 / 5.0 → 3.34 / 4.4, idle 2.47 unchanged. Every Gate 0 clause holds (hunter >
+  spreader + 3, > linker + 1, maxer < 0.4·hunter, misreader > spreader + 0.5, the capping clauses).
+  Blooms barely move; **tiers move because the sim's hunter never tends after a bloom** — a player
+  does, and now has both the idle hands and the ↑bậc hints (v0.43) to do it with. *Mùa vàng* (ts ≥
+  12) stays reachable by the sim's hunter without a single post-bloom hand.
+- *Evidence:* new **Gate 41** (`WITNESS_OK bloomed=true vu4to=5 hoa5to=5 tuUnknown=4 floats4=1
+  floats5=0`); ids 39–40 were the graphics session's, checked before committing. Gates green.
+  This is the one v0.45 parked "for the balance era"; shipped now under owner authority because the
+  engine's ladder is blocked (X) and the instrument (`check.js` with misreader/maxer/capping clauses)
+  is the fairest one available.
+
 ## v0.56 — 2026-08-15 — a card taller than the window still has a way out
 
 A graphics round from the owner's `/loop 5m` session, on the last measurable question the pointer had
