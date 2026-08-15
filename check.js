@@ -29,8 +29,8 @@ function lcg(seed){ var s=seed>>>0; return function(){ s=(1103515245*s+12345)>>>
 function run(strategy,seed){
   var rnd=lcg(seed), cast=makeCast(rnd), pairsSet={};
   var luat=2+Math.floor(rnd()*3), von=2+Math.floor(rnd()*3), baStart=7+Math.floor(rnd()*3), stormStreak=0;
-  var lienPaired=false, gtmPays=0;
-  var yc=Math.floor(rnd()*5);   // year card (mirrors index.html)
+  var lienPaired=false, gtmPays=0, hoaLien=false;
+  var yc=Math.floor(rnd()*6);   // year card (mirrors index.html)
   if(yc===0) von=1;                             // flood year: the river starts foul
   if(yc===4){ cast[6].arrives=2; baStart=5; }   // reunion year: both people-clocks come early
   for(var season=0;season<16;season++){
@@ -70,6 +70,7 @@ function run(strategy,seed){
     // 📖 Cô Mai's class (mirrors index.html): breadth up to TÀI 7, reach = her workshop tier; idle knows no one
     if(cast[2].started && (cast[2].age|0)>=1 && strategy!=="idle"){   // class opens once her roof has weathered a season
       var pv2=cast[2].tai*cast[2].gan*cast[2].ban, reach=pv2<300?1:pv2<600?2:3;
+      if(pairsSet["2-4"]) reach++;   // 📚 Mai×Hoa (mirrors index.html): the stall sends one more pupil
       cast.filter(function(q){return q!==cast[2]&&activeSim(q,season)&&!q.started&&q.tai<7&&!q._dripped;})
           .sort(function(a3,b3){return a3.tai-b3.tai;}).slice(0,reach)
           .forEach(function(st3){ st3.tai=Math.min(7,st3.tai+1); });
@@ -77,12 +78,13 @@ function run(strategy,seed){
     cast.forEach(function(q){ q._dripped=false; });
     var gMax=(yc===2&&season<=10)?2:1, gAmt=(yc===2&&season<=10)?2:1;
     if(pairsSet["1-4"]&&gtmPays<gMax&&cast[1].started){ gtmPays++; von=Math.min(10,von+gAmt); }
+    if(pairsSet["4-6"]&&!hoaLien&&cast[6].started&&cast[4].started){ hoaLien=true; von=Math.min(10,von+1); }   // 🎨 Hoa×Liên (mirrors index.html): designs sell once, the river rises once
     cast.forEach(function(p){
       if(p.started||!activeSim(p,season)) return;
       if(rnd()<chance(p,von)){ p.started=true; p.age=0; p.born=true; p.mom=0;
         // inspiration reaches only people you've met — active strategies know everyone PRESENT, idle knows no one
         if(strategy!=="idle") cast.forEach(function(o){ if(o!==p&&activeSim(o,season)) o.gan=Math.min(10,o.gan+1); }); }
-      else if(p.tai*p.gan*p.ban>=100){ p.mom=Math.min(0.09,(p.mom||0)+0.03); }
+      else if(p.tai*p.gan*p.ban>=100){ p.mom=Math.min((yc===5)?0.15:0.09,(p.mom||0)+((yc===5)?0.05:0.03)); }   // restless-wind year: a sprout near the surface pushes harder
     });
     // the returnee leaves if unrooted (mirrors index.html post-increment timing; a pair roots her too)
     if(season+1>=13) cast.forEach(function(c){ if(c.arrives!==undefined&&!c.started&&c.ban<4&&!lienPaired) c.gone=true; });
@@ -101,13 +103,16 @@ function run(strategy,seed){
     if(season+1>=baStart){ var ba=cast[1]; if(!ba.started&&!ba.gone&&ba.tai>0) ba.tai=Math.max(0,ba.tai-1); }
     // entropy: un-bloomed tending decays back toward each person's nature (mirrors index.html)
     cast.forEach(function(p){ if(p.started||!activeSim(p,season)) return;
-      ["tai","gan","ban"].forEach(function(k){ if(p[k]>p["b"+k] && rnd()<((yc===3)?0.175:0.35)) p[k]--; }); });
+      ["tai","gan","ban"].forEach(function(k){ if(p[k]>p["b"+k] && rnd()<((yc===3)?0.175:(yc===5)?0.5:0.35)) p[k]--; }); });
     var r=rnd();
     if(luat<4){ if(r<0.25) luat=luat+1; else if(r<0.33) luat=Math.max(1,luat-1); }
     else if(yc===1){ if(r<0.10) luat=Math.min(10,luat+1); else if(r<0.25) luat=Math.max(1,luat-1); }
     else { if(r<0.12) luat=Math.min(10,luat+1); else if(r<0.20) luat=Math.max(1,luat-1); }
     if(luat<4){ stormStreak++; } else { stormStreak=0; }   // streak carries into the NEXT tick's acts (mirrors index.html order)
     if(season%4===3 && !(yc===0&&season===3)) von=Math.min(10,von+1);
+    // 🧧 Tết (mirrors index.html): a sprout already pushing gets one more shove — idle knows no one, so no lì xì
+    if(season%4===3 && strategy!=="idle") cast.forEach(function(p){ if(activeSim(p,season+1)&&!p.started&&p.tai*p.gan*p.ban>=100&&(p.mom||0)>0)
+      p.mom=Math.min((yc===5)?0.15:0.09,(p.mom||0)+0.03); });
   }
   var tsum=cast.reduce(function(a,c){ if(!c.started) return a;
     var pv=c.tai*c.gan*c.ban; return a+(pv<300?1:pv<600?2:3); },0);
