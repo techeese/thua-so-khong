@@ -1604,6 +1604,69 @@ done
 [ "$SEALFAIL" -eq 0 ] && pass "the ending title never runs under the stamp (card 288px and 520px, EN)" \
                       || fail "the ending title never runs under the stamp:$SEALMSG"
 
+# Gate 51: the risk is beside the raise — a known un-bloomed row with a raised factor prints "phai 35%/mùa" (17.5 in the quiet-hands year, 50 in the
+# restless wind); an unraised row prints no fade line; a bloomed row prints none.
+python3 - "$TMP" <<'PYEOF50'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  var mai=S.cast[2]; mai.known=true; mai.started=false; mai.seen={tai:true,gan:true,ban:true}; mai.mom=0; mai.btai=6; mai.bgan=4; mai.bban=7; mai.tai=6; mai.gan=4; mai.ban=7;
+  S.yearCard=2; selectPerson(2); renderSheet(); var flat=document.getElementById("multLine").textContent, none=!/phai|fades/.test(flat);
+  mai.gan=6; renderSheet(); var raised=document.getElementById("multLine").textContent, r35=/(phai|fades) 35%/.test(raised);
+  S.yearCard=3; renderSheet(); var q=/(phai|fades) 18%/.test(document.getElementById("multLine").textContent);
+  S.yearCard=5; renderSheet(); var w=/(phai|fades) 50%/.test(document.getElementById("multLine").textContent);
+  mai.started=true; renderSheet(); var bl=!/phai|fades/.test(document.getElementById("multLine").textContent);
+  var ok=none&&r35&&q&&w&&bl;
+  document.title=(ok?"FADE_OK":"FADE_BAD")+" flatNone="+none+" raised35="+r35+" quiet18="+q+" wind50="+w+" bloomedNone="+bl;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/fade.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF50
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/fade.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "FADE_OK" && pass "the risk is beside the raise: $T" || fail "the risk is beside the raise: $T"
+
+# Gate 52: Aa reaches the print — the larger-text control scales the DOM by 112% through CSS, but a
+# canvas cannot be reached by CSS, so the villager names, the ×0 tags, the sprout percentages and the
+# season banner stayed exactly the same size: the one reader who asked for bigger text got it everywhere
+# except where this game says the most. Same shape as the Reduce Motion gap (Gate 43). Asserts BOTH
+# sides move together, and non-vacuously — with Aa off both must sit at their base size.
+python3 - "$TMP" <<'PYEOFAA'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<style>html,body{width:390px;margin:0 auto}</style>
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<7;s++){ S.acts=3; S.nudged=true; nextSeason(); }
+  S.cast.forEach(function(p){ p.known=true; });
+  selectPerson(1);
+  function px(f){ var m=String(f).match(/([0-9.]+)px/); return m?parseFloat(m[1]):0; }
+  function sample(){ drawScene(3000);
+    return {lbl:px(FONT_LBL), hint:px(FONT_HINT),
+            chip:px(getComputedStyle(document.querySelector(".roster .rc")).fontSize)}; }
+  META.big=false; applyBig(); var off=sample();
+  META.big=true;  applyBig(); var on=sample();
+  var canvasK=on.lbl/Math.max(1,off.lbl), domK=on.chip/Math.max(1,off.chip);
+  var ok = off.lbl>0 && on.lbl>off.lbl && on.hint>off.hint && on.chip>off.chip
+        && canvasK>1.05 && canvasK<1.25 && Math.abs(canvasK-domK)<0.15;
+  document.title=(ok?"AA_OK":"AA_BAD")+" off{lbl="+off.lbl+" hint="+off.hint+" chip="+off.chip+"}"
+    +" on{lbl="+on.lbl+" hint="+on.hint+" chip="+on.chip+"}"
+    +" canvasK="+canvasK.toFixed(3)+" domK="+domK.toFixed(3);
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/aa.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOFAA
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=600,1000 --virtual-time-budget=12000 --dump-dom "file://$TMP/aa.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "AA_OK" && pass "Aa reaches the print: $T" || fail "Aa reaches the print: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

@@ -172,6 +172,8 @@
   .endline{font:700 15px Georgia,serif;text-align:center;margin-top:12px;padding-top:10px;border-top:2px dashed var(--ink)}
   .small{font-size:12px;color:var(--dim)}
   .bookTap{cursor:pointer;text-decoration:underline dotted}
+  /* Aa — larger text for the whole page (the print scales with its column). One tap, remembered. */
+  html.big{font-size:112%} html.big body{font-size:16px} html.big .sheet .quote,html.big .log,html.big .small,html.big .roster .rc{font-size:14px} html.big .card p{font-size:16px} html.big .mult{font-size:18px} html.big .frow .fl{font-size:13px} html.big .bar button,html.big .acts button{font-size:15px} html.big .pill{font-size:14px} html.big #helpBody{font-size:15px!important}
   .book{margin:6px auto 0;max-width:440px;text-align:left;font-size:12px;line-height:1.45;border-top:1px dashed rgba(43,35,32,.35);padding-top:6px;max-height:150px;overflow-y:auto}
   .book div{display:flex;gap:6px;align-items:baseline;padding:1px 0}
   .book b{font-weight:700;color:var(--ink)}
@@ -188,6 +190,7 @@
       <div class="pill" id="seasonPill">Xuân 2026</div>
       <div class="pill" id="actPill">⚡ 3</div>
       <div class="pill" id="tierPill" style="display:none">🪜</div>
+      <button id="bigBtn" style="padding:6px 9px;font-size:12px" aria-label="text size" title="chữ to / larger text">Aa</button>
       <button id="helpBtn" style="padding:6px 10px" aria-label="help">?</button>
       <button id="muteBtn" style="padding:6px 10px" aria-label="mute">🔊</button>
       <button id="langBtn" style="padding:6px 10px">EN</button>
@@ -223,7 +226,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.65</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.67</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -720,7 +723,7 @@ document.addEventListener("click",function(ev){
 var fin=Number.isFinite;
 function cl(v,lo,hi,fb){ return fin(v)?Math.max(lo,Math.min(hi,v)):fb; }
 function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:2,   // NOTE: every NEW save field MUST get a fin()-guarded default in load()
-  meta:{lang:L,muted:!!META.muted},
+  meta:{lang:L,muted:!!META.muted,big:!!META.big},
   s:{season:S.season,acts:S.acts,luat:S.luat,von:S.von,hui:S.hui,build:S.build,built:!!S.built,
      gtmPaid:!!S.gtmPaid,hlp:!!S.hoaLienPaid,hs:S.hands|0,idl:S.idle|0,vb:VERBS.map(function(k){return (S.vb&&S.vb[k])|0;}),ps:!!S.potSeason,cs:!!S.circleSeen,hist:(S.hist||[]).map(function(v){return v|0;}),pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
      arr:S.cast[6].arrives,baf:S.baFadeStart,sc:S.stormCount|0,ss:S.stormStreak|0,yc:S.yearCard|0,gp:S.gtmPays|0,cn:S.constraint|0,
@@ -732,7 +735,7 @@ function load(){
   try{
     var raw=localStorage.getItem(SAVE_KEY); if(!raw) return false;
     var d=JSON.parse(raw); if(!d||!d.s||!(d.v>=1)) return false;
-    if(d.meta){ if(d.meta.lang==="en"||d.meta.lang==="vi") L=d.meta.lang; META.muted=!!d.meta.muted; }
+    if(d.meta){ if(d.meta.lang==="en"||d.meta.lang==="vi") L=d.meta.lang; META.muted=!!d.meta.muted; META.big=!!d.meta.big; applyBig(); }
     var s=d.s; if(!fin(s.season)||s.season>=16||s.season<0) return false;   // finished/garbage runs restart
     fresh();
     S.season=cl(s.season,0,15,0); S.acts=cl(s.acts,0,3,3);
@@ -1013,7 +1016,11 @@ function drawScene(now){
   var F=Math.max(0,Math.min(2.5,(now-(window._pn||now))/16.7))||1; window._pn=now; window._pnF=F;   // effects run in TIME, not frames (120Hz-safe); never negative — a backwards clock must not grow radii below zero
   errandTick(now);
   var kk=cv.width/W; ctx.setTransform(kk,0,0,kk,0,0);
-  LKF=Math.min(2.2, W/Math.max(1,(cv.width/DPR)));
+  // Aa (larger text) scales the whole DOM by 112% — but a canvas cannot be reached by CSS, so the
+  // villager names, the ×0 tags, the sprout percentages and the season banner stayed put: the one
+  // reader who asked for bigger text got it everywhere except where this game says the most.
+  // LKF is already the legibility factor, so the request folds into it and every canvas text follows.
+  LKF=Math.min(2.2, W/Math.max(1,(cv.width/DPR))) * ((typeof META!=="undefined"&&META&&META.big)?1.12:1);
   if(LKF!==_lkfLast){ _lkfLast=LKF;
     FONT_LBL="700 "+Math.round(11*LKF)+"px sans-serif";
     FONT_HINT=Math.round(10*LKF)+"px sans-serif"; }
@@ -1597,7 +1604,7 @@ function workshop(s,now){
   // label OUTSIDE the tier scale, phone-compensated, tier word only (full name when its owner is selected) — less noise, print stays a print
   ctx.font=FONT_LBL; ctx.fillStyle="#2B2320"; ctx.textAlign="center";
   var word=tr===1?(L==="vi"?"gánh":"stall"):tr===2?(L==="vi"?"xưởng":"shop"):(L==="vi"?"thương hiệu":"brand");
-  var lbl=(S.sel===s.pid||s.yours)?(word+" "+s.owner):word;
+  var lbl=(S.sel===s.pid||s.yours)?(word+" "+s.owner+((S.sel===s.pid&&(s.age|0)>0)?(" · "+(s.age|0)+(L==="vi"?" mùa":" s")):"")):word;   // the selected owner's roof says how many seasons it has stood
   // the workshop's own word was never registered either, so a villager's name printed straight through it
   var lblW=ctx.measureText(lbl).width, lblX=Math.max(16+lblW/2,Math.min(W-16-lblW/2,x)), lblY=y+30*sc+11+(LKF-1)*6;
   lblQ.push({t:lbl,x:lblX,y:lblY,f:FONT_LBL,c:"#2B2320",o:-1}); lblR.push([lblX,lblY,lblW]);
@@ -1782,6 +1789,14 @@ cv.addEventListener("click",function(e){
     (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,ln[L]); },1300); })(spk,sayW);
     return;
   }
+  // the frame of your own product, going up: tap it and a neighbour counts the hands with you
+  if(S.un.build&&!S.built&&(S.build|0)>0&&Math.abs(mx-120)<40&&my>418&&my<504){
+    S.looked=S.looked||{}; if(S.looked.wf===S.season) return; S.looked.wf=S.season;
+    var nf=null,ndf=1e9; S.cast.forEach(function(p){ if(!active(p)||!p.known) return; var d5=Math.hypot(p.x-mx,p.y-my); if(d5<ndf){ndf=d5;nf=p;} });
+    if(!nf) return; var left=4-(S.build|0);
+    visit(nf,150,468,5000); voice(nf,0.06);
+    (function(pp,n2){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,(L==="vi")?("“Gõ "+(4-n2)+" lần rồi — còn "+n2+" lần nữa là có mái. Cả xóm đang nhìn đấy.”"):("“"+(4-n2)+" hands in — "+n2+" more and it has a roof. The whole xóm is watching.”")); },1300); })(nf,left);
+    return; }
   // hỏi thăm the PLACES — a curiosity tap sends the nearest neighbor over to answer, in their own voice
   var zone=(my<118)?"s":(my>H-(26+S.von*5.5))?"r":(Math.abs(mx-470)<85&&Math.abs(my-215)<62)?"d":(Math.abs(mx-CHO.x)<60&&Math.abs(my-(CHO.y-34))<40)?"c":(Math.abs(mx-80)<62&&my>150&&my<300)?"b":(mx>648&&mx<870&&my>436&&my<508)?"p":(mx>700&&my>318&&my<362)?"o":null;
   if(!zone) return;
@@ -2003,6 +2018,7 @@ function see(p,k){ if(!p) return; if(!p.seen) p.seen={tai:false,gan:false,ban:fa
         logMsg("🔎 "+p.name+" — cả ba thừa số đã hiện. Thừa số thấp nhất: "+zk+". Tay nào nâng đúng nó, tích mới chạy.",
                "🔎 "+p.name+" — all three factors showing. Lowest: "+zk+". Only the hand that raises it makes the product move."); }
     },1400); } }
+function fadeRate(){ return (S.yearCard===3)?0.175:(S.yearCard===5)?0.5:0.35; }   // what un-bloomed tending risks each season, per raised factor (one source — the season tick and the sheet read the same number)
 function seenMin(p){ if(!p||!p.seen) return null; var m=null; ["tai","gan","ban"].forEach(function(k){ if(p.seen[k]&&(m===null||p[k]<m)) m=p[k]; }); return m; }   // the lowest factor you have SEEN — the true minimum is at most this, so the ceiling is at most ceilOf(it)
 function seenAll(p){ return !!p&&(p.started||(!!p.seen&&p.seen.tai&&p.seen.gan&&p.seen.ban)); }   // a bloom shows everything; until then, only what your hands (or the season) have touched
 function floatOn(p,txt,col){ bubbles.push({p:p,lay:layoutBubble(txt),at:performance.now(),until:performance.now()+1200});
@@ -2015,7 +2031,7 @@ function nextSeason(){
   S.linking=null;
   flushPend(true);   // any pending lessons land BEFORE this season's burst, not inside it
   var _preActive=S.cast.filter(active).map(function(p){return p.id;});
-  var _rc={von0:S.von, bloom:0, stamp:0, fade:0, sky:S.luat<4?"☁️":(S.luat>=7?"☀️":"")};   // the season's ledger — one recap line closes each season in the log; the sky it ran under is part of it
+  var _rc={von0:S.von, bloom:0, stamp:0, fade:0, sky:S.luat<4?"☁️":(S.luat>=7?"☀️":""), who:[], hit:[]};   // the season's ledger — one recap line closes each season in the log; the sky it ran under is part of it
   if(S.acts>0){ S.idle=(S.idle|0)+S.acts; _rc.idle=S.acts; }   // hands left on the table this season — counted, shown at the end, never carried
   _rc.used=(S.hands|0)-(S._hs0|0); _rc.dealt=_rc.used+(S.acts|0);   // hands used of hands dealt — the ledger's first number
   // one gentle first-turn nudge: don't let a new player skip past their whole hand
@@ -2058,7 +2074,7 @@ function nextSeason(){
   S.cast.forEach(function(p){
     if(p.started||!active(p)) return;
     if(Math.random()<chance(p)){
-      p.started=true; p.mom=0; _rc.bloom++; see(p,"tai"); see(p,"gan"); see(p,"ban");
+      p.started=true; p.mom=0; _rc.bloom++; _rc.who.push(p.name.split(" ").pop()); see(p,"tai"); see(p,"gan"); see(p,"ban");
       if(p.id===1) baRescue();   // the kiln lit — the elder's clock stops here too
       var spot=shipSpot(p);
       S.ships.push({x:spot.x,y:spot.y,owner:p.name,pid:p.id,age:0,born:true});
@@ -2100,7 +2116,7 @@ function nextSeason(){
       if(s.born||s.shel>0) return;   // newborns stand one season; a tarp holds through the storm
       var risk=(s.age|0)<2?0.15:0.05;
       if(Math.random()<risk){
-        var tr=shipTier(s); _rc.stamp++;
+        var tr=shipTier(s); _rc.stamp++; _rc.hit.push(String(s.owner).split(" ").pop());
         if(s.yours){ // your own product lives under the same sky — but you rebuild faster than the first time
           S.ships=S.ships.filter(function(o){return o!==s;}); scarAt(s.x,s.y);
           stampAt(s.x,s.y); S.built=false; S.build=2;
@@ -2124,7 +2140,7 @@ function nextSeason(){
   }
   // entropy: tending that hasn't bloomed washes back toward each person's nature
   var anyFade=false;
-  var fadeP=(S.yearCard===3)?0.175:(S.yearCard===5)?0.5:0.35;   // tending holds longer in a quiet-hands year — and blows away in a restless-wind one
+  var fadeP=fadeRate();   // tending holds longer in a quiet-hands year — and blows away in a restless-wind one
   S.cast.forEach(function(p){ if(p.started||!active(p)) return;
     var faded=[];
     ["tai","gan","ban"].forEach(function(k){ if(p[k]>p["b"+k] && Math.random()<fadeP){ p[k]--; anyFade=true; faded.push(t(k)); } });
@@ -2171,7 +2187,7 @@ function nextSeason(){
   // ── the season closes: one dim ledger line so the log reads by season, not as one long scroll ──
   (function(){ var dv=S.von-_rc.von0;
     function bits(lang){ var b=[];
-      if(_rc.bloom) b.push("🌸"+_rc.bloom); if(_rc.stamp) b.push("⬛"+_rc.stamp);
+      if(_rc.bloom) b.push("🌸"+(_rc.who.length?_rc.who.join(","):_rc.bloom)); if(_rc.stamp) b.push("⬛"+(_rc.hit.length?_rc.hit.join(","):_rc.stamp));   // the ledger names them: 🌸Mai ⬛Ba
       if(dv) b.push("🌊"+(dv>0?"+":"")+dv); if(_rc.fade) b.push((lang==="vi"?"phai ":"faded ")+_rc.fade);
       if(_rc.dealt>0) b.push("⚡"+_rc.used+"/"+_rc.dealt+(_rc.idle?(lang==="vi"?" (trống "+_rc.idle+")":" ("+_rc.idle+" unused)"):""));
       return b.length?(" · "+b.join(" ")):""; }
@@ -2594,6 +2610,7 @@ function renderSheet(){
             +((weakest(p).k==="gan"&&conBan(4))||(weakest(p).k==="tai"&&conBan(3))||(weakest(p).k==="ban"&&conBan(2))?(L==="vi"?" — tay ấy bị trói năm nay":" — that hand is tied this year"):"")):"")))   // v0.60: when the capping factor's verb is this year's tied hand, the sheet says so — the ceiling can only come from the xóm this year
       +(L==="vi"?" · sông ":" · river ")+S.von+"/10 ×"+vonMul().toFixed(2)
       +((p.mom||0)>0?(L==="vi"?" · mầm đang nhú 🌱":" · pushing at the soil 🌱"):"")
+      +((!p.started&&(p.tai>p.btai||p.gan>p.bgan||p.ban>p.bban))?((L==="vi"?" · vun chưa nở phai ":" · untended lift fades ")+Math.round(fadeRate()*100)+(L==="vi"?"%/mùa":"%/season")):"")   // v0.66: the risk beside the raise — the number behind "concentrate until they bloom"
 ))
     // the arc so far — where their numbers stood when you first sat with them (the ending's question, asked mid-run)
     +((fin(p.btai)&&(p.btai!==p.tai||p.bgan!==p.gan||p.bban!==p.ban))
@@ -2676,6 +2693,8 @@ function setLang(x){ L=x; document.documentElement.lang=x;
 
 // ---------- wire ----------
 el("langBtn").onclick=function(){ setLang(L==="vi"?"en":"vi"); save(); };
+function applyBig(){ document.documentElement.classList.toggle("big",!!META.big); var b=el("bigBtn"); if(b){ b.style.fontWeight=META.big?"800":"600"; b.setAttribute("aria-pressed",META.big?"true":"false"); } try{ fit(); }catch(e){} }
+el("bigBtn").onclick=function(){ META.big=!META.big; applyBig(); beep(META.big?659:523,0.05); save(); };
 el("muteBtn").onclick=function(){ META.muted=!META.muted; el("muteBtn").textContent=META.muted?"🔇":"🔊"; if(!META.muted)beep(659,0.06); else { rainAudio(false); cicadaAudio(false); } save(); };
 window._pendCon=0; window._pendYc=null;
 document.addEventListener("click",function(ev){
@@ -2763,7 +2782,8 @@ function renderHelp(){
       var st;
       if(p.started){ var tr=tierOf(p); st=(vi?"xưởng bậc ":"workshop tier ")+tr+(tr<cap&&tr<3?(vi?" · vun tiếp":" · keep tending"):"")+(tr===cap&&tr<3?(vi?" · sông giữ bậc":" · river holds it"):"")+(typeof stormLine==="function"?stormLine(p):""); }
       else { var sa=seenAll(p), z=zeroOf(p), sn=p.seen||{}, seenN=["tai","gan","ban"].filter(function(k){return sn[k];}).length;
-        st=(sa?(hasZero(p)?(vi?"số không: "+z+" — 0%":"zero: "+z+" — 0%"):(z?(vi?"thấp nhất: "+z+" · ":"lowest: "+z+" · "):"")+Math.round(chance(p)*100)+"%"):(vi?("mới biết "+seenN+"/3 thừa số"):("read "+seenN+"/3 factors")))
+        st=(sa?(hasZero(p)?(vi?"số không: "+z+" — 0%":"zero: "+z+" — 0%"):(z?(vi?"thấp nhất: "+z+" · ":"lowest: "+z+" · "):"")+Math.round(chance(p)*100)+"%"):(vi?("mới biết "+seenN+"/3 thừa số"):("read "+seenN+"/3 factors"))
+             +(vi?" — ":" — ")+"<i>"+quoteFor(p)+"</i>")   // the clue sits beside the unknowns: their words are what you diagnose from
            +((p.mom||0)>0?" 🌱":"")+((p.hands|0)>0?(" · "+(p.hands|0)+"⚡"):"")
            +((fin(p.lastH)&&(S.season-p.lastH)>=2&&(p.hands|0)>0)?(vi?(" · lần cuối "+(S.season-p.lastH)+" mùa trước — vun chưa nở thì phai"):(" · last hand "+(S.season-p.lastH)+" seasons ago — un-bloomed tending fades")):""); }
       var threat="";
@@ -2771,6 +2791,7 @@ function renderHelp(){
       if(p.id===6&&!p.started&&S.season>=10&&p.ban<4&&!S.pairs.some(function(pr){return pr[0]===6||pr[1]===6;})) threat=" 🛶";
       if(p.id===1&&!p.started&&S.baFade&&!S.apprentice) threat=" 🕯";
       rows.push("<span class=\"stRow\" data-sel=\""+p.id+"\" style=\"cursor:pointer;text-decoration:underline dotted\"><b>"+p.name+"</b></span> — "+st+threat); });   // the name is a way to the person
+    if(S.un.build) rows.push("<b>🛠 "+(vi?"Sản phẩm của bạn":"Your product")+"</b> — "+(S.built?(vi?"đã xong ✓ — mái riêng đứng ở bến":"shipped ✓ — your own roof at the landing"):((S.build|0)+"/4"+(vi?" tay đã gõ":" hands in")+((S.build|0)===0?(vi?" — chưa bắt đầu":" — not started"):""))));   // your own hands, in the same list
     h+=sec(vi?"📍 Xóm lúc này":"📍 The xóm now",
       (STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4))+" · "+YEAR_CARDS[S.yearCard|0].em+" "+(vi?YEAR_CARDS[S.yearCard|0].nv:YEAR_CARDS[S.yearCard|0].ne)+(S.constraint?(" · ⛓ "+(vi?CONSTRAINTS[S.constraint].nv:CONSTRAINTS[S.constraint].ne)):"")+" · "+S.acts+"⚡ · "+(vi?"sông ":"river ")+S.von+"/10 ("+(vi?"bậc tối đa ":"tier cap ")+cap+")"+(S.luat<4?(vi?" · trời nặng ☁️":" · heavy sky ☁️"):"")
        +"<br>"+rows.join("<br>")));

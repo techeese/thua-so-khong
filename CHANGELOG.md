@@ -18,6 +18,43 @@ lands *before* the circle looks; the lift filter is `!started`, so `lifted` read
   why this is convergent work and not polish. Recorded in `GATES-LEDGER.md` → Tightenings and
   `LANDMINES.md`.
 
+## v0.67 — 2026-08-15 — Aa reaches the print
+
+A graphics round from the owner's `/loop 5m` session, on the **looking** half of the method — and what
+it found was a gap in something the *other* session had just shipped, which is exactly why "look again
+after they ship" is in the pointer.
+
+- **The larger-text control stopped at the canvas.** `Aa` scales the whole page to 112% through CSS
+  (`html.big`), and CSS cannot reach a `<canvas>`. Measured with it on: the roster chips went 12 → 14px
+  and the log 12.5 → 14px, while the canvas labels sat unchanged at **24px** and the red zero-hints at
+  **22px**. So the one reader who asks for bigger text got it everywhere **except the villager names,
+  the `×0 số không:` tags, the sprout percentages and the season banner** — which is where this game
+  says the most. The same shape as the Reduce Motion gap that v0.59 closed.
+- **The request folds into `LKF`**, the factor the canvas already uses to compensate legibility for
+  small screens — so every canvas text follows at once and the font cache re-keys itself. Canvas labels
+  now go **24 → 27px** and hints **22 → 25px** with Aa on, a 1.125× against the DOM's 1.167×.
+- *Evidence:* new **Gate 52** asserts **both sides move together** and, non-vacuously, that both sit at
+  base size with Aa off. Negative-tested with the multiplier removed: `canvasK=1.000` against
+  `domK=1.167` → `AA_BAD`. The whole suite was re-run because larger labels stress the collision work
+  hardest: `LABEL_OK cross=0 bleed=0`, `BURY_OK buried=0`, `PHONE_OK bodySW=390 hOver=0`.
+
+Also measured and clean, so recorded rather than fixed: the big-text mode itself holds its layout at
+both 320px and 390px — no overflow, nothing clipped — so their feature was sound; only its reach was
+short.
+
+## v0.66 — 2026-08-15 — the risk is beside the raise
+
+Closes: under the owner's standing `/loop 3m` directive, the one number behind "concentrate until they
+bloom" that the sheet never printed. Fade — each raised factor of an un-bloomed person falls back one
+step with 35 % a season (17.5 % in the quiet-hands year, 50 % in the restless wind) — lived only in the
+help card; the sheet showed the raise (*lúc đến 7×1×3 ↗*) and not what it risked.
+
+- **`fadeRate()`** is now the one source for the season tick and the sheet; a known un-bloomed row
+  with any factor above its arrival value prints *· vun chưa nở phai 35%/mùa*; nothing on an
+  unraised row, nothing after the bloom (bloomed rows do not fade).
+- *Evidence:* new **Gate 51** (`FADE_OK flatNone raised35 quiet18 wind50 bloomedNone`); id 50 was the
+  graphics session's, checked before committing. Gates green, hash-bracketed. No balance changed.
+
 ## v0.65 — 2026-08-15 — the ending title never runs under the stamp
 
 A graphics round from the owner's `/loop 5m` session, alternating back to **measuring** after a looking

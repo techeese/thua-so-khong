@@ -93,7 +93,7 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.64: a paid forecast prints next season's stamp odds on the sheet (Gate 49). v0.62: the tier pill reads N/max — the ladder has a visible top (Gate 47). v0.61: the ceiling names a tied hand (Gate 46); v0.57 validated in the game — a tending player
+**v0.66: the fade odds print beside a raised, un-bloomed row (Gate 51). v0.64: a paid forecast prints next season's stamp odds on the sheet (Gate 49). v0.62: the tier pill reads N/max — the ladder has a visible top (Gate 47). v0.61: the ceiling names a tied hand (Gate 46); v0.57 validated in the game — a tending player
 climbs 13 → 21 tiers by s14 with all 43 hands used. v0.58: a fourth tied hand — 🚫🏮 the year no one dared (no failure nights; nerve only from the xóm,
 to 5) (Gate 42). v0.57: a witnessed bloom lifts GAN only to 5 — every world-lift now has a ceiling (Gate 41); priced:
 hunter 6.89/12.3, band holds. v0.55: guess-answers and the circle's first line persist across a refresh (Gate 38); measured: the six
@@ -146,26 +146,28 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **alternate looking and measuring —
-both keep finding things.** v0.63 found a buried zero-tag by looking; the tick after found nothing by
-looking; v0.65 found a title running under the ending stamp by measuring the one combination never
-varied (densest surface + longest strings + narrowest width: the ending card, English, 320px). The
-method that produced it: **take the hardest combination, not one variable at a time.** Combinations
-still unvaried: the Sổ tay in English at 320px; the sheet with the longest villager name and a tied
-hand; the roster when every villager has bloomed (seven 🪜🪜🪜 chips). Single dimensions measured and
-clean, do not re-open: device pixel ratio, 320/360px width, long-idle accumulation, clipped text,
-verb-row raggedness, float density paced, overlay reachability at short heights. Declined with reasons:
-the 2.3px bottom-edge clip (invisible, pre-existing); forced-colors (headless Chrome cannot emulate it
-— but note v0.65 shows a **container query can rescue an unverifiable viewport rule**, so re-read that
-decision if it ever matters). Not graphics, ask before taking: the canvas has no `role`/`aria-label`;
-keyboard-only play end to end. **If a tick finds only cosmetic preference, ship nothing and say so.**
-Rules earned the hard way: no seeded whole-run gate; never let a gate reimplement the logic it tests;
-negative-test every new gate; when a fix changes DRAW ORDER assert paint order, not geometry; measure a
-centred heading by its LINE BOXES, never its element box; a container query cannot style its own
-container; check modals at short HEIGHTS; `scrollIntoView` per element; an inline style set by JS kills
-a media query; sizing a responsive element from JS freezes it; take the PEAK of a transient; assert
-ACTIVATION with focusability; and an unfamiliar shape on the canvas means read the code, not defect
-(the ox-cart). Heredoc tags collide across sessions — grep first. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **the richest seam right now is
+auditing what the OTHER session ships.** v0.67 found the Aa larger-text control reaching the whole DOM
+and none of the canvas — the same shape as Reduce Motion in v0.59. Standing rule: **when the mechanic
+loop adds an accessibility control or any new chrome, assume it does not reach the canvas until
+measured**, and fold the request into `LKF` (text) or a `CALM`-style flag (motion). Not yet audited
+from their recent work: the per-verb `trần ≤ N%` ceiling lines, the tied-hand strike-through, the
+`gánh/xưởng/thương hiệu` tier words, and whatever lands next — look at the header for controls that
+did not exist last tick. Alternate with looking at the game itself; both keep producing. Measured and
+clean, do not re-open: DPR, 320/360px, English at 320, long-idle, clipped text, verb-row raggedness,
+float density paced, overlay reachability at short heights, big-text layout at 320/390, the three
+hardest combinations (EN+tied hand+all bloomed, Sổ tay EN at 320). Declined with reasons: the 2.3px
+bottom-edge clip; forced-colors (but v0.65 showed a container query can rescue an unverifiable viewport
+rule — re-read that if it matters); the product sparkline is CORRECT as linear, do not "fix" it to log.
+Not graphics, ask first: canvas `role`/`aria-label`, keyboard-only play end to end. **If a tick finds
+only cosmetic preference, ship nothing and say so.** Rules earned the hard way: no seeded whole-run
+gate; never let a gate reimplement the logic it tests; negative-test every new gate; when a fix changes
+DRAW ORDER assert paint order; measure a centred heading by its LINE BOXES; a container query cannot
+style its own container; check modals at short HEIGHTS; `scrollIntoView` per element; an inline style
+set by JS kills a media query; sizing a responsive element from JS freezes it; take the PEAK of a
+transient; assert ACTIVATION with focusability; a forced state is not a play state (it has invented
+three defects now); and an unfamiliar shape means read the code (the ox-cart). Heredoc tags collide —
+grep first. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

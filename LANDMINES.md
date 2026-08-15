@@ -438,3 +438,9 @@ that is now impossible because a gate catches it stays here, with the gate named
   real, but the "tiling floats" (sync-loop), the "dark rectangle" (the ox-cart) and this flat sparkline
   were all artifacts of probes that jam the world into a shape play never produces. Before believing a
   visual defect found in a forced state, reproduce it in a played-out run.
+- **Every CSS-level accessibility feature stops at the canvas — check each one twice.** Reduce Motion
+  reached exactly one button (v0.59); the Aa larger-text control reached the whole DOM and none of the
+  print (v0.66). Both looked implemented and both left the canvas — where this game states its names,
+  its ×0 tags and its percentages — untouched. When the other session ships an accessibility control,
+  assume it does NOT reach the canvas until measured, and fold the request into `LKF` (text) or a
+  `CALM`-style flag (motion) so the whole scene follows.
