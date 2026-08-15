@@ -62,6 +62,12 @@ that is now impossible because a gate catches it stays here, with the gate named
   ungraded, the grader failed: halt and report, do not grade it yourself. Cost so far: one
   investigation of the runner mid-tick. Owner's call, in a meta-session, whether the runner's
   grader should commit, or `loop-selfcheck` #5 should tolerate exactly one ungraded newest entry.
+- **`lab/NOTES.md` is NEWEST-FIRST, so the newest N verdicts are `v[:N]`, not `v[-N:]`.** The
+  exhaustion check read `v[-3:]` — the three OLDEST entries, frozen at `new-argument` forever — so
+  `EXHAUSTED` could never become 1 and the synthesis/transition chain could never fire. The loop
+  would have ticked, measured, committed and graded indefinitely while looking perfectly healthy.
+  Generalises: **when a file has a prepend convention, every window over it is a slice off the
+  front**; and a termination condition that has never actually fired is untested, not working.
 - **An owner directive must be machine-detectable or it will be silently ignored.** `done.sh`
   originally had no way to see a note in `OWNER-GATE.md`; the loop would read the directive, find
   every gate green, return CONVERGED and go back to vigil without doing the work. Open directives

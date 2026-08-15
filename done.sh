@@ -147,7 +147,10 @@ import io,re
 try: s=io.open('lab/NOTES.md',encoding='utf-8').read()
 except Exception: print('0 0'); raise SystemExit
 v=re.findall(r'^\*\*Verdict:\*\*\s*([a-z-]+)',s,flags=re.M)
-last=v[-3:]
+# lab/NOTES.md is NEWEST-FIRST (entries are prepended), so the newest three are v[:3].
+# v[-3:] reads the three OLDEST — frozen forever — and EXHAUSTED could never become 1,
+# meaning the transition chain could never fire. Silent: the loop looks healthy forever.
+last=v[:3]
 print(('1' if len(last)==3 and 'new-argument' not in last else '0'), len(v))
 PY
 )
