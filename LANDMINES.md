@@ -476,3 +476,11 @@ that is now impossible because a gate catches it stays here, with the gate named
   no-hụi year plus nghe ngóng's already-asked (v0.70). Tự xây and Che chắn were checked and are sound
   (build shows ✓; shelter hides itself when there is no target). Do not re-sweep these; if a NEW control
   appears, apply the method — count its gating conditions, count its hint branches, and compare.
+- **Registering in the collision list is not the same as avoiding.** Workshop words were pushed into
+  `lblR` in v0.63 so villager names would dodge them — but nothing made the words dodge anything, so a
+  roof drawn after a villager printed straight over the name. If an element joins a collision list, give
+  it the avoidance too, or state in a comment why it is exempt.
+- **The next free gate id is max+1 only if you have LOOKED — the mechanic loop takes ids between ticks.**
+  A new gate landed as a duplicate Gate 57 because the max was read as free. Always
+  `grep -oE '^# Gate [0-9]+' gate.sh | grep -oE '[0-9]+' | sort -n | tail -1` AND check the ledger, then
+  take max+1 — and re-check right before committing, since the number can be taken while you work.
