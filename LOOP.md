@@ -93,7 +93,9 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.46: speech has its own lane — the two-slot ambient guard counts speech, not stat floats; rate
+**v0.48: shelter tarps every standing roof (Gate 23 tightened) — the late game's "hold what you built"
+decision; measured: a plausible player blooms 7/7 by s8 and idles 21 of the last 24 hands (back-half
+slack, for Y to weigh). v0.46: speech has its own lane — the two-slot ambient guard counts speech, not stat floats; rate
 untouched (Gate 29). v0.45: the pot's price is printed — multiplier before→after and ↓bậc N when the dip crosses a cap
 line (Gate 28). Measured, parked for Y: bounding the witness GAN lift below 5 costs the hunter's tiers
 16.1 → 12.5 (spreader 7.8, linker 9.3) — the world currently finishes GAN for you; a fair-opponent era
@@ -136,17 +138,17 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop, in order: every surface this loop
-set out to review is now **done** — crowding (v0.45, Gate 25), the three overlays (v0.39 intro, v0.40
-ending, v0.42 Sổ tay), the roster strip (v0.36), and now the sheet's factor bars and the log (v0.47,
-Gate 30 + Gate 24 tightened). **Do not attempt a seeded whole-run gate** — built, measured and
-discarded in v0.45; gate the mechanism instead. Genuinely open, in order: the **roster chips'
-`?`/`●●○` dot vocabulary**, which is unlabelled and tiny and is now the only place a player reads
-which factors they have touched; the **float/bubble density during a fast season** — v0.32 stopped
-them overlapping but a burst still tiles the canvas, and it needs a real-play measurement rather than
-a sync-loop probe, which exaggerates it badly; and a pass over the **verb row's disabled states**. The
-far bank fading under a heavy sky is **decided, not pending**. Before adding any gate, run `./done.sh`
-and take the next id above the highest in BOTH `gate.sh` and the ledger. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **every surface this loop set out to
+review is now done** — crowding (v0.45, Gate 25), the three overlays (v0.39/v0.40/v0.42), the roster
+strip (v0.36), the sheet's factor bars and the log (v0.47), and the roster's dot vocabulary (v0.48,
+Gate 31). What is genuinely left, in order: the **float/bubble density during a fast season** — v0.32
+stopped them overlapping but a burst still tiles the canvas, and this needs a REAL-play measurement,
+because a sync-loop probe exaggerates it badly (it fires nine seasons at one instant) and v0.45
+established that a whole-run statistic cannot be made gate-safe here; then a pass over the **verb
+row's disabled states**; then the loop should consider that the graphics brief may be close to spent
+and say so rather than padding. **Do not attempt a seeded whole-run gate** — built, measured and
+discarded in v0.45; gate the mechanism. Before adding any gate, run `./done.sh` and take the next id
+above the highest in BOTH `gate.sh` and the ledger. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

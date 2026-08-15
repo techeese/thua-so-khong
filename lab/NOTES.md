@@ -76,6 +76,11 @@ material only.
 bubble's caller). Outputs `lab/lane-*.txt`; the v0.45 tree is `lab/index-v045.html`. Gitignored
 except this note.
 
+**Verdict:** confirms-known
+*Grader:* It re-measures the ambient rate the `chatprobe.py` entry already established (~0.3/season) and corrects that entry's float-lever hypothesis, but the direction it lands on — the mute roll and `waitQuiet` cadence, owner-reserved — was already the candidate on the table; it kills a lever, not an era.
+**Defect:** no
+**Proposal:** no
+
 ## 2026-08-15 — the low bloom: who the ending calls "bloomed" while their own weakest factor sits at 2–4 (`lowbloom.js`)
 
 **Question.** LOOP.md's mechanic bank has carried, for many rounds, *"the ending card calling a ≤3-factor

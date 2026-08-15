@@ -641,8 +641,9 @@ setTimeout(function(){ try{
   var printedN=parseInt((cost0.match(/·\s*(\d+)/)||[0,-1])[1],10);
   var covers1=(realN>=1 && printedN===realN);
   actShel(); selectPerson(2); var tarped=document.getElementById("multLine").textContent, t0=/🛡 0%/.test(tarped);
-  var ok=noneClear&&y15&&o5&&covers1&&t0;
-  document.title=(ok?"LAW_OK":"LAW_BAD")+" clear="+noneClear+" young15="+y15+" old5="+o5+" shelCost="+cost0+" printed="+printedN+" real="+realN+" tarped0="+t0;
+  selectPerson(3); var tarpedOld=document.getElementById("multLine").textContent, t0old=/🛡 0%/.test(tarpedOld);   // v0.48: the established roof is tarped by the same hand
+  var ok=noneClear&&y15&&o5&&covers1&&t0&&t0old&&realN===2;
+  document.title=(ok?"LAW_OK":"LAW_BAD")+" clear="+noneClear+" young15="+y15+" old5="+o5+" shelCost="+cost0+" printed="+printedN+" real="+realN+" tarped0="+t0+" oldTarped0="+t0old;
 }catch(e){ document.title="THREW: "+e.message; } },600);
 </script>"""
 open(tmp+"/law.html","w").write(html.replace("</body>",drv+"</body>"))
@@ -869,6 +870,49 @@ open(tmp+"/ur.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOF30
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=7000 --dump-dom "file://$TMP/ur.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "UNREAD_OK" && pass "an unread factor is not a zero: $T" || fail "an unread factor is not a zero: $T"
+
+# Gate 31: the roster's dots say WHICH factor — the three dots record which factors your hands have
+# touched, but they were drawn in one grey, so nothing said which dot was which and the only
+# explanation was a title tooltip a thumb cannot reach. They now carry the sheet's own factor colours
+# (TÀI indigo · GAN đỏ son · BẠN leaf), filled for touched and hollow for not, with a lighter key on
+# the selected chip's ink ground. Asserted against the sheet's bars, so the two can never drift apart.
+python3 - "$TMP" <<'PYEOF31'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<4;s++){ S.acts=3; S.nudged=true; nextSeason(); }
+  S.cast.forEach(function(p){ p.known=true; p.started=false; });
+  S.cast[0].seen={tai:true,gan:false,ban:true};
+  selectPerson(2); renderRoster();
+  setTimeout(function(){ try{
+    var chip=document.querySelector('.rc[data-id="0"]'), sel=document.querySelector('.rc.sel');
+    if(!chip){ document.title="DOTS_BAD nochip"; return; }
+    var ds=chip.querySelectorAll(".sd i"), selDs=sel?sel.querySelectorAll(".sd i"):[];
+    function col(e){ return getComputedStyle(e).color; }
+    function filled(e){ var b=getComputedStyle(e).backgroundColor; return b!=="rgba(0, 0, 0, 0)"&&b!=="transparent"; }
+    // the dots must match the SHEET's bars for the same factors — one vocabulary, not two
+    var barCol=["barTai","barGan","barBan"].map(function(id){ return getComputedStyle(document.getElementById(id)).backgroundColor; });
+    var dotCol=[col(ds[0]),col(ds[1]),col(ds[2])];
+    var matchesSheet=dotCol.every(function(c,i){ return c===barCol[i]; });
+    var distinct=new Set(dotCol).size;
+    var ok = ds.length===3 && distinct===3 && matchesSheet
+             && filled(ds[0]) && !filled(ds[1]) && filled(ds[2])
+             && (!selDs.length || col(selDs[0])!==dotCol[0]);
+    document.title=(ok?"DOTS_OK":"DOTS_BAD")+" n="+ds.length+" distinct="+distinct
+      +" matchesSheetBars="+matchesSheet+" filled="+[filled(ds[0]),filled(ds[1]),filled(ds[2])].join(",")
+      +" selKeyDiffers="+(selDs.length?(col(selDs[0])!==dotCol[0]):"n/a");
+  }catch(e2){ document.title="THREW2: "+e2.message; } },300);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/dt.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF31
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=7000 --dump-dom "file://$TMP/dt.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "DOTS_OK" && pass "the roster's dots say which factor: $T" || fail "the roster's dots say which factor: $T"
 
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }

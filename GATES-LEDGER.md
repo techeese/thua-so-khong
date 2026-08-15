@@ -53,6 +53,7 @@ Rules:
 | `Gate 28` | 1 | the pot's price is printed — the hint carries the river's multiplier before → after and, when the dip would drop a tier cap, ↓bậc for N roofs; no tier warning when no roof would fall (v0.45) |
 | `Gate 29` | 1 | speech has its own lane — with three stat floats up and no beat, chatter() still produces a speech bubble; with two speech bubbles up it still refuses (the two-slot rule counts speech, rate untouched) (v0.47) |
 | `Gate 30` | 1 | an unread factor does not look like a zero — an unseen factor hatches its whole track instead of drawing width:0 (which was emptier than a factor genuinely at 1); revealing it at 1 removes the hatch and shows a real width (v0.47) |
+| `Gate 31` | 1 | the roster's dots say which factor — the three touched/untouched dots carry the sheet's own factor colours (asserted equal to the `barTai`/`barGan`/`barBan` backgrounds, so roster and sheet cannot drift apart), filled for touched and hollow for not, in a lighter key on the selected chip (v0.48) |
 
 ## Convergence gates — `done.sh`
 
@@ -99,3 +100,4 @@ Record here when an existing gate is made stricter, with the old and new thresho
   in the middle, top edge only at the end). Old: the Sổ tay's body and its always-visible exit. New:
   that, plus the log strip, which keeps 24 lines, shows about four and taps open to a page while
   `cursor:pointer` was its only affordance. Every prior clause kept.
+- **Gate 23 (v0.48):** now also asserts the established roof reads 🛡 0% after the hand and that the real coverable count is 2 (shelter tarps every standing roof, not only young ones).

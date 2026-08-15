@@ -1,5 +1,47 @@
 # Changelog — Thừa Số Không
 
+## v0.48 — 2026-08-15 — the roster's dots say which factor
+
+A graphics round from the owner's `/loop 5m` session, on the roster chips' dot vocabulary — the last
+item the pointer named, and the only place a player reads which factors their hands have touched now
+that v0.33 hides the numbers.
+
+- **The three dots were all one grey.** `●●○` told you *how many* factors you had touched but never
+  *which*, and the only thing that said which was a `title` tooltip — which a thumb cannot reach, on a
+  game whose open owner gate is *390px hands*. The dots now carry the sheet's own factor colours:
+  **TÀI indigo · GAN đỏ son · BẠN leaf**, filled for touched and hollow for not, in a lighter key on
+  the selected chip's ink ground. No legend and no words: the sheet already teaches those three
+  colours every time you select someone, so the roster simply speaks the same language.
+- *Evidence:* new **Gate 31** — three dots, three distinct colours, `matchesSheetBars=true`, fill state
+  matching `seen` exactly (`true,false,true`), and the selected chip's key demonstrably different. The
+  colour assertion is made **against the sheet's live bar backgrounds** rather than against literals,
+  so if either side is ever restyled the two cannot silently drift into different vocabularies.
+
+That closes every surface this loop set out to review. What remains open is recorded in `LOOP.md`, and
+the honest headline is that the next real item needs measurement rather than drawing: whether a burst
+of floats tiles the canvas in *real* play, which a sync-loop probe exaggerates badly and which the
+v0.45 findings say cannot be settled with a whole-run statistic.
+
+## v0.48 — 2026-08-15 — every roof can be sheltered: the late game gets its decision
+
+Closes: under the owner's standing `/loop 3m` directive, what a scripted plausible playthrough
+showed this tick — a decent player blooms 7/7 by season 8, then **leaves 21 of the last 24 hands
+unused**: the back half is build + tier-polish with nothing to hold against except the sky, and the
+sky's one counter covered only *young* roofs while v0.41's sheet prints `⬛ 5%` on every established
+one — a printed risk the hand could not answer.
+
+- **`shelCovers()` = every standing roof** (a newborn still stands its first season on its own).
+  One hand, two seasons, all roofs; the shelter button already prints the live count (*1⚡ · 7 mái*).
+  Probe → shelter is now the late game's "hold what you built" loop, with the same cost/benefit the
+  sheet already prints (`⬛ 5%` × roofs standing vs 1–2⚡); the sky's odds are untouched.
+  `shelDone` and the help card say every roof.
+- *Evidence:* **Gate 23** tightened — the established roof reads `🛡 0%` after the hand and the real
+  coverable count is 2 (recorded under *Tightenings*). Twenty-nine gates green, hash-bracketed. Band
+  unchanged (the sim does not shelter).
+- Recorded for the engine's Y era, not shipped: the run's shape — 7 blooms by s8, an empty s9–s15
+  strip (`·🌸·🌸 │ ·🌸🌸🌸🌸 │ 🌸··· │ ····`), 26⚡ spent / 21⚡ idle — is the *back-half slack* the
+  synthesis measured; a fair-opponent instrument should decide whether the last year needs pressure.
+
 ## v0.47 — 2026-08-15 — an unread factor is not a zero
 
 A graphics round from the owner's `/loop 5m` session, on the last two unreviewed surfaces: the sheet's

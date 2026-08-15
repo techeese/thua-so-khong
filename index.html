@@ -61,7 +61,16 @@
   .roster .rc small{font-weight:600;font-size:10px;color:var(--red)} .roster .rc.sel small{color:#EFB7C4}
   .roster .rc.cand{outline:2px dashed var(--leaf);outline-offset:1px}
   .roster .rc.gone{opacity:.4;cursor:default;box-shadow:none;text-decoration:line-through;font-weight:500}
-  .roster .rc .sd{font-size:8px;letter-spacing:1px;color:var(--dim);margin-left:1px;vertical-align:1px} .roster .rc.sel .sd{color:#EFB7C4}
+  /* The three dots say WHICH factors your hands have touched, but they were all one grey, so nothing
+     said which dot was which — the only explanation was a title tooltip, which a thumb cannot reach.
+     They now carry the same colours the sheet's bars carry (TÀI indigo · GAN đỏ son · BẠN leaf), so
+     the sheet teaches the roster and neither needs a word. Filled = touched, hollow = not yet. */
+  .roster .rc .sd{display:inline-flex;gap:2.5px;align-items:center;margin-left:3px;vertical-align:0}
+  .roster .rc .sd i{width:6px;height:6px;border-radius:50%;border:1.5px solid currentColor;background:transparent;display:inline-block}
+  .roster .rc .sd i.on{background:currentColor}
+  .roster .rc .sd i.tai{color:var(--indigo)} .roster .rc .sd i.gan{color:var(--red)} .roster .rc .sd i.ban{color:var(--leaf)}
+  /* on the selected chip the ground is ink, so the same three hues in their lighter key */
+  .roster .rc.sel .sd i.tai{color:#8FB0CB} .roster .rc.sel .sd i.gan{color:#E8938C} .roster .rc.sel .sd i.ban{color:#AECF80}
   canvas{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
   .armed{background:var(--leaf)!important;color:#fff!important}
   .con{font-size:12px;padding:5px 8px} .con small{display:block;font-size:10px}
@@ -180,7 +189,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.47</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.48</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -282,7 +291,7 @@ var STR={
   gtmPaid:{vi:"🧺 Hàng gốm bán chạy ngoài chợ huyện — dòng sông đầy thêm một chút.",
         en:"🧺 The ceramics sell well at the district market — the river rises a little."},
   shel:{vi:"Che chắn",en:"Shelter"},
-  shelDone:{vi:"🛡 Đã che chắn cho xưởng non nhất — mưa cứ việc rơi.",en:"🛡 The youngest workshop is tarped — let it rain."},
+  shelDone:{vi:"🛡 Mái nào cũng đã chằng bạt — mưa cứ việc rơi.",en:"🛡 Every roof is tarped — let it rain."},
   tierDown:{vi:" — xưởng bị con dấu, lùi một bậc.",en:" — the stamp fell; the workshop steps down a tier."},
   yoursCrushed:{vi:"⬛ Sản phẩm của BẠN bị đình chỉ. Bạn dựng lại nhanh hơn lần đầu.",en:"⬛ YOUR product was suspended. You rebuild faster than the first time."},
   more:{vi:"xem thêm ▾",en:"more ▾"},
@@ -498,6 +507,7 @@ function fresh(){
      linking:null, banner:null, banners:[], luatNext:3, probeSeen:false, baFade:false,
      un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false, stormSeen:false, tierTaught:false, lienNgan:false, stormCount:0, stormStreak:0, classSeen:false, revealSeen:false,
      log:[], over:false, scars:[], hands:0, idle:0, vb:{}, hist:[], potSeason:false, potSeen:false};
+  S._hs0=0;
   lanterns=[]; runTok++;      // invalidate ALL deferred callbacks from the previous run
   parts=[]; stamps=[]; glows=[]; bubbles=[]; amb=[]; pendQ=[]; motes=[]; rain=[]; ripples=[]; flock=null; smoke=[]; boat=null; gossipQ=[]; cart=null; bus=null;
   beatUntil=0; nextErrandAt=0; _chaser=null;
@@ -666,7 +676,7 @@ function load(){
     S.scars=Array.isArray(s.scars)?s.scars.filter(function(c){return c&&fin(c.x)&&fin(c.y)&&fin(c.s);}).map(function(c){return {x:c.x,y:c.y,s:cl(c.s,0,15,0)};}).slice(-8):[];
     if(Array.isArray(s.log)) S.log=s.log.filter(function(m){return m&&(typeof m.vi==="string"||typeof m.en==="string");});
     // a returning player has already been introduced — recompute unlocks/flags from state, skip the teaching beats
-    S.apprentice=pairExists(0,1); S.duo=pairExists(3,5); S.gtm=pairExists(1,4); S.maiHoa=pairExists(2,4); S.hoaLien=pairExists(4,6); S.gtmPaid=!!s.gtmPaid; S.hoaLienPaid=!!s.hlp; S.hands=fin(s.hs)?cl(s.hs,0,64,0):0; S.idle=fin(s.idl)?cl(s.idl,0,64,0):0; S.vb={}; if(Array.isArray(s.vb)) VERBS.forEach(function(k,i){ S.vb[k]=fin(s.vb[i])?cl(s.vb[i],0,64,0):0; }); S.hist=Array.isArray(s.hist)?s.hist.slice(0,16).map(function(v){return fin(v)?cl(v,0,15,0):0;}):[];
+    S.apprentice=pairExists(0,1); S.duo=pairExists(3,5); S.gtm=pairExists(1,4); S.maiHoa=pairExists(2,4); S.hoaLien=pairExists(4,6); S.gtmPaid=!!s.gtmPaid; S.hoaLienPaid=!!s.hlp; S.hands=fin(s.hs)?cl(s.hs,0,64,0):0; S.idle=fin(s.idl)?cl(s.idl,0,64,0):0; S._hs0=Math.max(0,(S.hands|0)-Math.max(0,3-(S.acts|0)));   // on resume, assume the missing hands of this season were spent this season S.vb={}; if(Array.isArray(s.vb)) VERBS.forEach(function(k,i){ S.vb[k]=fin(s.vb[i])?cl(s.vb[i],0,64,0):0; }); S.hist=Array.isArray(s.hist)?s.hist.slice(0,16).map(function(v){return fin(v)?cl(v,0,15,0):0;}):[];
     S.un={link:S.cast.filter(function(p){return p.known;}).length>=2||S.pairs.length>0,
           hui:S.season>=2, build:S.season>=4||S.build>0||S.built,
           probe:S.ships.length>0||S.season>2};
@@ -1833,8 +1843,8 @@ function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notic
   if(!free){ if(!spend("probe"))return; }
   S.probeSeen=true; beep(587,0.06); setTimeout(function(){beep(523,0.06);},80);
   logMsg(S.luatNext>=4?STR.probeSun.vi:STR.probeCloud.vi, S.luatNext>=4?STR.probeSun.en:STR.probeCloud.en);
-  if(S.luatNext<4&&shelTarget()) logMsg("— xưởng non đang phơi trời. Bạn có thể CHE CHẮN (nút mới).",
-                                        "— a young workshop sits exposed. You can SHELTER it (new button).");
+  if(S.luatNext<4&&shelTarget()) logMsg("— mái xưởng đang phơi trời. Bạn có thể CHE CHẮN (nút mới).",
+                                        "— roofs sit exposed. You can SHELTER them (new button).");
   render(); save(); }
 // NOTE: ships are never `born` while the player holds the controls (born is set and cleared within one nextSeason tick),
 // so the born checks below are belt-and-braces, not a reachable state. In a strict year, notices are posted — tarp EVERYTHING.
@@ -1842,7 +1852,7 @@ function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notic
 function stormLine(p){ if(!p.started||S.luat>=4) return ""; var sh=null; S.ships.forEach(function(w){ if(w.pid===p.id) sh=w; }); if(!sh) return "";
   var pct=sh.born?0:(sh.shel|0)>0?0:((sh.age|0)<2?15:5);
   return " · "+((sh.shel|0)>0?"🛡 ":"⬛ ")+pct+"%"+(L==="vi"?" mùa này":" this season"); }
-function shelCovers(s){ return (s.shel|0)<=0 && (S.yearCard===1 || (s.age|0)<2) && !s.born; }
+function shelCovers(s){ return (s.shel|0)<=0 && !s.born; }   // v0.48: one hand tarps EVERY standing roof (a newborn stands its first season on its own) — the sheet prints ⬛ 5% on an established roof, so the hand must be able to answer it
 function shelTarget(){ var best=null; S.ships.forEach(function(s){ if(!shelCovers(s)) return; if(!best||(s.age|0)<(best.age|0)) best=s; }); return best; }
 function actShel(){ if(S.acts<=0||S.over||!shelTarget()) return; if(!spend("shel"))return;
   var n=0; S.ships.forEach(function(s){ if(shelCovers(s)){ s.shel=2; n++; } });   // one hand tarps every covered roof
@@ -1879,6 +1889,7 @@ function nextSeason(){
   var _preActive=S.cast.filter(active).map(function(p){return p.id;});
   var _rc={von0:S.von, bloom:0, stamp:0, fade:0, sky:S.luat<4?"☁️":(S.luat>=7?"☀️":"")};   // the season's ledger — one recap line closes each season in the log; the sky it ran under is part of it
   if(S.acts>0){ S.idle=(S.idle|0)+S.acts; _rc.idle=S.acts; }   // hands left on the table this season — counted, shown at the end, never carried
+  _rc.used=(S.hands|0)-(S._hs0|0); _rc.dealt=_rc.used+(S.acts|0);   // hands used of hands dealt — the ledger's first number
   // one gentle first-turn nudge: don't let a new player skip past their whole hand
   if(S.season===0 && S.acts===2 && !S.nudged){ S.nudged=true;
     bubble(S.cast[0],t("nudge")); voice(S.cast[0]); return; }
@@ -2032,7 +2043,8 @@ function nextSeason(){
   (function(){ var dv=S.von-_rc.von0;
     function bits(lang){ var b=[];
       if(_rc.bloom) b.push("🌸"+_rc.bloom); if(_rc.stamp) b.push("⬛"+_rc.stamp);
-      if(dv) b.push("🌊"+(dv>0?"+":"")+dv); if(_rc.fade) b.push((lang==="vi"?"phai ":"faded ")+_rc.fade); if(_rc.idle) b.push("⚡"+_rc.idle+(lang==="vi"?" trống":" unused"));
+      if(dv) b.push("🌊"+(dv>0?"+":"")+dv); if(_rc.fade) b.push((lang==="vi"?"phai ":"faded ")+_rc.fade);
+      if(_rc.dealt>0) b.push("⚡"+_rc.used+"/"+_rc.dealt+(_rc.idle?(lang==="vi"?" (trống "+_rc.idle+")":" ("+_rc.idle+" unused)"):""));
       return b.length?(" · "+b.join(" ")):""; }
     var yr=" "+(2026+Math.floor(S.season/4))+(_rc.sky?(" "+_rc.sky):"");
     S.log.unshift({vi:"── "+STR.seasons.vi[S.season%4]+yr+bits("vi")+" ──",en:"── "+STR.seasons.en[S.season%4]+yr+bits("en")+" ──",div:true});
@@ -2043,7 +2055,7 @@ function nextSeason(){
   nightAt=performance.now();   // a night passes between seasons — the print dims, lamps show, the new season dawns
   // ☁️ storm tax: under a heavy sky the xóm spends a hand bracing roofs — but after two seasons the roofs are braced
   if(S.luat<4){ S.stormCount=(S.stormCount|0)+1; S.stormStreak=(S.stormStreak|0)+1; } else { S.stormStreak=0; }
-  S.acts=(S.luat<4 && S.stormStreak<=2)?2:3;
+  S.acts=(S.luat<4 && S.stormStreak<=2)?2:3; S._hs0=S.hands|0;   // the season's hand is dealt — count from here
   if(S.acts===2&&!S.stormSeen){ S.stormSeen=true;
     logMsg("☁️ Mùa giông — ai cũng bận chống nhà (chỉ còn 2⚡).","☁️ Storm season — everyone is bracing their homes (only 2⚡)."); }
   if(S.luat<4&&S.stormStreak===3){ logMsg("Nhà đã chằng néo xong — xóm quen giông rồi (3⚡).","The roofs are braced — the xóm is used to storms now (3⚡)."); }
@@ -2342,10 +2354,10 @@ function endGame(){
   S._share={
     vi:"Thừa Số Không — "+tv+" ("+gv+")\n"+YEAR_CARDS[S.yearCard|0].em+" "+YEAR_CARDS[S.yearCard|0].nv+(S.constraint?(" · ⛓ "+CONSTRAINTS[S.constraint].nv):"")+" · "+nB+" xưởng · "+ts+" bậc · "+(S.hands|0)+"⚡\n"
        +wk.name+": "+wk.btai+"×"+wk.bgan+"×"+wk.bban+"="+(wk.btai*wk.bgan*wk.bban)+" → "+wk.tai+"×"+wk.gan+"×"+wk.ban+"="+prod(wk)+"\n"
-       +"📜 kết đã thấy "+row+" "+nSeen+"/6 · "+ycRow+cnRow+shExtra+"\nhttps://techeese.github.io/thua-so-khong/",
+       +"📜 kết đã thấy "+row+" "+nSeen+"/6 · "+ycRow+cnRow+shExtra+"\nhttps://techeese.github.io/thua-so-khong/?y="+(S.yearCard|0)+(S.constraint?("&c="+(S.constraint|0)):"")+"   ← cùng năm, cùng tay trói",
     en:"The Zero Factor — "+te+" ("+ge+")\n"+YEAR_CARDS[S.yearCard|0].em+" "+YEAR_CARDS[S.yearCard|0].ne+(S.constraint?(" · ⛓ "+CONSTRAINTS[S.constraint].ne):"")+" · "+nB+" workshops · "+ts+" tiers · "+(S.hands|0)+"⚡\n"
        +wk.name+": "+wk.btai+"×"+wk.bgan+"×"+wk.bban+"="+(wk.btai*wk.bgan*wk.bban)+" → "+wk.tai+"×"+wk.gan+"×"+wk.ban+"="+prod(wk)+"\n"
-       +"📜 endings seen "+row+" "+nSeen+"/6 · "+ycRow+cnRow+shExtra+"\nhttps://techeese.github.io/thua-so-khong/"};
+       +"📜 endings seen "+row+" "+nSeen+"/6 · "+ycRow+cnRow+shExtra+"\nhttps://techeese.github.io/thua-so-khong/?y="+(S.yearCard|0)+(S.constraint?("&c="+(S.constraint|0)):"")+"   ← same year, same tied hand"};
   document.getElementById("endOvl").classList.add("show");
 }
 // share verbs on the ending card: copy the text, or save the lantern-lit print as a PNG
@@ -2484,7 +2496,7 @@ function renderRoster(){
     if(p.started&&S.luat<4&&typeof stormLine==="function"){ var sl=stormLine(p), m9=sl.match(/(🛡|⬛) (\d+)%/); if(m9) tag+=" <small>"+m9[1]+m9[2]+"%</small>"; }   // the sky's number on the chip, under a heavy sky
     var nm=p.known?p.name:(L==="vi"?"?":"?");
     // three dots per known, un-bloomed person: which of TÀI · GAN · BẠN your hands have touched — the row's progress, at a glance
-    var dots=(p.known&&!p.started)?("<span class=\"sd\" title=\"TÀI · GAN · BẠN\">"+["tai","gan","ban"].map(function(k){ return (p.seen&&p.seen[k])?"●":"○"; }).join("")+"</span>"):"";
+    var dots=(p.known&&!p.started)?("<span class=\"sd\" title=\"TÀI · GAN · BẠN\">"+["tai","gan","ban"].map(function(k){ return "<i class=\""+k+((p.seen&&p.seen[k])?" on":"")+"\"></i>"; }).join("")+"</span>"):"";
     h+="<div class=\""+cls+"\" data-id=\""+p.id+"\"><i style=\"background:"+p.color+"\"></i>"+nm+dots+(tag?" "+tag:"")+"</div>"; });
   if(box.innerHTML!==h) box.innerHTML=h;
   rosterEdges();
@@ -2605,8 +2617,8 @@ function renderHelp(){
          vi?"Mỗi người là <b>TÀI × GAN × BẠN</b>. Thừa số nào ở mức <b>1</b> là số không — người đó không nở (0%), dù hai thừa số kia có cao đến đâu. Việc của bạn là <b>chẩn đoán</b>: con số ẩn cho đến khi tay bạn chạm vào — lời họ nói là manh mối; đoán thừa số thấp nhất và nâng đúng nó. Tích ≥100 thì mầm bắt đầu nhú (🌱), càng cao càng dễ nở xưởng — nhưng thừa số thấp nhất đặt <b>trần</b>: 2 → tối đa 4%/mùa · 3 → 8% · 4 → 15% · 5 → 25%; hai thừa số kia cao đến đâu cũng không vượt qua."
            :"Each person is <b>SKILL × NERVE × ALLIES</b>. A factor at <b>1</b> is a zero — that person cannot bloom (0%), however high the other two stand. Your job is <b>diagnosis</b>: the numbers stay hidden until your hand touches them — their words are the clue; guess the lowest factor and raise exactly that. Product ≥100 and a sprout starts pushing (🌱); higher means likelier to open a workshop — but the weakest factor sets a <b>ceiling</b>: 2 → at most 4%/season · 3 → 8% · 4 → 15% · 5 → 25%; however high the other two stand, they do not lift it past that.");
   h+=sec(vi?"Tay (⚡)":"Hands (⚡)",
-         vi?"Mỗi mùa 3⚡ (mùa giông 2⚡, sau ba mùa giông liền lại 3⚡). 📖 Dạy +2 TÀI · 🏮 Đêm thất bại +2 GAN (người từng ngã đến nghe, +1) · 🤝 Kết nối +2 BẠN cho mối đầu, +1 mối sau · 🪙 Góp hụi +1 sông (đã góp thì vòng hụi mỗi mùa gọi người ít bạn nhất ra đình: +1 BẠN, tối đa 3) · 🧧 Hốt hụi (đã góp rồi): sông −1, mầm của một người nhú +6% — cả vòng góp cho một nhà · 🛠 Tự xây 4 lần thì xong · 🔍 Nghe ngóng biết trời mùa tới · 🛡 Che chắn xưởng non."
-           :"3⚡ per season (storm 2⚡; after three storm seasons in a row, back to 3⚡). 📖 Teach +2 SKILL · 🏮 Failure night +2 NERVE (those who fell come listen, +1) · 🤝 Connect +2 ALLIES first bond, +1 after · 🪙 Hụi +1 river (once you've paid in, the circle sends for the loneliest neighbour each season: +1 ALLIES, up to 3) · 🧧 Take the pot (once you've paid in): river −1, one person's sprout +6% — the whole circle pays one member · 🛠 Build 4 times to ship · 🔍 Ask around for next season's sky · 🛡 Shelter young workshops.");
+         vi?"Mỗi mùa 3⚡ (mùa giông 2⚡, sau ba mùa giông liền lại 3⚡). 📖 Dạy +2 TÀI · 🏮 Đêm thất bại +2 GAN (người từng ngã đến nghe, +1) · 🤝 Kết nối +2 BẠN cho mối đầu, +1 mối sau · 🪙 Góp hụi +1 sông (đã góp thì vòng hụi mỗi mùa gọi người ít bạn nhất ra đình: +1 BẠN, tối đa 3) · 🧧 Hốt hụi (đã góp rồi): sông −1, mầm của một người nhú +6% — cả vòng góp cho một nhà · 🛠 Tự xây 4 lần thì xong · 🔍 Nghe ngóng biết trời mùa tới · 🛡 Che chắn: một tay chằng bạt mọi mái hai mùa (xưởng mới mở tự đứng mùa đầu)."
+           :"3⚡ per season (storm 2⚡; after three storm seasons in a row, back to 3⚡). 📖 Teach +2 SKILL · 🏮 Failure night +2 NERVE (those who fell come listen, +1) · 🤝 Connect +2 ALLIES first bond, +1 after · 🪙 Hụi +1 river (once you've paid in, the circle sends for the loneliest neighbour each season: +1 ALLIES, up to 3) · 🧧 Take the pot (once you've paid in): river −1, one person's sprout +6% — the whole circle pays one member · 🛠 Build 4 times to ship · 🔍 Ask around for next season's sky · 🛡 Shelter: one hand tarps every roof for two seasons (a newborn stands its first season on its own).");
   h+=sec(vi?"Trời và sông":"Sky and river",
          vi?"Bầu trời là <b>luật</b> — ngoài tầm tay. Trời nặng (&lt;4): mưa, 2⚡, con dấu có thể rơi xuống xưởng (xưởng non 15%, xưởng vững 5%; bậc 2–3 chỉ tụt bậc). Dòng sông là <b>vốn</b> — thừa số thứ tư, của cả xóm: mầm nhân với sông (1/10 → ×0.37 · 10/10 → ×1.0), và sông cạn giữ xưởng ở bậc thấp (≤3 chỉ gánh hàng · ≤6 tối đa xưởng). Mỗi năm dâng một chút, hụi và hàng ra chợ dâng thêm; đủ ≥4 bậc xưởng thì sông tự đầy."
            :"The sky is <b>the law</b> — beyond your hands. Heavy (&lt;4): rain, 2⚡, and the stamp may fall on a workshop (young 15%, established 5%; tier 2–3 only step down). The river is <b>capital</b> — the fourth factor, and it belongs to everyone: sprouts multiply by the river (1/10 → ×0.37 · 10/10 → ×1.0), and a low river holds workshops down (≤3 stalls only · ≤6 shop at most). It rises a little each year, more from the hụi and market trips; with ≥4 workshop tiers standing it fills itself.");
@@ -2683,7 +2695,17 @@ if(load()){ el("intro").classList.remove("show"); setLang(L);   // resume a mid-
     S.log.unshift({vi:"↩ Bạn trở lại xóm — "+STR.seasons.vi[S.season%4]+" "+(2026+Math.floor(S.season/4))+" · "+yc.em+" "+yc.nv+" · còn "+S.acts+"⚡ · "+S.ships.length+" xưởng · sông "+S.von+"/10.",
                    en:"↩ Back in the xóm — "+STR.seasons.en[S.season%4]+" "+(2026+Math.floor(S.season/4))+" · "+yc.em+" "+yc.ne+" · "+S.acts+"⚡ left · "+S.ships.length+" workshops · river "+S.von+"/10."});
     S.log=S.log.slice(0,24); renderLog(); })(); }
-else setLang(L);
+else { setLang(L);
+  // 🔗 a challenge link: ?y=<year card>&c=<constraint> pre-ties the intro's chips — a friend's ending pastes the same year, the same tied hand.
+  // Only when no run is in progress (a resumed xóm is never overridden), and only for a year the book already holds — face-down years stay face-down.
+  try{ var qs=new URLSearchParams(location.search), qy=parseInt(qs.get("y"),10), qc=parseInt(qs.get("c"),10), got=false;
+    if(fin(qy)&&qy>=0&&qy<YEAR_CARDS.length){ var seenY={}; loadChron().forEach(function(r){ if(r&&Number.isFinite(r.yc)) seenY[r.yc]=1; });
+      if(seenY[qy]){ window._pendYc=qy; got=true; } }
+    if(fin(qc)&&qc>=1&&qc<=3&&loadChron().length){ window._pendCon=qc; got=true; }
+    if(got){ renderChron(); document.querySelectorAll("#conRow .con").forEach(function(b){ b.classList.toggle("on",+b.getAttribute("data-c")===(window._pendCon|0)); });
+      var yc0=YEAR_CARDS[window._pendYc|0], cl0=window._pendCon?CONSTRAINTS[window._pendCon]:null, note=document.createElement("div"); note.className="small"; note.style.cssText="margin-top:6px;color:#C1443C;font-weight:700";
+      note.textContent="🔗 "+((L==="vi")?"Lời thách: ":"A challenge: ")+(fin(window._pendYc)?(yc0.em+" "+((L==="vi")?yc0.nv:yc0.ne)):"")+(cl0?(" · ⛓ "+((L==="vi")?cl0.nv:cl0.ne)):"");
+      var cr0=document.getElementById("conRow"); if(cr0) cr0.parentNode.insertBefore(note,cr0.nextSibling); } }catch(e){} }
 render(); renderLog();
 (function loop(now){ drawScene(now||0); requestAnimationFrame(loop); })(0);
 if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(function(){}); }
