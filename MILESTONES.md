@@ -137,3 +137,39 @@ promises — they are raw material for the next synthesis.
 - The law lock as a live beat — "hỏi thăm trên xã" reveals next season's sky
 - Endings pass — authored diptychs per outcome-shape, a "fates seen" replay hook
 - Audio pass beyond the current pentatonic motif; haptics
+
+### From the owner's mechanic loop (2026-08-15, v0.30–v0.68) — measured, parked with numbers
+
+Every item below was measured with `check.js` (1200 seeded runs unless noted) or a scripted
+headless play-through, and deliberately *not* shipped by a tick because it is balance or form —
+the fair-opponent era's work, or the owner's. Numbers are as of v0.68 (ceiling · witness ≤5).
+
+- **The year cards do not move a diagnosing player.** Per card (600 runs): hunter 6.96–6.99
+  blooms / 15.5–16.6 tiers across all six; spreader 4.91 (flood) → 5.64 (quiet-hands); idle 2.39 →
+  2.59. Cards change the story and the price of spreading, not the diagnosis. Candidate: give one
+  or two cards a *diagnostic* identity (e.g. the strict year's stamps 25 %/10 % so probe → shelter
+  is a real loop; the flood year's tier cap held until the river is *earned*).
+- **The river reaches 10 in ~100 % of hunter runs** (lab `fourth.js`; still true post-v0.31) — capital
+  stops being a factor mid-game. Candidate: a river that can fall (the pot already dips it once);
+  the flywheel needing tiers ≥6 in every year, not just the flood year.
+- **The back half is the tier climb now** (v0.57): a tending player climbs 13 → 21 by s14 with all
+  43 hands used; the sim's non-tending hunter sits at 12.3. Nothing threatens the climb but the sky
+  (5 % established / season; the whole stamp mechanic moves the hunter ~1 % of tiers). Candidate:
+  the last year needs a pressure the neighbour cannot buy off (a second clock, a harder sky) — or
+  the run is shorter (the engine's G, rejected at L3 for form reasons, not for being wrong).
+- **The pot costs the hunter −1.45 tiers and serves non-diagnosers most** (lab `hui.js`); early hụi
+  pay-in costs −0.82; spare-hand pay-in ±0. The river verbs are a *spare-hands* channel and a
+  crutch. Candidate: fold the pot into a rarer, stronger event (a real hụi rotation once a year)
+  or let it stand as a priced trap — its price is printed since v0.45.
+- **Pair-spam** (same two lowest-BẠN people every hand): 5.84 / 10.4 — above spreader and random
+  linker, under the hunter. Semi-diagnostic by construction; not an exploit. Left open.
+- **Storm damage is small**: ~6 storm seasons a run, hunter loses 0.35 roofs + 0.9 step-downs;
+  shelter for every roof (v0.48) and the sheet's ⬛ odds (v0.41/v0.64) make it a legible decision
+  at the margin, not a threat.
+- **The hidden row costs a fair player one hand per misread** (misreader 6.90 vs hunter 6.89) —
+  information is play, not punishment. If a future era wants information to *cost*, the lever is
+  the ceiling table (2 → 4 %, 3 → 8 %, 4 → 15 %, 5 → 25 %), not the reveal rule.
+- **The witness bound (v0.57)** is the one balance change a tick did ship, because it converts idle
+  back-half hands into work: hunter 16.0 → 12.3 tiers in the sim, unchanged blooms, every band
+  clause held. If the fair-opponent era finds it too steep, the knob is the cap (5), not the rule.
+
