@@ -42,6 +42,20 @@ Also measured and clean, so recorded rather than fixed: the big-text mode itself
 both 320px and 390px — no overflow, nothing clipped — so their feature was sound; only its reach was
 short.
 
+## 2026-08-15 — mechanic tick, ships nothing: the year no one dared validated end-to-end; pair-spam banded
+
+Under the owner's standing `/loop 3m` directive, a looking tick. A scripted plausible player was run
+through **constraint 4** (v0.58): Bé Ngân's nerve moved only when neighbours bloomed in front of her
+(1 → 2 at s6 → 4 by s15), the season-9 line named GAN only because a witnessed bloom had already
+revealed it (v0.54's rule held), her clock fired at s11 as designed, and the run cost 8.6⚡ a bloom
+against ~3.7 in a free year — the tied hand bites without breaking anything. No defect found.
+
+The run exposed one channel worth measuring: re-linking the same pair every hand for +1/+1. Banded
+as `pairspam` (the two lowest-BẠN people, every hand): **5.84 blooms / 10.4 tiers** — above the
+spreader (5.09 / 7.7) and the random linker (5.75 / 9.4), well under the hunter (6.89 / 12.3). It is
+semi-diagnostic by construction (it targets low BẠN), so it earns what it earns; not an exploit, not
+closed. Recorded in `LOOP.md` for the instrument era.
+
 ## v0.66 — 2026-08-15 — the risk is beside the raise
 
 Closes: under the owner's standing `/loop 3m` directive, the one number behind "concentrate until they
