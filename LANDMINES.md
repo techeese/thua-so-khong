@@ -229,3 +229,9 @@ that is now impossible because a gate catches it stays here, with the gate named
   loneliest neighbour; the gate asserted a specific villager gets lifted, so any other villager the
   preceding trials had left at `ban ≤ 2` silently stole the lift. Put every non-subject out of the
   running before asserting a superlative.
+- **A gate harness that pins one villager's factor must also stop everyone else blooming.** Any
+  bloom in a tick lifts every *known* person's GAN by 1 (the witness effect), and rolls do not need
+  `known` — so "Ngân at GAN 1, everyone else unknown" still drifts to 3 when two neighbours bloom in
+  the same tick. Gate 17 (the girl's clock) flaked 1-in-3 on exactly this, 2026-08-15, and looked
+  like a mechanic regression. Pin with `started=true` on the others, not `known=false`.
+

@@ -93,7 +93,9 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.39: the pot respects the ceiling and the hụi button prints its multiplier delta (Gate 20 — the graphics session renumbers gates live; check `done.sh` duplicate-id before committing) —
+**v0.40 (mechanic half): momentum stops at the ceiling; the hụi circle lifts BẠN (+1/season for the loneliest
+known neighbour, up to 3, only once you have paid in) — the world now has a lift for each factor (Gate 21).
+v0.39: the pot respects the ceiling and the hụi button prints its multiplier delta (Gate 20 — the graphics session renumbers gates live; check `done.sh` duplicate-id before committing) —
 every verb now answers with the same arithmetic. The engine's synthesis 2 has G rejected and F
 (the book remembers) under review; mechanic ticks stay off meta-progression. v0.38: the weakest factor sets the ceiling — 2 → 4 %/season · 3 → 8 % · 4 → 15 % · 5 → 25 %
 (Gate 16; Gate 0 gains capping clauses and a *maxer* strategy: hunter unchanged 6.97/16.1, spreader

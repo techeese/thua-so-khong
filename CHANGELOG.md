@@ -25,6 +25,27 @@ that came first.
   pushed while the card is up are cleared, and the identical push with the card hidden survives, so
   the guard is conditional and not a blanket mute.
 
+## v0.40 — 2026-08-15 — the world keeps the ceiling's word, and lifts BẠN (the mechanic half of v0.40)
+
+Under the owner's standing `/loop 3m` directive; the code landed on `main` inside the engine's Gear 1
+fix commit `709c8b0` (it found the new gate red mid-write and fixed the one line — `see()` at the
+lift, not at the deferred float) before this entry could be written. This is the record.
+
+- **Momentum stops at the ceiling.** A sprout the weakest factor already caps kept accruing 🌱
+  momentum, kept showing *mầm đang nhú*, kept drawing its owner to the doorstep and kept taking lì
+  xì — pushes the roll could never honour. Momentum now accrues only while the ceiling has room
+  (`chance < ceilOf(min)`); the indicator, the tend-walk and Tết inherit it. `check.js` mirrored.
+- **🪙 The circle lifts BẠN.** The world already lifts GAN (a witnessed bloom) and TÀI (Cô Mai's
+  class); BẠN had no lift at all. Once you have paid into the hụi (`S.hui ≥ 1`, not in a no-hụi
+  year), the circle sends for the loneliest known un-bloomed neighbour each season: +1 BẠN, **never
+  past 3** — to the table, not to the market; a hand is still needed to root anyone. They walk to
+  the đình's edge as the circle meets; the float names the factor. One log line, first time only.
+- *Evidence:* **Gate 21** (`WORLD_OK trials=12 maiMom=0.00 vuMom=0.60 noLiftWithoutHui=true
+  lifted=true notPast3=true`) — ledger row added here; harness pinned so nobody else can bloom or
+  take the lift (a witnessed bloom lifts every known GAN; the circle lifts *the* loneliest). Gate 17
+  (the girl's clock) pinned the same way — it flaked 1-in-3 for the same witness reason (landmine).
+  Band unchanged. Twenty-three gates green, hash-bracketed.
+
 ## v0.39 — 2026-08-15 — Gate 21 fix (engine, Gear 1): the circle's lift is seen when it lands
 
 Closes: a red machine gate in HEAD. Gate 21 (*the world is honest about the ceiling and lifts BẠN*)
