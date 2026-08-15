@@ -49,6 +49,19 @@ that is now impossible because a gate catches it stays here, with the gate named
   interrupted tick recoverable by design (the next tick's Gear 1 job is to finish the stranded
   work), while waiting guarantees a full cycle runs on stale config. Kill order matters —
   `rm` the flag FIRST so launchd stops relaunching, then stop the job.
+- **A vigil tick that obeys the grader rule ends with `done.sh` RED — and that is correct; do not
+  "fix" it.** `loop-selfcheck.sh` #5 requires every lab entry to carry a verdict, while `389db48`
+  forbids the tick from writing or summoning one — so between the tick's commit and the runner's
+  grader, `done.sh` reports "loop structure broken … missing a Verdict" and prints GEAR 1. First
+  seen 2026-08-15 (`decide.js` tick); the two earlier vigil ticks never showed it because they
+  graded themselves in-tick. The design self-heals: leave the gear file at **3** so the session
+  ends and the runner grades; the grader appends but does not commit, so the *next* tick opens on a
+  dirty tree in Gear 1 whose whole job is to commit the grader's two lines and re-run `done.sh`.
+  Traps: writing `1` to the gear file here blocks the Stop hook, the session never exits, and the
+  grader never runs — a deadlock. If the next tick finds the tree clean and the entry still
+  ungraded, the grader failed: halt and report, do not grade it yourself. Cost so far: one
+  investigation of the runner mid-tick. Owner's call, in a meta-session, whether the runner's
+  grader should commit, or `loop-selfcheck` #5 should tolerate exactly one ungraded newest entry.
 - **An owner directive must be machine-detectable or it will be silently ignored.** `done.sh`
   originally had no way to see a note in `OWNER-GATE.md`; the loop would read the directive, find
   every gate green, return CONVERGED and go back to vigil without doing the work. Open directives
