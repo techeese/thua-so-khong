@@ -79,6 +79,13 @@ that is now impossible because a gate catches it stays here, with the gate named
   `lab/zerohunt.js` first reported Anh Vũ blooming in **103.8% of runs**. The >100% is the lucky
   case; the same bug silently inflates every rate below 100%. Count distinct runs (a `first` flag on
   the event), not events.
+- **`check.js`'s sim has no apprenticeship, so it over-decays Chú Ba.** `index.html:1384` stops the
+  elder's clock when pair 0-1 exists; the sim's clock (`check.js:101`) runs unconditionally, with a
+  comment saying so. Any lab measurement of his TÀI — decay, zeros, late blooms — reads high for
+  pair-forming strategies unless the probe re-adds the stop. Cost: a second full sweep on
+  2026-08-15 (`lab/zerowitness.js` now runs both variants; the difference is 1.7 → 0.3 elder-zeros
+  per 1000 linker runs). Generalises: **the sim mirrors the season math, not the story systems** —
+  check the mirror before attributing a number to a person.
 - **`check.js`'s band gate proves diagnosis WINS, not that the weakest factor DECIDES.** They are
   different claims and only the first is gated. Measured 2026-08-15: `idle` — a player who never
   acts — still blooms 3.44 of 7 workshops, and a strategy the gate does not test (`schoolfirst`)

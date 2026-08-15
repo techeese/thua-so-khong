@@ -19,6 +19,96 @@ argues for or against.
      **Measured:** …
      **Argues for/against:** <candidate era>  -->
 
+## 2026-08-15 — the literal zero: who produces it, and does anything witness it? (`zerowitness.js`)
+
+The last vigil established the zero is *soft* — the authored floors are 1s and a 1 blooms about half
+the time — and located the fable's absolute in "exactly one place: a crushed villager driven to GAN
+0". This probe goes to that place and asks the next question, which is not frequency but **witness**:
+every code path that can drive a factor to exactly 0, how long a 0 survives, and which of the game's
+"someone fell" systems can see one while it is happening.
+
+Harness: `check.js`'s sim verbatim plus instrumentation, 6000 runs × 4 strategies × 2 elder-clock
+variants. **Drift check printed in the output and exact**: hunter 6.99n/15.86ts, spreader 6.25/11.21,
+linker 6.80/14.54, idle 3.44/3.44 — identical to `check.js` and `zerohunt.js`, so the instrumentation
+changed no roll.
+
+**1 · Three paths can reach 0, and one of them is structurally dead.** `gan−3` on an erased tier-1
+workshop (`index.html:1297`); `gan−2` on a stamped tier-2+ workshop (`:1293`); and the elder's clock,
+`tai−1` every season from s8 while Chú Ba is unbloomed and unapprenticed (`:1384`). The stepdown path
+produced **0 zeros in 48,000 runs** and cannot ever produce one: tier 2 needs `prod≥300`, and with
+`tai,ban ≤ 10` that forces `gan ≥ 3`, so `gan−2 ≥ 1`. It is not rare; it is impossible.
+
+**2 · The literal zero is anti-correlated with play.** Share of runs containing any factor at exactly
+0, and person-seasons spent there:
+
+| strategy | runs with a literal 0 | person-seasons at 0 / run | first 0 at season |
+|---|---|---|---|
+| hunter (diagnose) | **0.0%** (1 event in 6000 runs) | 0.00 | 14 |
+| spreader | 1.9% | 0.01 | 5.0 |
+| linker | 3.6% | 0.07 | 6.3 |
+| idle (never acts) | **13.3%** | 0.39 | 10.2 |
+
+The player the game is built to reward **never meets the arithmetic the game is about**. `10×0=0` is
+reserved for the player who isn't playing: 7 of every 8 runs contain no zero even when nobody acts at
+all, and a diagnosing player can play a hundred games and never see one.
+
+**3 · When a 0 does happen, it is usually undone by something the player did not aim at.**
+
+| strategy | ended by player act | by communal lift | by inspiration (someone *else* blooms) | still 0 at s16 | bloomed later anyway |
+|---|---|---|---|---|---|
+| spreader | 11.9% | 52.5% | 27.1% | 8.5% | **83.6%** |
+| linker | 5.0% | 0.0% | **71.3%** | 23.8% | **63.5%** |
+| idle | 0.0% | 0.0% | 0.0% | **100%** | 0.0% |
+
+Every bloom hands `+1 GAN` to everyone present (`:84` in the sim, `index.html` inspiration) — so the
+commonest exit from a literal zero is a stranger's good season. And 64–84% of people who touched 0
+still bloom inside the same run. **The absolute is not absolute in play; it is a dip.**
+
+**4 · The witness gap — the elder's zero is the one no "someone fell" system covers.** The despair
+voice (`:341`, `:365`), the communal lift (`:1121`) and the ending's stamp tally (`:1512`) all key off
+`p.crushCount>0`, which only the erase path sets. The elder's clock sets nothing. For `idle` — the
+strategy where the literal zero actually lives — **58.3% of zeros arrive by the elder's clock** and
+are invisible to all three. What the clock does have (a one-time "🕯 mắt Chú Ba mờ dần" log and a
+per-season `−1 TÀI 🕯` float) is gated on `ba.known`, and a player who never taps him never sets that
+— so in exactly the population that produces this zero, the float does not render either.
+
+**5 · The vocabulary says "zero" ~125–1000× more often than the arithmetic contains one.** The map
+hint prints `số không: <thừa số>` whenever `min ≤ 3` (`zeroOf`, `:1035`), and the ending prints
+"*thừa số X vẫn nằm ở số không*" on the same ≤3 test (`:1436`, `:1519`):
+
+| strategy | labelled person-seasons / run | of which truly 0 | ending "stayed at zero" lines / run | of which truly 0 |
+|---|---|---|---|---|
+| spreader | 20.12 | **0.1%** | 0.06 | 2.6% |
+| linker | 12.20 | 0.5% | 0.08 | 11.3% |
+| idle | 48.89 | **0.8%** | 1.38 | 3.1% |
+
+And at the instant a life *does* become arithmetically impossible, **no on-screen state changes**: the
+label already read `số không` three seasons earlier at 3, and keeps reading it; the only surface that
+distinguishes 0 from 3 is the `multLine` product in a sheet the player must tap open (`8 × 0 × 4 =
+0`). The word is doing the work the number is not.
+
+**6 · Who carries it.** Zero entries per 1000 runs: idle — Chú Ba 97.0, Bé Ngân 36.7; linker — Bé Ngân
+26.5, Chú Ba 9.0. The two authored 1s (Ngân's GAN, and the elder whose TÀI is spent by time) are
+effectively the whole distribution. The apprentice-aware variant (`index.html:1384` stops the clock
+when pair 0-1 exists; `check.js`'s sim has no apprenticeship) moves linker's elder path 1.7 → 0.3 per
+1000 and changes nothing else — both variants are in the output.
+
+**Argues for:** sharpening what the previous entry called soft — but the lever this one points at is
+**witness, not floors**: a zero the diagnosing player never encounters, cannot be told apart from a 3
+on any surface except a tapped panel, and is most often ended by a bystander's bloom. A reductive era
+here would make the arithmetic legible at the moment it happens rather than add systems: one honest
+option is to stop the game saying "số không" for a 3. **Argues against:** an era that reaches for the
+zero by making stamps harsher — the erase path is already the only live producer, its victims are
+already covered by all three witness systems, and 84% of them bloom anyway; and against any reading
+of the elder's clock as a designed encounter with the absolute, since it is silent, unrecorded, and
+lands almost exclusively on players who are not looking.
+
+**Not shipped, per Gear 3.** `index.html` and `check.js` both untouched; probe is `lab/zerowitness.js`,
+output `lab/zerowitness-out.txt` (both gitignored).
+
+**Verdict:** confirms-known
+*Grader:* It refines the "sharpness of the zero" era already opened by the `zerohunt.js` entry (soft zero, crush as the only true 0, reductive floor-tightening) — shifting the lever from floors to witness/legibility is a variant inside that same candidate, not a new era or a kill of one.
+
 ## 2026-08-15 — does the multiplication actually *decide*? (`zerohunt.js`)
 
 Three previous vigils measured the game's **voice** (chatter rate, attachment curve) and its **hands**

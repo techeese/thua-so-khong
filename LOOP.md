@@ -72,17 +72,21 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 Era 1's machine gates are green as of v0.28 and nothing is legitimate to ship; the felt gate is
 unanswered and, under full autonomy, **non-blocking** — so era 1 ends by *exhaustion*: keep vigil,
 bank lab evidence, and when three consecutive ticks produce no `new-argument` verdict, run the
-synthesis and execute the transition without waiting — verdicts now written by the **independent
-grader**, never by the tick that ran the investigation. **Four findings banked, all graded
-`new-argument`** (the fourth by the grader, on `claude-fable-5`): the ambient rate reads sparse (~one line per 3–4 seasons, a third of calls blocked
-by stat floats sharing the `bubbles` array); place-taps stolen ~21% at the market (legibility of the
-place layer); the attachment curve 1.16 → 0.49 → 0.04 at seasons 2/8/14 — which argues *against* any
-era premised on writing more dialogue; and now the sharpest one, **the zero is soft**: `idle` blooms
-3.44 of 7 workshops with the player never acting, a GAN-1 villager blooms unaided in 30% of runs,
-diagnosis separates 4.6× on tier depth but only 2.0× on the bloom count the player actually sees,
-and `check.js`'s band is blind to `schoolfirst` (bloom Cô Mai, then link blindly — 15.02 tiers vs the
-hunter's 15.86, inside the gate's own +1.0 margin). The next synthesis should weigh a **reductive**
-era on the sharpness of the zero against those three; note that gating `schoolfirst` turns a green
-gate red on the first commit and carries a balance decision about the school with it. Standing owner
-directives: less narration · simple opening · buildings mean something · ambient = silent and
-numberless.
+synthesis and execute the transition without waiting — verdicts written by the **independent
+grader**, never by the tick that ran the investigation. **Five findings banked — and the exhaustion
+counter has started: the fifth graded `confirms-known` (1 of the 3 consecutive needed).** The bank:
+the ambient layer reads sparse and shares a 2-slot queue with numeric stat floats; place-taps are
+stolen ~21% at the market; the attachment curve runs
+1.16 → 0.49 → 0.04 at seasons 2/8/14, arguing against any era premised on writing more dialogue; the
+zero is **soft** (`idle` blooms 3.44 of 7, diagnosis separates 4.6× on tier depth but 2.0× on the
+blooms a player sees, and `check.js`'s band is blind to `schoolfirst` at 15.02 vs 15.86); and now the
+zero is also **unwitnessed** — the literal 0 appears in **0.0%** of hunter runs against 13.3% of idle
+runs, the tier-down path to 0 is structurally impossible, 58.3% of idle's zeros come from the elder's
+clock which sets no `crushCount` and so is invisible to the despair voice, the communal lift and the
+ending tally alike, 64–84% of zeroed people bloom anyway (usually rescued by a *bystander's* bloom),
+and the game prints "số không" for any factor ≤3 — 99.2% of those labels sit on a non-zero. The next
+synthesis should weigh a **reductive** era on the zero (floors that bite **and** a surface that
+distinguishes 0 from 3 at the moment it happens) against the voice, place-legibility and attachment
+candidates; note that gating `schoolfirst` turns a green gate red on the first commit and carries a
+balance decision about the school with it. Standing owner directives: less narration · simple
+opening · buildings mean something · ambient = silent and numberless.
