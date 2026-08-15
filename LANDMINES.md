@@ -484,3 +484,11 @@ that is now impossible because a gate catches it stays here, with the gate named
   A new gate landed as a duplicate Gate 57 because the max was read as free. Always
   `grep -oE '^# Gate [0-9]+' gate.sh | grep -oE '[0-9]+' | sort -n | tail -1` AND check the ledger, then
   take max+1 — and re-check right before committing, since the number can be taken while you work.
+- **Patching an instance is not fixing a class — Gate 54 taught it, Gate 60 charged for it.** The ledger
+  gap was hand-patched in v0.69 and recurred within two ticks, because `done.sh` only checked
+  ledger→`gate.sh`. Tightened in v0.72 to check both directions. When a bookkeeping gap appears a second
+  time, stop patching rows and fix the checker.
+- **Two sessions writing the same string from opposite ends need a precedence gate.** The mechanic loop
+  raises deltas (wind year `+3 GAN`); this loop replaces them with refusals (tied hand, ceiling). Neither
+  side is wrong and neither knows about the other, so the ORDER is the fragile part — Gate 61 pins it.
+  Whenever both loops touch one piece of text, gate the precedence, not just each side.

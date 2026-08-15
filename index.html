@@ -2568,7 +2568,8 @@ function legacyCopy(txt){ try{ var ta=document.createElement("textarea"); ta.val
   var ok=document.execCommand&&document.execCommand("copy"); document.body.removeChild(ta); return !!ok; }catch(e){ return false; } }
 function sharePng(){ try{ drawScene(performance.now());   // a fresh frame — lanterns lit, no stale bubbles
   // the print gets a caption strip: title, year, tally, the arc — a saved picture that says what it is, without the page
-  var sh=(S._share||{})[L]||"", lines=sh.split("\n").filter(function(l){return l&&l.indexOf("https://")!==0;}).slice(0,3);
+  var sh=(S._share||{})[L]||"", all4=sh.split("\n").filter(function(l){return l&&l.indexOf("https://")!==0&&l.indexOf("📜")!==0;}), lines=all4.slice(0,3);
+  var stripL=all4.filter(function(l){return /[🌸⬛·]{2}.*│/.test(l);})[0]; if(stripL&&lines.indexOf(stripL)<0) lines.push(stripL);   // the run's shape goes on the picture too — title, year, arc, and the sixteen seasons
   var oc=document.createElement("canvas"), pad=Math.round(cv.width*0.012), lh=Math.round(cv.width*0.02), stripH=lines.length?(pad*2+lh*lines.length):0;
   oc.width=cv.width; oc.height=cv.height+stripH; var g=oc.getContext("2d");
   g.drawImage(cv,0,0);
@@ -2650,7 +2651,7 @@ function renderSheet(){
   el("multLine").innerHTML=(all?(p.tai+" × "+p.gan+" × "+p.ban+" = <b>"+pr+"</b>")
       :((sT?p.tai:"?")+" × "+(sG?p.gan:"?")+" × "+(sB?p.ban:"?")+" = <b>?</b>"
         +"<small>"+(L==="vi"?"lời họ nói là manh mối — thừa số nào gần không? Tay chạm vào đâu, con số hiện ra ở đó":"their words are the clue — which factor is near zero? Where your hand lands, that number shows")
-        +(function(){ var sm=seenMin(p); return (sm===null||p.started)?"":((L==="vi"?" · trần ≤ ":" · ceiling ≤ ")+Math.round(ceilOf(sm)*100)+"%"); })()   // v0.53: what a partial row already bounds — the ceiling can only be lower than the lowest number you have seen allows
+        +(function(){ var sm=seenMin(p); return (sm===null||p.started||ceilOf(sm)>=0.85-1e-9)?"":((L==="vi"?" · trần ≤ ":" · ceiling ≤ ")+Math.round(ceilOf(sm)*100)+"%"); })()   // v0.74: a bound at 85 % says nothing — print only a bound that binds   // v0.53: what a partial row already bounds — the ceiling can only be lower than the lowest number you have seen allows
         +(L==="vi"?" · sông ":" · river ")+S.von+"/10</small>"))
     +(all?"<small>"+(p.started
       ?((L==="vi"?"bậc ":"tier ")+trNow+"/3"+stormLine(p)+(held?(L==="vi"?" · sông "+S.von+"/10 giữ bậc — cả xóm góp thêm":" · river "+S.von+"/10 holds it — the xóm must pour in"):trNow<3?(L==="vi"?" · vun tiếp để lên bậc":" · keep tending to rise"):(L==="vi"?" · một thương hiệu":" · a brand")))
@@ -2710,7 +2711,7 @@ function renderSheet(){
       // you instead of a delta you cannot deliver. This hand is tied by the year, not by this person.
       var tied=conBan(BAN[i]);
       // a partial row: the hand on the lowest SEEN factor moves the ceiling's bound — say the bound it would reach (≤); hands on unseen factors stay silent
-      var bound=""; if(!known&&!same&&!p.started&&p.seen&&p.seen[FK[i]]){ var sm=seenMin(p); if(sm!==null&&p[FK[i]]===sm){ var m2=Math.min(q.tai,q.gan,q.ban), sm2=null; ["tai","gan","ban"].forEach(function(k){ if(p.seen[k]&&(sm2===null||q[k]<sm2)) sm2=q[k]; }); bound=(L==="vi"?" · trần ≤ ":" · ceiling ≤ ")+Math.round(ceilOf(sm2)*100)+"%"; } }   // no arrow: a bound is not an answer (Gate 11 keeps "no → until the row is known")
+      var bound=""; if(!known&&!same&&!p.started&&p.seen&&p.seen[FK[i]]){ var sm=seenMin(p); if(sm!==null&&p[FK[i]]===sm){ var m2=Math.min(q.tai,q.gan,q.ban), sm2=null; ["tai","gan","ban"].forEach(function(k){ if(p.seen[k]&&(sm2===null||q[k]<sm2)) sm2=q[k]; }); if(ceilOf(sm2)<0.85-1e-9) bound=(L==="vi"?" · trần ≤ ":" · ceiling ≤ ")+Math.round(ceilOf(sm2)*100)+"%"; } }   // no arrow: a bound is not an answer (Gate 11 keeps "no → until the row is known")
       hints[i].textContent=tied?(CONSTRAINTS[BAN[i]].g+" "+(L==="vi"?CONSTRAINTS[BAN[i]].nv:CONSTRAINTS[BAN[i]].ne))
         :capped?(t(FK[i])+" 10 · "+(L==="vi"?"hết mức":"maxed"))
         :(base[i]+((same||!known)?bound:(p.started?(" → "+prod(q)+(tQ>tNow?((L==="vi"?" ↑bậc ":" ↑tier ")+tQ):"")):(" → "+Math.round(chance(q)*100)+"%")))); });   // the reading stays yours — no verb is bolded

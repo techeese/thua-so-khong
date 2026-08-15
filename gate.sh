@@ -1028,11 +1028,12 @@ drv=r"""
 window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
 setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-v1");
-  document.getElementById("startBtn").click(); S.yearCard=2;   // a plain year: the restless-wind year's hands land +3 (v0.72) and would move this assertion
+  document.getElementById("startBtn").click(); S.yearCard=2; S.von=5;   // a wet river: a dry one (≤2) halves every bound since v0.73 (Gate 62 covers that)   // a plain year: the restless-wind year's hands land +3 (v0.72) and would move this assertion
   var ng=S.cast[0]; ng.tai=8; ng.gan=1; ng.ban=4; selectPerson(0); S.acts=3; actNerve();
   var ml=document.getElementById("multLine").textContent, nh=document.getElementById("nerveHint").textContent, th=document.getElementById("teachHint").textContent;
-  var ok=/(trần|ceiling) ≤ 8%/.test(ml)&&/(trần|ceiling) ≤ 25%/.test(nh)&&!/(trần|ceiling)/.test(th)&&!/→ \d+%/.test(nh+th+ml);
-  document.title=(ok?"BOUND_OK":"BOUND_BAD")+" sheet="+(/(trần|ceiling) ≤ 8%/.test(ml))+" nerve="+nh.slice(-14)+" teachSilent="+(!/(trần|ceiling)/.test(th))+" noPoint="+(!/→ \d+%/.test(nh+th+ml));
+  ng.seen={tai:true,gan:false,ban:false}; renderSheet(); var ml8=document.getElementById("multLine").textContent, uninformative=!/(trần|ceiling)/.test(ml8);   // v0.74: TÀI 8 seen alone bounds nothing (≤85 %) — no bound line
+  var ok=/(trần|ceiling) ≤ 8%/.test(ml)&&/(trần|ceiling) ≤ 25%/.test(nh)&&!/(trần|ceiling)/.test(th)&&!/→ \d+%/.test(nh+th+ml)&&uninformative;
+  document.title=(ok?"BOUND_OK":"BOUND_BAD")+" sheet="+(/(trần|ceiling) ≤ 8%/.test(ml))+" nerve="+nh.slice(-14)+" teachSilent="+(!/(trần|ceiling)/.test(th))+" noPoint="+(!/→ \d+%/.test(nh+th+ml))+" high8silent="+uninformative;
 }catch(e){ document.title="THREW: "+e.message; } },600);
 </script>"""
 open(tmp+"/bound.html","w").write(html.replace("</body>",drv+"</body>"))
@@ -1680,7 +1681,7 @@ drv=r"""
 window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
 setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-v1");
-  document.getElementById("startBtn").click();
+  document.getElementById("startBtn").click(); S.yearCard=2;   // a plain year: the restless-wind year's hands read +3 (v0.72) and the /\+2/ assertion below flakes on the card draw
   for(var s=0;s<5;s++){ S.acts=3; S.nudged=true; nextSeason(); }
   var p=S.cast[0]; p.known=true; p.started=false; p.seen={tai:true,gan:true,ban:true};
   p.tai=6; p.gan=6; p.ban=6; selectPerson(0);

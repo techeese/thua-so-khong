@@ -64,6 +64,15 @@ done
 # a duplicate id passes the presence check above (the number DOES exist in gate.sh) while two ledger
 # rows silently claim one gate — that has now happened three times with two sessions allocating
 # numbers concurrently, so uniqueness is checked, not assumed.
+# ...and the check ran ONE WAY ONLY: every ledger row had to exist in gate.sh, but a gate could live in
+# gate.sh with no row here and the ratchet still reported intact. That happened twice (Gates 54 and 60,
+# both from the concurrent session), so the record is now verified in both directions — a gate that is
+# not written down is a gate the ratchet is not protecting.
+UNREC=""
+for n in $(grep -oE '^# Gate [0-9]+:' gate.sh 2>/dev/null | grep -oE '[0-9]+' | sort -n | uniq); do
+  grep -q "^| \`Gate $n\`" GATES-LEDGER.md || UNREC="$UNREC Gate-$n"
+done
+[ -n "$UNREC" ] && MISSING="$MISSING unrecorded-in-ledger:$UNREC"
 DUPL=$(grep -oE '^\| `Gate [0-9]+`' GATES-LEDGER.md 2>/dev/null | grep -oE '[0-9]+' | sort -n | uniq -d | tr '\n' ' ')
 DUPG=$(grep -oE '^# Gate [0-9]+:' gate.sh 2>/dev/null | grep -oE '[0-9]+' | sort -n | uniq -d | tr '\n' ' ')
 [ -n "$DUPL$DUPG" ] && MISSING="$MISSING duplicate-id(ledger:${DUPL:--} gate.sh:${DUPG:--})"
