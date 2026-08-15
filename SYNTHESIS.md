@@ -897,3 +897,63 @@ call the same charge as Q. **Owner reality:** R is executable only under X.
 Majority reject → `failed_syntheses=1` at L3. A second L3 failure would meet the counter for L4 —
 and the record does not support "the thesis is exhausted"; the L4 synthesis would have to say so and
 propose nothing that is easier than the current thesis.
+
+## 30. L3 review — candidate R "two hands" · **REJECTED 5/5** · all five back X
+
+- **Drift — REJECT.** Seat arithmetic is a dilemma, both horns fatal (sim extended two ways, 1200
+  runs each): own hands per seat → 7.00/7 blooms, 18.8 tiers vs 16.1 — strictly easier; split hands
+  → 6.80 vs 6.97 (2.4 %), so "hunter+idle < hunter" is noise or a new absent-seat penalty tuned to
+  pass. "Two hunters ≥ one" is identity (6.97 = 6.97); with per-seat hidden rows the instrument is
+  already proven blind (`misreader` 6.98/16.0 vs hunter 6.97/16.1). No gate can see R (no seats in
+  `check.js`; Gate 5 drives one state; Gate 11 asserts global `known/seen`); solo stays default so
+  R ships ungated. Additive-only — the Q charge, admitted in §29.
+- **Thesis — REJECT.** §1 routed around by seat arithmetic, fiction untouched ("two great men is not
+  a neighbour"). §2 lecturing by proxy: `seen/known` are global — seat B inherits a solved board, or
+  per-seat knowledge rewrites the v0.33 flagship + save shape; table talk is uncountable by
+  `tell.py`. Band clauses pre-pass. Each seat witnesses 8 seasons → attachment worse. Serves no owner
+  gate; zero lab evidence.
+- **Substance — REJECT.** Byte-identical for the solitary stranger. Ran it: `hunter|hunter` 6.97/16.1
+  = `hunter`; `hunter|spreader` 6.93/14.8 — a bad second seat costs 0.6 % of blooms, so the fate is
+  *not* a product of two hands but a sum of act slots dominated by the better seat; "no seat can win
+  alone" is unimplementable (one xóm outcome). Materially a tick (`S.seat`, one flip, one save
+  field). Orthogonal to every open finding. *X is the real result; R is the decoy.*
+- **Form-necessity — REJECT.** R is an option toggle wearing L3 (LADDER L2 row: systems, UI).
+  Flagship gates pre-pass. **Escalation unearned again:** synthesis 4 reviewed one candidate; V was
+  never reviewed. **An untried era with the record's strongest evidence:** the fair-opponent
+  instrument — `spreaderU` 15.53 vs hunter 15.86 (Δ0.33), six critics demanded it (§9.2),
+  `check.js:158` still reads `tiers.spreader + 3`, `spreaderU` appears 0 times in `check.js` and was
+  never a candidate. v0.38 shipped the game half of §9.1 and left the instrument half undone. *Back:
+  reject R, record X, revert to `layer=2`, do not count this synthesis toward L4; propose the
+  fair-spreaderU balance era with a time-aware `check.js` first.*
+- **Owner-reality — REJECT.** Self-admittedly not executable (§29). 59 commits/8 h, 9 `index.html`
+  commits in the last hour; the manifest's one-commit/one-revert cannot run; R collides with v0.40–41
+  (sheet, ending card) despite §29's claim; single seat is baked into `S` and save `v:2`; the felt
+  gate is a solo 5-minute test, 0/6 ticked. *Back X: record it, stop proposing forms, tell the owner
+  the ladder cannot proceed without a quiesce window, a scope note, or an archive rule.*
+
+## 31. Disposition — X recorded as the L3 result; ladder corrected to L2; forms not to be proposed again under these conditions
+
+**X (recorded, unanimous across five critics):** *No era or form transition can execute as one
+commit / one revert while two owner sessions commit into `index.html` every ~4–7 minutes and the
+engine may not touch their edits. Until the owner grants a quiesce window, a reserved-surface scope
+note, or a `LOOP.md` rule to archive a failed synthesis, the loop's licensed work is Gear 1 (red
+gates, grader defects, owner directives) and — once `done.sh` can reach it — Gear 3 findings.*
+
+Two consecutive L3 reviews (P 5/5, R 5/5) both found the escalation unearned in substance and both
+named an untried L2 direction. The state line therefore returns to **`layer=2 failed_syntheses=1`**
+(synthesis 1 stands; syntheses 2 and 4 are recorded but do not count as exhaustion — each reviewed
+one or two self-selected candidates while an evidence-backed direction remained untried). Neither L3
+attempt counts toward L4. **The loop will not propose a form again until X is lifted.**
+
+**Next synthesis (L2, 3 critics): the instrument era — "Đối thủ công bằng" (a fair opponent).**
+Make the band able to fail on what the game claims: `check.js` gains the fair `spreaderU`, `maxerU`
+and a stated margin as Gate 0 clauses (ratchet-up, every current clause kept); a time-aware sim
+(walk cadence, storm huddle, beats) so information changes are visible to the instrument; the
+game's balance re-derived only where the fair opponent exposes it (a *price for being wrong* that
+the honest instrument can measure). Evidence: `decide.js` §1 (93 % of "diagnosis beats spreading" is
+waste), `walks.py`, six critic pass-conditions (§9.2). Not tick-shippable as an era (a second sim
+plus a rebalance), and it collides with no owner surface (neither loop has touched `check.js`'s
+opponents). Priced honestly: it may find the game *easier* than the band says, and the ratchet must
+then tighten, not loosen. **This is the last L2 direction with recorded evidence; if it fails on
+review, escalation is earned in substance and X still blocks execution — the ladder is then
+blocked on the owner, and the loop says so.**
