@@ -46,7 +46,15 @@ function run(strategy,seed){
       function communal(target){                  // failure night lifts everyone crushed (mirrors index.html actNerve)
         cast.forEach(function(o){ if(o!==target&&activeSim(o,season)&&o.crushedOnce&&!o.started) o.gan=Math.min(10,o.gan+1); });
       }
-      if(strategy==="hunter"){                    // find the lowest factor in the xóm, raise exactly it
+      if(strategy==="hunter"||strategy==="misreader"){   // find the lowest factor in the xóm, raise exactly it — the misreader gets the first hand on each person wrong 30% of the time (v0.33 hides the row)
+        var best=null,bm=99;
+        here.forEach(function(c){ if(c.started)return; var m=Math.min(c.tai,c.gan,c.ban); if(m<bm){bm=m;best=c;} });
+        if(best&&strategy==="misreader"&&!best.touched&&rnd()<0.3){ best.touched=true;
+          if(best.tai>=best.gan&&best.tai>=best.ban) best.tai=Math.min(10,best.tai+2); else if(best.gan>=best.ban){ best.gan=Math.min(10,best.gan+2); communal(best); } else best.ban=Math.min(10,best.ban+2); }
+        else if(best){ best.touched=true; if(best.gan<=best.tai&&best.gan<=best.ban){ best.gan=Math.min(10,best.gan+2); communal(best); }
+          else if(best.tai<=best.ban) best.tai=Math.min(10,best.tai+2);
+          else best.ban=Math.min(10,best.ban+2); }
+      } else if(strategy==="__unused__"){
         var best=null,bm=99;
         here.forEach(function(c){ if(c.started)return; var m=Math.min(c.tai,c.gan,c.ban); if(m<bm){bm=m;best=c;} });
         if(best){ if(best.gan<=best.tai&&best.gan<=best.ban){ best.gan=Math.min(10,best.gan+2); communal(best); }
@@ -92,6 +100,8 @@ function run(strategy,seed){
         if(strategy!=="idle") cast.forEach(function(o){ if(o!==p&&activeSim(o,season)) o.gan=Math.min(10,o.gan+1); }); }
       else if(p.tai*p.gan*p.ban>=100&&Math.min(p.tai,p.gan,p.ban)>1){ p.mom=Math.min((yc===5)?0.15:0.09,(p.mom||0)+((yc===5)?0.05:0.03)); }   // restless-wind year: a sprout near the surface pushes harder
     });
+    // the girl leaves if her nerve stays near zero (mirrors index.html: season ≥11 after the increment, GAN <3, not bloomed)
+    if(season+1>=11 && !cast[0].started && !cast[0].gone && cast[0].gan<3) cast[0].gone=true;
     // the returnee leaves if unrooted (mirrors index.html post-increment timing; a pair roots her too)
     if(season+1>=13) cast.forEach(function(c){ if(c.arrives!==undefined&&!c.started&&c.ban<4&&!lienPaired) c.gone=true; });
     // age-based stamp risk (mirrors index.html): young workshops 15%, established 5%, only under a heavy sky
@@ -122,8 +132,8 @@ function run(strategy,seed){
   return {n:cast.filter(function(p){return p.started;}).length, ts:tsum};
 }
 
-var N=1200, sums={hunter:0,spreader:0,linker:0,idle:0}, tiers={hunter:0,spreader:0,linker:0,idle:0};
-["hunter","spreader","linker","idle"].forEach(function(st){
+var N=1200, sums={hunter:0,spreader:0,linker:0,idle:0,misreader:0}, tiers={hunter:0,spreader:0,linker:0,idle:0,misreader:0};
+["hunter","spreader","linker","idle","misreader"].forEach(function(st){
   for(var i=0;i<N;i++){ var r2=run(st,1009+i*53); sums[st]+=r2.n; tiers[st]+=r2.ts; }
   sums[st]/=N; tiers[st]/=N;
 });
@@ -132,6 +142,7 @@ console.log("  hunter   (diagnose the zero) : "+sums.hunter.toFixed(2));
 console.log("  spreader (effort everywhere) : "+sums.spreader.toFixed(2));
 console.log("  linker   (spam Kết nối)      : "+sums.linker.toFixed(2));
 console.log("  idle     (do nothing)        : "+sums.idle.toFixed(2));
+console.log("  misreader (hunter, 30% wrong first hand): "+sums.misreader.toFixed(2)+" · tiers "+tiers.misreader.toFixed(1));
 console.log("tiers: hunter "+tiers.hunter.toFixed(1)+" · spreader "+tiers.spreader.toFixed(1)+" · linker "+tiers.linker.toFixed(1)+" · idle "+tiers.idle.toFixed(1));
 
 // linker note: the sim's linker SORTS by lowest BẠN — semi-diagnostic by construction. The hunter saturates the
@@ -141,7 +152,8 @@ var ok = sums.hunter > sums.spreader + 0.5 && sums.hunter > sums.linker && sums.
       && sums.spreader > sums.idle
       && sums.idle <= 4.0                        // difficulty ceiling: doing nothing must NOT earn a thriving xóm
       && tiers.hunter > tiers.spreader + 3       // rooted depth, not just bloom count, separates diagnosis
-      && tiers.hunter > tiers.linker + 1.0;      // …and separates the one-dimension linker where blooms saturate
+      && tiers.hunter > tiers.linker + 1.0       // …and separates the one-dimension linker where blooms saturate
+      && sums.misreader > sums.spreader + 0.5;   // v0.35: a fair player who misreads the hidden row 30% of the time still clearly beats effort-everywhere
 // (margin recalibrated 1.5→1.0 at v0.17: Cô Mai's school legitimately compounds with breadth strategies —
 //  school × connections is thesis-TRUE; the gate demands strict hunter dominance, not an arbitrary gap)
 console.log(ok ? "\n✅ BAND HOLDS: diagnosis beats spreading, link-spam, and idling — the multiplication teaches itself."

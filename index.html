@@ -42,7 +42,20 @@
   button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
   button,.pill{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
   /* roster — who is in the xóm right now, one chip each; the map is the place, this is the index */
-  .roster{display:flex;gap:5px;margin-top:6px;overflow-x:auto;padding:2px 1px;scrollbar-width:none}
+  /* the strip scrolls but said so nowhere: a cut-off chip at the edge reads as a cut-off chip, not as
+     "there is more of the xóm this way". Two ink edges that appear only when there IS more that way
+     and fade out at either end — pure CSS via background-attachment: local vs scroll, no JS, no
+     scrollbar. `local` layers ride the content (so they slide away once you reach an end); `scroll`
+     layers stay pinned to the box and are what you actually see. */
+  .roster{display:flex;gap:5px;margin-top:6px;overflow-x:auto;padding:2px 1px;scrollbar-width:none;
+    background:
+      linear-gradient(to right, var(--paper) 40%, rgba(234,217,184,0)) left center,
+      linear-gradient(to left,  var(--paper) 40%, rgba(234,217,184,0)) right center,
+      radial-gradient(farthest-side at 0 50%, rgba(43,35,32,.20), rgba(43,35,32,0)) left center,
+      radial-gradient(farthest-side at 100% 50%, rgba(43,35,32,.20), rgba(43,35,32,0)) right center;
+    background-repeat:no-repeat;
+    background-size:26px 100%, 26px 100%, 11px 100%, 11px 100%;
+    background-attachment:local, local, scroll, scroll}
   .roster::-webkit-scrollbar{display:none}
   .roster .rc{flex:0 0 auto;display:flex;align-items:center;gap:5px;border:2px solid var(--ink);border-radius:12px;background:#f5ead0;padding:3px 8px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:2px 2px 0 var(--ink);white-space:nowrap;-webkit-user-select:none;user-select:none}
   .roster .rc:active{transform:translate(2px,2px);box-shadow:none}
@@ -52,6 +65,7 @@
   .roster .rc.sel i{border-color:#f5ead0}
   .roster .rc small{font-weight:600;font-size:10px;color:var(--red)} .roster .rc.sel small{color:#EFB7C4}
   .roster .rc.cand{outline:2px dashed var(--leaf);outline-offset:1px}
+  .roster .rc.gone{opacity:.4;cursor:default;box-shadow:none;text-decoration:line-through;font-weight:500}
   .roster .rc .sd{font-size:8px;letter-spacing:1px;color:var(--dim);margin-left:1px;vertical-align:1px} .roster .rc.sel .sd{color:#EFB7C4}
   canvas{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
   .armed{background:var(--leaf)!important;color:#fff!important}
@@ -152,7 +166,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.34</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.35</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -461,14 +475,14 @@ function fresh(){
      build:0, built:false, pairs:[], apprentice:false, duo:false, gtm:false, gtmPaid:false, maiHoa:false, hoaLien:false, hoaLienPaid:false,
      linking:null, banner:null, banners:[], luatNext:3, probeSeen:false, baFade:false,
      un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false, stormSeen:false, tierTaught:false, lienNgan:false, stormCount:0, stormStreak:0, classSeen:false, revealSeen:false,
-     log:[], over:false, scars:[], hands:0, hist:[], potSeason:false, potSeen:false};
+     log:[], over:false, scars:[], hands:0, vb:{}, hist:[], potSeason:false, potSeen:false};
   lanterns=[]; runTok++;      // invalidate ALL deferred callbacks from the previous run
   parts=[]; stamps=[]; glows=[]; bubbles=[]; amb=[]; pendQ=[]; motes=[]; rain=[]; ripples=[]; flock=null; smoke=[]; boat=null; gossipQ=[]; cart=null;
   beatUntil=0; nextErrandAt=0; _chaser=null;
   S.cast.forEach(function(p9){ p9.amb=0; p9.beh=0; p9.legs=0; p9.dwl=0; p9.chain=0; p9.behForce=0; p9.bfAt=0; });
   S.cast[2].behForce=2; S.cast[2].bfAt=performance.now()+8000;    // Mai sits at the đình — what the hall is FOR
   S.cast[0].behForce=3; S.cast[0].bfAt=performance.now()+20000;   // Ngân approaches it and turns back — what GAN-1 IS
-  S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false; p.mom=0; p.seen={tai:false,gan:false,ban:false};   // 🔎 you learn a factor by touching it — the quote is the clue, the hand is the answer
+  S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false; p.mom=0; p.hands=0; p.seen={tai:false,gan:false,ban:false};   // 🔎 you learn a factor by touching it — the quote is the clue, the hand is the answer
     var m=Math.min(p.tai,p.gan,p.ban);
     p.zkey = (m===p.gan)?"gan":(m===p.tai)?"tai":"ban";   // their original zero — quotes evolve when it turns
     // YEAR VARIANTS — every run is a different year in the same xóm (authored zeros stay true)
@@ -577,9 +591,9 @@ function cl(v,lo,hi,fb){ return fin(v)?Math.max(lo,Math.min(hi,v)):fb; }
 function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:2,   // NOTE: every NEW save field MUST get a fin()-guarded default in load()
   meta:{lang:L,muted:!!META.muted},
   s:{season:S.season,acts:S.acts,luat:S.luat,von:S.von,hui:S.hui,build:S.build,built:!!S.built,
-     gtmPaid:!!S.gtmPaid,hlp:!!S.hoaLienPaid,hs:S.hands|0,ps:!!S.potSeason,hist:(S.hist||[]).map(function(v){return v|0;}),pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
+     gtmPaid:!!S.gtmPaid,hlp:!!S.hoaLienPaid,hs:S.hands|0,vb:VERBS.map(function(k){return (S.vb&&S.vb[k])|0;}),ps:!!S.potSeason,hist:(S.hist||[]).map(function(v){return v|0;}),pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
      arr:S.cast[6].arrives,baf:S.baFadeStart,sc:S.stormCount|0,ss:S.stormStreak|0,yc:S.yearCard|0,gp:S.gtmPays|0,cn:S.constraint|0,
-     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,sn:((p.seen&&p.seen.tai)?1:0)|((p.seen&&p.seen.gan)?2:0)|((p.seen&&p.seen.ban)?4:0),bt:p.btai,bg:p.bgan,bb:p.bban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0};}),
+     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,sn:((p.seen&&p.seen.tai)?1:0)|((p.seen&&p.seen.gan)?2:0)|((p.seen&&p.seen.ban)?4:0),bt:p.btai,bg:p.bgan,bb:p.bban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0,hd:p.hands|0};}),
      ships:S.ships.map(function(w){return {x:w.x,y:w.y,owner:w.owner,pid:w.pid,yours:!!w.yours,age:w.age|0,shel:w.shel|0};}),
      scars:(S.scars||[]).map(function(c){return {x:c.x,y:c.y,s:c.s|0};}),
      log:S.log.slice(0,12)}})); }catch(e){} }
@@ -597,7 +611,7 @@ function load(){
     if(Array.isArray(s.cast)) s.cast.forEach(function(c,i){ var p=S.cast[i]; if(!p||!c) return;
       p.tai=cl(c.tai,0,10,p.tai); p.gan=cl(c.gan,0,10,p.gan); p.ban=cl(c.ban,0,10,p.ban);
       p.btai=cl(c.bt,0,10,p.tai); p.bgan=cl(c.bg,0,10,p.gan); p.bban=cl(c.bb,0,10,p.ban);   // this run's jittered nature (fallback: loaded stats, never a re-jitter)
-      p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; p.mom=cl(c.mom,0,0.5,0);
+      p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; p.mom=cl(c.mom,0,0.5,0); p.hands=fin(c.hd)?cl(c.hd,0,64,0):0;
       var sn=fin(c.sn)?(c.sn|0):7; p.seen={tai:!!(sn&1),gan:!!(sn&2),ban:!!(sn&4)}; });   // a save from before v0.33 has seen everything
     S.cast[6].arrives=cl(s.arr,2,8,6); S.baFadeStart=cl(s.baf,5,9,8);   // 2 / 5: the reunion year pulls both clocks early — the clamp must admit that on reload
     S.stormCount=cl(s.sc,0,16,0); S.stormStreak=cl(s.ss,0,16,0); S.yearCard=fin(s.yc)?cl(s.yc,0,5,0):S.yearCard; S.constraint=fin(s.cn)?cl(s.cn,0,3,0):0; S.gtmPays=fin(s.gp)?cl(s.gp,0,2,0):(s.gtmPaid?1:0);
@@ -607,7 +621,7 @@ function load(){
     S.scars=Array.isArray(s.scars)?s.scars.filter(function(c){return c&&fin(c.x)&&fin(c.y)&&fin(c.s);}).map(function(c){return {x:c.x,y:c.y,s:cl(c.s,0,15,0)};}).slice(-8):[];
     if(Array.isArray(s.log)) S.log=s.log.filter(function(m){return m&&(typeof m.vi==="string"||typeof m.en==="string");});
     // a returning player has already been introduced — recompute unlocks/flags from state, skip the teaching beats
-    S.apprentice=pairExists(0,1); S.duo=pairExists(3,5); S.gtm=pairExists(1,4); S.maiHoa=pairExists(2,4); S.hoaLien=pairExists(4,6); S.gtmPaid=!!s.gtmPaid; S.hoaLienPaid=!!s.hlp; S.hands=fin(s.hs)?cl(s.hs,0,64,0):0; S.hist=Array.isArray(s.hist)?s.hist.slice(0,16).map(function(v){return fin(v)?cl(v,0,15,0):0;}):[];
+    S.apprentice=pairExists(0,1); S.duo=pairExists(3,5); S.gtm=pairExists(1,4); S.maiHoa=pairExists(2,4); S.hoaLien=pairExists(4,6); S.gtmPaid=!!s.gtmPaid; S.hoaLienPaid=!!s.hlp; S.hands=fin(s.hs)?cl(s.hs,0,64,0):0; S.vb={}; if(Array.isArray(s.vb)) VERBS.forEach(function(k,i){ S.vb[k]=fin(s.vb[i])?cl(s.vb[i],0,64,0):0; }); S.hist=Array.isArray(s.hist)?s.hist.slice(0,16).map(function(v){return fin(v)?cl(v,0,15,0):0;}):[];
     S.un={link:S.cast.filter(function(p){return p.known;}).length>=2||S.pairs.length>0,
           hui:S.season>=2, build:S.season>=4||S.build>0||S.built,
           probe:S.ships.length>0||S.season>2};
@@ -1538,16 +1552,17 @@ function unlockCheck(){
 }
 
 // ---------- actions ----------
-function spend(){ if(S.acts<=0) return false; S.acts--; S.hands=(S.hands|0)+1; render(); return true; }   // every hand is counted — the ending asks what they bought
+var VERBS=["teach","nerve","link","hui","pot","probe","shel","build"], VERB_G={teach:"📖",nerve:"🏮",link:"🤝",hui:"🪙",pot:"🧧",probe:"🔍",shel:"🛡",build:"🛠"};
+function spend(k,who){ if(S.acts<=0) return false; S.acts--; S.hands=(S.hands|0)+1; if(k){ S.vb=S.vb||{}; S.vb[k]=(S.vb[k]|0)+1; } if(who) who.hands=(who.hands|0)+1; render(); return true; }   // every hand is counted, and by verb — the ending asks what they bought, and how you played
 // 🔎 a hand in the wrong place gets an answer in the person's own voice — once per factor, only while you were still guessing (row unknown), and only
 // when the hand landed on their STRONGEST factor while a real zero (≤3) sat elsewhere. No number, no narrator: the number arrives with the float; the sentence is theirs.
 function guessAnswer(p,k){ if(!p||p.started||seenAll(p)) return; var m=Math.min(p.tai,p.gan,p.ban), M=Math.max(p.tai,p.gan,p.ban);
   if(m>3||p[k]!==M||p[k]===m) return; p.wrongSaid=p.wrongSaid||{}; if(p.wrongSaid[k]) return; p.wrongSaid[k]=true;
   var line={tai:STR.wrongTai,gan:STR.wrongGan,ban:STR.wrongBan}[k];
   (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,ln[L]); },900); })(p,line); }   // after the float, not over it
-function actTeach(){ var p=cur(); if(!p||S.acts<=0||p.tai>=10||S.over||conBan(3)) return; if(!spend())return;
+function actTeach(){ var p=cur(); if(!p||S.acts<=0||p.tai>=10||S.over||conBan(3)) return; if(!spend("teach",p))return;
   guessAnswer(p,"tai"); p.tai=Math.min(10,p.tai+2); S.hintDone=true; beep(659*(1+(Math.random()-0.5)*0.015),0.08); floatOn(p,"+2 "+t("tai"),"#2E4A62"); renderSheet(); save(); }
-function actNerve(){ var p=cur(); if(!p||S.acts<=0||p.gan>=10||S.over) return; if(!spend())return;
+function actNerve(){ var p=cur(); if(!p||S.acts<=0||p.gan>=10||S.over) return; if(!spend("nerve",p))return;
   guessAnswer(p,"gan"); p.gan=Math.min(10,p.gan+2); S.hintDone=true; beep(440*(1+(Math.random()-0.5)*0.015),0.08); floatOn(p,"+2 "+t("gan"),"#C1443C");
   // a failure night is communal — everyone who has fallen listens, and fears a little less
   var lifted=0;
@@ -1566,7 +1581,8 @@ function completeLink(otherId){
   if(!a||!b||a.id===b.id){ S.linking=null; renderSheet(); return; }
   if(!b.known){ bubble(a,(L==="vi")?"“Mình đã quen người ta đâu…”":"“I haven't even met them…”"); render(); return; }   // linking mode STAYS armed — a mistap on a stranger doesn't exit
   S.linking=null;
-  if(!spend()){ renderSheet(); return; }
+  if(!spend("link",a)){ renderSheet(); return; }
+  b.hands=(b.hands|0)+1;   // a bond is a hand on both
   var key=[Math.min(a.id,b.id),Math.max(a.id,b.id)];
   var again=S.pairs.some(function(pr){return pr[0]===key[0]&&pr[1]===key[1];});
   // the FIRST close friend changes a person (+2); every later connection adds a little (+1) — no pair-farming
@@ -1624,7 +1640,7 @@ function riverRise(n,sx,sy,dly){ if(S.von>=10) return;
   S.von=Math.min(10,S.von+n); S._vonAt=performance.now();
   if(motes.length<6) motes.push({x0:sx,y0:sy,x1:W/2,y1:H-58,t:-(dly||0.4),g:"🪙"}); }
 function huiMax(){ return (S.yearCard===0)?4:3; }   // a flood year leans harder on the hụi
-function actHui(){ if(!S.un.hui||S.over||S.acts<=0||S.hui>=huiMax()||conBan(1)) return; if(!spend())return;
+function actHui(){ if(!S.un.hui||S.over||S.acts<=0||S.hui>=huiMax()||conBan(1)) return; if(!spend("hui"))return;
   S.hui++; beep(392,0.1); riverRise(1,DINH.x,DINH.y-10,0.9);
   S.cast.filter(function(p){return active(p)&&p.known;}).forEach(function(p){ visit(p,DINH.x+(Math.random()-0.5)*70,DINH.y,5200);
     if(!p.started) floatOn(p,"🌱 "+Math.round(chance(p)*100)+"%","#2E4A62"); });   // the circle meets — and every named sprout visibly rises
@@ -1633,7 +1649,7 @@ function actHui(){ if(!S.un.hui||S.over||S.acts<=0||S.hui>=huiMax()||conBan(1)) 
 // A tradeoff, not a gift: −1 river is −7% on every named sprout (and may drop a tier cap) for +6% on one — and never past a zero.
 function potOk(p){ return !!p&&p.known&&seenAll(p)&&!p.started&&!p.gone&&S.un.hui&&(S.hui|0)>=1&&!conBan(1)&&S.von>=2&&!hasZero(p)&&prod(p)>=100&&!S.potSeason; }
 function potAfter(p){ return Math.min(0.85,prod(p)/1000*0.9*(0.3+0.7*Math.max(1,S.von-1)/10)+Math.min((S.yearCard===5)?0.15:0.09,(p.mom||0)+0.06)); }   // what the pot would make of them — river dipped, sprout pushed
-function actPot(){ var p=cur(); if(!potOk(p)||S.acts<=0||S.over) return; if(!spend()) return;
+function actPot(){ var p=cur(); if(!potOk(p)||S.acts<=0||S.over) return; if(!spend("pot",p)) return;
   var cap=(S.yearCard===5)?0.15:0.09; p.mom=Math.min(cap,(p.mom||0)+0.06); S.potSeason=true;
   S.von=Math.max(1,S.von-1); S._vonAt=performance.now();
   if(motes.length<6) motes.push({x0:W/2,y0:H-58,x1:p.hx,y1:p.hy-30,t:-0.3,g:"🧧"});   // the coin leaves the river for their door — the same road, walked backwards
@@ -1647,7 +1663,7 @@ function actPot(){ var p=cur(); if(!potOk(p)||S.acts<=0||S.over) return; if(!spe
   render(); renderSheet(); save(); }
 function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notices — asking around is free
   if(!S.un.probe||S.probeSeen||S.over||(!free&&S.acts<=0)) return;
-  if(!free){ if(!spend())return; }
+  if(!free){ if(!spend("probe"))return; }
   S.probeSeen=true; beep(587,0.06); setTimeout(function(){beep(523,0.06);},80);
   logMsg(S.luatNext>=4?STR.probeSun.vi:STR.probeCloud.vi, S.luatNext>=4?STR.probeSun.en:STR.probeCloud.en);
   if(S.luatNext<4&&shelTarget()) logMsg("— xưởng non đang phơi trời. Bạn có thể CHE CHẮN (nút mới).",
@@ -1657,10 +1673,10 @@ function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notic
 // so the born checks below are belt-and-braces, not a reachable state. In a strict year, notices are posted — tarp EVERYTHING.
 function shelCovers(s){ return (s.shel|0)<=0 && (S.yearCard===1 || (s.age|0)<2) && !s.born; }
 function shelTarget(){ var best=null; S.ships.forEach(function(s){ if(!shelCovers(s)) return; if(!best||(s.age|0)<(best.age|0)) best=s; }); return best; }
-function actShel(){ if(S.acts<=0||S.over||!shelTarget()) return; if(!spend())return;
+function actShel(){ if(S.acts<=0||S.over||!shelTarget()) return; if(!spend("shel"))return;
   var n=0; S.ships.forEach(function(s){ if(shelCovers(s)){ s.shel=2; n++; } });   // one hand tarps every covered roof
   beep(392,0.1); logMsg(STR.shelDone.vi,STR.shelDone.en); render(); save(); }
-function actBuild(){ if(!S.un.build||S.over||S.acts<=0||S.built) return; if(!spend())return;
+function actBuild(){ if(!S.un.build||S.over||S.acts<=0||S.built) return; if(!spend("build"))return;
   S.build++; beep([294,330,392,440][Math.min(S.build-1,3)],0.09);
   if(S.build>=4){ S.built=true; S.ships.push({x:120,y:470,owner:(L==="vi"?"bạn":"you"),small:S.von<5,yours:true});
     petals(120,450,26,["#D97C8E","#E3A63B","#fffdf4"]); beep(659,0.1); setTimeout(function(){beep(880,0.12);},110);
@@ -1898,6 +1914,21 @@ function nextSeason(){
       banner("🛶 …",1800); gong(147,1.0,0.04);
       gossip("“Cô Liên đi rồi. Xóm mình chẳng giữ được.”","“Cô Liên's gone. We couldn't hold her.”",6); }
   }
+  // 🚌 the girl's clock: Bé Ngân's father has been filing papers all along — if her NERVE stays near zero, medicine wins.
+  // Each zero now has a face: TÀI → the elder's craft dies · GAN → Ngân goes to the city · BẠN → Liên goes back south.
+  var ngan=S.cast[0];
+  if(!ngan.gone&&!ngan.started&&active(ngan)&&!ngan.leaving){
+    var dared=ngan.gan>=3;   // only nerve holds her — a bond does not route around this zero
+    if(S.season===9&&!dared&&!S.nganWarned){ S.nganWarned=true;
+      bubble(ngan,(L==="vi")?"“Bố nộp hồ sơ trường Y cho em rồi…”":"“Dad's filed my medical-school papers…”");
+      logMsg("Bé Ngân nhắc chuyện trường Y — thừa số GAN của em vẫn gần số không.","Bé Ngân talks of medical school — her NERVE factor still sits near zero."); }
+    if(S.season>=11&&!dared){ ngan.leaving=true;
+      visit(ngan,W-40,346,5200);   // she walks to the road's end, the whole xóm watching, and is gone
+      (function(){ var ctok=runTok; setTimeout(function(){ if(runTok!==ctok) return; ngan.gone=true; ngan.leaving=false; if(S.sel===0){ S.sel=-1; renderSheet(); } render(); save(); },4800); })();
+      logMsg("🚌 Bé Ngân lên tỉnh học Y — bố em đã thắng. Không ai giúp em dám.","🚌 Bé Ngân left for medical school in the city — her father won. No one helped her dare.");
+      banner("🚌 …",1800); gong(147,1.0,0.04);
+      gossip("“Con Ngân đi học Y rồi. Nó có muốn đâu.”","“Ngân's gone to study medicine. She never wanted to.”",0); }
+  }
   // 🕯 the elder's clock: Chú Ba's craft fades unless it lives on (his kiln, or the apprenticeship)
   var ba=S.cast[1];
   if(S.season>=(S.baFadeStart||8) && active(ba) && !ba.started && !S.apprentice && ba.tai>0){
@@ -1981,6 +2012,7 @@ function startFinale(){
 }
 function endGame(){
   S.over=true;
+  S.cast.forEach(function(p){ see(p,"tai"); see(p,"gan"); see(p,"ban"); });   // the book shows every row — including the factor you never touched
   var blooms=S.cast.filter(function(p){return p.started;});
   var zeros=S.cast.filter(function(p){return active(p) && !p.started && Math.min(p.tai,p.gan,p.ban)<=3;});
   var b=document.getElementById("endBody"); b.innerHTML="";
@@ -2027,6 +2059,10 @@ function endGame(){
     +" · "+(S.hands|0)+"⚡"+(nB>0?((L==="vi")?(" — "+((S.hands|0)/nB).toFixed(1)+"⚡ mỗi mầm"):(" — "+((S.hands|0)/nB).toFixed(1)+"⚡ per bloom")):"")   // hands spent, and what each bloom cost — diagnosis is cheap, spreading is not
     +(S.constraint?(" · ⛓ "+((L==="vi")?CONSTRAINTS[S.constraint].nv:CONSTRAINTS[S.constraint].ne)):"")+"</small>";
   b.appendChild(lead);
+  // how the hands were spent, by verb — a diagnoser's row is tall in one or two places; a spreader's is flat
+  (function(){ var vb=S.vb||{}, parts=VERBS.filter(function(k){return (vb[k]|0)>0;}).map(function(k){return VERB_G[k]+" "+(vb[k]|0);});
+    if(!parts.length) return; var vl=document.createElement("div"); vl.style.cssText="font-size:12px;text-align:center;color:#4d4335;margin:-2px 0 6px;letter-spacing:.02em";
+    vl.textContent=(L==="vi"?"tay đã dùng: ":"hands spent: ")+parts.join(" · "); b.appendChild(vl); })();
   // the run as a strip — sixteen cells, one per season: 🌸 for each bloom that season, ⬛ for a stamp, · for a quiet one; the year gaps show
   (function(){ var hst=S.hist||[]; if(!hst.some(function(v){return v>0;})) return;
     var cells=[]; for(var si=0;si<16;si++){ var v=hst[si]|0, bl=v>>2, st=v&3, c="";
@@ -2064,6 +2100,9 @@ function endGame(){
                         "Cô Liên came home — then left. Her ALLIES factor, no one tended in time.");
   else if(lienEnd.started) ep(9,"Và Cô Liên đã ở lại — studio nhỏ sáng đèn ngay trong xóm.",
                                 "And Cô Liên stayed — her little studio lit right here in the xóm.");
+  var nganEnd=S.cast[0];
+  if(nganEnd.gone) ep(9,"Bé Ngân đã lên tỉnh học Y — thừa số GAN của em, không ai kịp vun. App của em còn nằm trong máy.",
+                        "Bé Ngân went to medical school — her NERVE factor, no one tended in time. Her app is still on her laptop.");
   if(S.apprentice) ep(8,"Nghề gốm của Chú Ba đã có người nối — Bé Ngân. Có những 'lối thoát' không cần thương vụ nào.",
                         "Chú Ba's craft found an heir — Bé Ngân. Some 'exits' need no deal at all.");
   var crushes=S.cast.reduce(function(a,p){return a+p.crushCount;},0);
@@ -2074,8 +2113,8 @@ function endGame(){
   if(S.gtmPaid) ep(5,"Gốm Chú Ba đã ra tới chợ huyện trên vai Chị Hoa — món hàng leo thang giá trị.",
                      "Chú Ba's ceramics reached the district market on Chị Hoa's shoulder pole — the craft climbed the value curve.");
   zeros.forEach(function(p){ var z=zeroOf(p)||"—";
-    ep(4,p.name+" vẫn chưa nảy mầm — thừa số "+z+" vẫn nằm ở số không.",
-         p.name+" never bloomed — the "+z+" factor stayed at zero."); });
+    ep(4,p.name+" vẫn chưa nảy mầm — thừa số "+z+(hasZero(p)?" vẫn nằm ở số không.":" vẫn nằm sát số không."),
+         p.name+" never bloomed — the "+z+(hasZero(p)?" factor stayed at zero.":" factor stayed next to zero.")); });
   ep(3,S.luat>=5?"Bầu trời có quang hơn — có những mùa may mắn.":"Bầu trời không đổi. Có những ổ khóa ngoài tầm tay một người.",
        S.luat>=5?"The sky did clear a little — some seasons are lucky.":"The sky never changed. Some locks sit beyond one person's hands.");
   if(S.maiHoa&&S.classSeen) ep(5,"Sách Cô Mai bày ngoài sạp Chị Hoa — lớp học đông hơn nhờ một người bán hàng.",
@@ -2186,7 +2225,8 @@ function renderSheet(){
         ?(" · "+(L==="vi"?"lúc đến ":"on arrival ")+p.btai+"×"+p.bgan+"×"+p.bban+"="+(p.btai*p.bgan*p.bban)
           +((pr>p.btai*p.bgan*p.bban)?" ↗":(pr<p.btai*p.bgan*p.bban)?" ↘":""))
         :"")
-    +"</small>":"");
+    +"</small>":"")
+    +(((p.hands|0)>0)?("<small>"+(p.hands|0)+"⚡"+(L==="vi"?" đã đặt vào đây":" placed here")+"</small>"):"");   // what this person has cost you so far — shown whether or not their row is read
   el("teachBtn").disabled=S.acts<=0||p.tai>=10||S.over||conBan(3);   // tending doesn't stop at the bloom — tiers keep the verbs alive
   el("teachBtn").style.textDecoration=conBan(3)?"line-through 2px #C1443C":""; el("teachBtn").style.opacity="";
   el("nerveBtn").disabled=S.acts<=0||p.gan>=10||S.over;
@@ -2211,7 +2251,9 @@ function renderSheet(){
 }
 function renderRoster(){
   var box=el("roster"); if(!box) return; var h="";
-  S.cast.forEach(function(p){ if(!active(p)) return;
+  S.cast.forEach(function(p){
+    if(p.gone){ h+="<div class=\"rc gone\" data-id=\"-1\" title=\""+(L==="vi"?"đã rời xóm":"has left the xóm")+"\"><i style=\"background:"+p.color+"\"></i>"+p.name+" "+(p.id===0?"🚌":"🛶")+"</div>"; return; }   // the ones who left stay on the strip — dim, unreachable — the loss keeps its place
+    if(!active(p)) return;
     var cls="rc"+(p.known?"":" unk")+(S.sel===p.id?" sel":"")+((S.linking!=null&&S.linking!==p.id&&p.known&&!pairExists(S.linking,p.id))?" cand":"");
     var z=(p.known&&!p.started)?zeroOf(p):null, tag=p.started?(tierOf(p)>=3?"🪜🪜🪜":tierOf(p)===2?"🪜🪜":"🌸"):(z?("<small>"+(hasZero(p)?"×0 ":"")+z+"</small>"):((p.known&&(p.mom||0)>0)?"🌱":""));
     var nm=p.known?p.name:(L==="vi"?"?":"?");
@@ -2281,6 +2323,8 @@ el("tierPill").onclick=function(){ if(!S||S.over||!S.ships.length) return; beep(
   logMsg("🪜 "+tierSum()+" bậc — "+rows.join(" · "), "🪜 "+tierSum()+" tiers — "+rows.join(" · ")); };
 el("actPill").onclick=function(){ if(!S||S.over) return; beep(523,0.05);
   S.looked=S.looked||{}; if(S.looked.ap===S.season) return; S.looked.ap=S.season;
+  var vbS=VERBS.filter(function(k){return (S.vb&&S.vb[k]|0)>0;}).map(function(k){return VERB_G[k]+(S.vb[k]|0);}).join(" ");
+  if(vbS) logMsg("⚡ Đã dùng "+(S.hands|0)+" tay: "+vbS,"⚡ Spent "+(S.hands|0)+" hands: "+vbS);
   logMsg(S.acts>0?("⚡ Còn "+S.acts+" tay mùa này — mỗi tay là một lần dạy, một đêm, một mối, hay một phiên hụi."):"⚡ Hết tay rồi — mùa sau tay lại đầy"+(S.luat<4&&S.stormStreak<=2?" (giông: 2⚡)":" (3⚡)")+".",
          S.acts>0?("⚡ "+S.acts+" hand"+(S.acts>1?"s":"")+" left this season — each is a lesson, a night, a bond, or a hụi round."):"⚡ Out of hands — they refill next season"+(S.luat<4&&S.stormStreak<=2?" (storm: 2⚡)":" (3⚡)")+"."); };
 el("teachBtn").onclick=actTeach; el("nerveBtn").onclick=actNerve; el("linkBtn").onclick=actLink; el("potBtn").onclick=actPot;
@@ -2311,6 +2355,9 @@ function renderHelp(){
   h+=sec(vi?"Xưởng và bậc":"Workshops and tiers",
          vi?"Xưởng theo tích của chủ: &lt;300 gánh hàng (bậc 1) · &lt;600 xưởng (bậc 2) · ≥600 thương hiệu (bậc 3). Vun tiếp sau khi nở để lên bậc. Chạm vào xưởng để nghe chủ nói."
            :"A workshop follows its owner's product: &lt;300 stall (tier 1) · &lt;600 shop (tier 2) · ≥600 brand (tier 3). Keep tending after the bloom to rise. Tap a workshop to hear its owner.");
+  h+=sec(vi?"Ba số không, ba gương mặt":"Three zeros, three faces",
+         vi?"🕯 TÀI — nghề Chú Ba lụi dần từ năm thứ hai nếu chưa có người nối · 🚌 GAN — Bé Ngân lên tỉnh học Y sau mùa 11 nếu GAN vẫn dưới 3 · 🛶 BẠN — Cô Liên vào Nam sau mùa 13 nếu chưa ai giữ. Số không nào cũng có một cái tên."
+           :"🕯 SKILL — Chú Ba's craft fades from year two unless it passes on · 🚌 NERVE — Bé Ngân leaves for medical school after season 11 if her NERVE stays under 3 · 🛶 ALLIES — Cô Liên goes back south after season 13 if no one holds her. Every zero has a name.");
   h+=sec(vi?"Mối duyên":"Bonds",
          vi?"Vài cặp là hơn +BẠN: 🏺 Ngân–Ba (nghề truyền, TÀI Ngân lớn mỗi mùa) · 🔧 Vũ–Tú · 🧺 Ba–Hoa (gốm ra chợ, +sông) · 🎨 Ngân–Liên · 📚 Mai–Hoa (lớp đông hơn) · 👜 Hoa–Liên (mẫu ra chợ, +sông). Sợi vàng trên bản đồ là mối đã kết."
            :"Some pairs are more than +ALLIES: 🏺 Ngân–Ba (craft passes, her SKILL grows each season) · 🔧 Vũ–Tú · 🧺 Ba–Hoa (ceramics to market, +river) · 🎨 Ngân–Liên · 📚 Mai–Hoa (bigger class) · 👜 Hoa–Liên (patterns to market, +river). A gold thread on the map is a bond made.");

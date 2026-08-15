@@ -93,7 +93,9 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.34: a hand in the wrong place is answered in the person's own voice, once, no number (Gate 12);
+**v0.35: every zero has a face — Bé Ngân leaves for medical school at season 11 if NERVE stays under
+3 (Gate 13), the ending shows every row, and `check.js` bands the misreader (6.97/15.9: the hidden
+row costs a fair player one hand per misread). v0.34: a hand in the wrong place is answered in the person's own voice, once, no number (Gate 12);
 Anh Vũ's opening line now carries his BẠN clue. v0.33 hides every factor until a hand touches it (Gate 11) — diagnosis is now a guess from the
 quote, priced by the hand; measured first: even at 2 hands the perfect-info hunter blooms 6.94/7,
 and hụi/pot as strategies are not spam channels (6.98/15.1 · 6.76/13.9 vs 6.98/16.1). Before it:
@@ -112,10 +114,7 @@ whether the answer is a quieter tag, labels on demand, or spreading the crowd, a
 hidden factors already cut how much there is to print; the far bank is tasteful but nearly invisible
 under a heavy sky — decide whether that is the point or too timid; the roster strip scrolls with no
 affordance that it scrolls. Remaining mechanic bank: the ending card calling a ≤3-factor person
-"bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; a blind-hunter in `check.js` is
-**identical to the hunter by construction** (every authored zero is the quote's clue and jitter keeps
-it the minimum) — so band the *misreader* instead if anything: a hunter whose first hand on each
-person is wrong with p=0.3, to see what the hidden row costs a fair player; and whether the *first*
+"bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop
 keeps vigil concurrently and must never commit or revert either owner session's uncommitted edits.

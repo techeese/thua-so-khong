@@ -1,5 +1,32 @@
 # Changelog — Thừa Số Không
 
+## v0.35 — 2026-08-15 — every zero has a face
+
+Closes: under the owner's standing `/loop 3m` directive, the open owner gate *"You care about someone by
+season 8 — a name, a face, a fate you'd be sorry to lose"* on its machine side, and the bank's
+misreader question. Two of the three factors already had a fate — TÀI: the elder's craft dies unless
+it passes on; BẠN: Cô Liên goes back south unless someone holds her. GAN had none: a Bé Ngân left at
+nerve 1 simply sat at 0% for sixteen seasons, and the player who never dared for her lost nothing.
+
+- **🚌 The girl's clock.** At season 9, if Ngân's NERVE is still under 3 and she has not bloomed, she
+  says it once — *“Bố nộp hồ sơ trường Y cho em rồi…”* — and the log names the factor. From season 11,
+  still under 3, she walks to the road's end, the xóm watching, and is gone: *"Bé Ngân left for
+  medical school in the city — her father won. No one helped her dare."* Only nerve holds her — a
+  bond does not route around this zero (charter §3). Ending epilogue added; the help card's new
+  section *Ba số không, ba gương mặt* names all three fates. `check.js` mirrored.
+- **The ending shows every row**, including the factor you never touched (`endGame` marks all seen),
+  and its zero-line now agrees with v0.30: *"vẫn nằm ở số không"* only for a literal 1, *"sát số
+  không"* for 2–3.
+- **`check.js`: the misreader.** A hunter whose first hand on each person is wrong 30% of the time
+  (the hidden row, read badly): **6.97 blooms / 15.9 tiers** vs hunter 6.98 / 16.1 — v0.33 costs a
+  fair player one hand per misread and nothing more. Banded: `misreader > spreader + 0.5` added to
+  the Gate 0 assertion (ratchet up). Band with Ngân's clock: hunter 6.98 / spreader 5.95 / linker
+  6.70 / idle 2.78.
+- *Evidence:* new **Gate 13** (`CLOCK_OK leaving=true s=11 gone=true daredStays=true`). Sixteen
+  gates green, hash-bracketed.
+- **Provenance:** the `/loop 5m` graphics session's in-tree work at commit time (a verb tally
+  `S.vb`, a label-readability gate) ships here under owner authority, unreviewed.
+
 ## v0.34 — 2026-08-15 — the wrong place answers back
 
 Closes: the second half of v0.33 under the owner's standing `/loop 3m` directive. Hiding the row made

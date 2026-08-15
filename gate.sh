@@ -354,6 +354,31 @@ PYEOF12
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=600,900 --virtual-time-budget=9000 --dump-dom "file://$TMP/l.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "LABEL_OK" && pass "the names stay readable: $T" || fail "the names stay readable: $T"
 
+# Gate 13: the girl's clock — Bé Ngân with NERVE under 3 at season 11 walks to the road and is gone; with NERVE ≥3 she stays.
+python3 - "$TMP" <<'PYEOF13'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.nudged=true; S.season=10; var ng=S.cast[0]; ng.known=true; ng.gan=1; ng.started=false;
+  nextSeason(); var leaving=!!ng.leaving, s11=S.season;
+  setTimeout(function(){ var gone1=!!ng.gone;
+    // control: a fresh xóm where she dared
+    fresh(); S.nudged=true; S.season=10; var ng2=S.cast[0]; ng2.known=true; ng2.gan=5; ng2.started=false; nextSeason();
+    setTimeout(function(){ var ok=leaving&&s11===11&&gone1&&!ng2.gone&&!ng2.leaving;
+      document.title=(ok?"CLOCK_OK":"CLOCK_BAD")+" leaving="+leaving+" s="+s11+" gone="+gone1+" daredStays="+(!ng2.gone&&!ng2.leaving);
+    },5200); },5200);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/c.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF13
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=14000 --dump-dom "file://$TMP/c.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "CLOCK_OK" && pass "the girl's clock: $T" || fail "the girl's clock: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."
