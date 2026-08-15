@@ -19,6 +19,57 @@ argues for or against.
      **Measured:** …
      **Argues for/against:** <candidate era>  -->
 
+## 2026-08-15 — the low bloom: who the ending calls "bloomed" while their own weakest factor sits at 2–4 (`lowbloom.js`)
+
+**Question.** LOOP.md's mechanic bank has carried, for many rounds, *"the ending card calling a ≤3-factor
+person 'bloomed' beside its own × arithmetic."* Nobody had measured how often that happens or to
+whom. Since v0.38 the weakest factor sets a per-season ceiling (2 → 4 %, 3 → 8 %, 4 → 15 %), so a
+low sprout does not *fail* to bloom — it blooms slowly: P(bloom within 16 seasons) is **48 %** at
+weakest=2, **74 %** at 3, **93 %** at 4. The word "bloomed" therefore reaches people the thesis calls
+near-zero. Is that a lie the card tells, or does the arithmetic beside it already say so?
+
+**Instrument.** `lab/lowbloom.js` — shipped `check.js` (v0.45 tree) with the bloom roll instrumented
+to record each bloom's weakest factor and product *at bloom time* and at run end, plus its ending
+tier. N=3000 seeded runs per strategy, same seeds as the band.
+
+**Measured (share of all blooms, per strategy):**
+
+| strategy | blooms/run | bloomed with min≤3 | min≤4 | runs with ≥1 such bloom | tier 1 · 2 · 3 at end | prod<100 at bloom |
+|---|---|---|---|---|---|---|
+| hunter | 6.98 | **0.4 %** | 5.2 % | 3 % | 4 · 60 · 36 % | 0.1 % |
+| misreader | 6.98 | 0.7 % | 9.3 % | 5 % | 6 · 59 · 35 % | 0.2 % |
+| spreader | 5.32 | 16.8 % | 36.3 % | 62 % | 28 · 57 · 15 % | 3.5 % |
+| linker | 6.10 | 10.1 % | 41.4 % | 50 % | 11 · 64 · 26 % | 0.9 % |
+| maxer | 3.47 | 30.3 % | 71.1 % | 69 % | 55 · 44 · 1 % | 14.5 % |
+| idle | 2.46 | **37.7 %** | **100 %** | 67 % | **100 · 0 · 0 %** | 28.3 % |
+
+No bloom in any strategy ends with a factor ≤1 under its roof (0.0 % everywhere): the step-down
+stamp (−2 GAN) never reaches a literal zero on a standing workshop, so the "×0 under a roof" case the
+bank item feared does not occur. None of the tier-1 endings are river-capped in the sim (0 %) —
+they are tier 1 because the product is under 300, i.e. because of the low factor itself.
+
+**Reading.** The low bloom is *the idle and maxer player's* bloom, not the diagnostician's: a
+hunter almost never (0.4 %) sees the word on a ≤3 person; an idle run sees it on ~2.5 people, every
+one of them tier 1, ~28 % of them with a product under 100 when the roof went up. And the card
+already prices it — the same beat prints `🌸 n mầm · m bậc`, the title is keyed to `tierSum` not to
+bloom count, and the row's `× × =` sits beside the name. So the arithmetic *does* contradict the
+word, on purpose, on the ending that most needs it (idle: 2.5 blooms, ~2.5 tiers, "just one bloom"
+title band). What is missing is not a number but a **verb**: "bloomed" and "opened a workshop" are the
+same event for a 2×8×6 stall and a 9×7×8 tier-3 roof; the roof's tier says it later, in the strip
+and the total, never in the sentence that names the person.
+
+**Argues for/against.** Neither a new era nor a defect claim is made here. Against the bank item as
+phrased — the ×-arithmetic is already beside the word, and the ending's totals are tier-honest.
+For a **reductive** candidate direction, if a synthesis ever wants it: fold "Bloomed: A, B, C" into
+the tier language the game already owns (a stall is a stall — `mở sạp` vs `mở xưởng`), rather than
+adding a new sentence. It also re-confirms the v0.38 ceiling as the mechanism doing the thesis'
+work: with N=3000, the share of ≤3 blooms is 0.4 % for the player who reads the zero and 38 % for the
+one who never lifts a hand — that gap is the "price for being wrong" made visible in *who* blooms,
+not only in how many.
+
+**Harness:** `lab/lowbloom.js` — `node lab/lowbloom.js` prints the table above (`lowbloom-out.txt`).
+Gitignored except this note.
+
 ## 2026-08-15 — the band's opponents are wasteful: a fair spreader sits 0.46 tiers under the hunter and a cap-faithful maxer keeps 88 % (`fairopp.js`)
 
 **Provenance.** Two independent critics reviewing candidate Y (`SYNTHESIS.md` §32–34) each extended
