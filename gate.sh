@@ -978,6 +978,39 @@ PYEOF33
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=8000 --dump-dom "file://$TMP/cv.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "CEILV_OK" && pass "a ceiling is not an empty hand: $T" || fail "a ceiling is not an empty hand: $T"
 
+# Gate 34: every GAN move prints — an erased stall floats −3 GAN ⬛ on its owner (and reveals GAN), a stepped-down shop floats −2 GAN ⬛,
+# and finishing your own roof floats +1 GAN 🛠 on everyone you have met.
+python3 - "$TMP" <<'PYEOF33'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+function floats(p,str){ return bubbles.filter(function(b){ return b.p===p && b.lay.lines.join(" ").indexOf(str)>=0; }).length; }
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.nudged=true; S.season=6; S.luat=2; S.luatNext=2; S.acts=3;
+  var mai=S.cast[2], vu=S.cast[3]; [mai,vu].forEach(function(q){ q.known=true; q.started=true; q.seen={tai:true,gan:true,ban:true}; });
+  S.cast.forEach(function(q){ if(q!==mai&&q!==vu){ q.known=false; q.started=true; } });
+  mai.tai=10; mai.gan=8; mai.ban=8;   // 640 → tier 2+ at a river ≥4: a step-down, not an erasure
+  vu.tai=5; vu.gan=6; vu.ban=5;       // 150 → a stall: erased
+  S.von=8; S.ships.push({x:420,y:300,owner:mai.name,pid:2,age:4,shel:0}); S.ships.push({x:300,y:420,owner:vu.name,pid:3,age:4,shel:0});
+  var R=Math.random; Math.random=function(){ return 0.01; };   // the stamp falls on both (risk 5 %) and every other roll lands
+  nextSeason(); Math.random=R;
+  var down=floats(mai,"−2 GAN"), erased=floats(vu,"−3 GAN");
+  // your roof: build four times with two known neighbours present
+  S.un.build=true; S.build=3; S.built=false; S.acts=3; bubbles.length=0; mai.known=true; vu.known=true; actBuild();
+  var lifted=floats(mai,"+1 GAN")+floats(vu,"+1 GAN");
+  var ok=down===1&&erased===1&&lifted===2&&S.built;
+  document.title=(ok?"GANMOVE_OK":"GANMOVE_BAD")+" stepDown="+down+" erased="+erased+" buildLift="+lifted+" built="+S.built;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/gm.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF33
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/gm.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "GANMOVE_OK" && pass "every GAN move prints: $T" || fail "every GAN move prints: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

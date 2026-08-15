@@ -61,6 +61,7 @@
   .roster .rc small{font-weight:600;font-size:10px;color:var(--red)} .roster .rc.sel small{color:#EFB7C4}
   .roster .rc.cand{outline:2px dashed var(--leaf);outline-offset:1px}
   .roster .rc.gone{opacity:.4;cursor:default;box-shadow:none;text-decoration:line-through;font-weight:500}
+  .roster .rc .do{opacity:.7;font-size:11px}
   /* The three dots say WHICH factors your hands have touched, but they were all one grey, so nothing
      said which dot was which — the only explanation was a title tooltip, which a thumb cannot reach.
      They now carry the same colours the sheet's bars carry (TÀI indigo · GAN đỏ son · BẠN leaf), so
@@ -191,7 +192,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.50</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.52</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -820,7 +821,7 @@ function execBeh(p,beh,now){
   if(beh===1){ dx=p.hx; dy=p.hy; }
   visit(p,dx+(Math.random()-0.5)*((beh===3||beh===10)?4:30),dy,dur);
   if(beh===9) _chaser=p;   // assigned AFTER visit() — a story visit clears it, so re-arm here
-  p.amb=1; p.beh=beh;
+  p.amb=1; p.beh=beh; if(typeof renderRoster==="function") renderRoster();   // the chip shows the errand as it starts
   if(beh===3) p.chain=1;   // faltering always turns back home
 }
 function learnMaster(p){ var best=null; S.cast.forEach(function(q){ if(q===p||!active(q)||q.tai<6) return; if(!best||q.tai>best.tai||(q.tai===best.tai&&q.started&&!best.started)) best=q; }); return best; }
@@ -863,7 +864,7 @@ function errandTick(now){
       if(mt) pairTalkAt(Math.min(mt[0],mt[1])+"-"+Math.max(mt[0],mt[1]),false); }
     if(q3.chain||((q3.legs|0)<2&&Math.random()<0.35)){ q3.legs=(q3.legs|0)+1; var nb=q3.chain?1:pickBeh(q3); q3.chain=0;
       execBeh(q3,nb,now); if(_chaser===q3&&nb!==9)_chaser=null; walkers++; }
-    else { q3.amb=0; q3.beh=0; q3.legs=0; if(_chaser===q3)_chaser=null; }
+    else { q3.amb=0; q3.beh=0; q3.legs=0; if(_chaser===q3)_chaser=null; if(typeof renderRoster==="function") renderRoster(); }
   }
   if(now<nextErrandAt) return;
   if(walkers>=(S.season<4?1:2)){ nextErrandAt=now+4000; return; }
@@ -1876,7 +1877,7 @@ function actBuild(){ if(!S.un.build||S.over||S.acts<=0||S.built) return; if(!spe
   S.build++; beep([294,330,392,440][Math.min(S.build-1,3)],0.09);
   if(S.build>=4){ S.built=true; S.ships.push({x:120,y:470,owner:(L==="vi"?"bạn":"you"),small:S.von<5,yours:true});
     petals(120,450,26,["#D97C8E","#E3A63B","#fffdf4"]); beep(659,0.1); setTimeout(function(){beep(880,0.12);},110);
-    S.cast.forEach(function(q){ q.gan=Math.min(10,q.gan+1); });
+    S.cast.forEach(function(q){ q.gan=Math.min(10,q.gan+1); if(active(q)&&q.known) floatOn(q,"+1 "+t("gan")+" 🛠","#C1443C"); });   // v0.51: your roof lifts the xóm's nerve — printed on everyone you have met
     logMsg(STR.shipped.vi,STR.shipped.en);
   }
   render(); renderSheet(); save();
@@ -1994,13 +1995,13 @@ function nextSeason(){
         } else if(tr>=2){ // an established workshop steps DOWN a tier — the owner takes the hit, the walls stand
           stampAt(s.x,s.y);
           if(s.pid===2) S.classSkip=true;   // a stamped school roof teaches no one next season
-          var p2=S.cast[s.pid]; if(p2){ p2.gan=Math.max(0,p2.gan-2); p2.mom=0; }
+          var p2=S.cast[s.pid]; if(p2){ p2.gan=Math.max(0,p2.gan-2); p2.mom=0; floatOn(p2,"−2 "+t("gan")+" ⬛","#7a6f5d"); }   // v0.51: the hit is printed — every number that moves, moves in sight
           logMsg("⬛ "+s.owner+STR.tierDown.vi, "⬛ "+s.owner+STR.tierDown.en);
           gossip("“Xưởng nhà "+s.owner+" lùi một bậc… trời này.”","“"+s.owner+"'s workshop stepped down a tier… this sky.”",s.pid);
         } else { // only a tier-1 gánh hàng can be erased outright
           S.ships=S.ships.filter(function(o){return o!==s;}); scarAt(s.x,s.y);
           stampAt(s.x,s.y);
-          var p=S.cast[s.pid]; if(p){ p.started=false; p.gan=Math.max(0,p.gan-3); p.crushCount++; p.mom=0;
+          var p=S.cast[s.pid]; if(p){ p.started=false; p.gan=Math.max(0,p.gan-3); p.crushCount++; p.mom=0; floatOn(p,"−3 "+t("gan")+" ⬛","#7a6f5d");
             bubble(p,p.qc?p.qc[L]:((L==="vi")?"“Thôi thì… làm lại.”":"“Well. Again, then.”")); }   // each grieves in their own voice
           logMsg("⬛ "+s.owner+STR.crushed.vi, "⬛ "+s.owner+STR.crushed.en);
           gossip("“Con dấu rơi trúng nhà "+s.owner+"… tội.”","“The stamp fell on "+s.owner+"… poor thing.”",s.pid);
@@ -2508,6 +2509,7 @@ function renderSheet(){
         :(base[i]+((same||!known)?"":(p.started?(" → "+prod(q)+(tQ>tNow?((L==="vi"?" ↑bậc ":" ↑tier ")+tQ):"")):(" → "+Math.round(chance(q)*100)+"%")))); });   // the reading stays yours — no verb is bolded
   })();
 }
+var BEH_G={1:"🧹",2:"🪑",3:"…",4:"🧺",5:"👥",6:"🔨",7:"🌊",8:"👀",9:"🐔",10:"🌱",11:"📖",12:"🌾"};   // the errands, as glyphs
 function renderRoster(){
   var box=el("roster"); if(!box) return; var h="";
   S.cast.forEach(function(p){
@@ -2520,7 +2522,9 @@ function renderRoster(){
     if(cls.indexOf(" cand")>=0){ tag=(tag?tag+" ":"")+"<small>+"+(pairCount(p.id)===0?2:1)+" "+t("ban")+"</small>"; }   // v0.49: while a link is armed, each candidate shows what THEY would gain — the first bond +2, every later one +1
     // three dots per known, un-bloomed person: which of TÀI · GAN · BẠN your hands have touched — the row's progress, at a glance
     var dots=(p.known&&!p.started)?("<span class=\"sd\" title=\"TÀI · GAN · BẠN\">"+["tai","gan","ban"].map(function(k){ return "<i class=\""+k+((p.seen&&p.seen[k])?" on":"")+"\"></i>"; }).join("")+"</span>"):"";
-    h+="<div class=\""+cls+"\" data-id=\""+p.id+"\"><i style=\"background:"+p.color+"\"></i>"+nm+dots+(tag?" "+tag:"")+"</div>"; });
+    // what they're doing right now — the errand glyph, so the strip reads the road too (silent, numberless: a broom, a stall, a friend, a sprout)
+    var doing=(p.known&&p.amb&&p.beh&&p.vUntil>performance.now())?(BEH_G[p.beh]||""):"";
+    h+="<div class=\""+cls+"\" data-id=\""+p.id+"\"><i style=\"background:"+p.color+"\"></i>"+nm+dots+(tag?" "+tag:"")+(doing?(" <span class=\"do\" title=\""+(L==="vi"?"đang bận":"busy")+"\">"+doing+"</span>"):"")+"</div>"; });
   if(box.innerHTML!==h) box.innerHTML=h;
   rosterEdges();
 }

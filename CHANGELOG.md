@@ -1,5 +1,48 @@
 # Changelog — Thừa Số Không
 
+## v0.52 — 2026-08-15 — a ceiling is not an empty hand
+
+A graphics round from the owner's `/loop 5m` session. It began by **measuring the item the pointer
+ranked first and finding no defect there**, then found a real one next door.
+
+**The float-density question is closed: there is nothing to fix.** v0.47's pointer flagged that a
+burst of floats appeared to tile the canvas. Measured in *paced* play — a real draw cadence and a real
+season's dwell, not the sync loop that fires sixteen seasons at one instant — across two runs:
+**mean 3.4 concurrent bubbles, max 11–13, peak canvas coverage 9.3%**. The alarming screenshot was the
+probe, exactly as suspected when it was recorded. No change shipped for it; the entry exists so the
+next tick does not re-open it.
+
+**What was real, one surface over:** a verb switched off because its factor already stands at **10**
+looked *exactly* like a verb switched off because you had no hands left — same greyed-out face — and
+it still advertised `+2 TÀI`, a promise it could not keep. Two different facts wore one face, and in a
+game about diagnosing which factor to raise, *"this one cannot go higher"* is precisely the fact the
+player needs.
+
+- A capped verb now **names its ceiling instead of a delta it cannot deliver** — `TÀI 10 · hết mức` /
+  `SKILL 10 · maxed` — and carries its own look (a dotted underline at 0.66) rather than the 0.45 grey
+  of merely being unaffordable.
+- **The ceiling outranks the empty hand.** When both are true the verb keeps saying `10 · hết mức`,
+  because that is the permanent fact; running out of hands never erases what a live verb would do, so
+  an unaffordable verb still shows its `+2 GAN · 1⚡ → 20%`.
+- *Evidence:* new **Gate 33** asserts all four states are distinguishable —
+  `capped='TÀI 10 · hết mức'@0.66 · live='+2 GAN · 1⚡ → 20%'@1 · noHands='+2 GAN…'@0.45 ·
+  cappedNoHands@0.66 · en='SKILL 10 · maxed'` — including that the capped hint contains no `+2` and
+  that the English is present, since every player-facing string here is bilingual by charter.
+
+## v0.51 — 2026-08-15 — every GAN move prints
+
+Closes: under the owner's standing `/loop 3m` directive, an audit of every place a number moves
+against whether it prints. Since v0.30 the game's rule has been that the arithmetic is the UI — every
++2, +1, −1 floats over the person and (since v0.33) reveals the factor it names. Three GAN moves were
+silent: a stamp's step-down (**−2**, the log said "stepped down a tier" and nothing about nerve), an
+erasure (**−3**, a grief line but no number), and your own roof's **+1 to everyone**.
+
+- `floatOn(…, "−2 GAN ⬛")` on a step-down, `"−3 GAN ⬛"` on an erasure, `"+1 GAN 🛠"` on every
+  neighbour you have met when your product ships. Each also reveals GAN under a hidden row — a hit
+  is seen. No balance changed.
+- *Evidence:* new **Gate 34** (`GANMOVE_OK stepDown=1 erased=1 buildLift=2`); id 33 had just been
+  taken by the graphics session — checked before committing. Thirty-two gates green, hash-bracketed.
+
 ## v0.50 — 2026-08-15 — the instrument mirrors the game again (grader-classified defect closed)
 
 Closes: a **grader-classified defect** (`lab/NOTES.md`, the `checkjs-fresh` mirror entry) — Gear 1,

@@ -93,7 +93,7 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.50: the grader's `check.js:47` mirror defect closed (`<=2`), band holds; the tarp says how long it
+**v0.51: every GAN move prints — step-down −2, erasure −3, your roof's +1 (Gate 34). v0.50: the grader's `check.js:47` mirror defect closed (`<=2`), band holds; the tarp says how long it
 holds. v0.49: while a link is armed each candidate chip prints +2/+1 BẠN (Gate 32); the lab found v0.46's
 speech lane rescued 0/480 calls (harmless, ineffective — the blocks were speech). v0.48: shelter tarps every standing roof (Gate 23 tightened) — the late game's "hold what you built"
 decision; measured: a plausible player blooms 7/7 by s8 and idles 21 of the last 24 hands (back-half
@@ -140,17 +140,20 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **every surface this loop set out to
-review is now done** — crowding (v0.45, Gate 25), the three overlays (v0.39/v0.40/v0.42), the roster
-strip (v0.36), the sheet's factor bars and the log (v0.47), and the roster's dot vocabulary (v0.48,
-Gate 31). What is genuinely left, in order: the **float/bubble density during a fast season** — v0.32
-stopped them overlapping but a burst still tiles the canvas, and this needs a REAL-play measurement,
-because a sync-loop probe exaggerates it badly (it fires nine seasons at one instant) and v0.45
-established that a whole-run statistic cannot be made gate-safe here; then a pass over the **verb
-row's disabled states**; then the loop should consider that the graphics brief may be close to spent
-and say so rather than padding. **Do not attempt a seeded whole-run gate** — built, measured and
-discarded in v0.45; gate the mechanism. Before adding any gate, run `./done.sh` and take the next id
-above the highest in BOTH `gate.sh` and the ledger. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **the brief is close to spent, and
+the loop should say so rather than pad.** Every surface it set out to review is done — crowding
+(v0.45), the three overlays (v0.39/v0.40/v0.42), the roster strip (v0.36), the factor bars and log
+(v0.47), the dot vocabulary (v0.48), the verb row's disabled states (v0.52). The float-density
+question is **closed as measured, not a defect**: paced play gives mean 3.4 concurrent bubbles, max
+11–13, peak canvas coverage 9.3% — the alarming screenshot was a sync-loop artifact, and this entry
+exists so nobody re-opens it. What is left is cosmetic preference, not defect: if a tick finds only
+that, the honest move is to report it and ship nothing (the ship budget explicitly allows a round to
+ship nothing, and *"it's ART's turn on the compass" is not sufficient cause*). Two things a future
+graphics tick could still legitimately measure rather than eyeball: whether the 390px canvas tap
+targets really are all reachable (the last unticked half of the owner gate *390px hands*), and whether
+the ending card's density hurts a first-time reader. **Do not attempt a seeded whole-run gate** —
+built, measured and discarded in v0.45; gate the mechanism. Before adding any gate, run `./done.sh`
+and take the next id above the highest in BOTH `gate.sh` and the ledger. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

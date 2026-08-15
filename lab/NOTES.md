@@ -81,6 +81,11 @@ the sim, so a future band clause about the late game would need this harness fir
 **Not shipped, per Gear 3.** `index.html` and `check.js` untouched; probe `lab/shelter.js`, output
 `lab/shelter-out.txt` (both gitignored). Run: `node lab/shelter.js`.
 
+**Verdict:** confirms-known
+*Grader:* It quantifies the storm/tarp at 1 % of rooted depth, but the claim it argues for — that the late game does not *decide* anything and the back half is idle hands — was already opened by `zerohunt.js` (new-argument) and `decide.js`, and the pointer already recorded 21 idle hands of 24; this is a sharper number on a known argument, not a new candidate era.
+**Defect:** no
+**Proposal:** no
+
 ## 2026-08-15 — does `check.js` still mirror `index.html`? formula grid says yes; one hand-dealing rule says no (`mirror.js`)
 
 **Why this, why now.** `done.sh` has carried one ⏭ line for days — *check.js older than index.html — confirm no math

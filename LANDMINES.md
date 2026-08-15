@@ -302,3 +302,9 @@ that is now impossible because a gate catches it stays here, with the gate named
   over-dealt; band unaffected). Practice: `done.sh`'s ⏭ *check.js older than index.html* is answered by extracting
   the game's functions by name and grid-comparing (`lab/mirror.js` does it in ~1 min), not by re-reading comments
   or commit dates.
+- **A sync-loop probe massively exaggerates on-screen density.** Firing sixteen seasons at one instant
+  piles every float and bubble into a single frame; a screenshot of that showed ~20 bubbles tiling the
+  canvas and looked like a serious defect. Paced play — real draw cadence, a real season's dwell —
+  measured mean 3.4 concurrent bubbles, max 11–13, peak coverage 9.3%. Before "fixing" anything that
+  looks visually crowded in a probe, re-measure it paced; `gate.sh` Gate 6 already documents why a
+  tight sync loop cannot observe anything that depends on dwell time.
