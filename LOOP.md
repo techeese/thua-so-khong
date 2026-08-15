@@ -93,7 +93,9 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.38: the weakest factor sets the ceiling — 2 → 4 %/season · 3 → 8 % · 4 → 15 % · 5 → 25 %
+**v0.39: the pot respects the ceiling and the hụi button prints its multiplier delta (Gate 20 — the graphics session renumbers gates live; check `done.sh` duplicate-id before committing) —
+every verb now answers with the same arithmetic. The engine's synthesis 2 has G rejected and F
+(the book remembers) under review; mechanic ticks stay off meta-progression. v0.38: the weakest factor sets the ceiling — 2 → 4 %/season · 3 → 8 % · 4 → 15 % · 5 → 25 %
 (Gate 16; Gate 0 gains capping clauses and a *maxer* strategy: hunter unchanged 6.97/16.1, spreader
 5.34, idle 2.47, maxer 3.40/5.0). This is the critics' §9.1 pass condition, shipped under owner
 authority; the engine's synthesis 2 should read it as done and price its era against it. ⚠ v0.37 sped

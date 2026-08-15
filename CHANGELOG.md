@@ -1,5 +1,23 @@
 # Changelog — Thừa Số Không
 
+## v0.39 — 2026-08-15 — every verb answers with the same arithmetic
+
+Closes: under the owner's standing `/loop 3m` directive, a gap v0.38 opened in v0.32's verb — and
+the one verb that still answered with a price tag instead of a number.
+
+- **The pot respects the ceiling.** `potAfter()` was the raw formula; on a row a 3 already caps it
+  promised *→ 15%* and would take a river coin (−7 % on every sprout) to push nothing. Now it is
+  min(ceiling, …); when the ceiling already binds the pot is refused and the hint says which factor
+  caps it — *GAN 3 chặn — hụi không đẩy nổi*. Charter §3, from the pot's side: nothing buys past the
+  weakest factor.
+- **The hụi button prints its answer.** Every hand on the sheet shows *→ N%*; the hụi showed
+  *(1⚡)*. Now *(1⚡ · ×0.65→0.72)* — what one coin does to the river's multiplier, the same
+  arithmetic every other verb gives; plain *(1⚡)* only when the river is full.
+- *Evidence:* new **Gate 20** (`POTCEIL_OK refused=true saysCap=true untouched=true roomOk=true
+  huiCost="(1⚡ · ×0.65→0.72)"`). Twenty gates green, hash-bracketed; no balance changed.
+- **Provenance:** the graphics session's and the engine's in-tree edits at commit time
+  (`done.sh` duplicate-id check, ledger rows) are theirs and are not committed here.
+
 ## v0.38 — 2026-08-15 — the weakest factor sets the ceiling
 
 Closes: under the owner's standing `/loop 3m` directive, the one pass condition every critic in both

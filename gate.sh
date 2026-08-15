@@ -513,6 +513,33 @@ PYEOF19
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/i.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "INTRO_OK" && pass "the intro yields: $T" || fail "the intro yields: $T"
 
+# Gate 20: the pot respects the ceiling — a row a 3 already caps refuses the pot and says which factor caps it; a row with room takes it;
+# and the hụi button prints what one coin does to the river's multiplier.
+python3 - "$TMP" <<'PYEOF17'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.un.hui=true; S.hui=1; S.von=5; S.acts=3; S.constraint=0; S.yearCard=2; S.potSeason=false;
+  var mai=S.cast[2]; mai.seen={tai:true,gan:true,ban:true}; mai.mom=0; mai.started=false; mai.known=true;
+  mai.tai=10; mai.gan=3; mai.ban=10; selectPerson(2); renderSheet();
+  var refused=!potOk(mai), why=document.getElementById("potHint").textContent, saysCap=/GAN 3 (chặn|caps)/.test(why);
+  var von0=S.von; actPot(); var untouched=(S.von===von0&&(mai.mom||0)===0);
+  mai.tai=6; mai.gan=5; mai.ban=7; renderSheet(); var okRoom=potOk(mai);
+  var hc=document.getElementById("huiCost").textContent, showsMul=/×0\.65→0\.72/.test(hc);
+  var ok=refused&&saysCap&&untouched&&okRoom&&showsMul;
+  document.title=(ok?"POTCEIL_OK":"POTCEIL_BAD")+" refused="+refused+" saysCap="+saysCap+" untouched="+untouched+" roomOk="+okRoom+" huiCost="+hc;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/pc.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF17
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/pc.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "POTCEIL_OK" && pass "the pot respects the ceiling: $T" || fail "the pot respects the ceiling: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

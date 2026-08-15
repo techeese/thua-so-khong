@@ -83,6 +83,8 @@
   .frow .ftr{flex:1;height:14px;background:#e0d0ac;border:2px solid var(--ink);border-radius:8px;overflow:hidden}
   .frow .ftr i{display:block;height:100%;transition:width .4s}
   .frow .fv{width:22px;text-align:right;font-weight:700;font-size:13px}
+  /* the nature tick — where an un-bloomed factor will fade back to; drawn only once that factor is seen and stands above it */
+  .frow .nat{position:absolute;top:-3px;bottom:-3px;width:0;border-left:2px dashed rgba(43,35,32,.55);display:none;pointer-events:none}
   .mult{font:700 16px Georgia,serif;text-align:center;margin:10px 0;padding:8px;background:#efe2c2;border:2px dashed var(--ink);border-radius:10px}
   .mult small{display:block;font:400 11px sans-serif;color:var(--dim)}
   .acts{display:flex;gap:8px;flex-wrap:wrap}
@@ -151,9 +153,9 @@
   <div class="sheet" id="sheet">
     <h3 id="pName">—</h3>
     <div class="quote" id="pQuote">…</div>
-    <div class="frow"><div class="fl" id="lblTai">TÀI</div><div class="ftr" style="position:relative"><i id="barTai" style="background:var(--indigo)"></i><s id="notch7" style="position:absolute;left:70%;top:0;bottom:0;width:2px;background:rgba(43,35,32,.35);display:none"></s></div><div class="fv" id="valTai">0</div></div>
-    <div class="frow"><div class="fl" id="lblGan">GAN</div><div class="ftr"><i id="barGan" style="background:var(--red)"></i></div><div class="fv" id="valGan">0</div></div>
-    <div class="frow"><div class="fl" id="lblBan">BẠN</div><div class="ftr"><i id="barBan" style="background:var(--leaf)"></i></div><div class="fv" id="valBan">0</div></div>
+    <div class="frow"><div class="fl" id="lblTai">TÀI</div><div class="ftr" style="position:relative"><i id="barTai" style="background:var(--indigo)"></i><s id="notch7" style="position:absolute;left:70%;top:0;bottom:0;width:2px;background:rgba(43,35,32,.35);display:none"></s><s class="nat" id="natTai"></s></div><div class="fv" id="valTai">0</div></div>
+    <div class="frow"><div class="fl" id="lblGan">GAN</div><div class="ftr" style="position:relative"><i id="barGan" style="background:var(--red)"></i><s class="nat" id="natGan"></s></div><div class="fv" id="valGan">0</div></div>
+    <div class="frow"><div class="fl" id="lblBan">BẠN</div><div class="ftr" style="position:relative"><i id="barBan" style="background:var(--leaf)"></i><s class="nat" id="natBan"></s></div><div class="fv" id="valBan">0</div></div>
     <div class="mult" id="multLine">—</div>
     <div class="ftr" id="tierBar" style="display:none;height:8px;margin:-4px 0 8px"><i id="tierFill" style="background:var(--gold);display:block;height:100%;width:0;transition:width .4s"></i></div>
     <div class="acts">
@@ -165,7 +167,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.38</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.39</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -1109,6 +1111,10 @@ function drawScene(now){
     });
   }
   lanterns.forEach(function(ln){ var fl2=Math.sin(now*0.006+ln.ph)*1.5;
+    if(ln.dark){ // an unlit lantern over stamped-out ground — the harvest counts what fell, too
+      ctx.save(); ctx.globalAlpha=0.55; ink(1.6); ctx.beginPath(); ctx.moveTo(ln.x,ln.y-16+fl2); ctx.lineTo(ln.x,ln.y-11+fl2); ctx.stroke();
+      ctx.fillStyle="#7a6f5d"; ctx.beginPath(); ctx.ellipse(ln.x,ln.y+fl2,8,11,0,0,6.28); ctx.fill(); ctx.stroke();
+      ctx.fillStyle="#5a5040"; ctx.fillRect(ln.x-4,ln.y-11+fl2,8,3); ctx.fillRect(ln.x-3,ln.y+10+fl2,6,5); ctx.restore(); return; }
     ink(2); ctx.beginPath(); ctx.moveTo(ln.x,ln.y-16+fl2); ctx.lineTo(ln.x,ln.y-11+fl2); ctx.stroke();
     ctx.fillStyle="rgba(227,166,59,.16)"; ctx.beginPath(); ctx.arc(ln.x,ln.y+fl2,16,0,6.28); ctx.fill();
     ctx.fillStyle="#C1443C";
@@ -1700,8 +1706,9 @@ function actHui(){ if(!S.un.hui||S.over||S.acts<=0||S.hui>=huiMax()||conBan(1)) 
   logMsg(STR.huiDone.vi,STR.huiDone.en); render(); save(); }
 // 🧧 hốt hụi — the pot: what a hụi is FOR. The whole circle pays one member; the river dips, that sprout pushes harder.
 // A tradeoff, not a gift: −1 river is −7% on every named sprout (and may drop a tier cap) for +6% on one — and never past a zero.
-function potOk(p){ return !!p&&p.known&&seenAll(p)&&!p.started&&!p.gone&&S.un.hui&&(S.hui|0)>=1&&!conBan(1)&&S.von>=2&&!hasZero(p)&&prod(p)>=100&&!S.potSeason; }
-function potAfter(p){ return Math.min(0.85,prod(p)/1000*0.9*(0.3+0.7*Math.max(1,S.von-1)/10)+Math.min((S.yearCard===5)?0.15:0.09,(p.mom||0)+0.06)); }   // what the pot would make of them — river dipped, sprout pushed
+function potAfter(p){ return Math.min(ceilOf(Math.min(p.tai,p.gan,p.ban)),prod(p)/1000*0.9*(0.3+0.7*Math.max(1,S.von-1)/10)+Math.min((S.yearCard===5)?0.15:0.09,(p.mom||0)+0.06)); }   // what the pot would make of them — river dipped, sprout pushed, never past the weakest factor's ceiling
+function potCapped(p){ return !!p&&potAfter(p)<=chance(p)+1e-9; }   // the ceiling already binds — a coin from the river would push nothing
+function potOk(p){ return !!p&&p.known&&seenAll(p)&&!p.started&&!p.gone&&S.un.hui&&(S.hui|0)>=1&&!conBan(1)&&S.von>=2&&!hasZero(p)&&prod(p)>=100&&!S.potSeason&&!potCapped(p); }
 function actPot(){ var p=cur(); if(!potOk(p)||S.acts<=0||S.over) return; if(!spend("pot",p)) return;
   var cap=(S.yearCard===5)?0.15:0.09; p.mom=Math.min(cap,(p.mom||0)+0.06); S.potSeason=true;
   S.von=Math.max(1,S.von-1); S._vonAt=performance.now();
@@ -2062,7 +2069,12 @@ function startFinale(){
         var trF=shipTier(s), sayF=trF===3?(ow.qt||{vi:"“Thương hiệu của xóm mình.”",en:"“Our xóm's brand.”"}):trF===2?{vi:"“Mái này đứng được rồi.”",en:"“This roof stands now.”"}:(ow.qb||{vi:"“Của tôi.”",en:"“Mine.”"});
         bubble(ow,sayF[L]); } },700+i*800);
   });
-  setTimeout(function(){ if(runTok===myTok) endGame(); }, ships.length?700+ships.length*800+1200:1400);
+  // after the lit ones: an unlit lantern over each roof the sky took this year — no gong, no glow, just the pole
+  var fallen=(S.scars||[]).filter(function(c){ return S.season-c.s<=3&&!S.ships.some(function(sh){return Math.hypot(sh.x-c.x,sh.y-c.y)<30;}); });
+  fallen.forEach(function(c,i){ setTimeout(function(){ if(runTok!==myTok) return; lanterns.push({x:c.x+34,y:c.y-8,ph:Math.random()*6.28,dark:true}); },700+ships.length*800+300+i*350); });
+  if(fallen.length&&ships.length) setTimeout(function(){ if(runTok!==myTok) return;
+    logMsg("…và "+fallen.length+" cây đèn không thắp — cho những mái con dấu đã lấy đi.","…and "+fallen.length+" unlit — for the roofs the stamp took."); },700+ships.length*800+300);
+  setTimeout(function(){ if(runTok===myTok) endGame(); }, ships.length?700+ships.length*800+1200+fallen.length*350:1400);
 }
 function endGame(){
   S.over=true;
@@ -2232,7 +2244,7 @@ function render(){
   var shelOk=S.un.probe&&(S.probeSeen?(S.luatNext<4||S.luat<4):(S.luat<4))&&shelTarget()&&!S.over;
   el("shelBtn").style.display=shelOk?"":"none";
   el("shelBtn").disabled=S.acts<=0;
-  el("huiCost").textContent=S.hui>=huiMax()?("✓ "+huiMax()+"/"+huiMax()):"(1⚡)";
+  el("huiCost").textContent=S.hui>=huiMax()?("✓ "+huiMax()+"/"+huiMax()):(S.von>=10?"(1⚡)":("(1⚡ · ×"+vonMul().toFixed(2)+"→"+(0.3+0.7*Math.min(10,S.von+1)/10).toFixed(2)+")"));   // one coin: the river's multiplier before → after, the same answer every other verb gives
   el("huiBtn").disabled=S.acts<=0||S.hui>=huiMax()||S.over||conBan(1);
   el("huiBtn").style.textDecoration=conBan(1)?"line-through 2px #C1443C":""; el("huiBtn").style.opacity="";
   el("buildBtn").disabled=S.acts<=0||S.built||S.over;
@@ -2256,6 +2268,10 @@ function renderSheet(){
   var sT=seenAll(p)||p.seen.tai, sG=seenAll(p)||p.seen.gan, sB=seenAll(p)||p.seen.ban, all=seenAll(p);
   el("valTai").textContent=sT?p.tai:"?"; el("valGan").textContent=sG?p.gan:"?"; el("valBan").textContent=sB?p.ban:"?";
   el("barTai").style.width=(sT?p.tai*10:0)+"%"; el("barGan").style.width=(sG?p.gan*10:0)+"%"; el("barBan").style.width=(sB?p.ban*10:0)+"%";
+  // entropy, drawn: a dashed tick at each factor's nature — the tending above it is what a season can wash back (hidden until the factor is seen; gone once they bloom)
+  [["Tai","tai",sT],["Gan","gan",sG],["Ban","ban",sB]].forEach(function(f){ var nt=el("nat"+f[0]); if(!nt) return;
+    var bv=p["b"+f[1]], show=f[2]&&!p.started&&fin(bv)&&p[f[1]]>bv;
+    nt.style.display=show?"block":"none"; if(show){ nt.style.left=(bv*10)+"%"; nt.title=(L==="vi"?"bản tính ":"nature ")+bv+(L==="vi"?" — phần trên đây có thể phai":" — what stands above this can fade"); } });
   var n7=el("notch7"); if(n7) n7.style.display=(S.classSeen&&!p.started)?"block":"none";
   var pr=prod(p), pc=Math.round(chance(p)*100);
   var trProd=pr<300?1:pr<600?2:3, trNow=Math.min(tierCap(),trProd), held=p.started&&trProd>trNow;   // held: the product earned a tier the river won't carry yet
@@ -2292,7 +2308,7 @@ function renderSheet(){
   var pb=el("potBtn"); pb.style.display=(S.un.hui&&(S.hui|0)>=1&&!p.started&&!conBan(1))?"":"none";   // the pot exists once you have paid in — the button appears with it
   pb.disabled=!potOk(p)||S.acts<=0||S.over; el("potLbl").textContent=t("pot");
   el("potHint").textContent=potOk(p)?(t("potH")+" → "+Math.round(potAfter(p)*100)+"%")
-                              :(!seenAll(p)?(L==="vi"?"chưa hiểu người ta":"you don't know them yet"):S.von<2?(L==="vi"?"sông cạn — không còn gì để hốt":"river too thin — nothing to take"):S.potSeason?(L==="vi"?"phiên này đã hốt":"taken this season"):hasZero(p)?(L==="vi"?"không đẩy nổi số không":"nothing pushes past a zero"):prod(p)<100?(L==="vi"?"mầm chưa nhú (tích <100)":"no sprout yet (product <100)"):t("potH"));
+                              :(!seenAll(p)?(L==="vi"?"chưa hiểu người ta":"you don't know them yet"):(!hasZero(p)&&prod(p)>=100&&!S.potSeason&&S.von>=2&&potCapped(p))?(L==="vi"?t(weakest(p).k)+" "+weakest(p).m+" chặn — hụi không đẩy nổi":t(weakest(p).k)+" "+weakest(p).m+" caps it — the pot can't push past"):S.von<2?(L==="vi"?"sông cạn — không còn gì để hốt":"river too thin — nothing to take"):S.potSeason?(L==="vi"?"phiên này đã hốt":"taken this season"):hasZero(p)?(L==="vi"?"không đẩy nổi số không":"nothing pushes past a zero"):prod(p)<100?(L==="vi"?"mầm chưa nhú (tích <100)":"no sprout yet (product <100)"):t("potH"));
   // what each hand would DO to this person — the multiplication's answer, per verb, before you spend
   // (the weakest factor moves the product most; showing the three deltas side by side is the thesis as a UI)
   (function(){

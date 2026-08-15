@@ -41,7 +41,8 @@ Rules:
 | `Gate 16` | 1 | the strip says it scrolls — on a 390px phone the roster is wider than its box, and the chips at a live edge fade into the paper: right edge only at the start, both in the middle, left edge only at the end (v0.36) |
 | `Gate 14` | 1 | the TÀI zero walks — a low-TÀI neighbour picks the LEARN errand ≥20% of the time and it carries them to the most skilled pair of hands; a high-TÀI neighbour never picks it (v0.36) |
 | `Gate 15` | 1 | strangers walk — with nobody yet spoken to, the errand governor still sends people on the road: the road precedes the label (v0.37) |
-| `Gate 16` | 1 | the ceiling — the weakest factor caps a life: 10×2×10 at a full river sprouts ≤4 %/season, 10×3×10 ≤8 %, and the sheet names the capping factor; Gate 0 gains the capping assertions `chance(10,2,10)≤0.04`, `chance(10,3,10)≤0.08`, `tiers.maxer < 0.4·tiers.hunter` (v0.38) |
+| `Gate 18` | 1 | the ceiling — the weakest factor caps a life: 10×2×10 at a full river sprouts ≤4 %/season, 10×3×10 ≤8 %, and the sheet names the capping factor; Gate 0 gains the capping assertions `chance(10,2,10)≤0.04`, `chance(10,3,10)≤0.08`, `tiers.maxer < 0.4·tiers.hunter` (v0.38) |
+| `Gate 20` | 1 | the pot respects the ceiling — a row a 3 already caps refuses the pot and names the capping factor, a row with room takes it, and the hụi button prints what one coin does to the river's multiplier (v0.39) |
 
 ## Convergence gates — `done.sh`
 
@@ -77,3 +78,9 @@ open in `OWNER-GATE.md` forever, so the honest version of the answer is always s
 Record here when an existing gate is made stricter, with the old and new threshold.
 
 - **Gate 0 (v0.38):** three capping clauses added — `chance({10,2,10},10) ≤ 0.04`, `chance({10,3,10},10) ≤ 0.08`, `tiers.maxer < 0.4·tiers.hunter` (a new anti-diagnosis strategy, *polish the strong*). Every prior clause kept.
+- **`gates-ledger` (done.sh, v0.37):** the presence check now also asserts **id uniqueness** in both
+  `GATES-LEDGER.md` and `gate.sh`. Old threshold: every ledger id must exist in `gate.sh`. New: that,
+  plus no id may appear twice in either file. A duplicate passed the old check — the number *did*
+  exist in `gate.sh` — while two rows silently claimed one gate. That happened **four times in a
+  single tick** with two sessions allocating numbers concurrently. Negative-tested: an injected
+  duplicate row fails the gate.
