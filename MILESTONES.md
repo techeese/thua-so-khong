@@ -184,6 +184,15 @@ the fair-opponent era's work, or the owner's. Numbers are as of v0.68 (ceiling �
   the "fourth factor" is, in play, a tier cap plus a late multiplier, and any era that wants capital
   to *decide* must let it act on the ceiling (e.g. a river ≤2 lowering every ceiling one step),
   which is a charter §3 conversation, not a tick.
+- **The year cards, closed (v0.72):** three now carry a diagnostic identity — *strict* (stamps 25/10,
+  v0.70), *flood* (the river never rises on its own, v0.71), *wind* (hands +3, fade 50 %, v0.72). Two
+  had one already: *quiet-hands* is the year breadth pays (spreader 5.64, its best), *reunion* is
+  the year people are on the clock (fates per card, 600 runs: Chú Ba's craft dies in **44 %** of
+  idle reunion runs vs 0–1 % elsewhere; Liên leaves 62 % of spreader runs there). *Market-road* stays
+  a story card: it is about capital, and under the ceiling capital cannot move the diagnosis
+  (see the river entry) — deliberately left as flavour rather than forced. Also measured: since the
+  witness bound, the fates bite spreaders far more (Ngân leaves 14–18 % of spreader runs, was 5 %;
+  Liên 62–78 %) and hunters not at all — the people, not the numbers, now price neglect.
 - **The witness bound (v0.57)** is the one balance change a tick did ship, because it converts idle
   back-half hands into work: hunter 16.0 → 12.3 tiers in the sim, unchanged blooms, every band
   clause held. If the fair-opponent era finds it too steep, the knob is the cap (5), not the rule.
