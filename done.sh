@@ -147,16 +147,29 @@ open_=[]
 for b in blocks:
     m=re.search(r'^\*\*Defect:\*\*\s*yes\s*[-—]?\s*(.*)$',b,flags=re.M)
     if m and not re.search(r'^> *FIXED',b,flags=re.M):
-        open_.append(m.group(1).strip()[:80])
+        open_.append('defect: '+m.group(1).strip()[:70])
+    # an APPROVED proposal is work too; a pending or rejected one is not
+    q=re.search(r'^\*\*Proposal:\*\*\s*yes\s*[-—]?\s*(.*)$',b,flags=re.M)
+    if q and re.search(r'^> *APPROVED',b,flags=re.M) and not re.search(r'^> *SHIPPED',b,flags=re.M):
+        open_.append('approved: '+q.group(1).strip()[:70])
 print(len(open_))
 for t in open_[:3]: print('   ↳ '+t)
 PY2
 )
 NDEF=$(printf '%s' "$DEF" | head -1)
 if [ "${NDEF:-0}" != "0" ]; then
-  no "$NDEF open defect(s) the grader flagged — fix and close with '> FIXED v0.N' in lab/NOTES.md"
+  no "$NDEF open item(s) licensed for Gear 1 — close with '> FIXED v0.N' (defect) or '> SHIPPED v0.N' (approved proposal)"
   printf '%s\n' "$DEF" | tail -n +2
-else ok "no open defects"; fi
+else ok "no open defects or approved proposals"; fi
+
+# PENDING PROPOSALS — raised by the grader, not yet reviewed. Not a red gate: a proposal is an
+# option, not an obligation. Gear 3 reviews it before it can become work (see the skill).
+PEND=$(grep -c '^\*\*Proposal:\*\* yes' lab/NOTES.md 2>/dev/null); PEND=${PEND:-0}
+APPR=$(grep -c '^> *APPROVED' lab/NOTES.md 2>/dev/null); APPR=${APPR:-0}
+REJ=$(grep -c '^> *REJECTED' lab/NOTES.md 2>/dev/null); REJ=${REJ:-0}
+if [ "$PEND" -gt "$((APPR+REJ))" ]; then
+  skip "$((PEND-APPR-REJ)) proposal(s) awaiting adversarial review — review this tick instead of a new investigation"
+fi
 
 echo
 echo "── owner gates — ADVISORY under full autonomy ─────────"

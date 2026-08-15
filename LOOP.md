@@ -41,8 +41,20 @@ Session runs in `/Users/Admin/Desktop/coding`; all game commands run in `thua-so
 ## The ship budget — every item must close something
 
 An item may enter a round only if it (a) turns a red `done.sh` gate green, (b) answers an open
-`OWNER-GATE.md` directive, (c) fixes a **grader-classified defect** from `lab/NOTES.md`, or (d) is
-named era work in `MILESTONES.md`.
+`OWNER-GATE.md` directive, (c) fixes a **grader-classified defect** from `lab/NOTES.md`, (d) is
+named era work in `MILESTONES.md`, or (e) is a grader-raised proposal that survived review.
+
+Clause (e) — a **grader-raised proposal that has survived adversarial review** — lets the loop
+*add*, not just fix. The grader may mark `**Proposal:** yes — …` on a finding; that is an option,
+not an obligation. The next vigil tick spends itself reviewing it: three critics briefed to reject,
+plus the lens that matters most here — *would removing something serve this goal better than
+adding?* Majority pass → `> APPROVED` under the entry, which trips the licence gate and makes it
+Gear 1 work; ship it and close with `> SHIPPED v0.N`. Majority reject → `> REJECTED <why>` and it
+becomes a candidate for the next synthesis instead.
+
+That review is the whole safeguard. Additions with no gate are exactly how cycles 9–15 padded a
+fable about restraint, and the addition-specific lens exists because every standing directive on
+this project is reductive.
 
 Clause (c) is the loop's own licence to ship. A lab entry carries a `**Defect:** yes — …` line only
 if the *grader* put it there; that trips the `no-open-defects` gate, which forces Gear 1 and makes

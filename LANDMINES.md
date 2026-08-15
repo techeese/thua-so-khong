@@ -68,6 +68,11 @@ that is now impossible because a gate catches it stays here, with the gate named
   would have ticked, measured, committed and graded indefinitely while looking perfectly healthy.
   Generalises: **when a file has a prepend convention, every window over it is a slice off the
   front**; and a termination condition that has never actually fired is untested, not working.
+- **A loop that can only fix is maintaining, not improving; a loop that can add freely is drifting.**
+  The difference is not the size of the change but whether it survived criticism. Defects are
+  self-evident, so the grader alone licenses them. Additions are judgment calls, so they face the
+  same adversarial review an era does, at tick scale — including the lens *would removing something
+  serve this better than adding?*, because every standing directive on this project is reductive.
 - **An owner directive must be machine-detectable or it will be silently ignored.** `done.sh`
   originally had no way to see a note in `OWNER-GATE.md`; the loop would read the directive, find
   every gate green, return CONVERGED and go back to vigil without doing the work. Open directives
