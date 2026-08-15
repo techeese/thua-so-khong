@@ -19,6 +19,86 @@ argues for or against.
      **Measured:** …
      **Argues for/against:** <candidate era>  -->
 
+## 2026-08-15 — the river route, banded: the hụi and the pot as a non-diagnostic way through the game (`hui.js`)
+
+**Question.** v0.39/v0.40 gave the river its own verbs — **Góp hụi** (a hand → river +1, up to 3, 4 in a flood
+year) and **hốt hụi** (a hand → one sprout +0.06 momentum, river −1, once a season, only past 100 product and never
+past a zero) — and the circle now lifts BẠN for the loneliest known neighbour every season once you have paid in.
+`check.js:24` says plainly that no banded strategy contributes to the hụi, so the band has never seen any of it.
+`fourth.js` measured hụi-only on the v0.31 math (3.63 blooms). Since then: ceilings (v0.38), the pot's ceiling and
+price (v0.39/v0.45), the circle lift (v0.40). So: **is there a way through the game that goes by the river instead
+of by the zero — and what do the two river verbs do to a player who does diagnose?**
+
+**Built.** `lab/hui.js` — `check.js` v0.52 verbatim (band reproduces: hunter 6.98/16.06 · spreader 5.33/9.89 ·
+maxer 3.47/5.07 · linker 6.11/13.08 · idle 2.46) plus, mirrored from `index.html`: `actHui` (`:1831` — open from
+season 2, or from season 0 in a flood year; river +1 per hand, `huiMax` 3/4), `actPot` (`:1846` — `potOk` minus
+`seenAll`, since the sim's hunter has perfect information; `potAfter` `:1837`; one a season; river −1), and the
+circle lift (`:2121` — after paying in, the loneliest *known* unbloomed neighbour with BẠN ≤ 2 gets +1 each season;
+"known" = everyone present for every non-idle strategy, as the sim already assumes for inspiration). Not modelled:
+the no-hụi constraint year, the paid forecast. Suffixes: **HuiFirst** pays in the moment the circle opens ·
+**HuiSpare** pays in only with a hand that has no unbloomed target · **HuiPot** pays in first, then takes the pot
+whenever its own printed condition says it pushes (`potAfter > chance`), choosing the biggest push ·
+**HuiPotSmart** pots only at river ≥ 8 (no cap line crossed) · **HuiPotLate** pots only once no unbloomed
+person's weakest factor is ≤ 4 · **sitter** knows everyone and does nothing (the sim's idle knows no one) ·
+**idleHuiOnly** the `fourth.js` control.
+
+**Measured (N=4000/strategy, same seeds as the band).**
+| strategy | blooms | tiers | hụi hands | pot hands | circle lifts | mom per pot | pot crosses a cap line |
+|---|---|---|---|---|---|---|---|
+| hunter (shipped) | 6.98 | 16.06 | 0 | 0 | 0 | — | — |
+| hunterHuiFirst | 6.98 | **15.24** | 3.16 | 0 | 0.93 | — | — |
+| hunterHuiSpare | 6.98 | 16.07 | 3.14 | 0 | 0 | — | — |
+| hunterHuiPot | 6.93 | **14.61** | 3.16 | 4.19 | 1.10 | 0.053 | 28 % |
+| hunterHuiPotSmart | 6.98 | 14.96 | 3.16 | 1.53 | 0.93 | 0.053 | 0 % |
+| hunterHuiPotLate | 6.98 | 14.96 | 3.16 | 1.78 | 0.93 | 0.055 | 21 % |
+| spreader | 5.33 | 9.89 | 0 | 0 | 0 | — | — |
+| spreaderHuiFirst | 5.74 | 10.36 | 3.16 | 0 | 4.90 | — | — |
+| spreaderHuiPot | 5.57 | 9.62 | 3.16 | 3.03 | 5.07 | 0.055 | 24 % |
+| maxer | 3.47 | 5.07 | 0 | 0 | 0 | — | — |
+| maxerHuiPot | 4.17 | 6.00 | 3.16 | 1.41 | 6.73 | 0.057 | 22 % |
+| linker | 6.11 | 13.08 | 0 | 0 | 0 | — | — |
+| linkerHuiPot | 6.08 | 12.34 | 3.16 | 3.11 | 1.56 | 0.053 | 25 % |
+| sitter (knows all, does nothing) | 3.27 | 4.03 | 0 | 0 | 0 | — | — |
+| sitterHuiPot (the river route, pure) | **3.98** | 5.01 | 3.16 | 1.38 | 6.79 | 0.058 | 22 % |
+| idle (shipped) | 2.46 | 2.46 | 0 | 0 | 0 | — | — |
+| idleHuiOnly | 2.59 | 2.59 | 3.16 | 0 | 0 | — | — |
+
+**Observation.**
+- **There is no river route.** A player who talks to everyone, pays the hụi and takes every pot the game offers,
+  and never raises a factor, ends at **3.98 blooms / 5.0 tiers** — under the band's `idle ≤ 4.0` difficulty ceiling
+  by 0.02, and 11 tiers under the hunter. The circle does the most for exactly the players who diagnose least
+  (lifts: hunter 0.9 · spreader 4.9 · maxer 6.7 · sitter 6.8) and it is still worth only +0.4–0.7 blooms to them.
+  The band's every margin holds with the river verbs switched on for every opponent.
+- **Both river verbs are worth less than a hunt hand, to the player who hunts.** Paying in early costs the hunter
+  0.82 tiers for 3.16 hands (**≈ 0.26 tiers per hand diverted**); paid with spare hands it costs nothing and buys
+  nothing (16.07 — the river reaches ~9.9 by the end regardless). The pot, taken whenever the sheet says it pushes,
+  costs **1.45 tiers** for 4.19 hands; restricted to river ≥ 8 (never crossing a cap line) it still costs 0.28 for
+  1.53 hands, restricted to the late game 0.28 for 1.78. The pot delivers what it prints — 0.053–0.058 momentum
+  a use, nearly its full 0.06 — and it is still a worse hand than "raise the weakest factor", every way it was
+  played. Only the maxer gains from it (+0.7 blooms): the pot pushes a high-product sprout, and the maxer is the
+  strategy that makes those.
+- The pot crosses a cap line (river 4→3 or 7→6) in **21–28 %** of its uses under the honest "whenever it pushes"
+  policy — the case v0.45 prints as `↓bậc N`. The Smart policy shows the cap crossing is not the main cost: the
+  hand is.
+- Side number: **a sitter who has met everyone but never acts blooms 3.27** vs the sim's idle 2.46 — the difference
+  is inspiration, the class and Tết reaching known people. The band's `idle ≤ 4.0` clause is measured on the
+  stranger, not the sitter; the sitter with the river verbs sits at 3.98.
+
+**What it says.** The river verbs are thesis-consistent by measurement: capital multiplies but does not decide, and
+a hand on the river is a hand not on the zero. The pot's honest price (v0.45) is honest; what it does not say is
+that the trade is nearly always a losing one for a diagnosing player — the sheet says "this pushes", and it does,
+and you would still have been better off elsewhere. Whether a verb whose printed condition is true and whose use is
+net-negative for the intended player is a *decision* or a *trap* is a design question, not a measured one.
+
+**Argues for/against.** Argues *against* any candidate that leans on the hụi/pot as a second axis of play — under
+today's numbers it is a small tax on the diagnostician and a small gift to the spreader. Argues *for* the
+`sitter` and `sitterHuiPot` opponents as honest additions to any fair-opponent instrument (`fairopp.js`): the river
+route is the strongest thing a non-diagnosing player can do after linking, and the band has never looked at it.
+Not a proposal.
+
+**Not shipped, per Gear 3.** `index.html` and `check.js` untouched; probe `lab/hui.js`, output `lab/hui-out.txt`
+(both gitignored). Run: `node lab/hui.js`.
+
 ## 2026-08-15 — what the storm costs, and what the tarp buys: the whole stamp mechanic is worth 1 % of the hunter's rooted depth (`shelter.js`)
 
 **Question.** v0.41 printed the law's number (⬛ 15 %/5 %), v0.48 made one hand tarp every standing
