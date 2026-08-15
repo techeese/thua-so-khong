@@ -234,3 +234,70 @@ Re-scoped against v0.35 and the critics' pass conditions:
 
 **Next tick:** three critics on B as re-scoped (drift · thesis · substance). Majority reject →
 `failed_syntheses=1` in `LADDER.md`, and one more synthesis before escalation is earned.
+
+---
+
+## 8. Review round 2 — candidate B (re-scoped) · **REJECTED 3/3** · 2026-08-15
+
+Read against v0.36 (which shipped the TÀI walk, errand 11 LEARN, Gate 14 — "exactly the channel
+Era B would need", CHANGELOG v0.36).
+
+- **Drift — REJECT.** `watcher ≥ 0.85·hunter` is a null gate: every non-idle strategy on record
+  already clears it (spreaderU 99.6 % of hunter blooms, wasteful spreader 89 %, `maxerU` 0.98–0.99
+  on tiers). It ratchets *down* against v0.35's `misreader > spreader + 0.5` (a partial-information
+  player at 99.9 % of hunter). `hunter > spreaderU + margin` leaves the only number blank; any
+  shippable margin is ≤ 0.33 against today's +3. Both sides of the ratio are era-tunable (walk
+  cadence, storm early-return). Removing factor labels silently un-ratchets Gate 13's collision
+  population. v0.36 hollows the flagship. *Pass:* keep every Gate 0 clause; add
+  `watcher ≥ hunter − ε` on tiers with cadence frozen at today's rate.
+- **Thesis — REJECT.** B touches neither of the two surfaces the lab proved violate the charter —
+  the t=0 tagline (§2, owner gate 3) and the ending card with its unconditional great-man line
+  (§1) — and reduces telling where telling is already ~0. Charter §3 weakened, not served: the
+  printed zero goes away while the soft product stays (84 % of zeros bloom anyway; 68 % of winning
+  hands touch no low factor) — the weakest factor still doesn't decide, it is merely harder to see.
+  §4 breaks under B's own gates: ≥ 70 % from walks alone needs k≈9–30 errands, a 2–5× lift — the
+  owner-reserved rate change that sank A, relabelled "walk cadence". Hiding begets explaining
+  (v0.33 needed `STR.reveal`). *Pass:* bring the ending arithmetic and the t=0 tagline inside
+  scope, hold cadence at the shipped rate, make Gate 0 prove a near-zero caps the outcome.
+- **Substance — REJECT.** Half of B shipped by the owner's own loops (v0.33 hid the row; v0.36
+  the TÀI walk); what remains is one label block, one roster tag, the `%` hint, one `known` filter
+  — a tick, not weeks. "No factor text before touch" already passes (`zeroOf` null unless
+  `p.seen[k]` since v0.33). The watcher band cannot fail (`maxerU` keeps 98 % of tiers with zero
+  information). A phone stranger gets less: labels at 34.6 % of acts replaced by 1.8–4.5
+  errands/run into frames where 61 % already overlap. `check.js` has no time and no walks — a
+  watcher band is a research bet dressed as an era. *Backs a re-synthesis where the weakest factor
+  actually decides*, over B, C (fates shipped in v0.35) or D (hụi is named in the charter).
+
+**Disposition — synthesis 1 ends with no surviving candidate.** A: 3/3 reject. B: 3/3 reject.
+C and D were pre-refuted by the same critics on the record (C's fates shipped as v0.35 under owner
+authority; D removes a verb the charter names). `LADDER.md` state → `failed_syntheses=1`. Per
+`MILESTONES.md`, escalation is not yet earned: one more synthesis at L2 must be attempted and fail
+before L3.
+
+## 9. What every critic said, both rounds — the brief for synthesis 2
+
+Six independent verdicts converge on one pass condition, stated four ways:
+
+1. **Make the weakest factor actually decide.** `chance()` is continuous; a person with a 2 or 3
+   still blooms 4.5–13.5 %/season; anti-diagnosis keeps 98 % of tiers; wrong person costs nothing.
+   Until information has value, no information-era gate can fail — and no band can prove the
+   thesis. (drift ×2, thesis ×2, substance ×2)
+2. **Gate 0 must be able to fail on the thing the era changes**, and must ratchet up: keep every
+   clause, add `spreaderU`/`maxerU` with a *stated* margin, and add a gate that proves a near-zero
+   *caps* an outcome — not a race score. (drift ×2)
+3. **The two charter-violating surfaces are the frame and the ending** — the t=0 tagline and the
+   150-word card with its unconditional great-man line. Those are in scope for whatever comes
+   next; play itself is already the quiet layer. (thesis ×2)
+4. **Ambient/walk cadence is frozen** at today's rate unless the owner is asked explicitly. (thesis
+   ×2, drift ×1)
+5. **Do not define an era around done work.** Read the tree the morning of the review, not the
+   synthesis's snapshot; the owner's two loops ship every ~5 minutes. (all three, both rounds)
+
+**Synthesis 2 (next tick, L2, 3 critics):** re-read as a stranger against the tree of that
+morning; propose 3–4 candidates again, one reductive, one real swing — with the working title for
+the swing **"Số không quyết định" (the zero decides)**: the product's *shape* changes so that a
+weakest factor ≤ 2 caps what a life can become (a tier, a fate, a bloom ceiling) rather than
+discounting it; the ending card becomes the arithmetic and nothing else; the tagline leaves the
+frame; Gate 0 keeps every clause and gains a *capping* assertion; cadence untouched. It must be
+priced honestly (it changes balance the owner's loops just banded) and must survive its own
+critics like everything else.
