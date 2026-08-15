@@ -402,3 +402,13 @@ that is now impossible because a gate catches it stays here, with the gate named
 - **When a fix changes DRAW ORDER, measuring geometry proves nothing.** The first version of Gate 48
   counted label/body overlaps and reported 3 before and 3 after — both true, both irrelevant. Assert
   the thing that changed: paint order.
+- **The ox-cart is not a bug.** A storm screenshot shows a solid dark rectangle with two dark wheels
+  crossing the road near the đình; it is `cart`, the market-road year's ox-cart (`index.html` ~1143).
+  Two ticks nearly went into chasing it. When an unfamiliar shape appears on the canvas, grep the
+  drawing code for what could paint it *before* building a detector — the mechanic loop adds scene
+  elements faster than this loop reviews them, so "I do not recognise it" means "read the code", not
+  "defect".
+- **Overlay reachability generalises; verified, do not re-measure.** v0.56 made `.ovl` scrollable for
+  the ending card. The intro and the Sổ tay inherit it correctly: at 673/433/353px tall the intro's
+  Begin button and the Sổ tay's Đóng button are both reachable, the intro card never outgrows the
+  window, and the Sổ tay's own 88vh cap plus inner scroll (v0.42) handles its case.
