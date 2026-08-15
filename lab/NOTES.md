@@ -55,6 +55,11 @@ that "the multiplication teaches itself" until its opponents land their acts.
 **Harness:** `lab/fairopp.js` — `node lab/fairopp.js` prints a `FAIR:` line beside the shipped
 band. Gitignored except this note.
 
+**Verdict:** confirms-known
+*Grader:* By its own account this re-measures `decide.js` §1 (whose grader line already credited it with the fairer `spreaderU` opponent and the 50.7 % no-op rate) after v0.38, and the direction it argues for — fair opponents with a stated margin — is already recorded as candidate Y's pass conditions in `SYNTHESIS.md` §9.2/§30, so it sharpens an existing candidate rather than opening or killing one.
+**Defect:** no
+**Proposal:** no
+
 ## 2026-08-15 — three floors, one word: what "số không" means after v0.30/v0.31 (`threefloors.js`)
 
 Between 15:06 and 15:27 the owner's two other sessions shipped v0.29–v0.31: the zero now **bites**
