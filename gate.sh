@@ -365,10 +365,11 @@ setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-v1");
   document.getElementById("startBtn").click();
   S.nudged=true; S.season=10; var ng=S.cast[0]; ng.known=true; ng.gan=1; ng.started=false;
+  S.cast.forEach(function(q){ if(q!==ng){ q.known=false; q.started=true; } });   // she is a witness: any other bloom this tick lifts her GAN by 1, two carry her to 3 — so nobody else may bloom (a real flake, seen twice)
   nextSeason(); var leaving=!!ng.leaving, s11=S.season;
   setTimeout(function(){ var gone1=!!ng.gone;
     // control: a fresh xóm where she dared
-    fresh(); S.nudged=true; S.season=10; var ng2=S.cast[0]; ng2.known=true; ng2.gan=5; ng2.started=false; nextSeason();
+    fresh(); S.nudged=true; S.season=10; var ng2=S.cast[0]; ng2.known=true; ng2.gan=5; ng2.started=false; S.cast.forEach(function(q){ if(q!==ng2){ q.known=false; q.started=true; } }); nextSeason();
     setTimeout(function(){ var ok=leaving&&s11===11&&gone1&&!ng2.gone&&!ng2.leaving;
       document.title=(ok?"CLOCK_OK":"CLOCK_BAD")+" leaving="+leaving+" s="+s11+" gone="+gone1+" daredStays="+(!ng2.gone&&!ng2.leaving);
     },5200); },5200);
@@ -558,8 +559,13 @@ setTimeout(function(){ try{
   ba.ban=2; ba.tai=9; ba.gan=3;           // the loneliest
   var trials=0, maiMom=0, vuMom=0, baBan0=ba.ban;
   // roll many season ticks on frozen copies of the same state to average the dice: momentum only accrues on a failed roll
-  for(var i=0;i<12;i++){ mai.mom=0; vu.mom=0; mai.started=false; vu.started=false; S.hui=0; nextSeason(); if(S.over) break; trials++; maiMom+=mai.mom||0; vuMom+=vu.mom||0; S.season=3; }
+  S.cast.forEach(function(q){ if(q!==mai&&q!==vu&&q!==ba){ q.known=false; q.started=true; } });   // nobody else blooms or witnesses — the rows must stay pinned across trials
+  for(var i=0;i<12;i++){ mai.tai=10; mai.gan=3; mai.ban=10; vu.tai=6; vu.gan=5; vu.ban=7; mai.mom=0; vu.mom=0; mai.started=false; vu.started=false; ba.started=false; S.hui=0; nextSeason(); if(S.over) break; trials++; maiMom+=mai.mom||0; vuMom+=vu.mom||0; S.season=3; }
   var noLiftWithoutHui=(ba.ban===baBan0);
+  // isolate the subject: the circle lifts THE loneliest, so anyone else still sitting at ban<=2 can
+  // take the lift instead and the assertion flakes (observed lifted=false on identical code). The
+  // twelve trials above drift the rest of the cast, so put every other neighbour out of the running.
+  S.cast.forEach(function(q){ if(q!==ba&&q.ban<=2) q.ban=4; });
   S.hui=1; ba.ban=2; ba.started=false; ba.known=true; nextSeason(); var lifted=(ba.ban===3&&ba.seen.ban===true);
   ba.ban=3; nextSeason(); var notPast3=(ba.ban===3);
   var ok = trials>=6 && maiMom===0 && vuMom>0 && noLiftWithoutHui && lifted && notPast3;
@@ -570,6 +576,45 @@ open(tmp+"/w.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOF21
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=9000 --dump-dom "file://$TMP/w.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "WORLD_OK" && pass "the world is honest about the ceiling: $T" || fail "the world is honest about the ceiling: $T"
+
+# Gate 22: the ending card owns the screen — the finale's lantern beats keep their voices, but once the
+# card is actually up nothing prints behind it. 107 speech bubbles were still painting under it when
+# this was measured. Asserted non-vacuously: bubbles pushed while the card is up are cleared, and the
+# same push with the card hidden survives — so the guard is conditional, not a blanket mute.
+python3 - "$TMP" <<'PYEOF22'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1"); localStorage.removeItem("thua-so-khong-chronicle");
+  document.getElementById("startBtn").click();
+  for(var seas=0; seas<16; seas++){
+    for(var i=0;i<7;i++){ if(S.cast[i]&&!S.cast[i].known&&(S.cast[i].arrives===undefined||S.season>=S.cast[i].arrives)&&!S.cast[i].gone) selectPerson(i); }
+    var un=S.cast.filter(function(p){return p.known&&!p.started&&!p.gone;});
+    if(un.length){ selectPerson(un[0].id); actNerve(); }
+    S.nudged=true; nextSeason(); if(S.over) break;
+  }
+  setTimeout(function(){ try{
+    var ov=document.getElementById("endOvl"), shown=ov&&ov.classList.contains("show");
+    var atCard=bubbles.length;                                   // what the finale left behind
+    var who=S.cast[0];
+    bubbles=[]; bubble(who,"một hai ba"); bubble(who,"bốn năm sáu"); var pushed=bubbles.length;
+    drawScene(performance.now()); var afterWithCard=bubbles.length;
+    ov.classList.remove("show");                                 // same push, card down
+    bubbles=[]; bubble(who,"một hai ba"); drawScene(performance.now()); var afterNoCard=bubbles.length;
+    ov.classList.add("show");
+    var ok = shown===true && pushed>=2 && afterWithCard===0 && afterNoCard>=1;
+    document.title=(ok?"ENDQUIET_OK":"ENDQUIET_BAD")+" cardUp="+shown+" leftByFinale="+atCard
+      +" pushed="+pushed+" afterWithCard="+afterWithCard+" afterCardDown="+afterNoCard;
+  }catch(e2){ document.title="THREW2: "+e2.message; } },9500);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/e.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF22
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=24000 --dump-dom "file://$TMP/e.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "ENDQUIET_OK" && pass "the ending card owns the screen: $T" || fail "the ending card owns the screen: $T"
 
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }

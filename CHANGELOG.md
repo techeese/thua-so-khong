@@ -1,5 +1,30 @@
 # Changelog — Thừa Số Không
 
+## v0.40 — 2026-08-15 — the ending card owns the screen; Gate 21 made deterministic
+
+A graphics round from the owner's `/loop 5m` session. It opened on a **red release gate** sitting on
+HEAD while the other session had moved on to synthesis — and a red gate outranks a graphics item, so
+that came first.
+
+- **Gate 21 was flaky, not failing.** `WORLD_BAD` had been red across ticks with `maiMom` reading
+  0.24, then 0.32, then 0.32 — and 0.00 on three consecutive runs of the same unchanged code. Two
+  independent causes, both in the harness rather than the game: the twelve trials did not re-pin the
+  **subjects' factors**, so `nextSeason()`'s own lifts (a witnessed bloom gives +1 GAN) drifted Mai
+  off the ceiling mid-run — traced at `gan 3 → 5 → 4` — and she stopped being the ceiling-bound case
+  the gate claims to measure; and the circle-lift clause asserted that *Bé Ngân* is lifted while the
+  circle actually lifts **the** loneliest, so any other neighbour the trials had left at `ban ≤ 2`
+  could take it instead (`lifted=false`, observed). The subjects are now re-pinned every trial and the
+  lift subject is isolated. *Evidence:* five consecutive `WORLD_OK`. Game behaviour untouched — line
+  1853's ceiling guard was already correct, and `chance(10,3,10)` at river 10 measures exactly `0.0800`
+  against a ceiling of `0.0800`, i.e. zero headroom, exactly as intended.
+- **The ending card owns the screen.** With the card up, **107 speech bubbles were still printing
+  behind it** — the finale's floats and quotes stacked across the whole canvas. The lantern beats keep
+  their voices; the clearing fires only once the card is actually up. Charter constraint 4, the same
+  clause the intro fix answered in v0.39, at the game's biggest beat. *Evidence:* new **Gate 22** —
+  `ENDQUIET_OK cardUp=true pushed=2 afterWithCard=0 afterCardDown=1`. Asserted non-vacuously: bubbles
+  pushed while the card is up are cleared, and the identical push with the card hidden survives, so
+  the guard is conditional and not a blanket mute.
+
 ## v0.39 — 2026-08-15 — Gate 21 fix (engine, Gear 1): the circle's lift is seen when it lands
 
 Closes: a red machine gate in HEAD. Gate 21 (*the world is honest about the ceiling and lifts BẠN*)

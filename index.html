@@ -167,7 +167,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.39</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.40</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -476,7 +476,7 @@ function fresh(){
      build:0, built:false, pairs:[], apprentice:false, duo:false, gtm:false, gtmPaid:false, maiHoa:false, hoaLien:false, hoaLienPaid:false,
      linking:null, banner:null, banners:[], luatNext:3, probeSeen:false, baFade:false,
      un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false, stormSeen:false, tierTaught:false, lienNgan:false, stormCount:0, stormStreak:0, classSeen:false, revealSeen:false,
-     log:[], over:false, scars:[], hands:0, vb:{}, hist:[], potSeason:false, potSeen:false};
+     log:[], over:false, scars:[], hands:0, idle:0, vb:{}, hist:[], potSeason:false, potSeen:false};
   lanterns=[]; runTok++;      // invalidate ALL deferred callbacks from the previous run
   parts=[]; stamps=[]; glows=[]; bubbles=[]; amb=[]; pendQ=[]; motes=[]; rain=[]; ripples=[]; flock=null; smoke=[]; boat=null; gossipQ=[]; cart=null; bus=null;
   beatUntil=0; nextErrandAt=0; _chaser=null;
@@ -602,7 +602,7 @@ function cl(v,lo,hi,fb){ return fin(v)?Math.max(lo,Math.min(hi,v)):fb; }
 function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:2,   // NOTE: every NEW save field MUST get a fin()-guarded default in load()
   meta:{lang:L,muted:!!META.muted},
   s:{season:S.season,acts:S.acts,luat:S.luat,von:S.von,hui:S.hui,build:S.build,built:!!S.built,
-     gtmPaid:!!S.gtmPaid,hlp:!!S.hoaLienPaid,hs:S.hands|0,vb:VERBS.map(function(k){return (S.vb&&S.vb[k])|0;}),ps:!!S.potSeason,hist:(S.hist||[]).map(function(v){return v|0;}),pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
+     gtmPaid:!!S.gtmPaid,hlp:!!S.hoaLienPaid,hs:S.hands|0,idl:S.idle|0,vb:VERBS.map(function(k){return (S.vb&&S.vb[k])|0;}),ps:!!S.potSeason,hist:(S.hist||[]).map(function(v){return v|0;}),pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
      arr:S.cast[6].arrives,baf:S.baFadeStart,sc:S.stormCount|0,ss:S.stormStreak|0,yc:S.yearCard|0,gp:S.gtmPays|0,cn:S.constraint|0,
      cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,sn:((p.seen&&p.seen.tai)?1:0)|((p.seen&&p.seen.gan)?2:0)|((p.seen&&p.seen.ban)?4:0),bt:p.btai,bg:p.bgan,bb:p.bban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0,hd:p.hands|0};}),
      ships:S.ships.map(function(w){return {x:w.x,y:w.y,owner:w.owner,pid:w.pid,yours:!!w.yours,age:w.age|0,shel:w.shel|0};}),
@@ -632,7 +632,7 @@ function load(){
     S.scars=Array.isArray(s.scars)?s.scars.filter(function(c){return c&&fin(c.x)&&fin(c.y)&&fin(c.s);}).map(function(c){return {x:c.x,y:c.y,s:cl(c.s,0,15,0)};}).slice(-8):[];
     if(Array.isArray(s.log)) S.log=s.log.filter(function(m){return m&&(typeof m.vi==="string"||typeof m.en==="string");});
     // a returning player has already been introduced — recompute unlocks/flags from state, skip the teaching beats
-    S.apprentice=pairExists(0,1); S.duo=pairExists(3,5); S.gtm=pairExists(1,4); S.maiHoa=pairExists(2,4); S.hoaLien=pairExists(4,6); S.gtmPaid=!!s.gtmPaid; S.hoaLienPaid=!!s.hlp; S.hands=fin(s.hs)?cl(s.hs,0,64,0):0; S.vb={}; if(Array.isArray(s.vb)) VERBS.forEach(function(k,i){ S.vb[k]=fin(s.vb[i])?cl(s.vb[i],0,64,0):0; }); S.hist=Array.isArray(s.hist)?s.hist.slice(0,16).map(function(v){return fin(v)?cl(v,0,15,0):0;}):[];
+    S.apprentice=pairExists(0,1); S.duo=pairExists(3,5); S.gtm=pairExists(1,4); S.maiHoa=pairExists(2,4); S.hoaLien=pairExists(4,6); S.gtmPaid=!!s.gtmPaid; S.hoaLienPaid=!!s.hlp; S.hands=fin(s.hs)?cl(s.hs,0,64,0):0; S.idle=fin(s.idl)?cl(s.idl,0,64,0):0; S.vb={}; if(Array.isArray(s.vb)) VERBS.forEach(function(k,i){ S.vb[k]=fin(s.vb[i])?cl(s.vb[i],0,64,0):0; }); S.hist=Array.isArray(s.hist)?s.hist.slice(0,16).map(function(v){return fin(v)?cl(v,0,15,0):0;}):[];
     S.un={link:S.cast.filter(function(p){return p.known;}).length>=2||S.pairs.length>0,
           hui:S.season>=2, build:S.season>=4||S.build>0||S.built,
           probe:S.ships.length>0||S.season>2};
@@ -678,17 +678,18 @@ function cicadaAudio(on){ try{
     try{ r.src.stop(t0+2.6); r.lfo.stop(t0+2.6); }catch(e){}
   }
 }catch(e){} }
-function rainAudio(on){ try{
+function rainAudio(on,level){ try{
   if(!_ac||META.muted){ if(_rain){ try{ _rain.src.stop(); }catch(e){} _rain=null; } return; }
-  var t0=_ac.currentTime;
+  var t0=_ac.currentTime, tgt=0.010+0.007*Math.max(1,Math.min(3,level||2));   // how heavy the sky sits: luat 3 drizzles at .017, luat 1 pours at .031
+  if(on&&_rain&&_rain.lvl!==level){ _rain.lvl=level; _rain.g.gain.cancelScheduledValues(t0); _rain.g.gain.setValueAtTime(Math.max(0.0001,_rain.g.gain.value),t0); _rain.g.gain.exponentialRampToValueAtTime(tgt,t0+1.5); }   // the sky changed weight mid-storm — the patter follows
   if(on&&!_rain){
     var len=_ac.sampleRate*2, buf=_ac.createBuffer(1,len,_ac.sampleRate), d=buf.getChannelData(0), last=0;
     for(var i=0;i<len;i++){ var w=Math.random()*2-1; last=(last+0.04*w)/1.04; d[i]=w*0.35+last*0.65; }   // brown-ish: soft, not hiss
     var src=_ac.createBufferSource(); src.buffer=buf; src.loop=true;
     var lp=_ac.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=900; lp.Q.value=0.6;
-    var g=_ac.createGain(); g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(0.018,t0+2.5);
+    var g=_ac.createGain(); g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(tgt,t0+2.5);
     src.connect(lp); lp.connect(g); g.connect(_ac.destination); src.start(t0);
-    _rain={src:src,g:g};
+    _rain={src:src,g:g,lvl:level};
   } else if(!on&&_rain){
     var r=_rain; _rain=null;
     r.g.gain.cancelScheduledValues(t0); r.g.gain.setValueAtTime(Math.max(0.0001,r.g.gain.value),t0); r.g.gain.exponentialRampToValueAtTime(0.0001,t0+2.0);
@@ -1193,7 +1194,7 @@ function drawScene(now){
 
   // --- rain: the heavy sky made legible. luat 1 pours, luat 3 drizzles; a paid forecast shows tomorrow's rain at the frame edge ---
   var storm=S.luat<4, coming=(!storm&&S.probeSeen&&S.luatNext<4);
-  rainAudio(storm&&!S.over);   // the patter follows the sky; the finale is silent rain
+  rainAudio(storm&&!S.over,storm?(4-S.luat):0);   // the patter follows the sky, and its weight; the finale is silent rain
   cicadaAudio(!storm&&S.luat>=6&&seas===1&&!S.over);   // and a clear summer has cicadas
   if(storm||coming){
     var want=storm?(4-S.luat)*22:10, spawnX0=coming?W-140:0, spawnW=coming?140:W;
@@ -1218,7 +1219,12 @@ function drawScene(now){
     return q.y<H+10 && q.x<W+24; });   // wind-blown drift leaves the frame sideways too — cull it, don't accumulate
 
   // --- the night between seasons: an indigo wash that deepens and lifts over ~1.4s, with lamps in the windows at its darkest ---
-  (function(){ var nk=(now-nightAt)/1400; if(nk<0||nk>=1||S.over) return; var dark=Math.sin(nk*Math.PI);
+  (function(){ var nightDur=[1300,1000,1400,1900][(S.season+3)%4];   // the night that just passed belongs to the season that ended: short in summer, long in winter
+    var nk=(now-nightAt)/nightDur; if(nk<0||nk>=1||S.over) return; var dark=Math.sin(nk*Math.PI);
+    if((S.season+3)%4===1&&dark>0.45){ // 🌟 a summer night has fireflies over the water — brief, low, wandering
+      var fa=(dark-0.45)/0.55, ryF=H-(26+S.von*5.5); ctx.fillStyle="rgba(230,240,120,"+(0.85*fa).toFixed(3)+")";
+      for(var fi=0;fi<9;fi++){ var fx=120+((fi*173)%720)+Math.sin(now*0.0016+fi*1.7)*18, fy=ryF-14-((fi*37)%40)+Math.sin(now*0.0023+fi)*6, tw=0.5+0.5*Math.sin(now*0.006+fi*2.1);
+        ctx.beginPath(); ctx.arc(fx,fy,1.2+tw*0.9,0,6.28); ctx.fill(); } }
     ctx.fillStyle="rgba(28,30,64,"+(0.42*dark).toFixed(3)+")"; ctx.fillRect(0,0,W,H);
     if(dark>0.5){ var la=(dark-0.5)*2; ctx.fillStyle="rgba(255,196,90,"+(0.85*la).toFixed(3)+")";
       [[210,235],[660,225],[840,250]].forEach(function(hh){ ctx.fillRect(hh[0]-28,hh[1]+30,12,10); ctx.fillRect(hh[0]+16,hh[1]+30,12,10); });   // house windows (either side of the door)
@@ -1239,6 +1245,9 @@ function drawScene(now){
   // --- speech bubbles ---
   var nnow=now;
   bubbles=bubbles.filter(function(b){ return b.until>nnow; });
+  // the ending card owns the screen. The finale's lantern beats keep their voices — this fires only
+  // once the card is actually up, and 107 bubbles were still printing behind it when it was measured.
+  if(el("endOvl").classList.contains("show")) bubbles.length=0;
   var taken=[];   // four neighbours can talk at once — on a phone each bubble is 2.2× wide and they printed over each other
   bubbles.forEach(function(b){ // a bubble breathes in and out — no hard cuts on the page
     var ain=b.at?Math.min(1,(nnow-b.at)/160):1, aout=Math.min(1,(b.until-nnow)/320), a=Math.max(0,Math.min(ain,aout));
@@ -1777,6 +1786,7 @@ function nextSeason(){
   flushPend(true);   // any pending lessons land BEFORE this season's burst, not inside it
   var _preActive=S.cast.filter(active).map(function(p){return p.id;});
   var _rc={von0:S.von, bloom:0, stamp:0, fade:0};   // the season's ledger — one recap line closes each season in the log
+  if(S.acts>0){ S.idle=(S.idle|0)+S.acts; _rc.idle=S.acts; }   // hands left on the table this season — counted, shown at the end, never carried
   // one gentle first-turn nudge: don't let a new player skip past their whole hand
   if(S.season===0 && S.acts===2 && !S.nudged){ S.nudged=true;
     bubble(S.cast[0],t("nudge")); voice(S.cast[0]); return; }
@@ -1930,7 +1940,7 @@ function nextSeason(){
   (function(){ var dv=S.von-_rc.von0;
     function bits(lang){ var b=[];
       if(_rc.bloom) b.push("🌸"+_rc.bloom); if(_rc.stamp) b.push("⬛"+_rc.stamp);
-      if(dv) b.push("🌊"+(dv>0?"+":"")+dv); if(_rc.fade) b.push((lang==="vi"?"phai ":"faded ")+_rc.fade);
+      if(dv) b.push("🌊"+(dv>0?"+":"")+dv); if(_rc.fade) b.push((lang==="vi"?"phai ":"faded ")+_rc.fade); if(_rc.idle) b.push("⚡"+_rc.idle+(lang==="vi"?" trống":" unused"));
       return b.length?(" · "+b.join(" ")):""; }
     var yr=" "+(2026+Math.floor(S.season/4));
     S.log.unshift({vi:"── "+STR.seasons.vi[S.season%4]+yr+bits("vi")+" ──",en:"── "+STR.seasons.en[S.season%4]+yr+bits("en")+" ──",div:true});
@@ -2146,7 +2156,7 @@ function endGame(){
   // how the hands were spent, by verb — a diagnoser's row is tall in one or two places; a spreader's is flat
   (function(){ var vb=S.vb||{}, parts=VERBS.filter(function(k){return (vb[k]|0)>0;}).map(function(k){return VERB_G[k]+" "+(vb[k]|0);});
     if(!parts.length) return; var vl=document.createElement("div"); vl.style.cssText="font-size:12px;text-align:center;color:#4d4335;margin:-2px 0 6px;letter-spacing:.02em";
-    vl.textContent=(L==="vi"?"tay đã dùng: ":"hands spent: ")+parts.join(" · "); b.appendChild(vl); })();
+    vl.textContent=(L==="vi"?"tay đã dùng: ":"hands spent: ")+parts.join(" · ")+((S.idle|0)>0?((L==="vi"?" · bỏ trống ":" · left unused ")+(S.idle|0)+"⚡"):""); b.appendChild(vl); })();
   // the run as a strip — sixteen cells, one per season: 🌸 for each bloom that season, ⬛ for a stamp, · for a quiet one; the year gaps show
   (function(){ var hst=S.hist||[]; if(!hst.some(function(v){return v>0;})) return;
     var cells=[]; for(var si=0;si<16;si++){ var v=hst[si]|0, bl=v>>2, st=v&3, c="";
@@ -2221,13 +2231,20 @@ function endGame(){
     ? "Đừng hỏi “ai sẽ là Steve Jobs Việt Nam?” Hãy hỏi: “thừa số nào đang bằng không ở chỗ tôi đứng — và tay tôi xoay được bao nhiêu?”"
     : "Don't ask “who will be Vietnam's Steve Jobs?” Ask: “which factor sits at zero where I stand — and how far can my own hand turn it?”";
   // 📋 the ending as plain text — what a player pastes to a friend: title, year, tally, the arc, the book
+  // the shared card also carries the run's shape and how the hands went — the two lines people compare
+  var shStrip=(function(){ var hst=S.hist||[]; if(!hst.some(function(v){return v>0;})) return ""; var cells=[];
+    for(var si=0;si<16;si++){ var v=hst[si]|0, bl=v>>2, st=v&3, c=""; for(var bi=0;bi<bl;bi++) c+="🌸"; for(var ti2=0;ti2<st;ti2++) c+="⬛"; cells.push(c||"·"); }
+    return cells.slice(0,4).join("")+"│"+cells.slice(4,8).join("")+"│"+cells.slice(8,12).join("")+"│"+cells.slice(12,16).join(""); })();
+  var shVerbs=VERBS.filter(function(k){return (S.vb&&S.vb[k]|0)>0;}).map(function(k){return VERB_G[k]+(S.vb[k]|0);}).join(" ");
+  var shSky=((S.stormCount|0)>0?("☁️"+(S.stormCount|0)):"")+(stN>0?(" ⬛"+stN):"");
+  var shExtra=(shStrip?("\n"+shStrip):"")+((shVerbs||shSky)?("\n"+[shVerbs,shSky.trim()].filter(Boolean).join(" · ")):"");
   S._share={
     vi:"Thừa Số Không — "+tv+" ("+gv+")\n"+YEAR_CARDS[S.yearCard|0].em+" "+YEAR_CARDS[S.yearCard|0].nv+(S.constraint?(" · ⛓ "+CONSTRAINTS[S.constraint].nv):"")+" · "+nB+" xưởng · "+ts+" bậc · "+(S.hands|0)+"⚡\n"
        +wk.name+": "+wk.btai+"×"+wk.bgan+"×"+wk.bban+"="+(wk.btai*wk.bgan*wk.bban)+" → "+wk.tai+"×"+wk.gan+"×"+wk.ban+"="+prod(wk)+"\n"
-       +"📜 kết đã thấy "+row+" "+nSeen+"/6 · "+ycRow+cnRow+"\nhttps://techeese.github.io/thua-so-khong/",
+       +"📜 kết đã thấy "+row+" "+nSeen+"/6 · "+ycRow+cnRow+shExtra+"\nhttps://techeese.github.io/thua-so-khong/",
     en:"The Zero Factor — "+te+" ("+ge+")\n"+YEAR_CARDS[S.yearCard|0].em+" "+YEAR_CARDS[S.yearCard|0].ne+(S.constraint?(" · ⛓ "+CONSTRAINTS[S.constraint].ne):"")+" · "+nB+" workshops · "+ts+" tiers · "+(S.hands|0)+"⚡\n"
        +wk.name+": "+wk.btai+"×"+wk.bgan+"×"+wk.bban+"="+(wk.btai*wk.bgan*wk.bban)+" → "+wk.tai+"×"+wk.gan+"×"+wk.ban+"="+prod(wk)+"\n"
-       +"📜 endings seen "+row+" "+nSeen+"/6 · "+ycRow+cnRow+"\nhttps://techeese.github.io/thua-so-khong/"};
+       +"📜 endings seen "+row+" "+nSeen+"/6 · "+ycRow+cnRow+shExtra+"\nhttps://techeese.github.io/thua-so-khong/"};
   document.getElementById("endOvl").classList.add("show");
 }
 // share verbs on the ending card: copy the text, or save the lantern-lit print as a PNG

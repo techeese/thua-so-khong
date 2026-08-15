@@ -43,6 +43,8 @@ Rules:
 | `Gate 15` | 1 | strangers walk — with nobody yet spoken to, the errand governor still sends people on the road: the road precedes the label (v0.37) |
 | `Gate 18` | 1 | the ceiling — the weakest factor caps a life: 10×2×10 at a full river sprouts ≤4 %/season, 10×3×10 ≤8 %, and the sheet names the capping factor; Gate 0 gains the capping assertions `chance(10,2,10)≤0.04`, `chance(10,3,10)≤0.08`, `tiers.maxer < 0.4·tiers.hunter` (v0.38) |
 | `Gate 20` | 1 | the pot respects the ceiling — a row a 3 already caps refuses the pot and names the capping factor, a row with room takes it, and the hụi button prints what one coin does to the river's multiplier (v0.39) |
+| `Gate 22` | 1 | the ending card owns the screen — with the card up, speech bubbles pushed behind it are cleared before they paint; with the card down the same push survives, so the guard is conditional (v0.40) |
+| `Gate 21` | 1 | the world is honest about the ceiling and lifts BẠN — a sprout the ceiling binds gains no momentum over a season while one with room does; once you have paid into the hụi the circle raises the loneliest known neighbour's BẠN by 1 a season, never past 3, and not before (v0.40) |
 
 ## Convergence gates — `done.sh`
 

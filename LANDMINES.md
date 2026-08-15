@@ -219,3 +219,13 @@ that is now impossible because a gate catches it stays here, with the gate named
   looks edge-to-edge in the screenshot. Two "defects" in the intro card were this artifact. For fixed
   overlays, size the window itself (and remember Chrome floors it near 500px), or read the computed
   padding instead of trusting the picture.
+- **A gate that resets its subject's momentum but not its FACTORS is measuring a different subject by
+  the end.** Gate 21 pinned `mai.mom=0` each trial but not `mai.gan`, and `nextSeason()`'s own lifts
+  (a witnessed bloom = +1 GAN to others) walked her `gan 3 → 5 → 4`, off the ceiling the gate exists
+  to test. It read red, then green, then red on unchanged code. Any multi-trial harness in this game
+  must re-pin **everything the world can touch** — factors, river, law, year card — not just the
+  variable under test.
+- **"The X-est" assertions flake unless you isolate the subject.** The hụi circle lifts *the*
+  loneliest neighbour; the gate asserted a specific villager gets lifted, so any other villager the
+  preceding trials had left at `ban ≤ 2` silently stole the lift. Put every non-subject out of the
+  running before asserting a superlative.
