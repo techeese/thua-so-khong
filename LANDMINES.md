@@ -492,3 +492,15 @@ that is now impossible because a gate catches it stays here, with the gate named
   raises deltas (wind year `+3 GAN`); this loop replaces them with refusals (tied hand, ceiling). Neither
   side is wrong and neither knows about the other, so the ORDER is the fragile part — Gate 61 pins it.
   Whenever both loops touch one piece of text, gate the precedence, not just each side.
+- **Two more hardest-combinations measured and CLEAN — do not re-open.** (1) The ending seal carries three
+  rows in a tied year, so v0.65's title fix was checked against it: the seal is 62px tall with a bottom
+  76px from the card top either way (the font shrinks, the box does not grow), and a two-line English
+  title at a 288px card still clears it — `overlapArea=0` across four runs. (2) Big text ON plus the
+  ending card at short viewports: the card grows to 737–750px, overflows a 533px and a 433px window, and
+  `Chơi lại` stays reachable — v0.56's overlay scroll and v0.67's Aa compose correctly.
+- **KNOWN THIN MARGIN, deliberately not changed: the ending title clears the seal by ~2px.** v0.65
+  reserves `margin-top:56px`; the card's 22px padding puts the title at 78px while the seal's bottom sits
+  at 76px. It is correct today and gated (Gate 50), but it is 2px, and CSS cannot read the seal's real
+  height to derive the reservation. If Gate 50 ever goes red after a font or seal change, this is why —
+  raise the reservation rather than hunting elsewhere. Not changed now because working code should not be
+  edited on a hunch.
