@@ -18,6 +18,31 @@ lands *before* the circle looks; the lift filter is `!started`, so `lifted` read
   why this is convergent work and not polish. Recorded in `GATES-LEDGER.md` → Tightenings and
   `LANDMINES.md`.
 
+## v0.69 — 2026-08-15 — the pot names what stops it
+
+A graphics round from the owner's `/loop 5m` session. It opened by **paying a debt**: v0.68 shipped
+with the full suite unrun, because seven concurrent `gate.sh` runs from the mechanic session had
+saturated the machine. Re-run first thing on a quiet machine — **all 55 gates green**, including the two
+that tick added (`AA_OK`, `TIED_OK`). v0.68 is now verified, not merely argued.
+
+- **The pot had eight gating conditions and a voice for six.** `potOk()` refuses on the no-hụi year
+  (`conBan(1)`) and on a circle you have not paid into (`S.hui < 1`) — and both fell straight through to
+  the generic **`🌱 +6% · 1⚡`**, a promise the disabled button cannot keep. Third instance of one fault:
+  the ceiling (v0.52), the tied hand (v0.68), now the pot.
+- **Both now say what stops you.** The year reads `🚫🪙 năm không hụi` / `the no-hụi year`, reusing the
+  existing `CONSTRAINTS` strings. The unpaid circle reads **`chưa góp hụi — góp rồi mới hốt được`** /
+  *"you haven't paid in — the circle pays those who pay it"*, which is the hụi's whole social logic said
+  once, in the place where it bites.
+- *Evidence:* new **Gate 55**, bilingual on both new reasons, with the non-vacuous clause that an
+  **eligible** pot still shows its real answer. It **searches** for an eligible row rather than hard-coding
+  one — `potCapped()` compares against the weakest factor's ceiling, so which rows qualify moves whenever
+  the mechanic loop retunes `ceilOf()` or `vonMul()`; my first draft hard-coded 9/8/9 and failed on a
+  world where the ceiling already bound. Negative-tested: without the two branches both states read
+  `🌱 +6% · 1⚡`.
+- **Gate 54 was missing from the ledger.** The mechanic loop's tier-climb gate existed in `gate.sh` with
+  no row here — and `done.sh` only checks ledger→`gate.sh`, so the ratchet passed while its own record was
+  incomplete. Row added, attributed to that session.
+
 ## v0.68 — 2026-08-15 — a hand the year tied says so
 
 A graphics round from the owner's `/loop 5m` session, continuing the audit of the mechanic loop's

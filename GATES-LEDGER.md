@@ -76,6 +76,8 @@ Rules:
 | `Gate 51` | 1 | the risk is beside the raise — a known un-bloomed row with a raised factor prints the fade odds (35 %/mùa; 18 in the quiet-hands year, 50 in the restless wind); an unraised row and a bloomed row print none (v0.67) |
 | `Gate 52` | 1 | Aa reaches the print — with larger text on, the canvas fonts grow by the same factor the DOM does (±0.15) and both sit at base size with it off; a canvas cannot be reached by CSS, so the villager names and ×0 tags had been left behind by the control meant to help read them (v0.67) |
 | `Gate 53` | 1 | a hand the year tied says so — a verb banned by the year's constraint names the constraint (`🚫📖 năm không dạy` / `the no-teaching year`) instead of advertising a `+2` it cannot deliver, in both languages and for the right constraint per verb; all four verb states (live · unaffordable · at its ceiling · tied) stay distinguishable (v0.68) |
+| `Gate 54` | 1 | the tier climb shows in the ledger — a season in which a bloomed roof's product crosses 300 ends with a divider carrying 🪜+1, and a season with no tier movement carries none (v0.68, `/loop 3m`; row added by the graphics loop after finding the gate present in `gate.sh` but absent here — `done.sh` only checks ledger→gate.sh) |
+| `Gate 55` | 1 | the pot names what stops it — the no-hụi year reads `🚫🪙 năm không hụi` and an unpaid circle reads `chưa góp hụi — góp rồi mới hốt được`, instead of both falling through to the generic `🌱 +6% · 1⚡` the button cannot deliver; bilingual, and the eligible state still shows its answer (v0.69) |
 
 ## Convergence gates — `done.sh`
 

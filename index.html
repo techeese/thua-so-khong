@@ -226,7 +226,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.68</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.69</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -2661,7 +2661,12 @@ function renderSheet(){
   var pb=el("potBtn"); pb.style.display=(S.un.hui&&(S.hui|0)>=1&&!p.started&&!conBan(1))?"":"none";   // the pot exists once you have paid in — the button appears with it
   pb.disabled=!potOk(p)||S.acts<=0||S.over; el("potLbl").textContent=t("pot");
   el("potHint").textContent=potOk(p)?(t("potH")+" → "+Math.round(potAfter(p)*100)+"%"+potPrice())
-                              :(!seenAll(p)?(L==="vi"?"chưa hiểu người ta":"you don't know them yet"):(!hasZero(p)&&prod(p)>=100&&!S.potSeason&&S.von>=2&&potCapped(p))?(L==="vi"?t(weakest(p).k)+" "+weakest(p).m+" chặn — hụi không đẩy nổi":t(weakest(p).k)+" "+weakest(p).m+" caps it — the pot can't push past"):S.von<2?(L==="vi"?"sông cạn — không còn gì để hốt":"river too thin — nothing to take"):S.potSeason?(L==="vi"?"phiên này đã hốt":"taken this season"):hasZero(p)?(L==="vi"?"không đẩy nổi số không":"nothing pushes past a zero"):prod(p)<100?(L==="vi"?"mầm chưa nhú (tích <100)":"no sprout yet (product <100)"):t("potH"));
+                              :(!seenAll(p)?(L==="vi"?"chưa hiểu người ta":"you don't know them yet")
+                              // two of potOk()'s own conditions had no voice and fell through to the generic
+                              // "🌱 +6% · 1⚡" — a promise the button cannot keep. Same rule as the ceiling
+                              // (v0.52) and the tied hand (v0.68): name what stops you.
+                              :conBan(1)?(CONSTRAINTS[1].g+" "+(L==="vi"?CONSTRAINTS[1].nv:CONSTRAINTS[1].ne))
+                              :(!S.un.hui||(S.hui|0)<1)?(L==="vi"?"chưa góp hụi — góp rồi mới hốt được":"you haven't paid in — the circle pays those who pay it"):(!hasZero(p)&&prod(p)>=100&&!S.potSeason&&S.von>=2&&potCapped(p))?(L==="vi"?t(weakest(p).k)+" "+weakest(p).m+" chặn — hụi không đẩy nổi":t(weakest(p).k)+" "+weakest(p).m+" caps it — the pot can't push past"):S.von<2?(L==="vi"?"sông cạn — không còn gì để hốt":"river too thin — nothing to take"):S.potSeason?(L==="vi"?"phiên này đã hốt":"taken this season"):hasZero(p)?(L==="vi"?"không đẩy nổi số không":"nothing pushes past a zero"):prod(p)<100?(L==="vi"?"mầm chưa nhú (tích <100)":"no sprout yet (product <100)"):t("potH"));
   // what each hand would DO to this person — the multiplication's answer, per verb, before you spend
   // (the weakest factor moves the product most; showing the three deltas side by side is the thesis as a UI)
   (function(){
@@ -2827,6 +2832,8 @@ function renderHelp(){
     if(S.un.build) rows.push("<b>🛠 "+(vi?"Sản phẩm của bạn":"Your product")+"</b> — "+(S.built?(vi?"đã xong ✓ — mái riêng đứng ở bến":"shipped ✓ — your own roof at the landing"):((S.build|0)+"/4"+(vi?" tay đã gõ":" hands in")+((S.build|0)===0?(vi?" — chưa bắt đầu":" — not started"):""))));   // your own hands, in the same list
     h+=sec(vi?"📍 Xóm lúc này":"📍 The xóm now",
       (STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4))+" · "+YEAR_CARDS[S.yearCard|0].em+" "+(vi?YEAR_CARDS[S.yearCard|0].nv:YEAR_CARDS[S.yearCard|0].ne)+(S.constraint?(" · ⛓ "+(vi?CONSTRAINTS[S.constraint].nv:CONSTRAINTS[S.constraint].ne)):"")+" · "+S.acts+"⚡ · "+(vi?"sông ":"river ")+S.von+"/10 ("+(vi?"bậc tối đa ":"tier cap ")+cap+")"+(S.luat<4?(vi?" · trời nặng ☁️":" · heavy sky ☁️"):"")
+       +(function(){ var atRisk=S.cast.filter(function(q){ return active(q)&&q.known&&!q.started&&(q.tai>q.btai||q.gan>q.bgan||q.ban>q.bban); }); if(!atRisk.length) return "";
+           return "<br>"+(vi?"🍂 công vun chưa nở, sẽ phai "+Math.round(fadeRate()*100)+"%/mùa: ":"🍂 tending not yet bloomed, fades "+Math.round(fadeRate()*100)+"%/season: ")+atRisk.map(function(q){return q.name;}).join(", "); })()   // who the season can take something back from — the fade rule, per person, this season
        +"<br>"+rows.join("<br>")));
   }
   h+=sec(vi?"Phép nhân":"The multiplication",

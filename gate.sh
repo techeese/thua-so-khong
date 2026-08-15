@@ -1737,6 +1737,48 @@ PYEOF52
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/ledger.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "LEDGER_OK" && pass "the tier climb shows in the ledger: $T" || fail "the tier climb shows in the ledger: $T"
 
+# Gate 55: the pot names what stops it — potOk() has eight conditions but its hint only spoke for six.
+# The no-hụi year and an unpaid circle both fell through to the generic "🌱 +6% · 1⚡", a promise the
+# disabled button cannot keep. Third instance of the same fault: the ceiling (v0.52), the tied hand
+# (v0.68), and now the pot. Asserts the two silent states now speak, in both languages, and — the
+# non-vacuous half — that an ELIGIBLE pot still shows its real answer.
+python3 - "$TMP" <<'PYEOFPOTR'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<8;s++){ S.acts=3; S.nudged=true; nextSeason(); }
+  var p=S.cast[2]; p.known=true; p.started=false; p.seen={tai:true,gan:true,ban:true};
+  S.un.hui=true; S.potSeason=false; S.acts=3; S.constraint=0; S.hui=2; p.mom=0;
+  // SEARCH for a configuration the pot can actually help, rather than hard-coding factors: potCapped()
+  // compares against the weakest factor's ceiling, so which rows are eligible moves whenever the
+  // mechanic loop retunes ceilOf() or vonMul(). Assert the relationship, never a constant.
+  var found=false;
+  for(var f=3; f<=9 && !found; f++) for(var v=2; v<=10 && !found; v++){
+    p.tai=f; p.gan=f; p.ban=f; S.von=v; if(potOk(p)) found=true; }
+  selectPerson(2);
+  function h(){ render(); renderSheet(); return document.getElementById("potHint").textContent.trim(); }
+  var elig=h();
+  S.hui=0; var unpaid=h();
+  S.hui=2; S.constraint=1; var noyear=h();
+  setLang("en"); var noyearEN=h(); S.constraint=0; S.hui=0; var unpaidEN=h(); setLang("vi");
+  var ok = found && /→/.test(elig) && /\+6%/.test(elig)
+        && /chưa góp hụi/.test(unpaid) && !/\+6%/.test(unpaid)
+        && /năm không hụi/.test(noyear) && !/\+6%/.test(noyear)
+        && /no-hụi year/.test(noyearEN) && /paid in/.test(unpaidEN);
+  document.title=(ok?"POTWHY_OK":"POTWHY_BAD")+" foundEligible="+found+" elig='"+elig+"' unpaid='"+unpaid+"' noYear='"+noyear
+    +"' EN['"+noyearEN+"' | '"+unpaidEN+"']";
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/pw.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOFPOTR
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=12000 --dump-dom "file://$TMP/pw.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "POTWHY_OK" && pass "the pot names what stops it: $T" || fail "the pot names what stops it: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

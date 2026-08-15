@@ -463,3 +463,11 @@ that is now impossible because a gate catches it stays here, with the gate named
 - **Eight concurrent `gate.sh` runs make every run take 40+ minutes; kill only your own by PID.**
   Find yours by walking `ps -o ppid` up to your session's `claude` process; never `pkill` by name
   (see above). While load is that high, gate once, commit on a stable hash, and skip retry loops.
+- **`done.sh`'s ratchet check is one-directional: ledger → `gate.sh`, never the reverse.** A gate can
+  exist in `gate.sh` with no ledger row and every check stays green while the append-only record is
+  incomplete — found with the mechanic loop's Gate 54. When auditing, compare BOTH directions:
+  `grep -oE '^# Gate [0-9]+' gate.sh` against `grep -oE '^\| \`Gate [0-9]+\`' GATES-LEDGER.md`.
+- **"Name what stops you" is now a three-time fault — check every disabled control for it.** A control
+  that refuses must say which condition refused, not keep advertising what it would have done: the
+  ceiling (v0.52), the year's tied hand (v0.68), the pot's no-hụi year and unpaid circle (v0.69). When
+  a verb has N gating conditions, count the branches in its hint — the pot had eight and six.
