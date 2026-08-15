@@ -19,6 +19,56 @@ argues for or against.
      **Measured:** …
      **Argues for/against:** <candidate era>  -->
 
+## 2026-08-15 — three floors, one word: what "số không" means after v0.30/v0.31 (`threefloors.js`)
+
+Between 15:06 and 15:27 the owner's two other sessions shipped v0.29–v0.31: the zero now **bites**
+(`hasZero` → min≤1 ⇒ `chance()=0`, no momentum) and the river is a factor (`vonMul`, `tierCap`).
+That lands the first two items of the bank; it also leaves the game with **three thresholds that all
+answer to the same word**: the dice say a zero is **≤1**; the label `zeroOf` prints *số không: gan*
+at **≤3** (with a `×0` prefix only at ≤1); the walks (`pickBeh`) tell at **≤2**. Harness
+`lab/threefloors.js` — `check.js` v0.31 verbatim (same rolls, same order) with tallies at the
+bloom roll and the hunter's hand; 1200 seeds × 4 strategies; output `lab/threefloors-out.txt`.
+
+**Measured.**
+
+| strategy | ×0 people at s0 /run | ×0 *created* mid-run /run | still ×0 at s16 /run | person-seasons hard / soft / none | blooms under hard / **soft** / none | soft-label bloom rate |
+|---|---|---|---|---|---|---|
+| hunter | 2.00 | 0.00 | 0.00 | 0 / 751 / 35 858 | 0 / **50** / 8 758 | 6.7 %/season |
+| spreader | 2.00 | 0.01 | 0.03 | 8 054 / 19 368 / 23 906 | 0 / **2 171** / 5 587 | 11.2 %/season |
+| linker | 2.00 | 0.05 | 0.07 | 7 019 / 11 020 / 29 212 | 0 / **1 490** / 6 958 | 13.5 %/season |
+| idle | 2.00 | 0.24 | 1.15 | 29 374 / 34 089 / 14 869 | 0 / **1 549** / 2 308 | 4.5 %/season |
+
+- **The hard zero holds.** 0 blooms in 44 447 person-seasons at min≤1 across all strategies — Gate 7
+  is true in the sim as well as the probe. Two of seven people start ×0 (Bé Ngân gan 1, Cô Liên bạn 1);
+  the hunter erases both by season 1 and never sees one again.
+- **The soft label still lies, and now the lie is louder.** A person printed *số không* at min 2–3
+  blooms **4.5–13.5 % per season**; 28 % of the spreader's blooms (2 171 of 7 758) and 40 % of the
+  idle player's (1 549 of 3 857) happen **under a label that says zero**. Before v0.30 the label was
+  merely early; now the sheet distinguishes `×0` from *số không*, so the game says in one breath
+  "×0 — nothing blooms" and "số không" for a person who blooms one season in eight.
+- **The sky can make a zero.** Idle sees 0.24 new ×0 per run (the elder's clock and tier-1 stamps
+  driving GAN/TÀI to ≤1); linker 0.05, spreader 0.01, hunter 0. So the untouchable layer now has a
+  visible, arithmetic consequence — but only for the player who does nothing, and the ending sees
+  1.15 people still ×0 per idle run against 0.00 for the hunter. That is the widest zero-witness gap
+  the game has ever had (zerowitness.js measured 0.0 % literal zeros for the hunter before; now the
+  hunter *starts* with two and clears them).
+- **The hunter is not a zero-hunter.** Of 33 159 hunter hands, **2 420 (7 %) went to a ×0, 8 078 (24 %)
+  to a soft 2–3, and 22 661 (68 %) to a person with no zero by any definition** — the sim's "diagnose
+  the zero" is "raise the minimum factor", which after season 1 is mostly polishing 4s and 5s. The band
+  (hunter 6.98 vs idle 2.80) is earned in the first two seasons and by never wasting a hand, not by
+  finding zeros; the strategy the gate rewards and the story the label tells are two different acts.
+
+**Reading it.** v0.30 made the *dice* honest and left the *word* at the old threshold; v0.31 gave the
+river teeth. What remains inconsistent is vocabulary: one label class (≤3) sits over two dice classes
+(≤1 = 0 %, 2–3 = 4–13 %) and one walk class (≤2). Reconciling is a subtraction, not an addition —
+either the label narrows to the dice (`zeroOf` at ≤1, and 2–3 becomes "thấp"/low or nothing), or the
+walks and label agree at ≤2 — and it must be a balance decision because `decide.js` showed the label
+carries 92 % of the hunter's blooms. Not shipped, per Gear 3.
+
+**Argues for:** the reductive era on the zero — now specifically *one threshold, one word* — and
+against any addition that puts a fourth meaning on the same word. **Argues against:** treating the
+band gate as proof the game teaches diagnosis: 68 % of the winning strategy's hands are not diagnosis.
+
 ## 2026-08-15 — "watching the xóm IS reading the multiplication" — the errand governor as an information channel (`walks.py`)
 
 v0.25's owner batch shipped the errand governor with one stated purpose (CHANGELOG: *"factor-weighted
