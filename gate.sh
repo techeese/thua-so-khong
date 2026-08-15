@@ -2064,6 +2064,208 @@ PYEOF63
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/voice74.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "VOICE74_OK" && pass "the narrative layer keeps its voice: $T" || fail "the narrative layer keeps its voice: $T"
 
+# Gate 64: nobody appears out of nowhere — a newcomer walks in along the road (a path of five points, a season-card banner with their name,
+# a log line, their home shuttered until they reach the door, the roster's "mới" chip and a "soon" chip for next season's arrival), is
+# selectable mid-walk, and says their door line on arrival while the shutters open.
+python3 - "$TMP" <<'PYEOF64'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{ localStorage.removeItem("thua-so-khong-v1"); localStorage.setItem("thua-so-khong-chronicle","[]"); window._pendYc=3; document.getElementById("startBtn").click();
+  S.nudged=true; selectPerson(0); nextSeason();   // → season 1: Vũ arrives
+  var vu=S.cast[3];
+  var pathOk=Array.isArray(vu.arrivePath)&&vu.arrivePath.length===5&&vu.arriveT>0&&vu.arriveDur>3000;
+  var logOk=S.log.some(function(m){return m.vi.indexOf("🚶 Anh Vũ về xóm")===0;});
+  var bannerOk=S.banners.some(function(b){return b.txt.indexOf("🚶 Anh Vũ")===0;})||(S.banner&&S.banner.txt.indexOf("🚶")===0);
+  var hut=homeOf(3); var shut0=!homeOpen(hut);
+  var chipNew=!!document.querySelector('.rc[data-id="3"].new'), soon=!!document.querySelector('.rc.soon');   // Ba comes next season
+  var T=performance.now(); function frames(n){ for(var k=0;k<n;k++){ T+=16; drawScene(T); } }
+  T=vu.arriveStart+vu.arriveDur*0.3; frames(1); var midX=vu.drawX, midY=vu.drawY; var onRoad=midY!==undefined&&midY>300&&midY<360&&midX>560&&midX<960;
+  var canSel=(function(){ selectPerson(3); return S.sel===3&&vu.known; })();
+  setTimeout(function(){ T=performance.now(); frames(2);
+    var home=vu.arriveT===0&&vu.drawY===undefined&&homeOpen(hut);
+    var said=S.log.some(function(m){return m.vi.indexOf("💬 Anh Vũ: Về rồi")===0;});
+    var ok=pathOk&&logOk&&bannerOk&&shut0&&chipNew&&soon&&onRoad&&canSel&&home&&said;
+    document.title=(ok?"ARRIVE_OK":"ARRIVE_BAD")+" path="+pathOk+" log="+logOk+" banner="+bannerOk+" shut0="+shut0+" chip="+chipNew+" soon="+soon+" road="+onRoad+" sel="+canSel+" home="+home+" said="+said;
+  }, vu.arriveDur+2400);
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/arrive.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF64
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=16000 --dump-dom "file://$TMP/arrive.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "ARRIVE_OK" && pass "nobody appears out of nowhere: $T" || fail "nobody appears out of nowhere: $T"
+
+# Gate 65: every roof is somebody's — tapping a home names its owner and their whereabouts (next season's arrival foreshadowed by name, never by
+# number; a far-away owner; your own door in the girl's register), once per home per season; and a neighbour who has gone indoors is a lit
+# window, not a figure — the door is what you tap, and they come out to answer.
+python3 - "$TMP" <<'PYEOF65'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+function tap(wx,wy){ var r=cv.getBoundingClientRect(); cv.dispatchEvent(new MouseEvent("click",{clientX:r.left+wx*(r.width/W),clientY:r.top+wy*(r.height/H),bubbles:true})); }
+setInterval(function(){ try{ if(S) drawScene(performance.now()); }catch(e){} },50);   // headless: rAF is idle — drive frames by hand
+setTimeout(function(){ try{ localStorage.removeItem("thua-so-khong-v1"); localStorage.setItem("thua-so-khong-chronicle","[]"); window._pendYc=3; document.getElementById("startBtn").click();
+  S.nudged=true; S.luat=6; S.luatNext=6; selectPerson(0);
+  tap(300,380);   // Vũ's hut — he arrives next season → Ngân (known) explains
+  setTimeout(function(){
+    var fore=S.log.some(function(m){return m.vi.indexOf("💬 Bé Ngân: Nhà Anh Vũ — nghe đâu mùa tới về.")===0;});
+    var lock=S.looked.h3===S.season;
+    tap(660,250); setTimeout(function(){ var away=S.log.some(function(m){return m.vi.indexOf("💬 Bé Ngân: Nhà Chú Ba đấy. Đi làm xa")===0;});
+      tap(210,260); setTimeout(function(){ var own=S.log.some(function(m){return m.vi.indexOf("💬 Bé Ngân: Nhà em đấy. Bố đang ở trong")===0;});
+        var noDigit=!S.log.filter(function(m){return m.vi.indexOf("💬 Bé Ngân: Nhà")===0;}).some(function(m){return /\d/.test(m.vi);});
+        // indoors: the girl walks home and steps in — hidden from the paper, roster says 🏠, a tap on her door brings her out (not a selection)
+        var ng=S.cast[0]; ng.x=ng.hx; ng.y=ng.hy; ng.tx=ng.hx; ng.ty=ng.hy; S.sel=-1; beatUntil=0; execBeh(ng,13,performance.now());
+        setTimeout(function(){ var inside=ng.inside>performance.now(); renderRoster(); var chip=(document.getElementById("roster").textContent||"").indexOf("🏠")>=0;
+          drawScene(performance.now()); var hidden=ng.drawX===undefined; S.looked={}; tap(210,284); var out=!ng.inside&&S.sel!==0;
+          var ok=fore&&lock&&away&&own&&noDigit&&inside&&chip&&hidden&&out;
+          document.title=(ok?"HOMES_OK":"HOMES_BAD")+" fore="+fore+" lock="+lock+" away="+away+" own="+own+" noDigit="+noDigit+" inside="+inside+" chip="+chip+" hidden="+hidden+" out="+out; },5200);
+      },1700);
+    },1700);
+  },1700);
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/homes.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF65
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=16000 --dump-dom "file://$TMP/homes.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "HOMES_OK" && pass "every roof is somebody's: $T" || fail "every roof is somebody's: $T"
+
+# Gate 66: the game teaches itself — the intro names the multiplication; the first three tips arrive in order (faces → verb row → next season),
+# once each, tap-dismissable, never on a vet's run; the hụi is taught in three voices (the circle answers Cô Mai in season 1, the lesson lands
+# in-season after the newcomer speaks, the first coin says what rose and what it opened, the pot button names itself); a verb wears "mới"
+# until first use; the field notes carry "Cách chơi", "Hụi là gì?" and a glossary in both languages; tip bits survive a refresh.
+python3 - "$TMP" <<'PYEOF66'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+var R={}; function tipB(){ return (_tipCur&&el("tip").classList.contains("show"))?_tipCur.b:0; }
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1"); localStorage.setItem("thua-so-khong-chronicle","[]"); window._pendYc=3;
+  R.intro=el("inP2").textContent.indexOf("TÀI × GAN × BẠN")>=0;
+  document.getElementById("startBtn").click();
+  R.vet=!S.vet; R.tip0=(S.tip|0)===0;
+  setTimeout(function(){ R.t1early=tipB()===0; },5000);
+  setTimeout(function(){ R.t1=tipB()===1; selectPerson(0);
+    setTimeout(function(){ R.t2=tipB()===2; R.bit1=!!(S.tip&1); actTeach();
+      setTimeout(function(){ R.t3=tipB()===4; el("tip").click(); R.tapDismiss=tipB()===0&&!!(S.tip&4);
+        S.nudged=true; nextSeason();
+        setTimeout(function(){
+          R.circle=S.log.some(function(m){return m.vi.indexOf("Mỗi nhà góp một ít")>=0;});
+          R.helpNudge=S.log.some(function(m){return m.vi.indexOf("📖 Quên luật")===0;});
+          nextSeason();
+          R.huiEarly=!S.log.some(function(m){return m.vi.indexOf("🪙 HỤI là vốn")===0;});
+          R.badgeHui=el("huiBtn").classList.contains("nb");
+          setTimeout(function(){
+            R.huiLesson=S.log.some(function(m){return m.vi.indexOf("🪙 HỤI là vốn")===0;});
+            actHui();
+            R.huiFirst=S.log.some(function(m){return m.vi.indexOf("🪙 Bạn góp một tay vào hụi")===0&&/×\d\.\d\d→×\d\.\d\d/.test(m.vi);});
+            R.badgeGone=!el("huiBtn").classList.contains("nb");
+            var pp2=S.cast.filter(function(q){return active(q)&&!q.started&&!q.arriveT&&!q.gone;})[0]; selectPerson(pp2.id); render(); renderSheet();
+            R.potBtn=el("potBtn").style.display!=="none"; R.potNew=S.log.some(function(m){return m.vi.indexOf("🧧 Nút mới")===0;});
+            renderHelp(); var hb=el("helpBody").innerHTML; R.help=hb.indexOf("Cách chơi")>=0&&hb.indexOf("Hụi là gì?")>=0&&hb.indexOf("Từ điển")>=0;
+            L="en"; renderHelp(); var he=el("helpBody").innerHTML; R.helpEn=he.indexOf("How to play")>=0&&he.indexOf("What is a hụi?")>=0&&he.indexOf("Glossary")>=0; L="vi";
+            S.tip=37; S.tf=3; save(); fresh(); load(); R.rt=(S.tip===37&&S.tf===3);
+            S.vet=true; tipTick(performance.now()); R.vetQuiet=tipB()===0;
+            var ok=Object.keys(R).every(function(k){return R[k]===true;});
+            document.title=(ok?"ONB_OK ":"ONB_BAD ")+Object.keys(R).map(function(k){return k+"="+R[k];}).join(" ");
+          },7800);
+        },6600);
+      },2600);
+    },2600);
+  },7700);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/onb.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF66
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=40000 --dump-dom "file://$TMP/onb.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "ONB_OK" && pass "the game teaches itself: $T" || fail "the game teaches itself: $T"
+
+# Gate 67: the xóm makes friends on its own — a chance acquaintance (never an authored pair, never an existing bond, both present) is one
+# thread, one log line, a scene at the place they met, +1 BẠN only for the already-befriended (3–6, not bloomed) and nothing for the lonely;
+# a first-time lesson says so; connecting two who are quen says so; the threads survive a refresh; the print draws them.
+python3 - "$TMP" <<'PYEOF67'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+var R={};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1"); localStorage.setItem("thua-so-khong-chronicle","[]"); window._pendYc=3;
+  document.getElementById("startBtn").click();
+  S.nudged=true; S.season=4; S.hui=0;
+  S.cast.forEach(function(p){ if(p.id!==6){ p.arrives=Math.min(p.arrives===undefined?0:p.arrives,3); p.arriveT=0; p.known=true; } p.ban=p.bban; p.started=false; p.mom=0; });
+  S.cast[6].arrives=12;
+  var before=S.cast.map(function(p){return p.ban;});
+  var MR=Math.random; Math.random=function(){ return 0.2; }; var chance0=chance; chance=function(){ return 0; };
+  nextSeason(); Math.random=MR; chance=chance0;
+  R.one=S.quen.length===1; var q=S.quen[0]||[0,0]; var a=S.cast[q[0]], b=S.cast[q[1]];
+  R.notAuth=!BOND_GLYPH[q[0]+"-"+q[1]]; R.notPair=!pairExists(q[0],q[1]); R.present=active(a)&&active(b)&&!a.arriveT&&!b.arriveT;
+  R.lift=S.cast.every(function(p,i){ var inQ=(p.id===q[0]||p.id===q[1]); var exp=before[i]+((inQ&&before[i]>=3&&before[i]<=6)?1:0); return p.ban===exp; });
+  R.lonelyStill=S.cast.every(function(p,i){ return before[i]>2||p.ban===before[i]; });
+  setTimeout(function(){
+    R.log=S.log.some(function(m){return m.vi.indexOf("🍃 "+a.name+" và "+b.name+" quen nhau")===0;});
+    R.visit=Math.abs(a.vx-b.vx)<=30&&Math.abs(a.vy-b.vy)<1&&a.vUntil>performance.now();
+    setTimeout(function(){
+      R.lesson=S.log.some(function(m){return m.vi.indexOf("🍃 Xóm cũng tự kết bạn")===0;});
+      S.acts=3; S.un.link=true; S.sel=a.id; S.linking=a.id; completeLink(b.id);
+      R.linkLog=S.log.some(function(m){return m.vi.indexOf("🤝 "+a.name+" — "+b.name+" — vốn đã quen")===0;});
+      R.pairNow=pairExists(q[0],q[1]);
+      save(); var qs=JSON.stringify(S.quen); fresh(); load(); R.rt=JSON.stringify(S.quen)===qs;
+      var T=performance.now(); for(var k=0;k<3;k++){ T+=16; drawScene(T); } R.draw=true;
+      renderHelp(); R.help=el("helpBody").innerHTML.indexOf("sợi mảnh chấm")>=0;
+      var ok=Object.keys(R).every(function(k){return R[k]===true;});
+      document.title=(ok?"QUEN_OK ":"QUEN_BAD ")+Object.keys(R).map(function(k){return k+"="+R[k];}).join(" ")+" pair="+a.name+"/"+b.name;
+    },3200);
+  },5900);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/quen.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF67
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=16000 --dump-dom "file://$TMP/quen.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "QUEN_OK" && pass "the xóm makes friends on its own: $T" || fail "the xóm makes friends on its own: $T"
+
+# Gate 68: the buildings are for something — the errand table sends people indoors (13) and to the banyan (14, never for a faltering GAN ≤2,
+# who falter at the đình instead), the roster names both; a clear season can bring a market day (three neighbours at the stall together, one
+# says so); the print draws the đình mat, the coin bowl once a round is paid, the jetty and a moored sampan without throwing.
+python3 - "$TMP" <<'PYEOF68'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+var R={}; setInterval(function(){ try{ if(S) drawScene(performance.now()); }catch(e){} },50);
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1"); localStorage.setItem("thua-so-khong-chronicle","[]"); window._pendYc=3;
+  document.getElementById("startBtn").click();
+  S.nudged=true; S.season=3; S.hui=1; S.von=5; S.luat=6; S.luatNext=6;
+  S.cast.forEach(function(p){ if(p.id!==6){ p.arrives=Math.min(p.arrives===undefined?0:p.arrives,2); p.arriveT=0; p.known=true; } });
+  var ng=S.cast[0], mai=S.cast[2]; S.sel=-1; beatUntil=0;
+  execBeh(mai,14,performance.now()); R.beh14=mai.beh===14&&mai.vx>=84&&mai.vx<=150&&mai.vy===298;
+  R.glyph=BEH_G[13]==="🏠"&&BEH_G[14]==="🌳";
+  var c13=0,c14=0,c3=0,n=3000; ng.gan=1; for(var i=0;i<n;i++){ var b=pickBeh(ng); if(b===13)c13++; if(b===14)c14++; if(b===3)c3++; }
+  R.pick=c13/n>0.05&&c14===0&&c3>0;
+  var c14b=0; mai.gan=5; for(var j=0;j<n;j++){ if(pickBeh(mai)===14) c14b++; } R.pickBanyan=c14b/n>0.02;
+  var MR=Math.random, C0=chance; Math.random=function(){return 0.2;}; chance=function(){return 0;};
+  nextSeason(); Math.random=MR; chance=C0;
+  setTimeout(function(){ var nw=performance.now(); var atM=S.cast.filter(function(q){return q.beh===4&&q.vUntil>nw;}).length;
+    R.market=S._marketAt>0&&atM>=2;
+    drawScene(performance.now()); R.draw=true;
+    var ok=Object.keys(R).every(function(k){return R[k]===true;});
+    document.title=(ok?"BLD_OK ":"BLD_BAD ")+Object.keys(R).map(function(k){return k+"="+R[k];}).join(" ")+" atM="+atM;
+  },15200);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/bld.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF68
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=22000 --dump-dom "file://$TMP/bld.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "BLD_OK" && pass "the buildings are for something: $T" || fail "the buildings are for something: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

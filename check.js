@@ -24,6 +24,7 @@ function makeCast(rnd){ return [
 // no banded strategy contributes to the hụi, so the sim carries no such lift; it is a world-lift like the class (TÀI) and witnessing (GAN).
 // v0.33: the game hides each factor until a hand touches it — the sim's hunter keeps perfect information on purpose:
 // it is the player who reads every quote right, and the band asks whether THAT player beats spreading and idling.
+var AUTH_KEYS={"0-1":1,"3-5":1,"1-4":1,"0-6":1,"2-4":1,"4-6":1};   // the authored pairs (mirrors index.html BOND_GLYPH) — never made by chance
 function activeSim(c,season){ return !c.gone && (c.arrives===undefined||season>=c.arrives); }
 
 function vonMul(von){ return 0.3+0.7*von/10; }                    // capital multiplies (mirrors index.html): a thin river ×0.37, a full one ×1.0
@@ -36,7 +37,7 @@ function chance(p,von){ var m=Math.min(p.tai,p.gan,p.ban); if(m<=1) return 0;   
 function lcg(seed){ var s=seed>>>0; return function(){ s=(1103515245*s+12345)>>>0; return s/4294967296; }; }
 
 function run(strategy,seed){
-  var rnd=lcg(seed), cast=makeCast(rnd), pairsSet={};
+  var rnd=lcg(seed), cast=makeCast(rnd), pairsSet={}, quenSet={};
   var luat=2+Math.floor(rnd()*3), von=2+Math.floor(rnd()*3), baStart=7+Math.floor(rnd()*3), stormStreak=0;
   var lienPaired=false, gtmPays=0, hoaLien=false;
   var yc=Math.floor(rnd()*6);   // year card (mirrors index.html)
@@ -67,6 +68,16 @@ function run(strategy,seed){
       } else if(strategy==="maxer"){          // polish the strong: raise the HIGHEST factor of the highest-product unbloomed person (anti-diagnosis)
         var mx=null,mxv=-1; here.forEach(function(c){ if(c.started)return; var pv=c.tai*c.gan*c.ban; if(pv>mxv){mxv=pv;mx=c;} });
         if(mx){ var kx=(mx.tai>=mx.gan&&mx.tai>=mx.ban)?"tai":(mx.gan>=mx.ban)?"gan":"ban"; mx[kx]=Math.min(10,mx[kx]+R2); if(kx==="gan") communal(mx); }
+      } else if(strategy==="spreaderU"){       // v0.74 — the FAIR spreader: never a wasted hand (a random un-bloomed person, a random factor below 10; tends the bloomed once nobody is left)
+        var unU=here.filter(function(c){return !c.started;});
+        if(unU.length){ var cU=unU[Math.floor(rnd()*unU.length)], ksU=["tai","gan","ban"].filter(function(k){return cU[k]<10;});
+          if(ksU.length){ var kU=ksU[Math.floor(rnd()*ksU.length)]; cU[kU]=Math.min(10,cU[kU]+R2); if(kU==="gan") communal(cU); } }
+        else { var blU=here.filter(function(c){return c.started;}); if(blU.length){ var cB=blU[Math.floor(rnd()*blU.length)], ksB=["tai","gan","ban"].filter(function(k){return cB[k]<10;}); if(ksB.length){ var kB=ksB[Math.floor(rnd()*ksB.length)]; cB[kB]=Math.min(10,cB[kB]+R2); } } }
+      } else if(strategy==="hunterT"){         // v0.74 — the hunter who ALSO tends after the bloom (weakest factor of the lowest-product bloomed person once nobody is left to bloom): the honest reference for a real player since v0.57
+        var bestT=null,bmT=99;
+        here.forEach(function(c){ if(c.started)return; var m=Math.min(c.tai,c.gan,c.ban); if(m<bmT){bmT=m;bestT=c;} });
+        if(!bestT){ var blT=here.filter(function(c){return c.started;}).sort(function(a,b){return a.tai*a.gan*a.ban-b.tai*b.gan*b.ban;}); bestT=blT[0]; }
+        if(bestT){ if(bestT.gan<=bestT.tai&&bestT.gan<=bestT.ban){ bestT.gan=Math.min(10,bestT.gan+R2); communal(bestT); } else if(bestT.tai<=bestT.ban) bestT.tai=Math.min(10,bestT.tai+R2); else bestT.ban=Math.min(10,bestT.ban+R2); }
       } else if(strategy==="spreader"){           // effort everywhere, no diagnosis
         var c2=here[Math.floor(rnd()*here.length)], k=["tai","gan","ban"][Math.floor(rnd()*3)];
         if(c2&&!c2.started){ c2[k]=Math.min(10,c2[k]+R2); if(k==="gan") communal(c2); }
@@ -97,6 +108,10 @@ function run(strategy,seed){
           .forEach(function(st3){ st3.tai=Math.min(7,st3.tai+1); });
     }
     cast.forEach(function(q){ q._dripped=false; });
+    // 🍃 quen (mirrors index.html): once a season from season 1, 35 % — a random present pair, not authored, not yet quen: each side not bloomed with BẠN 3–6 gains +1 (the lonely never lift by luck)
+    if(season>=1&&rnd()<0.35){ var pq=cast.map(function(c,i){return {c:c,i:i};}).filter(function(o){return activeSim(o.c,season)&&(o.c.arrives===undefined||o.c.arrives<season);}), cq=[];
+      pq.forEach(function(a,ia){ pq.forEach(function(b,ib){ if(ib<=ia) return; var k=Math.min(a.i,b.i)+"-"+Math.max(a.i,b.i); if(AUTH_KEYS[k]||pairsSet[k]||quenSet[k]) return; cq.push([a.c,b.c,k]); }); });
+      if(cq.length){ var qq=cq[Math.floor(rnd()*cq.length)]; quenSet[qq[2]]=1; [qq[0],qq[1]].forEach(function(o){ if(!o.started&&o.ban>=3&&o.ban<=6) o.ban++; }); } }
     var gMax=(yc===2&&season<=10)?2:1, gAmt=(yc===2&&season<=10)?2:1;
     if(pairsSet["1-4"]&&gtmPays<gMax&&cast[1].started){ gtmPays++; von=Math.min(10,von+gAmt); }
     if(pairsSet["4-6"]&&!hoaLien&&cast[6].started&&cast[4].started){ hoaLien=true; von=Math.min(10,von+1); }   // 🎨 Hoa×Liên (mirrors index.html): designs sell once, the river rises once
@@ -139,8 +154,8 @@ function run(strategy,seed){
   return {n:cast.filter(function(p){return p.started;}).length, ts:tsum};
 }
 
-var N=1200, sums={hunter:0,spreader:0,linker:0,idle:0,misreader:0,maxer:0}, tiers={hunter:0,spreader:0,linker:0,idle:0,misreader:0,maxer:0};
-["hunter","spreader","linker","idle","misreader","maxer"].forEach(function(st){
+var N=1200, sums={hunter:0,spreader:0,linker:0,idle:0,misreader:0,maxer:0,spreaderU:0,hunterT:0}, tiers={hunter:0,spreader:0,linker:0,idle:0,misreader:0,maxer:0,spreaderU:0,hunterT:0};
+["hunter","spreader","linker","idle","misreader","maxer","spreaderU","hunterT"].forEach(function(st){
   for(var i=0;i<N;i++){ var r2=run(st,1009+i*53); sums[st]+=r2.n; tiers[st]+=r2.ts; }
   sums[st]/=N; tiers[st]/=N;
 });
@@ -151,6 +166,7 @@ console.log("  linker   (spam Kết nối)      : "+sums.linker.toFixed(2));
 console.log("  idle     (do nothing)        : "+sums.idle.toFixed(2));
 console.log("  misreader (hunter, 30% wrong first hand): "+sums.misreader.toFixed(2)+" · tiers "+tiers.misreader.toFixed(1));
 console.log("  maxer (polish the strong): "+sums.maxer.toFixed(2)+" · tiers "+tiers.maxer.toFixed(1));
+console.log("  spreaderU (fair: no wasted hand): "+sums.spreaderU.toFixed(2)+" · tiers "+tiers.spreaderU.toFixed(1)+"   hunterT (hunter who tends after the bloom): "+sums.hunterT.toFixed(2)+" · tiers "+tiers.hunterT.toFixed(1));
 console.log("tiers: hunter "+tiers.hunter.toFixed(1)+" · spreader "+tiers.spreader.toFixed(1)+" · linker "+tiers.linker.toFixed(1)+" · idle "+tiers.idle.toFixed(1));
 
 // linker note: the sim's linker SORTS by lowest BẠN — semi-diagnostic by construction. The hunter saturates the
@@ -164,7 +180,9 @@ var ok = sums.hunter > sums.spreader + 0.5 && sums.hunter > sums.linker && sums.
       && sums.misreader > sums.spreader + 0.5    // v0.35: a fair player who misreads the hidden row 30% of the time still clearly beats effort-everywhere
       // v0.38 — the CAPPING assertions: the weakest factor decides, as a function and as an outcome
       && chance({tai:10,gan:2,ban:10},10) <= 0.04 && chance({tai:10,gan:3,ban:10},10) <= 0.08   // a 2 or a 3 caps a life, whatever the other two are
-      && tiers.maxer < 0.4*tiers.hunter;         // polishing the strong earns under 40% of the diagnostician's rooted depth
+      && tiers.maxer < 0.4*tiers.hunter          // polishing the strong earns under 40% of the diagnostician's rooted depth
+      // v0.74 — the FAIR opponent (the critics' clause): a spreader who never wastes a hand still loses to the diagnostician who tends after the bloom, in blooms AND in rooted depth
+      && sums.hunterT > sums.spreaderU + 0.3 && tiers.hunterT > tiers.spreaderU + 3;
 // (margin recalibrated 1.5→1.0 at v0.17: Cô Mai's school legitimately compounds with breadth strategies —
 //  school × connections is thesis-TRUE; the gate demands strict hunter dominance, not an arbitrary gap)
 console.log(ok ? "\n✅ BAND HOLDS: diagnosis beats spreading, link-spam, and idling — the multiplication teaches itself."

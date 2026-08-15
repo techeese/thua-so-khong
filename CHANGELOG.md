@@ -1,5 +1,52 @@
 # Changelog — Thừa Số Không
 
+## v0.75 — 2026-08-16 — the big remake: nobody appears out of nowhere · the game teaches itself · buildings with purpose · the xóm makes friends on its own · trades that look like trades
+
+Owner directive (2026-08-15, five factors, "run a big re-make"): (1) characters appeared out of nowhere, (2) no
+initial instruction — hụi in particular was opaque, (3) buildings stood there with no purpose and nobody used
+them, (4) friendship only ever happened through Kết nối, (5) the economic buildings did not look like what they
+were. All five, in one release; the launchd loop was paused for it (flag removed) and is to be re-armed with
+`touch .improve-tsk-on`.
+
+- **Homes.** Seven homes on the map, one per neighbour (`HOMES`), each with a doorstep the person actually
+  stands on; tile houses for Ngân/Ba/Tú, thatched huts for the rest. A door carries the house's state: crossed
+  planks while the owner is away or not yet arrived, the owner's colour strip once home, a lamp in the window
+  when they are indoors. Tap a home: the owner steps to the door and says something about it (kept in the log);
+  a shuttered home is explained by the nearest neighbour you know — the arrival is foreshadowed by name, never by
+  number. Once per home per season. (Gate 65)
+- **Arrivals.** A newcomer walks in along the road (`arrivalPath`, five points from the right edge to their own
+  door), with a 🚶 banner behind the season's, a log line, the roster's pulsing "mới" chip and a "soon" chip for
+  next season's arrival; selectable mid-walk; the door line is said on arrival as the shutters open. Cô Liên's
+  sampan is a ghost at the left edge the season before she docks. (Gate 64)
+- **Trades that look like trades.** `SHOP_ART` per neighbour and tier: Ngân's desk-and-screen → studio with a
+  dish, Ba's beehive kiln → climbing kiln with glazed pots, Mai's blackboard → school with bell and flag, Vũ's
+  repair bench and leaning wheel → shopfront with a gear sign, Hoa's shoulder pole and baskets → striped stall → shopfront with boxes for Sài Gòn, Tú's tinker shed with a
+  windmill, Liên's easel → studio with pattern banners — a workshop reads as its owner's trade before you tap it. Trades sit near their owner's home (`SHOP_SPOT`), the paddy moved right, the
+  build frame to the landing.
+- **Onboarding.** The intro names the multiplication and the rhythm (hands, seasons, the ? button). Eleven
+  anchored one-line tips (`TIPS`, `S.tip` bitmask), one at a time, each once, tap to dismiss, a more urgent tip
+  preempts after five seconds, never on a vet's run, never under a card; the first three (faces → verb row → next
+  season) come before any verb tip whatever the year unlocked on day one. Pending lessons now land in-season
+  (`flushPend` on a 350 ms tick, not at the next season). Hụi is taught in three voices: the circle answers Cô
+  Mai's question in season 1, the lesson lands after the newcomer speaks, the first coin says what rose and what
+  it opened (×a→×b), the pot button names itself the first time it shows, the đình answers about it while unpaid,
+  and the flood year opens with the lesson under the year card. A verb wears "mới" (`button.nb`) until first use.
+  Field notes gain "🎮 Cách chơi", "🪙 Hụi là gì?" and "📖 Từ điển" in both languages; the first season's turn says
+  where the rules live. (Gate 66)
+- **Quen.** Once a season, sometimes (35 %), two present neighbours who keep crossing paths become quen: a thin
+  dotted thread, a log line, a small scene at the place they met, a gossip line. Those who already have friends
+  make friends — +1 BẠN for BẠN 3–6, not bloomed, hidden unless that number is seen; the lonely (≤2) never lift by
+  luck — that is what your hand is for, and the first-time lesson says so. Never an authored pair, never an
+  existing bond; connecting two who are quen says so. `S.quen` saved (`qn`), fin-guarded; `check.js` mirrors it
+  and the band holds (hunter 6.87 · spreader 5.25 · linker 5.53 · idle 2.40). (Gate 67)
+- **Buildings with purpose.** Errand 13 HOME-IN (walk home, step inside — the figure leaves the paper, the window
+  lights, the roster says 🏠, chatter skips them, a tap on the door or a word brings them out) and errand 14
+  BANYAN (sit under the tree; the elder favours it), both split from existing weights so Gate 14's LEARN share is
+  untouched. Some clear seasons bring a market day: three neighbours to the stall together, one says so, baskets
+  set down. The đình yard has its mat (the circle sits on it) and a coin bowl once a round is paid; the landing
+  has a jetty and a moored sampan while the river can float one. (Gate 68)
+- Gates 64–68 added and recorded; 69/69 green. done.sh parity 228/228.
+
 ## gate repair — 2026-08-16 — Gates 26 and 33 pinned to a plain year; the whole gate file swept for card flakes (engine tick, no product change)
 
 Closes: `done.sh` → *release gates RED — a ceiling is not an empty hand: `CEILV_BAD … live='+3 GAN'`* on
