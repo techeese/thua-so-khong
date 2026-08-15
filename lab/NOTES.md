@@ -19,6 +19,104 @@ argues for or against.
      **Measured:** …
      **Argues for/against:** <candidate era>  -->
 
+## 2026-08-15 — where is the decision? diagnosis decomposed into what · who · when (`decide.js`)
+
+Owner gate #1 says *"Diagnosis feels like play. Finding which factor is zero is the fun part, not
+homework."* Two vigils asked whether the zero is sharp and whether it is witnessed; this one asks what
+the player's diagnosis is **worth** — how much of the hunter's margin comes from picking the right
+**factor** (WHAT), how much from picking the right **person** (WHO), how much from acting at all, and
+how often either is even a choice. Underneath it, a harness question: what exactly is the band gate's
+spreader losing to?
+
+Harness: `check.js`'s sim verbatim, same seeds (`1009+i·53`, N=6000), so every comparison is **paired**
+— one seed is the same cast, year card and sky for every strategy, and the ±SE below is on the paired
+difference. `idle`/`spreader`/`hunter` are bit-exact to `check.js` (drift check exact: 6.99/15.86 ·
+6.25/11.21 · 3.44/3.44). Every ablation is **cap-faithful**: in the game a factor at 10 has its button
+disabled (`index.html:1596-1598`), so an ablation whose preferred factor is capped falls through to
+its next preference instead of silently wasting the act. No strategy here forms pairs, so the
+elder-clock variant (LANDMINES) is moot — the clock runs identically under all of them.
+
+**1 · The band's spreader loses to waste, not to diagnosis.** In act slots with someone still
+unbloomed, `check.js`'s spreader aims **45.1%** of its acts at an already-bloomed person (the sim
+discards these) and **5.5%** at a factor already at 10 (the game's button is disabled) — **50.7% of
+its acts do nothing.** Remove the waste and keep the blindness — a random *unbloomed* person, a random
+*uncapped* factor, no diagnosis of any kind:
+
+| | blooms | tiers | Δ tiers vs hunter (paired) |
+|---|---|---|---|
+| hunter | 6.99 | 15.86 | — |
+| `check.js` spreader | 6.25 | 11.21 | −4.65 ±0.03 |
+| **spreaderU** (no waste, no diagnosis) | **6.96** | **15.53** | **−0.33 ±0.02** |
+| idle | 3.44 | 3.44 | −12.42 |
+
+Of the 4.65 tiers the gate calls "diagnosis beats spreading", **4.32 (93%) is the spreader throwing
+acts away and 0.33 (7%) is diagnosis.** The predicate `tiers.hunter > tiers.spreader + 3`
+(`check.js:135`) is not satisfiable by any diagnostic advantage the game contains; it is satisfied by
+an opponent who plays half a game.
+
+**2 · WHAT is worth 5–11% of tiers and ~1% of blooms.** Hold WHO = the hunter's own target (the
+person holding the xóm's lowest single factor) and vary only the factor pressed:
+
+| WHAT, on the hunter's target | blooms | tiers | Δ tiers |
+|---|---|---|---|
+| the weakest (hunter) | 6.99 | 15.86 | — |
+| a random factor | 6.97 | 15.25 | −0.62 |
+| the middle factor | 6.94 | 15.10 | −0.76 |
+| **the strongest** — the inverse of the thesis | **6.93** | **14.53** | **−1.33** |
+
+Feeding the weakest person's *strongest* factor costs 1% of blooms and 8% of tiers. Bloom count —
+the banner, the gong, the petals — cannot see WHAT at all; only the tier pill can, and faintly.
+
+**3 · WHO is inert, or inverted.** Hold WHAT = correct (that person's own weakest factor) and vary
+the person: random **+0.26** · round-robin **+0.16** · "the first person you met, until they bloom"
+**+0.70** · hunter's pick but stay until they bloom **+0.38** · largest marginal chance **+0.32** ·
+lowest product **−0.17** · **highest product, i.e. closest to bloom: +1.24 ±0.02.** Every rule that
+picks *a* person and presses their weakest button lands within ±0.3 tiers of the hunter or beats it.
+The game's canonical diagnostician — "find the zero in the xóm" — is the worst sensible WHO rule,
+beaten by 8% by "finish whoever is nearly done". Pure anti-diagnosis on both axes (`maxerU`: the
+strongest person's strongest factor) keeps **98% of tiers** (−0.19) and 89% of blooms.
+
+**4 · How often is it a choice at all?** On the hunter's own 24.8 acts per run: the target's
+weakest factor is **tied** with another in 18.8%; two or more people share the xóm's minimum in
+29.0%; in 18.2% exactly one unbloomed person is left (no WHO exists); mean candidates per act 2.92.
+In **34.6%** the target's min is ≤3, so the map has already printed `số không: <factor>` and no
+sheet is needed. A player who acts only on labelled people, presses the labelled factor, never opens
+the sheet, and does nothing when no label shows (`labelOnly`) keeps **92% of the hunter's blooms**
+(6.70; the deficit is tiers, 60%, from idling). And the hunter touches **6.68 distinct people per
+run, 6.48 by season 8** — the diagnostician's play *is* spreading; what it does differently is press
+a different button on each of them.
+
+**5 · Quantity and timing.** One act per season with perfect diagnosis (`hunterOne`) keeps 94% of
+blooms and 65% of tiers; the hunter idle until season 5 keeps 99%/86%; idle after season 8 keeps
+98%/96%. Blooms saturate at the cast; tiers are the only channel with slack, and the slack is mostly
+*how many* acts, not *which*. In the sim's frame the hunter has someone to tend in only 24.8 of 45.9
+act slots (54%) — the sim has no post-bloom tending, so that is a limit of the mirror, not a game
+measurement.
+
+**6 · A correction to a banked row.** `zerohunt.js`'s `avoider` (4.75 / 6.13) and `maxer`
+(4.93 / 7.14) raise `maxKey` with no cap check; once that factor is 10, every later act on that
+person is a silent no-op that the game's disabled button would never permit. Cap-faithful, the same
+two strategies score **6.93 / 14.53** and **6.60 / 15.67**. `zerohunt`'s headline (4.6× on tiers,
+2.0× on blooms) was hunter-vs-**idle** and stands; its table row that reads "anti-diagnosis costs
+60% of tiers" was measuring wasted acts, and the true cost under the game's rules is ~8%. Logged in
+`LANDMINES.md`.
+
+**Argues for:** the "sharpness of the zero" candidate, with a third lever after *floors* and
+*witness* — **the price of being wrong.** Under the game's own arithmetic a wrong factor costs ~8%
+of a number most players never read, and a wrong person costs nothing or pays; a player can play the
+inverse of the thesis on both axes and keep 98% of the outcome. If diagnosis is to feel like play
+there must be something the player can lose by, and today there is not. Concretely it argues for a
+**fair opponent in the band gate** (`spreaderU`) — and against pretending that is free: `hunter.ts >
+spreaderU.ts + 3` fails on the first commit (15.86 vs 15.53), so it is a ratchet with a balance
+decision attached, exactly like `schoolfirst`. **Argues against:** any era that adds diagnosis *UI*
+— hints, a detective mode, a clearer sheet — since the answer is already displayed (three numbers,
+and a red label 35% of the time) and the reward for reading it is 3% of tiers; and against reading
+`whoNear`'s +1.24 as an isolated balance bug — it is the same fact from the other side: tiers reward
+whoever blooms earliest, not whoever stood nearest zero.
+
+**Not shipped, per Gear 3.** `index.html` and `check.js` untouched; probe `lab/decide.js`, output
+`lab/decide-out.txt` (both gitignored).
+
 ## 2026-08-15 — the literal zero: who produces it, and does anything witness it? (`zerowitness.js`)
 
 The last vigil established the zero is *soft* — the authored floors are 1s and a 1 blooms about half

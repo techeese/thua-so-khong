@@ -96,6 +96,16 @@ that is now impossible because a gate catches it stays here, with the gate named
   2026-08-15 (`lab/zerowitness.js` now runs both variants; the difference is 1.7 → 0.3 elder-zeros
   per 1000 linker runs). Generalises: **the sim mirrors the season math, not the story systems** —
   check the mirror before attributing a number to a person.
+- **A sim strategy that "raises" a factor already at 10 silently wastes the act; the game's button
+  is disabled, so a player can't.** `lab/zerohunt.js`'s `avoider` (4.75/6.13) and `maxer`
+  (4.93/7.14) raise `maxKey` with no cap check, and once that factor is 10 every later act on that
+  person is a no-op — the "anti-diagnosis costs 60% of tiers" row was measuring wasted acts.
+  Cap-faithful they score 6.93/14.53 and 6.60/15.67 (~8% cost). Worse, `check.js`'s **own spreader**
+  aims 45% of its acts at already-bloomed people (the sim discards them) and 5.5% at capped factors,
+  so the band's `hunter.ts > spreader.ts + 3` margin is 93% waste and 7% diagnosis
+  (`lab/decide.js`, 2026-08-15). Cost: one banked table row overstated by ~7×, and a gate margin
+  that reads as a thesis claim. Generalises: **when a sim strategy loses, check whether it lost the
+  decision or lost the interface** — give every strategy the game's own guardrails before comparing.
 - **`check.js`'s band gate proves diagnosis WINS, not that the weakest factor DECIDES.** They are
   different claims and only the first is gated. Measured 2026-08-15: `idle` — a player who never
   acts — still blooms 3.44 of 7 workshops, and a strategy the gate does not test (`schoolfirst`)
