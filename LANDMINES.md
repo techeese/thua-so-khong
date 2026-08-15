@@ -191,3 +191,19 @@ that is now impossible because a gate catches it stays here, with the gate named
   them. The entry drafted from "what I changed" was therefore wrong about what the commit contained.
   Before writing a changelog entry, run `git diff --stat` and write it against **what is actually
   still uncommitted**, not against what you remember editing.
+- **A single play-through measurement on this game is noise-dominated.** Three runs of near-identical
+  code returned avgNamed **4.15 / 4.58 / 3.77** over 192 sampled frames each — a spread far wider than
+  most effects worth shipping. Anything measured by *playing* (crowding, naming, ambient rates) needs a
+  seeded RNG or many runs averaged before a before/after difference means anything; `check.js` already
+  does this for the band and is the model to copy. A crowding fix was shipped-then-reverted on exactly
+  this trap.
+- **The CSS background-shadow scroll cue does not work over opaque children.** The
+  `background-attachment: local, scroll` trick paints behind the content, and the roster's chips are
+  solid `#f5ead0`, so the cue was invisible in the 5px gaps. Fading a scroller's edge whose children
+  are opaque needs `mask-image` on the scroller plus JS classes from real scroll position.
+- **`getBoundingClientRect()` from a `--dump-dom` run does not locate anything in a `--screenshot`
+  run.** They are separate Chrome invocations, and this game's log box grows by random content, so the
+  layout differs between them — a box read in one and used to crop the other lands somewhere else
+  entirely (it read the canvas frame and returned identical numbers for three different states,
+  which looks exactly like "the change did nothing"). Assert the DOM state in the dump run; use the
+  screenshot only for reading with your eyes.
