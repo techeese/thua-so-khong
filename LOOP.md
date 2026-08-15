@@ -93,7 +93,10 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.36: the TÀI zero walks — errand 11 LEARN sends a low-TÀI neighbour to watch the most skilled
+**v0.37: the road precedes the label — strangers walk their factor before you have spoken to them,
+cadence 4.5–9 s (Gate 15); the engine rejected Era A 3/3 and is reviewing B "watching is reading"
+re-scoped, so mechanic ticks now serve B's channel without deciding B's identity (labels stay until
+the transition says otherwise). v0.36: the TÀI zero walks — errand 11 LEARN sends a low-TÀI neighbour to watch the most skilled
 hands (Gate 14); all three zeros now have a walk, and the fates measure as reachable and fair
 (Ngân leaves 0 % hunter · 5 % spreader · 100 % idle). The engine's `SYNTHESIS.md` has closed Era 1
 and provisionally picked Era A (one zero, one word — reductive); mechanic ticks now choose work

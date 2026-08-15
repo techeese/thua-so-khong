@@ -1,5 +1,24 @@
 # Changelog — Thừa Số Không
 
+## v0.37 — 2026-08-15 — the road precedes the label
+
+Closes: under the owner's standing `/loop 3m` directive, the second of the engine's own findings on
+the watching channel (`walks.py` via `SYNTHESIS.md` §2: *"walks require `known`, so they never
+precede the label"*), now that all three zeros have a walk (v0.36). Chosen because the engine's
+round-2 candidate **B "watching is reading"** needs it and no other candidate is hurt by it — it
+decides nothing about B's identity (labels stay; that is B's call to make).
+
+- **Strangers walk their factor.** The errand pool no longer requires `known`: a "?" faltering at
+  the đình steps, lingering at the landing, or going to watch Chú Ba's hands is a clue *before* you
+  have spoken to them — the road reads first, the name comes later. Newcomer chains and beats are
+  unchanged; the storm huddle still owns the screen; walks stay silent and numberless (charter §4).
+- **Cadence 6–12 s → 4.5–9 s between errands.** A watcher at play speed saw 1.8–4.5 errands per run;
+  the road has to be read more often than that to be a channel. Walker cap unchanged (1 before
+  season 4, 2 after) so the graphics loop's label de-overlap work is not undone.
+- *Evidence:* new **Gate 15** (`STRANGER_OK sent=6 unknownSent=6` — with nobody spoken to, six
+  strangers took the road in forty governor ticks). Eighteen gates green, hash-bracketed; band
+  untouched.
+
 ## v0.36 — 2026-08-15 — the TÀI zero walks
 
 Closes: under the owner's standing `/loop 3m` directive, a gap the engine's own synthesis names

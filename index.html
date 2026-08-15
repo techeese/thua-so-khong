@@ -161,7 +161,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.36</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.37</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -562,6 +562,13 @@ function renderChron(){
 function renderBook(box){
   var c=loadChron().slice().reverse(); box.innerHTML="";
   if(!c.length){ box.textContent=(L==="vi")?"(chưa có năm nào)":"(no years yet)"; return; }
+  // the book's first line totals the years: how many lived, how many blooms and tiers they left, hands spent, the best arc ever
+  (function(){ var yrs=c.length, bl=0, tr=0, hs=0, best=null;
+    c.forEach(function(r){ if(!r) return; bl+=r.nB|0; tr+=r.ts|0; hs+=r.hs|0; if(fin(r.then)&&fin(r.now)&&(!best||(r.now-r.then)>(best.now-best.then))) best=r; });
+    var tot=document.createElement("div"); tot.style.cssText="justify-content:center;border-bottom:1px dashed rgba(43,35,32,.35);padding-bottom:4px;margin-bottom:3px";
+    tot.innerHTML="<b>"+yrs+(L==="vi"?" năm":" year"+(yrs>1?"s":""))+"</b><span>· "+bl+(L==="vi"?" mầm · ":" blooms · ")+tr+(L==="vi"?" bậc":" tiers")+(hs?(" · "+hs+"⚡"):"")
+      +(best&&best.now>best.then?(" · "+(L==="vi"?"xa nhất: ":"furthest: ")+best.wk+" "+best.then+"→"+best.now):"")+"</span>";
+    box.appendChild(tot); })();
   c.forEach(function(r,i){ if(!r) return;
     var d=document.createElement("div");
     var yc=YEAR_CARDS[fin(r.yc)?Math.max(0,Math.min(YEAR_CARDS.length-1,r.yc|0)):0];
@@ -794,13 +801,14 @@ function errandTick(now){
   }
   if(now<nextErrandAt) return;
   if(walkers>=(S.season<4?1:2)){ nextErrandAt=now+4000; return; }
-  var pool=S.cast.filter(function(p4){ return active(p4)&&p4.known&&!p4.arriveT&&!(p4.vUntil>now)&&S.sel!==p4.id&&!p4.amb; });
+  // strangers walk too — the road reads a person before you have spoken to them (a "?" faltering at the đình steps IS the clue); named later
+  var pool=S.cast.filter(function(p4){ return active(p4)&&!p4.arriveT&&!(p4.vUntil>now)&&S.sel!==p4.id&&!p4.amb; });
   if(!pool.length){ nextErrandAt=now+4000; return; }
   var pk=pool[Math.floor(Math.random()*pool.length)];
   var beh2=pickBeh(pk);
   if((beh2===2||beh2===4)&&landmarkFull(beh2)) beh2=1;
   execBeh(pk,beh2,now);
-  nextErrandAt=now+6000+Math.random()*6000;
+  nextErrandAt=now+4500+Math.random()*4500;   // v0.37: a watcher at play speed saw 1.8–4.5 errands a run — the road must be read more often than that (still silent, still numberless)
 }
 function p_setV(p,until){ p.vUntil=until; }
 

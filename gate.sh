@@ -435,6 +435,30 @@ PYEOF16
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=600,900 --virtual-time-budget=9000 --dump-dom "file://$TMP/s.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "STRIP_OK" && pass "the strip says it scrolls: $T" || fail "the strip says it scrolls: $T"
 
+# Gate 15: strangers walk — with nobody yet spoken to, the errand governor still sends someone on the road (the road precedes the label).
+python3 - "$TMP" <<'PYEOF15'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.season=4; S.sel=-1; S.luat=6; S.cast.forEach(function(p){ p.known=false; p.behForce=0; p.arriveT=0; p.vUntil=0; p.amb=0; });
+  beatUntil=0; nextErrandAt=0;
+  var t0=performance.now(), sent=0, unknownSent=0;
+  for(var i=0;i<40;i++){ nextErrandAt=0; beatUntil=0; errandTick(t0+i*20000);
+    S.cast.forEach(function(p){ if(p.amb&&!p._c){ p._c=1; sent++; if(!p.known) unknownSent++; } }); }
+  var ok = sent>=3 && unknownSent===sent;
+  document.title=(ok?"STRANGER_OK":"STRANGER_BAD")+" sent="+sent+" unknownSent="+unknownSent;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/s.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF15
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/s.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "STRANGER_OK" && pass "strangers walk: $T" || fail "strangers walk: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."
