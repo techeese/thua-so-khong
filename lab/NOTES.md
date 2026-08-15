@@ -19,6 +19,68 @@ argues for or against.
      **Measured:** …
      **Argues for/against:** <candidate era>  -->
 
+## 2026-08-15 — what the storm costs, and what the tarp buys: the whole stamp mechanic is worth 1 % of the hunter's rooted depth (`shelter.js`)
+
+**Question.** v0.41 printed the law's number (⬛ 15 %/5 %), v0.48 made one hand tarp every standing
+roof, v0.50 printed how long the tarp holds — three rounds on the "hold what you built" decision.
+`check.js` bands no strategy that shelters (the verb is not in the sim at all), and the pointer says
+a plausible player idles 21 of the last 24 hands. So: what does the storm actually cost a player who
+diagnoses, and what does the tarp buy back?
+
+**Built.** `lab/shelter.js` — `check.js` v0.50 verbatim, plus per-roof `shel` (set to 2 by a shelter
+hand, −1 per season, stamps skip while > 0 — mirrors `index.html:1987/2050/1874`), the game's unlock
+(shelter is available only once the law has been seen — first stamp, or the strict year — and while a
+storm is the current sky; the paid forecast is not modelled), a stamp/erasure/step-down counter, and
+three hunter variants: **hunterShel** (any visible storm with an exposed roof → tarp first, then hunt),
+**hunterShelIdle** (tarp only with a hand that has no unbloomed target — the free tarp), and
+**hunterImmune** (stamps never land — the upper bound on what the storm can cost). The RNG stream is
+kept identical to `check.js` (the stamp roll is consumed before the tarp check), so `hunter` reproduces
+the shipped band exactly.
+
+**Measured (N=4000).**
+| strategy | blooms | tiers | tarp hands | idle hands | erasures/run | step-downs/run |
+|---|---|---|---|---|---|---|
+| hunter (shipped) | 6.98 | 16.06 | 0 | — | 0.355 | 0.926 |
+| hunterShel (tarp first) | 6.99 | 16.04 | 2.24 | 16.8 | 0.204 | 0.230 |
+| hunterShelIdle (free tarp) | 6.99 | **16.22** | 0.80 | 17.2 | 0.321 | 0.454 |
+| hunterImmune (no stamps ever) | 7.00 | **16.23** | 0 | — | 0 | 0 |
+| idle | 2.46 | 2.46 | 0 | — | 0.417 | 0 |
+
+**Observation.**
+- The **entire storm mechanic costs the diagnostician 0.17 tiers** — 16.06 → 16.23 with stamps
+  switched off. That is **1.0 % of rooted depth**, and 0.02 blooms. A third of runs see a roof
+  erased and most see a step-down, and it does not matter: the hunter re-raises the crushed owner and
+  a −2 GAN on a bloomed person rarely crosses a product threshold that the river cap has not already
+  set.
+- The tarp played **only with otherwise-idle hands recovers essentially all of it** (16.22 of 16.23)
+  for 0.8 hands a run — and the hunter *has* ~17 idle hands a run, so this is the plausible player.
+- The tarp played **eagerly** — a hand at the first sign of every storm — gains **nothing** (16.04):
+  it halves the stamps (erasures 0.36 → 0.20, step-downs 0.93 → 0.23) and pays for it in the early
+  hands that were worth more than the roofs they would later have protected. Under the sim's rules a
+  tarp is never wrong when the hand is spare and never right when it is not.
+- The residual 0.20 erasures under eager tarping are the **first stamp of a run**: the law is unseen
+  until it lands, so the button does not exist yet (`lawSeen`), and a newborn roof stands its first
+  season untarped by design. Both are the game's rules, not the strategy's.
+
+**What this says about the three rounds.** The law's number, the tarp's reach and its duration are
+all honest prints of a mechanic that, measured against a diagnosing player, moves the outcome by one
+part in a hundred. The *felt* stake (a roof you built goes down; the ⬛ 15 % you read comes true one
+season in seven for a young roof) is real; the *arithmetic* stake is not — the outcome the ending
+counts does not remember the storm. Whether that is a fault depends on what the back half of a run
+is for: today it is 17 hands with nothing to raise, and the one late-game verb that exists is worth
+1 % when it is free and 0 % when it is not.
+
+**Argues for:** any synthesis that wants the late game to *decide* something — the storm is the only
+late-game pressure and its cost is inside the band's noise, so "hold what you built" is a story,
+not a decision, under current numbers. **Argues against:** further prints on the tarp/law surface
+(v0.41/v0.48/v0.50 have said everything the number has to say), and against reading a real player's
+step-downs as evidence the game is hard. **Not a defect claim:** nothing here is broken; the mechanic
+does what it prints. **Also notes:** `check.js` cannot see any of this — the shelter verb is not in
+the sim, so a future band clause about the late game would need this harness first.
+
+**Not shipped, per Gear 3.** `index.html` and `check.js` untouched; probe `lab/shelter.js`, output
+`lab/shelter-out.txt` (both gitignored). Run: `node lab/shelter.js`.
+
 ## 2026-08-15 — does `check.js` still mirror `index.html`? formula grid says yes; one hand-dealing rule says no (`mirror.js`)
 
 **Why this, why now.** `done.sh` has carried one ⏭ line for days — *check.js older than index.html — confirm no math
