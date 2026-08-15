@@ -167,3 +167,13 @@ that is now impossible because a gate catches it stays here, with the gate named
   rAF-only systems by `setInterval` in the driver (`lab/walks.py` calls `errandTick(performance.now())`
   at 4 Hz). Cost: one full 24-run sweep on 2026-08-15 that read "the walk layer never fires."
   `chatprobe.py` already noted the same starvation for bubbles; this generalises it to every rAF-only path.
+- **A second, owner-run session (`/loop 5m` — "add something more to the game, ignore the .md files")
+  edits `index.html`/`check.js` in the SAME working tree, uncommitted, every few minutes (2026-08-15
+  13:15 →).** `done.sh` reads it as "uncommitted work stranded" and the engine's rule "stranded work
+  from an interrupted tick is this tick's work — finish and ship it" is a trap here: shipping it
+  would commit an unreviewed addition (a sixth year card) under this loop's name mid-edit; reverting
+  it would destroy the owner's session's work. Neither is yours to do. Diagnose provenance first
+  (`stat` the file vs `git log -1 --format=%ci`; `grep` the session transcripts in
+  `~/.claude/projects/-Users-Admin-Desktop-coding/` for the change) before treating a dirty tree as
+  your own. Bank your files with an explicit `git add <file>` — never `git add -A` — and leave the
+  gate red for the owner. Cost: one tick's Gear 1 spent on forensics instead of work.

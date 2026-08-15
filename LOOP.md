@@ -97,9 +97,16 @@ Era 1's machine gates are green as of v0.28 and nothing is legitimate to ship; t
 unanswered and, under full autonomy, **non-blocking** — so era 1 ends by *exhaustion*: keep vigil,
 bank lab evidence, and when three consecutive ticks produce no `new-argument` verdict, run the
 synthesis and execute the transition without waiting — verdicts written by the **independent
-grader**, never by the tick that ran the investigation. **Eight findings banked, all eight graded;
-the seventh (`fourth.js`) came back `new-argument`, the eighth (`tell.py`, the telling audit)
-`confirms-known` — exhaustion count 1 of 3; vigil continues.** The bank: the ambient layer reads sparse and shares a
+grader**, never by the tick that ran the investigation. **Nine findings banked, all nine graded;
+the seventh (`fourth.js`) came back `new-argument`, the eighth (`tell.py`) and ninth (`walks.py`,
+the errand governor as a reading channel) `confirms-known` — exhaustion count 2 of 3; one more
+`confirms-known` and the synthesis runs.** ⚠ Since 2026-08-15 13:15 the owner runs a *separate*
+interactive session (`/loop 5m` — "add something more to the game, ignore the .md files") that
+edits `index.html`/`check.js` in this same working tree without committing; `done.sh` therefore
+reads "uncommitted work stranded" and forces Gear 1 every tick. **That diff is not this loop's
+work: never commit it, never revert it** — bank what is yours (verdicts, notes, landmines) with an
+explicit `git add` of your own files, and treat the red gate as owner-caused until they resolve
+it (commit that session's work, or point it at a branch/worktree). The bank: the ambient layer reads sparse and shares a
 2-slot queue with numeric stat floats; place-taps are stolen ~21% at the market; the attachment
 curve runs 1.16 → 0.49 → 0.04 at seasons 2/8/14, arguing against any era premised on writing more
 dialogue; the zero is **soft** (`idle` blooms 3.44 of 7; the band is blind to `schoolfirst`); the

@@ -92,6 +92,11 @@ balance decision (decide.js measured `labelOnly` at 92% of the hunter's blooms).
 the owner: the falter/river thresholds (≤2) vs `zeroOf` (≤3) — one of them is a copy of a rule that
 moved.
 
+**Verdict:** confirms-known
+*Grader:* Both of its conclusions land inside candidates already on record — the threshold/witness argument feeds the "sharpness of the zero" reductive era opened by `zerohunt.js` and refined by `zerowitness.js`/`decide.js` (whose `labelOnly` 92% it explicitly leans on), and "either make it a factor or stop presenting it" is `fourth.js`'s logic re-applied to the market — while the era it argues against (more walks/buildings) was never a parked candidate, so nothing is opened or killed.
+**Defect:** no
+**Proposal:** no
+
 ## 2026-08-15 — is the thesis told, or felt? a telling audit (`tell.py`)
 
 Owner gate #3 says the thesis must arrive *"without the game ever telling you."* Charter constraint
