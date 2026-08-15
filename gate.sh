@@ -775,6 +775,32 @@ PYEOF27
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/mid.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "MIDDLE_OK" && pass "the middle hand misses too: $T" || fail "the middle hand misses too: $T"
 
+# Gate 28: the pot's price is printed — at river 4 with a 400-product shop standing, the pot hint says the multiplier drops ×0.58→0.51 and
+# ↓tier for 1 roof; at river 5 the same hint carries the multiplier delta and no tier warning.
+python3 - "$TMP" <<'PYEOF28'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.un.hui=true; S.hui=1; S.acts=3; S.constraint=0; S.yearCard=2; S.potSeason=false;
+  var mai=S.cast[2], vu=S.cast[3]; vu.known=true; vu.started=true; vu.tai=8; vu.gan=5; vu.ban=10;   // 400 — a shop if the river carries it
+  S.ships.push({x:300,y:420,owner:vu.name,pid:3,age:3});
+  mai.known=true; mai.started=false; mai.seen={tai:true,gan:true,ban:true}; mai.mom=0; mai.tai=6; mai.gan=5; mai.ban=7;
+  S.von=4; selectPerson(2); renderSheet(); var h4=document.getElementById("potHint").textContent;
+  S.von=5; renderSheet(); var h5=document.getElementById("potHint").textContent;
+  var ok=/×0\.58→0\.51/.test(h4)&&/↓(bậc|tier) 1/.test(h4)&&/×0\.65→0\.58/.test(h5)&&!/↓/.test(h5);
+  document.title=(ok?"PRICE_OK":"PRICE_BAD")+" at4="+h4+" | at5="+h5;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/price.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF28
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/price.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "PRICE_OK" && pass "the pot's price is printed: $T" || fail "the pot's price is printed: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

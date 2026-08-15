@@ -93,7 +93,10 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.44: the guess-answer covers every hand that is not the weakest (Gate 27). The engine's synthesis 6
+**v0.45: the pot's price is printed — multiplier before→after and ↓bậc N when the dip crosses a cap
+line (Gate 28). Measured, parked for Y: bounding the witness GAN lift below 5 costs the hunter's tiers
+16.1 → 12.5 (spreader 7.8, linker 9.3) — the world currently finishes GAN for you; a fair-opponent era
+should decide that, not a tick. v0.44: the guess-answer covers every hand that is not the weakest (Gate 27). The engine's synthesis 6
 picked Y "a fair opponent" (the `check.js` instrument era) — mechanic ticks now leave `check.js`'s
 opponents to it. v0.43: `↑bậc N` on the hand that crosses a tier line the river can carry (Gate 26). ⚠ The engine's
 §31 disposition (X): transitions cannot execute while both owner loops commit into `index.html`
@@ -132,16 +135,14 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop, in order: all three overlays are
-**done** — intro (v0.39), ending card (v0.40), Sổ tay (v0.42); the first two were the same charter-4
-fault (the world still shouting behind a card that owns the screen), the third had no visible way out
-at all. Next: **crowding, still parked** — 61% of ordinary frames draw two villagers on top of each
-other and only ~4.2 of ~6.1 get named, but three runs of near-identical code gave avgNamed
-4.15 / 4.58 / 3.77, so build a seeded or multi-run harness (copy `check.js`) *before* touching it —
-that harness is now the single highest-value thing this loop could build, because three separate gate
-flakes (21, 23) have come from the same root. Then: the log panel and the verb row, neither reviewed.
-The far bank fading under a heavy sky is **decided, not pending**. Before adding any gate, run
-`./done.sh` and take the next id above the highest in BOTH `gate.sh` and the ledger. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop, in order: crowding is **done**
+(v0.43, Gate 25: overlap 0.1465 → 0.0781 across 8 paired seeds, villagers named 3.885 → 4.203), and
+all three overlays are done (v0.39 intro, v0.40 ending, v0.42 Sổ tay). **Do not attempt a seeded
+whole-run gate again** — it was built, measured and discarded this round; the game's deferred beats
+run on wall-clock `setTimeout` and the number moves with machine load. Gate the mechanism instead.
+Next unreviewed surfaces: the **log panel** and the **verb row**, then the roster chips' `?`/dot
+vocabulary. The far bank fading under a heavy sky is **decided, not pending**. Before adding any gate,
+run `./done.sh` and take the next id above the highest in BOTH `gate.sh` and the ledger. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

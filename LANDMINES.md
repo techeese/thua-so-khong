@@ -260,3 +260,17 @@ that is now impossible because a gate catches it stays here, with the gate named
   Cost: one tick spent discovering it. Practice: after writing a lab entry, if the only engine-owned
   red is the missing verdict, write gear `3` so the session ends and the grader can rule; never
   write the verdict yourself; never invoke the grader yourself.
+- **Seeding `Math.random` does not make this game deterministic.** `visit()` stamps `p.vUntil` from
+  `performance.now()` while `drawScene` compares it against the clock the harness passes in, so wall
+  time decides who is walking. Stub `performance.now` to the harness clock as well — with both stubbed,
+  repeat runs on the same seeds gave byte-identical overlap fractions.
+- **…and even then, a whole-run statistic is not gate-safe.** The game's deferred beats run on
+  wall-clock `setTimeout`, which interleaves with a synchronous season loop differently under load:
+  the same seeded gate read 0.1016 then 0.1589. Forcing the timer queue onto the harness clock made it
+  worse (0.37 → 0.43, still unstable) because compressing the beats changes the game. **Gate the
+  mechanism, not the emergent statistic** — three villagers on one spot separating to a fixed distance
+  is stable to four decimals; a play-through average never was.
+- **A one-pass pairwise separation makes three-way clusters worse, not better.** The two outer pushes
+  cancel on the middle figure, so it stays put while its neighbours move off it — seed 11 measured
+  0.078 → 0.289. Relax the pass several times per frame, and bound the result to the walkable area or
+  the pushes pile people into the edge.

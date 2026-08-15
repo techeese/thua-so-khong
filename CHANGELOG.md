@@ -1,5 +1,58 @@
 # Changelog — Thừa Số Không
 
+## v0.45 — 2026-08-15 — elbow room
+
+A graphics round from the owner's `/loop 5m` session, closing the item this loop has carried parked
+since v0.36: **villagers printing on top of one another.** It was parked because it could not be
+measured — three runs of near-identical code had given avgNamed 4.15 / 4.58 / 3.77, a spread wide
+enough that a real fix and a no-op looked the same.
+
+**The measurement came first.** Seeding `Math.random` alone was not enough: `visit()` stamps
+`p.vUntil` from `performance.now()` while `drawScene` compares it against the clock the harness passes
+in, so wall time leaked into who was walking. With both driven from the harness, repeat runs on the
+same seeds returned byte-identical overlap fractions — and only then was a before/after difference
+worth reading.
+
+- **Villagers decline to share a square of paper.** A draw-time nudge: overlapping figures ease apart
+  by up to ±34px, relaxed over five iterations (a single pass has the pushes cancel in a three-way
+  cluster, leaving the middle one put — measurably *worse* than doing nothing), bounded so the nudge
+  never pushes anyone off the walkable paper (unbounded, it piled people into the frame edge and seed
+  11 went 0.078 → 0.289). **`p.x` is never written**, so the simulation, the errands and the thesis
+  band see nothing of it.
+- *Evidence*, paired across 8 fixed seeds, before → after: overlap fraction **0.1465 → 0.0781**, a 47%
+  cut. Per seed: 11 `0.078→0.000` · 22 `0.430→0.102` · 88 `0.211→0.109` · 66 `0.133→0.094` · 44, 55
+  and 77 equal or better · 33 `0.180→0.188`, the one seed marginally worse. Villagers named per frame
+  rose **3.885 → 4.203** — the symptom that started this.
+- New **Gate 25**, gated as the **mechanism, not the statistic**. A seeded whole-run gate was built,
+  run, and thrown away: the game's deferred beats run on wall-clock `setTimeout`, so the number moved
+  with machine load — 0.1016 then 0.1589 on identical seeds, and worse again (0.37 → 0.43, still
+  unstable) when the timer queue was forced onto the harness clock, because compressing the beats
+  changes the game. What ships instead is stable to four decimals across four runs: three villagers on
+  one spot separate to `minGap=30.0`, with `simUntouched=true` and `onPaper=true`. That middle clause
+  is the one that matters — the gate itself asserts this is a drawing change and not a simulation one.
+
+The seeded harness is recorded in `LANDMINES.md` rather than the repo, because what it established is
+that it cannot be trusted under load. That finding is worth more than the harness would have been.
+
+## v0.45 — 2026-08-15 — the pot's price is printed
+
+Closes: under the owner's standing `/loop 3m` directive, the one hand whose cost to *others* was
+never shown. The pot said *+6 % for them · sông −1*; it did not say that a coin taken at river 4 or 7
+drops the tier cap for **every** workshop standing — shops back to stalls, the flywheel's tiers
+with them.
+
+- **`potPrice()`** appends to the pot hint the river's multiplier before → after (*sông
+  ×0.58→0.51*) and, when the dip would cross a cap line, *↓bậc N xưởng* for the roofs whose tier
+  would fall; nothing when none would. The label is tightened to *🌱 +6% · 1⚡* so the price reads
+  once, not twice.
+- **Measured and parked, not shipped:** bounding the witness lift (a witnessed bloom lifts GAN only
+  below 5, like the class's 7 and the circle's 3) — hunter 6.97 → 6.92 blooms but **tiers 16.1 →
+  12.5**, spreader 9.9 → 7.8, linker 13.0 → 9.3; in the sim, witnessed GAN is the main post-bloom
+  growth engine. Band would still hold, but it is a rebalance of the tier climb, not an inheritable
+  honesty fix — recorded in `LOOP.md` as a candidate for the engine's Y (fair-opponent) era.
+- *Evidence:* new **Gate 28** (`PRICE_OK at4="… → 16% · sông ×0.58→0.51 · ↓bậc 1 xưởng" at5="… →
+  17% · sông ×0.65→0.58"`). Twenty-eight gates green, hash-bracketed over `index.html` + `gate.sh`.
+
 ## v0.44 — 2026-08-15 — the middle hand misses too
 
 Closes: under the owner's standing `/loop 3m` directive, a hole in v0.34's answer. It fired only when a

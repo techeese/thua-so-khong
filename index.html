@@ -171,12 +171,12 @@
       <button id="teachBtn">📖 <span>Dạy</span><small id="teachHint">+2 TÀI · 1⚡</small></button>
       <button id="nerveBtn">🏮 <span id="nerveLbl">Đêm thất bại</span><small id="nerveHint">+2 GAN · 1⚡</small></button>
       <button id="linkBtn">🤝 <span id="linkLbl">Kết nối</span><small id="linkHint">+2 BẠN · 1⚡</small></button>
-      <button id="potBtn" style="display:none">🧧 <span id="potLbl">Hốt hụi</span><small id="potHint">🌱 +6% · sông −1 · 1⚡</small></button>
+      <button id="potBtn" style="display:none">🧧 <span id="potLbl">Hốt hụi</span><small id="potHint">🌱 +6% · 1⚡</small></button>
     </div>
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.44</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.45</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -250,7 +250,7 @@ var STR={
   pot:{vi:"Hốt hụi",en:"Take the pot"},
   wrongTai:{vi:"“Cái này tôi làm được rồi mà… chuyện của tôi ở chỗ khác.”",en:"“This part I can already do… my trouble is somewhere else.”"},
   wrongGan:{vi:"“Tôi đâu có sợ… chuyện của tôi ở chỗ khác.”",en:"“It isn't nerve I lack… my trouble is somewhere else.”"},
-  wrongBan:{vi:"“Bạn bè thì tôi không thiếu… chuyện của tôi ở chỗ khác.”",en:"“Friends I don't lack… my trouble is somewhere else.”"}, potH:{vi:"🌱 +6% · sông −1 · 1⚡",en:"🌱 +6% · river −1 · 1⚡"},
+  wrongBan:{vi:"“Bạn bè thì tôi không thiếu… chuyện của tôi ở chỗ khác.”",en:"“Friends I don't lack… my trouble is somewhere else.”"}, potH:{vi:"🌱 +6% · 1⚡",en:"🌱 +6% · 1⚡"},
   next:{vi:"MÙA SAU ▶",en:"NEXT SEASON ▶"},
   tai:{vi:"TÀI",en:"SKILL"}, gan:{vi:"GAN",en:"NERVE"}, ban:{vi:"BẠN",en:"ALLIES"},
   teach:{vi:"Dạy",en:"Teach"}, nerve:{vi:"Đêm thất bại",en:"Failure night"}, link:{vi:"Kết nối",en:"Connect"},
@@ -500,7 +500,7 @@ function fresh(){
   S.cast.forEach(function(p9){ p9.amb=0; p9.beh=0; p9.legs=0; p9.dwl=0; p9.chain=0; p9.behForce=0; p9.bfAt=0; });
   S.cast[2].behForce=2; S.cast[2].bfAt=performance.now()+8000;    // Mai sits at the đình — what the hall is FOR
   S.cast[0].behForce=3; S.cast[0].bfAt=performance.now()+20000;   // Ngân approaches it and turns back — what GAN-1 IS
-  S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false; p.mom=0; p.hands=0; p.seen={tai:false,gan:false,ban:false};   // 🔎 you learn a factor by touching it — the quote is the clue, the hand is the answer
+  S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false; p.mom=0; p.hands=0; p.pr16=[]; p.seen={tai:false,gan:false,ban:false};   // 🔎 you learn a factor by touching it — the quote is the clue, the hand is the answer
     var m=Math.min(p.tai,p.gan,p.ban);
     p.zkey = (m===p.gan)?"gan":(m===p.tai)?"tai":"ban";   // their original zero — quotes evolve when it turns
     // YEAR VARIANTS — every run is a different year in the same xóm (authored zeros stay true)
@@ -626,7 +626,7 @@ function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:2,   // N
   s:{season:S.season,acts:S.acts,luat:S.luat,von:S.von,hui:S.hui,build:S.build,built:!!S.built,
      gtmPaid:!!S.gtmPaid,hlp:!!S.hoaLienPaid,hs:S.hands|0,idl:S.idle|0,vb:VERBS.map(function(k){return (S.vb&&S.vb[k])|0;}),ps:!!S.potSeason,hist:(S.hist||[]).map(function(v){return v|0;}),pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
      arr:S.cast[6].arrives,baf:S.baFadeStart,sc:S.stormCount|0,ss:S.stormStreak|0,yc:S.yearCard|0,gp:S.gtmPays|0,cn:S.constraint|0,
-     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,sn:((p.seen&&p.seen.tai)?1:0)|((p.seen&&p.seen.gan)?2:0)|((p.seen&&p.seen.ban)?4:0),bt:p.btai,bg:p.bgan,bb:p.bban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0,hd:p.hands|0};}),
+     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,sn:((p.seen&&p.seen.tai)?1:0)|((p.seen&&p.seen.gan)?2:0)|((p.seen&&p.seen.ban)?4:0),bt:p.btai,bg:p.bgan,bb:p.bban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0,hd:p.hands|0,pr:(p.pr16||[]).map(function(v){return v|0;})};}),
      ships:S.ships.map(function(w){return {x:w.x,y:w.y,owner:w.owner,pid:w.pid,yours:!!w.yours,age:w.age|0,shel:w.shel|0};}),
      scars:(S.scars||[]).map(function(c){return {x:c.x,y:c.y,s:c.s|0};}),
      log:S.log.slice(0,12)}})); }catch(e){} }
@@ -644,7 +644,7 @@ function load(){
     if(Array.isArray(s.cast)) s.cast.forEach(function(c,i){ var p=S.cast[i]; if(!p||!c) return;
       p.tai=cl(c.tai,0,10,p.tai); p.gan=cl(c.gan,0,10,p.gan); p.ban=cl(c.ban,0,10,p.ban);
       p.btai=cl(c.bt,0,10,p.tai); p.bgan=cl(c.bg,0,10,p.gan); p.bban=cl(c.bb,0,10,p.ban);   // this run's jittered nature (fallback: loaded stats, never a re-jitter)
-      p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; p.mom=cl(c.mom,0,0.5,0); p.hands=fin(c.hd)?cl(c.hd,0,64,0):0;
+      p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; p.mom=cl(c.mom,0,0.5,0); p.hands=fin(c.hd)?cl(c.hd,0,64,0):0; p.pr16=Array.isArray(c.pr)?c.pr.slice(0,16).map(function(v){return fin(v)?cl(v,0,1000,0):0;}):[];
       var sn=fin(c.sn)?(c.sn|0):7; p.seen={tai:!!(sn&1),gan:!!(sn&2),ban:!!(sn&4)}; });   // a save from before v0.33 has seen everything
     S.cast[6].arrives=cl(s.arr,2,8,6); S.baFadeStart=cl(s.baf,5,9,8);   // 2 / 5: the reunion year pulls both clocks early — the clamp must admit that on reload
     S.stormCount=cl(s.sc,0,16,0); S.stormStreak=cl(s.ss,0,16,0); S.yearCard=fin(s.yc)?cl(s.yc,0,5,0):S.yearCard; S.constraint=fin(s.cn)?cl(s.cn,0,3,0):0; S.gtmPays=fin(s.gp)?cl(s.gp,0,2,0):(s.gtmPaid?1:0);
@@ -1791,6 +1791,11 @@ function actHui(){ if(!S.un.hui||S.over||S.acts<=0||S.hui>=huiMax()||conBan(1)) 
 // 🧧 hốt hụi — the pot: what a hụi is FOR. The whole circle pays one member; the river dips, that sprout pushes harder.
 // A tradeoff, not a gift: −1 river is −7% on every named sprout (and may drop a tier cap) for +6% on one — and never past a zero.
 function potAfter(p){ return Math.min(ceilOf(Math.min(p.tai,p.gan,p.ban)),prod(p)/1000*0.9*(0.3+0.7*Math.max(1,S.von-1)/10)+Math.min((S.yearCard===5)?0.15:0.09,(p.mom||0)+0.06)); }   // what the pot would make of them — river dipped, sprout pushed, never past the weakest factor's ceiling
+// the pot's price, printed: the river's multiplier before → after, and every roof whose tier the dip would drop (river 4→3 turns shops back into stalls)
+function potPrice(){ var v0=S.von, v1=Math.max(1,S.von-1), m0=0.3+0.7*v0/10, m1=0.3+0.7*v1/10;
+  var cap0=v0<=3?1:v0<=6?2:3, cap1=v1<=3?1:v1<=6?2:3, drop=0;
+  if(cap1<cap0) S.ships.forEach(function(sh){ if(sh.yours) return; var q=S.cast[sh.pid]; if(!q) return; var pr=prod(q), pt=pr<300?1:pr<600?2:3; if(Math.min(cap0,pt)>Math.min(cap1,pt)) drop++; });
+  return (L==="vi"?" · sông ×":" · river ×")+m0.toFixed(2)+"→"+m1.toFixed(2)+(drop?(L==="vi"?(" · ↓bậc "+drop+" xưởng"):(" · ↓tier "+drop+" roof"+(drop===1?"":"s"))):""); }
 function potCapped(p){ return !!p&&potAfter(p)<=chance(p)+1e-9; }   // the ceiling already binds — a coin from the river would push nothing
 function potOk(p){ return !!p&&p.known&&seenAll(p)&&!p.started&&!p.gone&&S.un.hui&&(S.hui|0)>=1&&!conBan(1)&&S.von>=2&&!hasZero(p)&&prod(p)>=100&&!S.potSeason&&!potCapped(p); }
 function actPot(){ var p=cur(); if(!potOk(p)||S.acts<=0||S.over) return; if(!spend("pot",p)) return;
@@ -2014,6 +2019,7 @@ function nextSeason(){
     var yr=" "+(2026+Math.floor(S.season/4))+(_rc.sky?(" "+_rc.sky):"");
     S.log.unshift({vi:"── "+STR.seasons.vi[S.season%4]+yr+bits("vi")+" ──",en:"── "+STR.seasons.en[S.season%4]+yr+bits("en")+" ──",div:true});
     S.hist=(S.hist||[]).slice(0,S.season); S.hist[S.season]=(Math.min(3,_rc.bloom)*4)+Math.min(3,_rc.stamp);   // one small int per season: blooms×4 + stamps — the run's timeline, for the ending
+    S.cast.forEach(function(q){ q.pr16=(q.pr16||[]).slice(0,S.season); q.pr16[S.season]=Math.min(1000,prod(q)); });   // and each person's product at the season's close — their arc, season by season
     S.log=S.log.slice(0,24); renderLog(); })();
   S.season++;
   nightAt=performance.now();   // a night passes between seasons — the print dims, lamps show, the new season dawns
@@ -2332,7 +2338,16 @@ function shareCopy(){ var txt=(S._share||{})[L]||""; if(!txt) return; var b=el("
 function legacyCopy(txt){ try{ var ta=document.createElement("textarea"); ta.value=txt; ta.style.cssText="position:fixed;left:-9999px;top:0"; document.body.appendChild(ta); ta.select();
   var ok=document.execCommand&&document.execCommand("copy"); document.body.removeChild(ta); return !!ok; }catch(e){ return false; } }
 function sharePng(){ try{ drawScene(performance.now());   // a fresh frame — lanterns lit, no stale bubbles
-  var a=document.createElement("a"); a.download="thua-so-khong-"+(2026+Math.floor((S.season-1)/4))+".png"; a.href=cv.toDataURL("image/png");
+  // the print gets a caption strip: title, year, tally, the arc — a saved picture that says what it is, without the page
+  var sh=(S._share||{})[L]||"", lines=sh.split("\n").filter(function(l){return l&&l.indexOf("https://")!==0;}).slice(0,3);
+  var oc=document.createElement("canvas"), pad=Math.round(cv.width*0.012), lh=Math.round(cv.width*0.02), stripH=lines.length?(pad*2+lh*lines.length):0;
+  oc.width=cv.width; oc.height=cv.height+stripH; var g=oc.getContext("2d");
+  g.drawImage(cv,0,0);
+  if(stripH){ g.fillStyle="#EAD9B8"; g.fillRect(0,cv.height,oc.width,stripH);
+    g.fillStyle="rgba(58,42,30,.5)"; g.fillRect(0,cv.height,oc.width,Math.max(2,Math.round(cv.width*0.003)));
+    g.fillStyle="#2B2320"; g.textAlign="left";
+    lines.forEach(function(l,i){ g.font=(i===0?"700 ":"")+Math.round(lh*0.72)+"px Georgia,serif"; g.fillText(l,pad*1.5,cv.height+pad+lh*(i+0.78)); }); }
+  var a=document.createElement("a"); a.download="thua-so-khong-"+(2026+Math.floor((S.season-1)/4))+".png"; a.href=oc.toDataURL("image/png");
   document.body.appendChild(a); a.click(); document.body.removeChild(a); beep(659,0.06); }catch(e){ beep(294,0.06); } }
 
 // ---------- render (DOM) ----------
@@ -2411,7 +2426,10 @@ function renderSheet(){
           +((pr>p.btai*p.bgan*p.bban)?" ↗":(pr<p.btai*p.bgan*p.bban)?" ↘":""))
         :"")
     +"</small>":"")
-    +(((p.hands|0)>0)?("<small>"+(p.hands|0)+"⚡"+(L==="vi"?" đã đặt vào đây":" placed here")+"</small>"):"");   // what this person has cost you so far — shown whether or not their row is read
+    +(((p.hands|0)>0)?("<small>"+(p.hands|0)+"⚡"+(L==="vi"?" đã đặt vào đây":" placed here")+"</small>"):"")   // what this person has cost you so far — shown whether or not their row is read
+    // the arc as a sparkline — their product at each season's close, once the row is read: is the tending holding, or washing back?
+    +((all&&p.pr16&&p.pr16.length>=2)?(function(){ var vs=p.pr16.slice(-16), mx=Math.max.apply(null,vs.concat([prod(p),1])), bars="▁▂▃▄▅▆▇█";
+        return "<small style=\"letter-spacing:.5px\">"+(L==="vi"?"tích qua các mùa: ":"product by season: ")+vs.map(function(v){ return bars[Math.min(7,Math.round(v/mx*7))]; }).join("")+" "+(L==="vi"?"→ ":"→ ")+prod(p)+"</small>"; })():"");
   el("teachBtn").disabled=S.acts<=0||p.tai>=10||S.over||conBan(3);   // tending doesn't stop at the bloom — tiers keep the verbs alive
   el("teachBtn").style.textDecoration=conBan(3)?"line-through 2px #C1443C":""; el("teachBtn").style.opacity="";
   el("nerveBtn").disabled=S.acts<=0||p.gan>=10||S.over;
@@ -2421,7 +2439,7 @@ function renderSheet(){
   el("linkBtn").classList.toggle("armed",S.linking!=null);
   var pb=el("potBtn"); pb.style.display=(S.un.hui&&(S.hui|0)>=1&&!p.started&&!conBan(1))?"":"none";   // the pot exists once you have paid in — the button appears with it
   pb.disabled=!potOk(p)||S.acts<=0||S.over; el("potLbl").textContent=t("pot");
-  el("potHint").textContent=potOk(p)?(t("potH")+" → "+Math.round(potAfter(p)*100)+"%")
+  el("potHint").textContent=potOk(p)?(t("potH")+" → "+Math.round(potAfter(p)*100)+"%"+potPrice())
                               :(!seenAll(p)?(L==="vi"?"chưa hiểu người ta":"you don't know them yet"):(!hasZero(p)&&prod(p)>=100&&!S.potSeason&&S.von>=2&&potCapped(p))?(L==="vi"?t(weakest(p).k)+" "+weakest(p).m+" chặn — hụi không đẩy nổi":t(weakest(p).k)+" "+weakest(p).m+" caps it — the pot can't push past"):S.von<2?(L==="vi"?"sông cạn — không còn gì để hốt":"river too thin — nothing to take"):S.potSeason?(L==="vi"?"phiên này đã hốt":"taken this season"):hasZero(p)?(L==="vi"?"không đẩy nổi số không":"nothing pushes past a zero"):prod(p)<100?(L==="vi"?"mầm chưa nhú (tích <100)":"no sprout yet (product <100)"):t("potH"));
   // what each hand would DO to this person — the multiplication's answer, per verb, before you spend
   // (the weakest factor moves the product most; showing the three deltas side by side is the thesis as a UI)
@@ -2528,7 +2546,15 @@ el("againBtn").onclick=function(){ el("endOvl").classList.remove("show"); try{lo
   var c2=loadChron(); if(c2.length){ var last=c2[c2.length-1], sn2={}; c2.forEach(function(r){if(r&&r.ti)sn2[r.ti]=1;});
     logMsg("📜 Sổ xóm ghi: "+last.tv+".","📜 The village book records: "+last.te+"."); void sn2; }
   render(); renderSheet(); renderLog(); };
-el("resetLink").onclick=function(e){ e.preventDefault(); try{localStorage.removeItem(SAVE_KEY);}catch(_){} el("endOvl").classList.remove("show"); fresh(); S.sel=-1; setLang(L); el("intro").classList.add("show"); };
+// "chơi lại" mid-run is a whole year thrown away — the first tap asks, the second (within 3s) does it; a finished or untouched run resets at once
+var _resetArm=0;
+el("resetLink").onclick=function(e){ e.preventDefault();
+  var midRun=S&&!S.over&&((S.season|0)>0||(S.hands|0)>0)&&!el("intro").classList.contains("show");
+  if(midRun&&!(_resetArm&&performance.now()-_resetArm<3000)){ _resetArm=performance.now(); var lk=el("resetLink");   // not armed, or the arm lapsed
+    lk.textContent=(L==="vi")?"bỏ năm này? chạm lần nữa":"throw this year away? tap again"; lk.style.color="#C1443C"; beep(294,0.06);
+    setTimeout(function(){ if(performance.now()-_resetArm>=2900){ lk.textContent="chơi lại"; lk.style.color=""; } },3100); return; }
+  _resetArm=0; el("resetLink").style.color=""; el("resetLink").textContent="chơi lại";
+  try{localStorage.removeItem(SAVE_KEY);}catch(_){} el("endOvl").classList.remove("show"); fresh(); S.sel=-1; setLang(L); el("intro").classList.add("show"); };
 
 // ---------- sổ tay: the help card, written from the rules that are live right now ----------
 function renderHelp(){
