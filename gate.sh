@@ -185,6 +185,74 @@ PYEOF8
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/r.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "RIVER_OK" && pass "capital is a factor: $T" || fail "capital is a factor: $T"
 
+# Gate 9: the print fits a phone — nothing outside the roster may cross a 390px edge, and no two
+# speech bubbles may print over each other however many neighbours talk at once.
+# (Headless Chrome floors --window-size at ~500px, so 390 is forced with an injected body width — see LANDMINES.)
+python3 - "$TMP" <<'PYEOF9'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<style>body{width:390px;margin:0 auto}</style>
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+var _rects=[],_origDB=null;
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<6;s++){ try{ S.acts=3; nextSeason(); }catch(e){} }
+  S.cast.forEach(function(p){ p.known=true; });
+  _origDB=drawBubble;
+  drawBubble=function(x,y,lay,taken){ _origDB(x,y,lay,taken); if(taken) _rects=taken.slice(); };
+  var spk=S.cast.filter(function(p){return !p.gone;}).slice(0,4);   // four neighbours talking at once, all crowded together
+  spk.forEach(function(p,i){ p.x=300+i*46; p.drawX=300+i*46; p.y=390; bubble(p,"Bộ sách của tôi — học trò cũ quay lại mua hết rồi."); });
+  S.banner={txt:"Hạ 2027",until:performance.now()+30000};
+  try{ selectPerson(1); }catch(e){}
+  setTimeout(function(){
+    var over=0,i,j;
+    for(i=0;i<_rects.length;i++) for(j=i+1;j<_rects.length;j++){ var a=_rects[i],b=_rects[j];
+      if(a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y) over++; }
+    var bd=document.body, Lf=bd.getBoundingClientRect().left, R=Lf+390, ov=0;
+    var all=document.querySelectorAll("body *");
+    for(var k=0;k<all.length;k++){ var rr=all[k].getBoundingClientRect();
+      if(rr.width>0&&!all[k].closest(".roster")&&(rr.right>R+1||rr.left<Lf-1)) ov++; }
+    var bfs=Math.round(32*LKF);
+    var ok = bd.scrollWidth<=390 && ov===0 && over===0 && _rects.length>=2 && bfs>32;
+    document.title=(ok?"PHONE_OK":"PHONE_BAD")+" bodySW="+bd.scrollWidth+" hOver="+ov+" printed="+_rects.length+" overlaps="+over+" bannerPx="+bfs;
+  },900);
+}catch(e){ document.title="THREW: "+e.message; } },500);
+</script>"""
+open(tmp+"/p.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF9
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=600,900 --virtual-time-budget=9000 --dump-dom "file://$TMP/p.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "PHONE_OK" && pass "the print fits a phone: $T" || fail "the print fits a phone: $T"
+
+# Gate 10: the pot — hốt hụi pays one member from the river: river −1, that sprout +0.06 momentum, once a season, never past a zero.
+python3 - "$TMP" <<'PYEOF9'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.un.hui=true; S.hui=1; S.von=5; S.acts=3; S.constraint=0; S.yearCard=2;
+  selectPerson(0); var okZero=!potOk(S.cast[0]);                 // Bé Ngân's GAN is 1 — nothing pushes past a zero
+  selectPerson(2); var mai=S.cast[2]; mai.tai=6; mai.gan=4; mai.ban=7; mai.mom=0; renderSheet();
+  var shown=document.getElementById("potBtn").style.display!=="none", hint0=document.getElementById("potHint").textContent;
+  var acts0=S.acts; actPot();
+  var a1=(S.von===4&&Math.abs(mai.mom-0.06)<1e-9&&S.acts===acts0-1&&S.potSeason===true&&!potOk(mai));
+  actPot(); var a2=(S.von===4&&Math.abs(mai.mom-0.06)<1e-9);   // a second take this season does nothing
+  S.nudged=true; nextSeason(); var a3=(S.potSeason===false);
+  var ok=okZero&&shown&&/→ \d+%/.test(hint0)&&a1&&a2&&a3;
+  document.title=(ok?"POT_OK":"POT_BAD")+" zeroBlocked="+okZero+" shown="+shown+" hint="+hint0.slice(-6)+" take="+a1+" twice="+a2+" reset="+a3+" von="+S.von+" mom="+mai.mom;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/p.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF9
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/p.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "POT_OK" && pass "the pot: $T" || fail "the pot: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

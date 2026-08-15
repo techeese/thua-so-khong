@@ -93,11 +93,19 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.30 made a factor at 1 a literal zero (Gate 7); v0.31 made the river the fourth factor — sprouts
-×(0.3+0.7·river/10), tier capped by the river (Gate 8).** The owner runs TWO interactive sessions in
-this tree — `/loop 5m` "add something more" and `/loop 3m` "mechanic/gameplay upgrades" — and has
-said **all loops keep running**; both edit `index.html`, both ship under owner authority, each
-commit brackets `gate.sh` with a hash check and names what it carried from the other. Remaining
+**v0.30 made a factor at 1 a literal zero (Gate 7); v0.31 made the river the fourth factor (Gate 8);
+v0.32 made the print fit a phone and gated it (Gate 9) — header wraps, bubbles never print over each
+other and yield rather than wall, the banner scales with `LKF`, and a carved far bank replaces the
+sky/ground seam.** The owner's `/loop 5m` session is now a **graphics** loop (*"review it and make
+some upgrade/change/adjustment in the graphic, regardless how large or how small"*); `/loop 3m`
+stays mechanic/gameplay. Both edit `index.html`, both ship under owner authority, each commit
+brackets `gate.sh` with a hash check and names what it carried from the other — and, since v0.32,
+writes its changelog entry against what is actually in HEAD, because the other session may ship your
+in-tree work inside its own commit first. Next for the graphics loop, in order: **person labels and
+the `số không: X` tags overlap each other and the palm on the right bank** when three villagers
+stand close — the same de-overlap treatment bubbles just got, applied to `haloText`; the far bank is
+tasteful but nearly invisible under a heavy sky — decide whether that is the point or too timid; the
+roster strip scrolls with no affordance that it scrolls. Remaining
 mechanic bank, in order: **a price for being wrong** (a wrong factor costs ~8% of tiers, a wrong
 person costs nothing — with the zero literal and the river biting, measure again before designing);
 the ending card calling a ≤3-factor person "bloomed" beside its own `×` arithmetic, and whether

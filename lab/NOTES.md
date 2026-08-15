@@ -69,6 +69,11 @@ carries 92 % of the hunter's blooms. Not shipped, per Gear 3.
 against any addition that puts a fourth meaning on the same word. **Argues against:** treating the
 band gate as proof the game teaches diagnosis: 68 % of the winning strategy's hands are not diagnosis.
 
+**Verdict:** confirms-known
+*Grader:* The three-threshold mismatch (dice ≤1 / label `zeroOf` ≤3 / walks ≤2) and the "label lies" claim were already argued by `walks.py` and `zerowitness.js`, and the "one threshold, one word" reduction is the same "sharpness of the zero" reductive era `zerohunt.js` opened; this entry re-measures it after v0.30/v0.31 with better numbers but opens no new candidate and kills none.
+**Defect:** no
+**Proposal:** no
+
 ## 2026-08-15 — "watching the xóm IS reading the multiplication" — the errand governor as an information channel (`walks.py`)
 
 v0.25's owner batch shipped the errand governor with one stated purpose (CHANGELOG: *"factor-weighted

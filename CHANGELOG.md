@@ -1,5 +1,55 @@
 # Changelog — Thừa Số Không
 
+## v0.32 — 2026-08-15 — the print fits a phone, and it is gated
+
+A graphics round from the owner's `/loop 5m` session (*"review it and make some
+upgrade/change/adjustment in the graphic, regardless how large or how small"*). Four of the five
+items were written into the tree during v0.31's window and shipped inside that commit unreviewed —
+this entry gates them, names their evidence, and adds the one that was missing.
+
+**Measured before the round** (true 390px, forced with an injected body width — headless Chrome
+floors `--window-size` at ~500, see `LANDMINES.md`): `bodySW=445` against a 390 viewport, **13
+elements crossing the right edge** including `langBtn` at R445, and with four neighbours speaking at
+once, **29 overlapping bubble pairs**.
+
+- **The header wraps.** The pill/button row inside `.top` was a `display:flex` with no `flex-wrap`;
+  on a 390px phone the `?`, mute and `EN` controls ran 55px off the right edge and the page scrolled
+  sideways. `flex-wrap:wrap;justify-content:flex-end`. *Evidence:* `bodySW` 445 → **390**, elements
+  crossing the edge **13 → 0** (the roster is excluded — it is a deliberate `overflow-x:auto` strip).
+- **Speech bubbles no longer print over each other.** `drawBubble()` took no account of what had
+  already been printed that frame; at LKF 1.67 each bubble is ~400px wide and four simultaneous
+  speakers produced a mush. It now carries a per-frame footprint list and lifts each bubble clear,
+  and a lifted bubble keeps an ink thread down to whoever is speaking. *Evidence:* four forced
+  speakers crowded onto one stretch of bank — overlapping pairs **29 → 0**, eight bubbles printed.
+- **A bubble that cannot find room yields instead of printing a wall** *(new this commit)*. The lift
+  loop used to clamp at the canvas top and print anyway, which restored the overlap it had just
+  removed and stacked a slab of speech over a third of the block. It now returns undrawn — charter
+  constraint 4, *ambient life yields*, applied to the one path that could violate it.
+- **A bubble shoved off the canvas edge keeps its tail.** The body was clamped into frame, the tail
+  was not, so an edge bubble pointed at nothing. Tail x is pinned inside the body.
+- **The season banner scales like every other text on the block.** It was a fixed `700 32px`, alone
+  among canvas text in ignoring `LKF`, so on a phone the season title shrank to a whisper while the
+  labels around it grew. Now `32·LKF`, with a cartouche rule under it the way a block signs a season.
+  *Evidence:* banner **32px → 54px** at LKF 1.67.
+- **A carved horizon where the LAW meets the xóm.** Sky and ground met at a razor-straight unprinted
+  seam at y=118. A far bank now sits on it — a deterministic row of humps plus an ink line, both
+  fading as the sky closes down, so a clear sky lets you see across the water and a heavy one does
+  not. Đông Hồ flat blocks throughout; no gradient enters the print.
+- **New Gate 9 — the print fits a phone.** `PHONE_OK bodySW=390 hOver=0 printed=8 overlaps=0
+  bannerPx=54`. It asserts all four at once and cannot be satisfied by absence of an error.
+  Partially answers the open owner gate *390px hands* — the machine half; real thumbs on a real
+  phone stay the owner's to tick.
+- **Provenance — the `/loop 3m` mechanic session's in-tree work ships in this commit too**, gated
+  and named rather than pretended away: **🧧 Hốt hụi — the pot** (`actPot`), what a hụi is *for*.
+  Once you have paid in, the circle can pay one member: river −1, that person's sprout momentum
+  +0.06 (capped like every other push), once a season, never past a zero, never below river 1;
+  the button shows what the pot would make of them (`→ N%`) and says why it can't when it can't.
+  A tradeoff, not a gift — −1 river is −7% on every named sprout. **New Gate 10** asserts all of
+  it: `POT_OK zeroBlocked=true take=true twice=true reset=true von=4 mom=0.09`. Also carried: tier
+  lines on the bamboo gauge (past the 3rd notch a shop can stand, past the 6th a brand); the
+  `gần không:` label for a factor at 2–3 vs `×0 số không:` at 1; a river-capped workshop owner who
+  says so when tapped; the mute button also silences cicadas; the acts row wraps on a phone.
+
 ## v0.31 — 2026-08-15 — the river is the fourth factor
 
 Closes: the second item of the `LOOP.md` bank — *either make capital a factor or stop presenting it

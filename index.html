@@ -75,8 +75,8 @@
   .frow .fv{width:22px;text-align:right;font-weight:700;font-size:13px}
   .mult{font:700 16px Georgia,serif;text-align:center;margin:10px 0;padding:8px;background:#efe2c2;border:2px dashed var(--ink);border-radius:10px}
   .mult small{display:block;font:400 11px sans-serif;color:var(--dim)}
-  .acts{display:flex;gap:8px}
-  .acts button{padding:9px 4px;font-size:13px;flex:1}
+  .acts{display:flex;gap:8px;flex-wrap:wrap}
+  .acts button{padding:9px 4px;font-size:13px;flex:1;min-width:30%}
   .acts button small{display:block;font-weight:400;font-size:10px;color:var(--dim)}
   /* log */
   .log{margin-top:8px;font-size:12.5px;color:#4d4335;max-height:76px;overflow:auto;background:#efe3c5;border:2px solid #c9b78c;border-radius:10px;padding:6px 10px;cursor:pointer;transition:max-height .25s}
@@ -146,11 +146,12 @@
       <button id="teachBtn">📖 <span>Dạy</span><small id="teachHint">+2 TÀI · 1⚡</small></button>
       <button id="nerveBtn">🏮 <span id="nerveLbl">Đêm thất bại</span><small id="nerveHint">+2 GAN · 1⚡</small></button>
       <button id="linkBtn">🤝 <span id="linkLbl">Kết nối</span><small id="linkHint">+2 BẠN · 1⚡</small></button>
+      <button id="potBtn" style="display:none">🧧 <span id="potLbl">Hốt hụi</span><small id="potHint">🌱 +6% · sông −1 · 1⚡</small></button>
     </div>
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.31</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.32</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -221,6 +222,7 @@ var L="vi";
 var STR={
   sub:{vi:"mười nhân với không vẫn bằng không",en:"ten times zero is still zero"},
   hui:{vi:"Góp hụi",en:"Join hụi"}, build:{vi:"Tự xây",en:"Build yours"},
+  pot:{vi:"Hốt hụi",en:"Take the pot"}, potH:{vi:"🌱 +6% · sông −1 · 1⚡",en:"🌱 +6% · river −1 · 1⚡"},
   next:{vi:"MÙA SAU ▶",en:"NEXT SEASON ▶"},
   tai:{vi:"TÀI",en:"SKILL"}, gan:{vi:"GAN",en:"NERVE"}, ban:{vi:"BẠN",en:"ALLIES"},
   teach:{vi:"Dạy",en:"Teach"}, nerve:{vi:"Đêm thất bại",en:"Failure night"}, link:{vi:"Kết nối",en:"Connect"},
@@ -455,7 +457,7 @@ function fresh(){
      build:0, built:false, pairs:[], apprentice:false, duo:false, gtm:false, gtmPaid:false, maiHoa:false, hoaLien:false, hoaLienPaid:false,
      linking:null, banner:null, banners:[], luatNext:3, probeSeen:false, baFade:false,
      un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false, stormSeen:false, tierTaught:false, lienNgan:false, stormCount:0, stormStreak:0, classSeen:false, revealSeen:false,
-     log:[], over:false, scars:[], hands:0, hist:[]};
+     log:[], over:false, scars:[], hands:0, hist:[], potSeason:false, potSeen:false};
   lanterns=[]; runTok++;      // invalidate ALL deferred callbacks from the previous run
   parts=[]; stamps=[]; glows=[]; bubbles=[]; amb=[]; pendQ=[]; motes=[]; rain=[]; ripples=[]; flock=null; smoke=[]; boat=null; gossipQ=[]; cart=null;
   beatUntil=0; nextErrandAt=0; _chaser=null;
@@ -571,7 +573,7 @@ function cl(v,lo,hi,fb){ return fin(v)?Math.max(lo,Math.min(hi,v)):fb; }
 function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:2,   // NOTE: every NEW save field MUST get a fin()-guarded default in load()
   meta:{lang:L,muted:!!META.muted},
   s:{season:S.season,acts:S.acts,luat:S.luat,von:S.von,hui:S.hui,build:S.build,built:!!S.built,
-     gtmPaid:!!S.gtmPaid,hlp:!!S.hoaLienPaid,hs:S.hands|0,hist:(S.hist||[]).map(function(v){return v|0;}),pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
+     gtmPaid:!!S.gtmPaid,hlp:!!S.hoaLienPaid,hs:S.hands|0,ps:!!S.potSeason,hist:(S.hist||[]).map(function(v){return v|0;}),pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
      arr:S.cast[6].arrives,baf:S.baFadeStart,sc:S.stormCount|0,ss:S.stormStreak|0,yc:S.yearCard|0,gp:S.gtmPays|0,cn:S.constraint|0,
      cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,bt:p.btai,bg:p.bgan,bb:p.bban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0};}),
      ships:S.ships.map(function(w){return {x:w.x,y:w.y,owner:w.owner,pid:w.pid,yours:!!w.yours,age:w.age|0,shel:w.shel|0};}),
@@ -607,6 +609,7 @@ function load(){
     S.nudged=true; S.hintDone=S.season>0; S.lawSeen=S.season>1||S.ships.length>0; S.wantSeen=S.season>=8;
     S.flySeen=S.ships.length>=3; S.nightSeen=true;
     S.luatNext=cl(s.luatNext,1,10,driftLuat(S.luat)); S.probeSeen=!!s.probeSeen;   // a paid forecast survives a refresh
+    S.potSeason=!!s.ps; S.potSeen=S.hui>0;   // a pot already taken this season stays taken
     return true;
   }catch(e){ return false; }
 }
@@ -623,7 +626,28 @@ function beep(f,d,v){ if(META.muted) return; try{ if(!_ac)_ac=new (window.AudioC
   o.start(t0); o.stop(t0+(d||0.1)+0.02); }catch(e){} }
 // rain patter: a looped, low-passed noise bed that fades in under a heavy sky and out when it clears.
 // Only after the context exists (a tap made it) — never the first sound the page makes; obeys mute like everything else.
-var _rain=null;
+var _rain=null, _cic=null;
+// cicadas: a summer bed — band-passed noise around 4 kHz with a slow tremolo, very quiet, only under a clear summer sky.
+// Same rules as the rain: only after a tap made the context, obeys mute, fades in and out, one source at a time.
+function cicadaAudio(on){ try{
+  if(!_ac||META.muted){ if(_cic){ try{ _cic.src.stop(); _cic.lfo.stop(); }catch(e){} _cic=null; } return; }
+  var t0=_ac.currentTime;
+  if(on&&!_cic){
+    var len=_ac.sampleRate*2, buf=_ac.createBuffer(1,len,_ac.sampleRate), d=buf.getChannelData(0);
+    for(var i=0;i<len;i++) d[i]=Math.random()*2-1;
+    var src=_ac.createBufferSource(); src.buffer=buf; src.loop=true;
+    var bp=_ac.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=4200; bp.Q.value=9;
+    var g=_ac.createGain(); g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(0.0075,t0+3.0);
+    var lfo=_ac.createOscillator(), lg=_ac.createGain(); lfo.type="sine"; lfo.frequency.value=7.5; lg.gain.value=0.004;   // the pulse of a cicada
+    lfo.connect(lg); lg.connect(g.gain);
+    src.connect(bp); bp.connect(g); g.connect(_ac.destination); src.start(t0); lfo.start(t0);
+    _cic={src:src,g:g,lfo:lfo};
+  } else if(!on&&_cic){
+    var r=_cic; _cic=null;
+    r.g.gain.cancelScheduledValues(t0); r.g.gain.setValueAtTime(Math.max(0.0001,r.g.gain.value),t0); r.g.gain.exponentialRampToValueAtTime(0.0001,t0+2.5);
+    try{ r.src.stop(t0+2.6); r.lfo.stop(t0+2.6); }catch(e){}
+  }
+}catch(e){} }
 function rainAudio(on){ try{
   if(!_ac||META.muted){ if(_rain){ try{ _rain.src.stop(); }catch(e){} _rain=null; } return; }
   var t0=_ac.currentTime;
@@ -866,6 +890,11 @@ function drawScene(now){
     for(var gi=0;gi<10;gi++){ var gy=gb-5-gi*5.4;
       ctx.strokeStyle=gi<S.von?"#2E4A62":"rgba(43,35,32,.3)"; ctx.lineWidth=2;
       ctx.beginPath(); ctx.moveTo(gx-5,gy); ctx.lineTo(gx+5,gy); ctx.stroke(); }
+    // the gauge carries the tier lines: water past the 3rd notch lets a shop stand, past the 6th a brand — the cap is readable at the landing
+    [[3,"🪜🪜"],[6,"🪜🪜🪜"]].forEach(function(mk){ var my2=gb-5-(mk[0]-0.5)*5.4, on=S.von>mk[0];
+      ctx.strokeStyle=on?"#E3A63B":"rgba(43,35,32,.45)"; ctx.lineWidth=1.2; ctx.setLineDash([2,2]);
+      ctx.beginPath(); ctx.moveTo(gx-9,my2); ctx.lineTo(gx+9,my2); ctx.stroke(); ctx.setLineDash([]);
+      ctx.font="7px sans-serif"; ctx.textAlign="left"; ctx.globalAlpha=on?0.95:0.5; ctx.fillStyle="#2B2320"; ctx.fillText(mk[1],gx+11,my2+2.5); ctx.globalAlpha=1; });
     if(S._vonAt && performance.now()-S._vonAt<1200){ ctx.strokeStyle="rgba(227,166,59,.8)"; ctx.lineWidth=2;
       ctx.strokeRect(gx-8,gt-3,16,gb-gt+6); }
   })();
@@ -1091,6 +1120,7 @@ function drawScene(now){
   // --- rain: the heavy sky made legible. luat 1 pours, luat 3 drizzles; a paid forecast shows tomorrow's rain at the frame edge ---
   var storm=S.luat<4, coming=(!storm&&S.probeSeen&&S.luatNext<4);
   rainAudio(storm&&!S.over);   // the patter follows the sky; the finale is silent rain
+  cicadaAudio(!storm&&S.luat>=6&&seas===1&&!S.over);   // and a clear summer has cicadas
   if(storm||coming){
     var want=storm?(4-S.luat)*22:10, spawnX0=coming?W-140:0, spawnW=coming?140:W;
     for(var rr=0; rr<3&&rain.length<want; rr++) rain.push({x:spawnX0+Math.random()*spawnW,y:-10-Math.random()*40,vy:9+Math.random()*4,l:10+Math.random()*8});
@@ -1356,7 +1386,7 @@ function person(p,now){
     if(p.known && !p.started){
       var z=zeroOf(p);
       ctx.font=FONT_HINT; ctx.fillStyle="#C1443C";
-      haloText(z? ((hasZero(p)?"×0 ":"")+(L==="vi"?"số không: ":"zero: ")+z) : (Math.round(chance(p)*100)+"% "+t("sprout")), x, p.y+48+(LKF-1)*10);   // ×0: a factor at 1 — nothing blooms until it moves
+      haloText(z? (zeroWord(p)+z) : (Math.round(chance(p)*100)+"% "+t("sprout")), x, p.y+48+(LKF-1)*10);   // ×0: a factor at 1 — nothing blooms until it moves
     }
   }
   ctx.textAlign="left";
@@ -1364,6 +1394,7 @@ function person(p,now){
 function zeroOf(p){ var m=Math.min(p.tai,p.gan,p.ban);
   if(m>3) return null;
   if(m===p.gan) return t("gan"); if(m===p.tai) return t("tai"); return t("ban"); }
+function zeroWord(p){ return hasZero(p)?(L==="vi"?"×0 số không: ":"×0 zero: "):(L==="vi"?"gần không: ":"near zero: "); }   // 1 is the zero; 2–3 is the edge of it — say which
 function layoutBubble(txt){
   var fs=Math.round(12*LKF), lh=Math.round(15*LKF);
   ctx.font=fs+"px Georgia";
@@ -1381,7 +1412,9 @@ function drawBubble(x,y,lay,taken){
       for(i2=0;i2<taken.length;i2++){ var r=taken[i2];
         if(bx<r.x+r.w+4 && bx+ww+4>r.x && by<r.y+r.h+8 && by+hh+8>r.y){ hit=r; break; } }
       if(!hit) break;
-      by=hit.y-hh-10; if(by<4){ by=4; break; } }
+      by=hit.y-hh-10;
+      if(by<4) return;   // no room left up there — the xóm yields rather than printing a wall of speech over itself
+    }
     taken.push({x:bx,y:by,w:ww,h:hh}); }
   var ty=by+hh, tx=Math.max(bx+12,Math.min(bx+ww-12,x));   // a bubble shoved off the canvas edge kept its tail behind — pin it to the body
   ctx.fillStyle="#fffdf4"; ink(2.5);
@@ -1423,6 +1456,8 @@ cv.addEventListener("click",function(e){
              {vi:"“Có mái rồi. Còn phải vun tiếp.”",en:"“It has a roof now. Still needs tending.”"},
              {vi:"“Người ta gọi là thương hiệu. Tôi vẫn gọi là cái xưởng.”",en:"“People call it a brand. I still call it the workshop.”"}];
     var sayW=TIERSAY[shipHit.yours?1:trW]||TIERSAY[1];
+    if(!shipHit.yours&&spk&&spk.id===shipHit.pid){ var prU=prod(spk), trU=prU<300?1:prU<600?2:3;   // held down by the river, not by their hands — they say so
+      if(trU>trW) sayW={vi:"“Tay tôi đủ — nước thì chưa. Sông đầy hơn, mái này lên bậc.”",en:"“My hands are ready — the water isn't. Higher river, higher roof.”"}; }
     visit(spk,shipHit.x-30,shipHit.y+24,5200); voice(spk,0.06);
     (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,ln[L]); },1300); })(spk,sayW);
     return;
@@ -1563,6 +1598,21 @@ function actHui(){ if(!S.un.hui||S.over||S.acts<=0||S.hui>=huiMax()||conBan(1)) 
   S.cast.filter(function(p){return active(p)&&p.known;}).forEach(function(p){ visit(p,DINH.x+(Math.random()-0.5)*70,DINH.y,5200);
     if(!p.started) floatOn(p,"🌱 "+Math.round(chance(p)*100)+"%","#2E4A62"); });   // the circle meets — and every named sprout visibly rises
   logMsg(STR.huiDone.vi,STR.huiDone.en); render(); save(); }
+// 🧧 hốt hụi — the pot: what a hụi is FOR. The whole circle pays one member; the river dips, that sprout pushes harder.
+// A tradeoff, not a gift: −1 river is −7% on every named sprout (and may drop a tier cap) for +6% on one — and never past a zero.
+function potOk(p){ return !!p&&p.known&&!p.started&&!p.gone&&S.un.hui&&(S.hui|0)>=1&&!conBan(1)&&S.von>=2&&!hasZero(p)&&prod(p)>=100&&!S.potSeason; }
+function potAfter(p){ return Math.min(0.85,prod(p)/1000*0.9*(0.3+0.7*Math.max(1,S.von-1)/10)+Math.min((S.yearCard===5)?0.15:0.09,(p.mom||0)+0.06)); }   // what the pot would make of them — river dipped, sprout pushed
+function actPot(){ var p=cur(); if(!potOk(p)||S.acts<=0||S.over) return; if(!spend()) return;
+  var cap=(S.yearCard===5)?0.15:0.09; p.mom=Math.min(cap,(p.mom||0)+0.06); S.potSeason=true;
+  S.von=Math.max(1,S.von-1); S._vonAt=performance.now();
+  if(motes.length<6) motes.push({x0:W/2,y0:H-58,x1:p.hx,y1:p.hy-30,t:-0.3,g:"🧧"});   // the coin leaves the river for their door — the same road, walked backwards
+  visit(p,DINH.x,DINH.y+6,4200); floatOn(p,"🧧 🌱 "+Math.round(chance(p)*100)+"%","#C1443C");
+  beep(392,0.1); setTimeout(function(){beep(523,0.1);},110);
+  if(!S.potSeen){ S.potSeen=true;
+    logMsg("🧧 "+p.name+" hốt hụi — cả vòng góp cho một người: sông vơi một chút, mầm nhú mạnh hơn.",
+           "🧧 "+p.name+" takes the pot — the whole circle pays one member: the river dips a little, the sprout pushes harder."); }
+  else logMsg("🧧 "+p.name+" hốt hụi.","🧧 "+p.name+" takes the pot.");
+  render(); renderSheet(); save(); }
 function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notices — asking around is free
   if(!S.un.probe||S.probeSeen||S.over||(!free&&S.acts<=0)) return;
   if(!free){ if(!spend())return; }
@@ -1733,7 +1783,7 @@ function nextSeason(){
     if(!S.flySeen){ S.flySeen=true; gong(330,1.0,0.03);
       logMsg("🌊 Xưởng đã đủ vững — dòng sông bắt đầu tự đầy.","🌊 The workshops stand firm — the river begins to fill itself."); } }
   // structural drift — beyond your hands (the pre-rolled forecast becomes the sky)
-  S.luat=S.luatNext; S.luatNext=driftLuat(S.luat); S.probeSeen=false;
+  S.luat=S.luatNext; S.luatNext=driftLuat(S.luat); S.probeSeen=false; S.potSeason=false;
   if(S.season%4===3 && !(S.yearCard===0&&S.season===3)) riverRise(1,W-20,340,0.4);   // the era slowly rises — capital walks in down the road
   if(S.von<=3 && S.season===5) logMsg(STR.riverLow.vi,STR.riverLow.en);
   // workshops age; tarps weather down
@@ -2095,6 +2145,10 @@ function renderSheet(){
   el("linkBtn").disabled=S.acts<=0||S.over||conBan(2);
   el("linkBtn").style.textDecoration=conBan(2)?"line-through 2px #C1443C":""; el("linkBtn").style.opacity="";
   el("linkBtn").classList.toggle("armed",S.linking!=null);
+  var pb=el("potBtn"); pb.style.display=(S.un.hui&&(S.hui|0)>=1&&!p.started&&!conBan(1))?"":"none";   // the pot exists once you have paid in — the button appears with it
+  pb.disabled=!potOk(p)||S.acts<=0||S.over; el("potLbl").textContent=t("pot");
+  el("potHint").textContent=potOk(p)?(t("potH")+" → "+Math.round(potAfter(p)*100)+"%")
+                              :(S.von<2?(L==="vi"?"sông cạn — không còn gì để hốt":"river too thin — nothing to take"):S.potSeason?(L==="vi"?"phiên này đã hốt":"taken this season"):hasZero(p)?(L==="vi"?"không đẩy nổi số không":"nothing pushes past a zero"):prod(p)<100?(L==="vi"?"mầm chưa nhú (tích <100)":"no sprout yet (product <100)"):t("potH"));
   // what each hand would DO to this person — the multiplication's answer, per verb, before you spend
   // (the weakest factor moves the product most; showing the three deltas side by side is the thesis as a UI)
   (function(){
@@ -2127,7 +2181,7 @@ function setLang(x){ L=x; document.documentElement.lang=x;
 
 // ---------- wire ----------
 el("langBtn").onclick=function(){ setLang(L==="vi"?"en":"vi"); save(); };
-el("muteBtn").onclick=function(){ META.muted=!META.muted; el("muteBtn").textContent=META.muted?"🔇":"🔊"; if(!META.muted)beep(659,0.06); else rainAudio(false); save(); };
+el("muteBtn").onclick=function(){ META.muted=!META.muted; el("muteBtn").textContent=META.muted?"🔇":"🔊"; if(!META.muted)beep(659,0.06); else { rainAudio(false); cicadaAudio(false); } save(); };
 window._pendCon=0; window._pendYc=null;
 document.addEventListener("click",function(ev){
   var b=ev.target.closest?ev.target.closest(".con"):null; if(!b) return;
@@ -2172,7 +2226,7 @@ el("actPill").onclick=function(){ if(!S||S.over) return; beep(523,0.05);
   S.looked=S.looked||{}; if(S.looked.ap===S.season) return; S.looked.ap=S.season;
   logMsg(S.acts>0?("⚡ Còn "+S.acts+" tay mùa này — mỗi tay là một lần dạy, một đêm, một mối, hay một phiên hụi."):"⚡ Hết tay rồi — mùa sau tay lại đầy"+(S.luat<4&&S.stormStreak<=2?" (giông: 2⚡)":" (3⚡)")+".",
          S.acts>0?("⚡ "+S.acts+" hand"+(S.acts>1?"s":"")+" left this season — each is a lesson, a night, a bond, or a hụi round."):"⚡ Out of hands — they refill next season"+(S.luat<4&&S.stormStreak<=2?" (storm: 2⚡)":" (3⚡)")+"."); };
-el("teachBtn").onclick=actTeach; el("nerveBtn").onclick=actNerve; el("linkBtn").onclick=actLink;
+el("teachBtn").onclick=actTeach; el("nerveBtn").onclick=actNerve; el("linkBtn").onclick=actLink; el("potBtn").onclick=actPot;
 el("huiBtn").onclick=actHui; el("buildBtn").onclick=actBuild; el("probeBtn").onclick=actProbe; el("shelBtn").onclick=actShel;
 el("againBtn").onclick=function(){ el("endOvl").classList.remove("show"); try{localStorage.removeItem(SAVE_KEY);}catch(e){} fresh(); S.sel=-1;
   var c2=loadChron(); if(c2.length){ var last=c2[c2.length-1], sn2={}; c2.forEach(function(r){if(r&&r.ti)sn2[r.ti]=1;});
@@ -2189,8 +2243,8 @@ function renderHelp(){
          vi?"Mỗi người là <b>TÀI × GAN × BẠN</b>. Thừa số nào ở mức <b>1</b> là số không — người đó không nở (0%), dù hai thừa số kia có cao đến đâu. Việc của bạn là <b>chẩn đoán</b>: tìm thừa số thấp nhất và nâng đúng nó. Tích ≥100 thì mầm bắt đầu nhú (🌱), càng cao càng dễ nở xưởng."
            :"Each person is <b>SKILL × NERVE × ALLIES</b>. A factor at <b>1</b> is a zero — that person cannot bloom (0%), however high the other two stand. Your job is <b>diagnosis</b>: find the lowest factor and raise exactly that. Product ≥100 and a sprout starts pushing (🌱); higher means likelier to open a workshop.");
   h+=sec(vi?"Tay (⚡)":"Hands (⚡)",
-         vi?"Mỗi mùa 3⚡ (mùa giông 2⚡, sau ba mùa giông liền lại 3⚡). 📖 Dạy +2 TÀI · 🏮 Đêm thất bại +2 GAN (người từng ngã đến nghe, +1) · 🤝 Kết nối +2 BẠN cho mối đầu, +1 mối sau · 🪙 Góp hụi +1 sông · 🛠 Tự xây 4 lần thì xong · 🔍 Nghe ngóng biết trời mùa tới · 🛡 Che chắn xưởng non."
-           :"3⚡ per season (storm 2⚡; after three storm seasons in a row, back to 3⚡). 📖 Teach +2 SKILL · 🏮 Failure night +2 NERVE (those who fell come listen, +1) · 🤝 Connect +2 ALLIES first bond, +1 after · 🪙 Hụi +1 river · 🛠 Build 4 times to ship · 🔍 Ask around for next season's sky · 🛡 Shelter young workshops.");
+         vi?"Mỗi mùa 3⚡ (mùa giông 2⚡, sau ba mùa giông liền lại 3⚡). 📖 Dạy +2 TÀI · 🏮 Đêm thất bại +2 GAN (người từng ngã đến nghe, +1) · 🤝 Kết nối +2 BẠN cho mối đầu, +1 mối sau · 🪙 Góp hụi +1 sông · 🧧 Hốt hụi (đã góp rồi): sông −1, mầm của một người nhú +6% — cả vòng góp cho một nhà · 🛠 Tự xây 4 lần thì xong · 🔍 Nghe ngóng biết trời mùa tới · 🛡 Che chắn xưởng non."
+           :"3⚡ per season (storm 2⚡; after three storm seasons in a row, back to 3⚡). 📖 Teach +2 SKILL · 🏮 Failure night +2 NERVE (those who fell come listen, +1) · 🤝 Connect +2 ALLIES first bond, +1 after · 🪙 Hụi +1 river · 🧧 Take the pot (once you've paid in): river −1, one person's sprout +6% — the whole circle pays one member · 🛠 Build 4 times to ship · 🔍 Ask around for next season's sky · 🛡 Shelter young workshops.");
   h+=sec(vi?"Trời và sông":"Sky and river",
          vi?"Bầu trời là <b>luật</b> — ngoài tầm tay. Trời nặng (&lt;4): mưa, 2⚡, con dấu có thể rơi xuống xưởng (xưởng non 15%, xưởng vững 5%; bậc 2–3 chỉ tụt bậc). Dòng sông là <b>vốn</b> — thừa số thứ tư, của cả xóm: mầm nhân với sông (1/10 → ×0.37 · 10/10 → ×1.0), và sông cạn giữ xưởng ở bậc thấp (≤3 chỉ gánh hàng · ≤6 tối đa xưởng). Mỗi năm dâng một chút, hụi và hàng ra chợ dâng thêm; đủ ≥4 bậc xưởng thì sông tự đầy."
            :"The sky is <b>the law</b> — beyond your hands. Heavy (&lt;4): rain, 2⚡, and the stamp may fall on a workshop (young 15%, established 5%; tier 2–3 only step down). The river is <b>capital</b> — the fourth factor, and it belongs to everyone: sprouts multiply by the river (1/10 → ×0.37 · 10/10 → ×1.0), and a low river holds workshops down (≤3 stalls only · ≤6 shop at most). It rises a little each year, more from the hụi and market trips; with ≥4 workshop tiers standing it fills itself.");
@@ -2205,8 +2259,8 @@ function renderHelp(){
            :"Some pairs are more than +ALLIES: 🏺 Ngân–Ba (craft passes, her SKILL grows each season) · 🔧 Vũ–Tú · 🧺 Ba–Hoa (ceramics to market, +river) · 🎨 Ngân–Liên · 📚 Mai–Hoa (bigger class) · 👜 Hoa–Liên (patterns to market, +river). A gold thread on the map is a bond made.");
   h+=sec(vi?"Năm nay: "+yc.em+" "+yc.nv:"This year: "+yc.em+" "+yc.ne, (vi?yc.fv:yc.fe)+(S.constraint?("<br>⛓ "+(vi?CONSTRAINTS[S.constraint].nv:CONSTRAINTS[S.constraint].ne)):""));
   h+=sec(vi?"Chạm và phím":"Taps and keys",
-         vi?"Chạm người · xưởng · trời · sông · đình · chợ · cây đa — ai đó sẽ trả lời. Chạm các thẻ trên đầu (mùa · ⚡ · 🪜). Bàn phím: 1–7 chọn người, ←/→, D N L, H B P S, ␣ mùa sau, Esc, M, ? mở sổ này."
-           :"Tap a person · workshop · sky · river · đình · market · banyan — someone answers. Tap the header pills (season · ⚡ · 🪜). Keys: 1–7 pick, ←/→, D N L, H B P S, ␣ next season, Esc, M, ? opens this.");
+         vi?"Chạm người · xưởng · trời · sông · đình · chợ · cây đa — ai đó sẽ trả lời. Chạm các thẻ trên đầu (mùa · ⚡ · 🪜). Bàn phím: 1–7 chọn người, ←/→, D N L G, H B P S, ␣ mùa sau, Esc, M, ? mở sổ này."
+           :"Tap a person · workshop · sky · river · đình · market · banyan — someone answers. Tap the header pills (season · ⚡ · 🪜). Keys: 1–7 pick, ←/→, D N L G, H B P S, ␣ next season, Esc, M, ? opens this.");
   el("helpTtl").textContent=vi?"Sổ tay":"Field notes";
   el("helpBody").innerHTML=h;
 }
@@ -2238,6 +2292,7 @@ document.addEventListener("keydown",function(ev){
   else if(K==="n") actNerve();
   else if(K==="l"){ if(S.linking!=null){ S.linking=null; renderSheet(); render(); } else actLink(); }
   else if(K==="h") actHui();
+  else if(K==="g") actPot();
   else if(K==="b") actBuild();
   else if(K==="p") actProbe();
   else if(K==="s") actShel();

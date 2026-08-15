@@ -185,3 +185,9 @@ that is now impossible because a gate catches it stays here, with the gate named
   Costs: one wasted gate run, one failed edit. Practice: `md5 → gate → md5`, commit only when equal
   and green; re-read the diff right before committing, and name what the other session's hunks are
   in the changelog rather than pretending they are yours.
+- **Your in-tree work can ship inside the OTHER session's commit before you write its changelog
+  entry.** During v0.31 the `/loop 3m` session committed the whole working tree — carrying four of
+  the `/loop 5m` session's finished graphics items with it — while `/loop 5m` was still verifying
+  them. The entry drafted from "what I changed" was therefore wrong about what the commit contained.
+  Before writing a changelog entry, run `git diff --stat` and write it against **what is actually
+  still uncommitted**, not against what you remember editing.
