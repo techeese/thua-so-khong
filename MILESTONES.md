@@ -169,6 +169,12 @@ the fair-opponent era's work, or the owner's. Numbers are as of v0.68 (ceiling �
 - **The hidden row costs a fair player one hand per misread** (misreader 6.90 vs hunter 6.89) —
   information is play, not punishment. If a future era wants information to *cost*, the lever is
   the ceiling table (2 → 4 %, 3 → 8 %, 4 → 15 %, 5 → 25 %), not the reveal rule.
+- **Two of the candidates above, priced (800–1200 runs, v0.68 rules):** *strict-year stamps 25 %/10 %*
+  → hunter 6.90 / 12.3 → **6.77 / 12.1**, idle 2.42 → 2.11 — a modest, distinguishable bite (the sim
+  never shelters, so a real player who does loses less; that is the point of the loop). *Flywheel at
+  ≥6 tiers in every year* → **no change at all** (12.3 → 12.4): the flywheel threshold is not a lever;
+  the year-end +1s carry the river to 10 regardless, so a river that can *fall* is the only capital
+  lever left.
 - **The witness bound (v0.57)** is the one balance change a tick did ship, because it converts idle
   back-half hands into work: hunter 16.0 → 12.3 tiers in the sim, unchanged blooms, every band
   clause held. If the fair-opponent era finds it too steep, the knob is the cap (5), not the rule.
