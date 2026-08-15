@@ -252,3 +252,11 @@ that is now impossible because a gate catches it stays here, with the gate named
   the *relationship* (printed === the real count) rather than the number. Third instance of this class
   in three ticks, with Gates 21 and 23; when writing a gate, ask what the world can change underneath
   it before writing a literal.
+- **An ungraded lab entry deadlocks the loop when the session is in Gear 1/2.** `done.sh` marks a
+  `lab/NOTES.md` entry with no `**Verdict:**` line as "loop structure broken" (red → Gear 1), the
+  gear file `1`/`2` makes the Stop hook block the session's end, and the independent grader in
+  `.claude/tsk-loop-runner.sh` only runs *after the session ends* — so the entry can never be
+  graded and the red never clears (2026-08-15, `fairopp.js` entry written from a Gear-2 review).
+  Cost: one tick spent discovering it. Practice: after writing a lab entry, if the only engine-owned
+  red is the missing verdict, write gear `3` so the session ends and the grader can rule; never
+  write the verdict yourself; never invoke the grader yourself.
