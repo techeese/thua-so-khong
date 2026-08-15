@@ -51,6 +51,8 @@ Rules:
 | `Gate 26` | 1 | the hand that crosses a threshold says so — a bloomed person's per-verb hint reads `→ 360 ↑bậc 2` on the hand that lifts the product past a tier line the river can carry, plain `→ 360` when the river holds it, no arrow under the line (v0.45) |
 | `Gate 27` | 1 | the middle hand misses too — Chú Ba at 9×3×2: a failure night (GAN 3, not his weakest) draws his answer in his own voice; a link (BẠN 2, the zero) draws none (v0.44) |
 | `Gate 28` | 1 | the pot's price is printed — the hint carries the river's multiplier before → after and, when the dip would drop a tier cap, ↓bậc for N roofs; no tier warning when no roof would fall (v0.45) |
+| `Gate 29` | 1 | speech has its own lane — with three stat floats up and no beat, chatter() still produces a speech bubble; with two speech bubbles up it still refuses (the two-slot rule counts speech, rate untouched) (v0.47) |
+| `Gate 30` | 1 | an unread factor does not look like a zero — an unseen factor hatches its whole track instead of drawing width:0 (which was emptier than a factor genuinely at 1); revealing it at 1 removes the hatch and shows a real width (v0.47) |
 
 ## Convergence gates — `done.sh`
 
@@ -92,3 +94,8 @@ Record here when an existing gate is made stricter, with the old and new thresho
   exist in `gate.sh` — while two rows silently claimed one gate. That happened **four times in a
   single tick** with two sessions allocating numbers concurrently. Negative-tested: an injected
   duplicate row fails the gate.
+- **Gate 24 (v0.47):** extended from the Sổ tay alone to **every vertical strip on the shared
+  `edgeFadeY` helper** — the log now asserts the same three states (bottom edge only at the top, both
+  in the middle, top edge only at the end). Old: the Sổ tay's body and its always-visible exit. New:
+  that, plus the log strip, which keeps 24 lines, shows about four and taps open to a page while
+  `cursor:pointer` was its only affordance. Every prior clause kept.

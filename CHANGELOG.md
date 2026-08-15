@@ -1,5 +1,47 @@
 # Changelog — Thừa Số Không
 
+## v0.47 — 2026-08-15 — an unread factor is not a zero
+
+A graphics round from the owner's `/loop 5m` session, on the last two unreviewed surfaces: the sheet's
+factor bars and the log panel.
+
+- **An unread factor no longer looks like a zero.** Since v0.33 hid each factor until a hand touches
+  it, the sheet drew an unseen factor as `width:0` — an **empty track**, which is emptier than a factor
+  genuinely sitting at 1. In a game whose whole question is *which factor is at zero*, that is the one
+  thing a bar must not say wrongly, and it said it on every unread row. An unread factor now hatches
+  its whole track instead. *Evidence:* new **Gate 30** — with BẠN unread the track is hatched and reads
+  `?`; revealing it at its true value of **1** removes the hatch and draws a real `10%` width. Both
+  halves asserted, so "unknown" and "the worst possible value" can never render alike again.
+- **The log says it has more.** It keeps 24 lines, shows about four, and taps open to a page — with
+  `cursor:pointer` as its only affordance, which a thumb cannot see. Measured at 390px: 106px of panel
+  holding 701px of log. Its live edge now fades like every other strip.
+- **Three strips, one helper.** The roster (v0.36), the Sổ tay (v0.42) and now the log were each about
+  to grow their own copy of the same edge logic; the two vertical ones now share `edgeFadeY()`, and
+  **Gate 24 was tightened** rather than a third near-identical gate added — it now asserts the same
+  three states for the log as for the Sổ tay. Recorded under Tightenings; every prior clause kept.
+
+The tightened gate asserts the *states* (`-B` / `TB` / `T-`), not the pixel counts, which vary with the
+log's random content — the lesson from Gates 21 and 23, applied on the way in this time rather than
+after a red gate.
+
+## v0.46 — 2026-08-15 — speech has its own lane
+
+Closes: under the owner's standing `/loop 3m` directive, a plumbing fault the engine's own synthesis
+named (`SYNTHESIS.md` §1: *"ambient chatter — half of it blocked by the two-slot queue it shares with
+stat floats"*) and that every candidate era wanted fixed. Speech and stat floats lived in one array
+and one guard: a bloom's six *+1 GAN 🌸* floats, a fade's *phai −TÀI*, the circle's *+1 BẠN 🪙* all
+counted as "two bubbles up", and the xóm's voice yielded to arithmetic it never competed with.
+
+- **`bubble()` tags speech (`spk`); `chatter()` and `pairTalkAt()` count only speech** for their
+  two-slot rule. The **rate is untouched** — same one roll per season, same 40 % no-show, same
+  yield to beats (the owner reserved cadence; this is un-blocking, not tuning). Floats and speech
+  still share the de-overlap pass, so nothing prints over anything.
+- *Evidence:* new **Gate 29** (`LANE_OK floatsUpThenSpeech=0→1 twoSpeechRefused=3→3`); Gate 6's
+  paced run reads `bubbles=7`. Twenty-nine gates green.
+- Also this tick: read the mid-game sheet on a 390 px print — row · *~8 % mỗi mùa* · river ×0.58 ·
+  arrival · hands invested; nerve *→ 13 %*; pot *→ 8 % · sông ×0.58→0.51* — coherent; the ceiling
+  line correctly absent when the product (7.8 %) sits just under the ceiling (8 %).
+
 ## v0.45 — 2026-08-15 — elbow room
 
 A graphics round from the owner's `/loop 5m` session, closing the item this loop has carried parked

@@ -663,7 +663,7 @@ window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
 setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-v1");
   document.getElementById("startBtn").click();
-  for(var s=0;s<5;s++){ try{ S.acts=3; nextSeason(); }catch(e){} }
+  for(var s=0;s<9;s++){ try{ S.acts=3; S.nudged=true; nextSeason(); }catch(e){} }
   helpToggle(true);
   setTimeout(function(){
     var b=document.getElementById("helpBody"), cl=document.getElementById("helpClose"), h2=document.getElementById("helpTtl");
@@ -673,9 +673,17 @@ setTimeout(function(){ try{
     var top=at(0),        vT=inView(cl)&&inView(h2);
     var mid=at(Math.round(more/2)), vM=inView(cl)&&inView(h2);
     var end=at(b.scrollHeight),     vE=inView(cl)&&inView(h2);
-    var ok = more>80 && top==="-B" && mid==="TB" && end==="T-" && vT && vM && vE;
+    at(0);
+    // the log is the third strip on the same helper (roster · Sổ tay · log): 24 lines kept, about four
+    // shown, and it taps open to a page — cursor:pointer was its only hint, which a thumb cannot see.
+    var lg=document.getElementById("log");
+    function lat(t){ lg.scrollTop=t; logEdges(); return (lg.classList.contains("mT")?"T":"-")+(lg.classList.contains("mB")?"B":"-"); }
+    var lmore=lg.scrollHeight-lg.clientHeight;
+    var lTop=lat(0), lMid=lat(Math.round(lmore/2)), lEnd=lat(lg.scrollHeight); lat(0);
+    var logOk = lmore>40 && lTop==="-B" && lMid==="TB" && lEnd==="T-";
+    var ok = more>80 && top==="-B" && mid==="TB" && end==="T-" && vT && vM && vE && logOk;
     document.title=(ok?"SOTAY_OK":"SOTAY_BAD")+" more="+more+" top="+top+" mid="+mid+" end="+end
-      +" exitAlwaysVisible="+(vT&&vM&&vE);
+      +" exitAlwaysVisible="+(vT&&vM&&vE)+" || log more="+lmore+" "+lTop+"/"+lMid+"/"+lEnd;
   },600);
 }catch(e){ document.title="THREW: "+e.message; } },700);
 </script>"""
@@ -800,6 +808,67 @@ open(tmp+"/price.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOF28
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/price.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "PRICE_OK" && pass "the pot's price is printed: $T" || fail "the pot's price is printed: $T"
+
+# Gate 29: speech has its own lane — with three stat floats on screen and no beat, chatter() still produces a speech bubble; with two SPEECH
+# bubbles up it still refuses (the two-slot rule stands, it just counts speech). Randomness pinned for the probe only.
+python3 - "$TMP" <<'PYEOF29'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.season=3; S.luat=6; S.cast.forEach(function(p){ p.known=true; }); gossipQ.length=0; S.pairs=[]; beatUntil=0;
+  var R=Math.random; Math.random=function(){ return 0.9; };   // skips the 40% no-show, skips gossip/pairs, lands on a chat line
+  bubbles.length=0; floatOn(S.cast[0],"+1 GAN"); floatOn(S.cast[1],"+1 GAN"); floatOn(S.cast[2],"+1 GAN");
+  var s0=speechCount(); chatter(); var s1=speechCount();                    // floats up → speech still lands
+  bubble(S.cast[3],"a"); bubble(S.cast[4],"b"); var s2=speechCount(); chatter(); var s3=speechCount();   // two speech up → refused
+  Math.random=R;
+  var ok = s0===0 && s1===1 && s2===3 && s3===3 && bubbles.length===6;
+  document.title=(ok?"LANE_OK":"LANE_BAD")+" floatsUpThenSpeech="+s0+"→"+s1+" twoSpeechRefused="+s2+"→"+s3+" total="+bubbles.length;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/lane.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF29
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/lane.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "LANE_OK" && pass "speech has its own lane: $T" || fail "speech has its own lane: $T"
+
+# Gate 30: an unread factor does not look like a zero — the sheet drew an unseen factor as width:0,
+# an EMPTY track, which is emptier than a factor genuinely sitting at 1. In a game about which factor
+# is at zero, that is the one thing a bar must not say wrongly. Unread hatches the whole track; reading
+# it at its true value of 1 removes the hatch and shows a real width. Both halves asserted.
+python3 - "$TMP" <<'PYEOF30'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  var p=S.cast[1]; p.known=true; p.started=false;
+  p.seen={tai:true,gan:true,ban:false}; p.tai=9; p.gan=10; p.ban=1;
+  selectPerson(1);
+  setTimeout(function(){
+    function trk(id){ return document.getElementById(id).parentNode; }
+    function hatched(id){ return getComputedStyle(trk(id)).backgroundImage.indexOf("gradient")>=0; }
+    var unreadHatched=hatched("barBan"), readPlain=!hatched("barTai");
+    var wUnread=document.getElementById("barBan").style.width, vUnread=document.getElementById("valBan").textContent;
+    see(p,"ban"); renderSheet();
+    var afterHatched=hatched("barBan"), wAfter=document.getElementById("barBan").style.width,
+        vAfter=document.getElementById("valBan").textContent;
+    var ok = unreadHatched && readPlain && !afterHatched && wAfter==="10%" && vAfter==="1" && vUnread==="?";
+    document.title=(ok?"UNREAD_OK":"UNREAD_BAD")+" unreadHatched="+unreadHatched+" readPlain="+readPlain
+      +" unread(w="+wUnread+",v="+vUnread+") afterReveal(hatched="+afterHatched+",w="+wAfter+",v="+vAfter+")";
+  },350);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/ur.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF30
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=7000 --dump-dom "file://$TMP/ur.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "UNREAD_OK" && pass "an unread factor is not a zero: $T" || fail "an unread factor is not a zero: $T"
 
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }

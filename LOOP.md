@@ -93,7 +93,8 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.45: the pot's price is printed — multiplier before→after and ↓bậc N when the dip crosses a cap
+**v0.46: speech has its own lane — the two-slot ambient guard counts speech, not stat floats; rate
+untouched (Gate 29). v0.45: the pot's price is printed — multiplier before→after and ↓bậc N when the dip crosses a cap
 line (Gate 28). Measured, parked for Y: bounding the witness GAN lift below 5 costs the hunter's tiers
 16.1 → 12.5 (spreader 7.8, linker 9.3) — the world currently finishes GAN for you; a fair-opponent era
 should decide that, not a tick. v0.44: the guess-answer covers every hand that is not the weakest (Gate 27). The engine's synthesis 6
@@ -135,14 +136,17 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop, in order: crowding is **done**
-(v0.43, Gate 25: overlap 0.1465 → 0.0781 across 8 paired seeds, villagers named 3.885 → 4.203), and
-all three overlays are done (v0.39 intro, v0.40 ending, v0.42 Sổ tay). **Do not attempt a seeded
-whole-run gate again** — it was built, measured and discarded this round; the game's deferred beats
-run on wall-clock `setTimeout` and the number moves with machine load. Gate the mechanism instead.
-Next unreviewed surfaces: the **log panel** and the **verb row**, then the roster chips' `?`/dot
-vocabulary. The far bank fading under a heavy sky is **decided, not pending**. Before adding any gate,
-run `./done.sh` and take the next id above the highest in BOTH `gate.sh` and the ledger. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop, in order: every surface this loop
+set out to review is now **done** — crowding (v0.45, Gate 25), the three overlays (v0.39 intro, v0.40
+ending, v0.42 Sổ tay), the roster strip (v0.36), and now the sheet's factor bars and the log (v0.47,
+Gate 30 + Gate 24 tightened). **Do not attempt a seeded whole-run gate** — built, measured and
+discarded in v0.45; gate the mechanism instead. Genuinely open, in order: the **roster chips'
+`?`/`●●○` dot vocabulary**, which is unlabelled and tiny and is now the only place a player reads
+which factors they have touched; the **float/bubble density during a fast season** — v0.32 stopped
+them overlapping but a burst still tiles the canvas, and it needs a real-play measurement rather than
+a sync-loop probe, which exaggerates it badly; and a pass over the **verb row's disabled states**. The
+far bank fading under a heavy sky is **decided, not pending**. Before adding any gate, run `./done.sh`
+and take the next id above the highest in BOTH `gate.sh` and the ledger. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

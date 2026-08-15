@@ -81,6 +81,10 @@
   .frow{display:flex;align-items:center;gap:8px;margin:6px 0}
   .frow .fl{width:52px;font-size:12px;font-weight:700}
   .frow .ftr{flex:1;height:14px;background:#e0d0ac;border:2px solid var(--ink);border-radius:8px;overflow:hidden}
+  /* An unread factor was drawn as width:0 — an EMPTY track, which in this game is the loudest thing a
+     bar can say and the one thing it must not say wrongly: emptier than a factor genuinely sitting at
+     1. Unknown now hatches the whole track instead, so "not read yet" cannot be mistaken for "zero". */
+  .frow .ftr.unk{background:repeating-linear-gradient(-45deg,#e0d0ac 0 5px,#cbb994 5px 10px)}
   .frow .ftr i{display:block;height:100%;transition:width .4s}
   .frow .fv{width:22px;text-align:right;font-weight:700;font-size:13px}
   /* the nature tick — where an un-bloomed factor will fade back to; drawn only once that factor is seen and stands above it */
@@ -119,9 +123,9 @@
      button stay put; the body's live edge fades so it says it has more, as the roster strip does. */
   #helpOvl .card{display:flex;flex-direction:column;overflow:hidden}
   #helpBody{overflow-y:auto;flex:1 1 auto;min-height:0}
-  #helpBody.mB{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 26px),transparent)}
-  #helpBody.mT{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 26px);mask-image:linear-gradient(to bottom,transparent,#000 26px)}
-  #helpBody.mT.mB{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 26px,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(to bottom,transparent,#000 26px,#000 calc(100% - 26px),transparent)}
+  #helpBody.mB,.log.mB{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 26px),transparent)}
+  #helpBody.mT,.log.mT{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 26px);mask-image:linear-gradient(to bottom,transparent,#000 26px)}
+  #helpBody.mT.mB,.log.mT.mB{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 26px,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(to bottom,transparent,#000 26px,#000 calc(100% - 26px),transparent)}
   .endline{font:700 15px Georgia,serif;text-align:center;margin-top:12px;padding-top:10px;border-top:2px dashed var(--ink)}
   .small{font-size:12px;color:var(--dim)}
   .bookTap{cursor:pointer;text-decoration:underline dotted}
@@ -176,7 +180,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.45</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.47</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -409,7 +413,7 @@ var _lastBub=0;
 function pairTalkAt(key,walk){
   var set=PAIR_TALK[key]; if(!set) return;
   var nw2=performance.now();
-  if(nw2<beatUntil||bubbles.length>=2||nw2-_lastBub<25000) return;
+  if(nw2<beatUntil||speechCount()>=2||nw2-_lastBub<25000) return;   // same lane rule as chatter (v0.46)
   _lastBub=nw2;
   var talk=set[Math.floor(Math.random()*set.length)];
   var pa=S.cast[talk[0].who], pb=S.cast[talk[1].who];
@@ -423,7 +427,7 @@ function pairTalkAt(key,walk){
 var gossipQ=[];
 function gossip(vi,en,about){ gossipQ.push({vi:vi,en:en,about:about}); if(gossipQ.length>4) gossipQ.shift(); }
 function chatter(){
-  if(S.over||performance.now()<beatUntil||bubbles.length>=2||Math.random()<0.4) return;   // the xóm doesn't perform on demand — and never over a named moment
+  if(S.over||performance.now()<beatUntil||speechCount()>=2||Math.random()<0.4) return;   // the xóm doesn't perform on demand — and never over a named moment; the two-slot guard counts SPEECH, not the six "+1 GAN 🌸" floats a bloom throws (v0.46 — rate untouched)
   if(gossipQ.length&&Math.random()<0.7){
     var g=gossipQ[0], spk=S.cast.filter(function(p){return active(p)&&p.known&&p.id!==g.about;});
     if(spk.length){ gossipQ.shift(); bubble(spk[Math.floor(Math.random()*spk.length)],g[L]); return; }
@@ -608,6 +612,14 @@ function renderBook(box){
     if(fin(r.hs)) trav+=" · "+(r.hs|0)+"⚡";
     if(fin(r.sc)&&(r.sc|0)>0) trav+=" · ☁️"+(r.sc|0); if(fin(r.st)&&(r.st|0)>0) trav+=" ⬛"+(r.st|0);   // how the sky treated that year
     d.innerHTML="<span>"+(c.length-i)+".</span> "+yc.em+cn+" <b>"+ttl+"</b> <span>· "+(r.nB|0)+(L==="vi"?" xưởng · ":" workshops · ")+(r.ts|0)+(L==="vi"?" bậc":" tiers")+trav+"</span>";
+    // a row that remembers its seasons opens to its strip on tap — the year's shape, kept
+    if(Array.isArray(r.h)&&r.h.some(function(v){return (v|0)>0;})){ d.style.cursor="pointer"; d.title=(L==="vi")?"chạm: mười sáu mùa":"tap: the sixteen seasons";
+      d.addEventListener("click",function(ev){ ev.stopPropagation(); var nx=d.nextSibling;
+        if(nx&&nx.className==="bkstrip"){ nx.remove(); return; }
+        var cells=[]; for(var si=0;si<16;si++){ var v=r.h[si]|0, bl=v>>2, st=v&3, cc=""; for(var bi=0;bi<bl;bi++) cc+="🌸"; for(var ti2=0;ti2<st;ti2++) cc+="⬛"; cells.push(cc||"·"); }
+        var st2=document.createElement("div"); st2.className="bkstrip"; st2.style.cssText="justify-content:center;font-size:12px;letter-spacing:.06em;color:#4d4335";
+        st2.textContent=cells.slice(0,4).join("")+" │ "+cells.slice(4,8).join("")+" │ "+cells.slice(8,12).join("")+" │ "+cells.slice(12,16).join("");
+        d.parentNode.insertBefore(st2,d.nextSibling); }); }
     box.appendChild(d); });
 }
 document.addEventListener("click",function(ev){
@@ -648,7 +660,7 @@ function load(){
       var sn=fin(c.sn)?(c.sn|0):7; p.seen={tai:!!(sn&1),gan:!!(sn&2),ban:!!(sn&4)}; });   // a save from before v0.33 has seen everything
     S.cast[6].arrives=cl(s.arr,2,8,6); S.baFadeStart=cl(s.baf,5,9,8);   // 2 / 5: the reunion year pulls both clocks early — the clamp must admit that on reload
     S.stormCount=cl(s.sc,0,16,0); S.stormStreak=cl(s.ss,0,16,0); S.yearCard=fin(s.yc)?cl(s.yc,0,5,0):S.yearCard; S.constraint=fin(s.cn)?cl(s.cn,0,3,0):0; S.gtmPays=fin(s.gp)?cl(s.gp,0,2,0):(s.gtmPaid?1:0);
-    S.lienWarned=S.season>=11; S.tetSeen=S.season>=4; S.hoardSeen=S.season>=2; S.baFade=S.season>=(S.baFadeStart||8); S.baRescued=S.baFade&&(pairExists(0,1)||S.cast[1].started); S.stormSeen=S.season>0; S.tierTaught=S.ships.length>0||S.season>1; S.lienNgan=pairExists(0,6); S.classSeen=S.cast[2].started; S.revealSeen=S.cast.some(function(p){return p.known;});
+    S.lienWarned=S.season>=11; S.tetSeen=S.season>=4; S.hoardSeen=S.season>=2; S.placesTold=S.season>=3; S.baFade=S.season>=(S.baFadeStart||8); S.baRescued=S.baFade&&(pairExists(0,1)||S.cast[1].started); S.stormSeen=S.season>0; S.tierTaught=S.ships.length>0||S.season>1; S.lienNgan=pairExists(0,6); S.classSeen=S.cast[2].started; S.revealSeen=S.cast.some(function(p){return p.known;});
     if(Array.isArray(s.ships)) S.ships=s.ships.filter(function(w){return w&&fin(w.x)&&fin(w.y)&&typeof w.owner==="string";});
     S.ships.forEach(function(w){ w.age=cl(w.age,0,99,2); w.shel=cl(w.shel,0,2,0); });
     S.scars=Array.isArray(s.scars)?s.scars.filter(function(c){return c&&fin(c.x)&&fin(c.y)&&fin(c.s);}).map(function(c){return {x:c.x,y:c.y,s:cl(c.s,0,15,0)};}).slice(-8):[];
@@ -742,7 +754,8 @@ window.addEventListener("resize",fit);
 
 var parts=[], bubbles=[], stamps=[];
 function petals(x,y,n,cols){ for(var i=0;i<n;i++) parts.push({x:x,y:y,vx:(Math.random()-.5)*2.2,vy:-1.5-Math.random()*2,r:3+Math.random()*4,rot:Math.random()*6.28,vr:(Math.random()-.5)*.3,life:1,col:cols[i%cols.length]}); }
-function bubble(p,txt){ bubbles.push({p:p,lay:layoutBubble(txt),at:performance.now(),until:performance.now()+3600}); }
+function bubble(p,txt){ bubbles.push({p:p,lay:layoutBubble(txt),at:performance.now(),until:performance.now()+3600,spk:true}); }   // spk: speech has its own lane — stat floats never crowd it out
+function speechCount(){ var n=0; for(var i=0;i<bubbles.length;i++) if(bubbles[i].spk) n++; return n; }
 // a stamped-out roof leaves a mark on the ground for three seasons — the xóm remembers where it stood
 function scarAt(x,y){ S.scars=(S.scars||[]).filter(function(c){return Math.hypot(c.x-x,c.y-y)>20;}); S.scars.push({x:x,y:y,s:S.season}); S.scars=S.scars.slice(-8); }
 function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); shake=1; beat(2400); beep(85,0.35,0.07); buzz(60); }
@@ -1443,7 +1456,8 @@ function workshop(s,now){
   // pennant(s) — a thương hiệu flies two
   ctx.beginPath(); ctx.moveTo(x,y-24); ctx.lineTo(x,y-46); ctx.stroke();
   var fl=Math.sin(now*0.004)*3;
-  ctx.fillStyle="#E3A63B"; ctx.beginPath(); ctx.moveTo(x,y-46); ctx.lineTo(x+22,y-41+fl); ctx.lineTo(x,y-36); ctx.closePath(); ctx.fill(); ctx.stroke();
+  var ownerP=(!s.yours&&fin(s.pid))?S.cast[s.pid]:null;
+  ctx.fillStyle=ownerP?ownerP.color:"#E3A63B"; ctx.beginPath(); ctx.moveTo(x,y-46); ctx.lineTo(x+22,y-41+fl); ctx.lineTo(x,y-36); ctx.closePath(); ctx.fill(); ctx.stroke();   // the pennant flies the owner's colour — the roof is theirs from across the print; yours flies gold
   if(tr===3){ ctx.fillStyle="#C1443C"; ctx.beginPath(); ctx.moveTo(x,y-40); ctx.lineTo(x-20,y-36-fl); ctx.lineTo(x,y-31); ctx.closePath(); ctx.fill(); ctx.stroke(); }
   // the shelter mat — a woven tarp over the roof
   if(s.shel>0){ ctx.strokeStyle="#7a5a3a"; ctx.lineWidth=2.4;
@@ -1691,6 +1705,10 @@ function unlockCheck(){
   if(!S.un.link && S.cast.filter(function(p){return p.known;}).length>=2){ S.un.link=true; if(!S.vet) logMsg(STR.unLink.vi,STR.unLink.en); beep(784,0.08,0.02); }
   if(!S.un.hui && S.season>=2){ S.un.hui=true; if(!S.vet) pendLog(2800,STR.unHui.vi,STR.unHui.en); }   // after the newcomer has spoken
   if(!S.un.build && S.season>=4){ S.un.build=true; if(!S.vet) pendLog(2800,STR.unBuild.vi,STR.unBuild.en); }
+  // the places can be asked — said once, on a first run, after the second season's arrival has spoken (the sky, river, đình, market, banyan, paddy and road all answer)
+  if(!S.placesTold && S.season>=3 && !S.vet){ S.placesTold=true;
+    pendLog(3400,"👉 Không chỉ người — chạm vào sông, đình, chợ, cây đa, ruộng, con đường hay bầu trời: hàng xóm gần nhất sẽ ra kể.",
+                 "👉 Not only people — tap the river, the đình, the market, the banyan, the paddy, the road or the sky: the nearest neighbour comes to tell you."); }
 }
 
 // ---------- actions ----------
@@ -1910,7 +1928,7 @@ function nextSeason(){
       banner("🌸 "+p.name,2100);
       bubble(p,p.qb?p.qb[L]:"");
       buzz([15,30,15]);
-      var _br=(S.cast.filter(function(q){return q.started;}).length%2)?587:523;
+      var _br=(typeof VOICE!=="undefined"&&VOICE[p.id])?Math.min(VOICE[p.id],587):((S.cast.filter(function(q){return q.started;}).length%2)?587:523);   // the bloom's arpeggio rises from THEIR voice — Ba's kiln lights low, Ngân's app high (capped so the fifth stays sweet)
       beep(_br,0.12,0.05); setTimeout(function(){beep(_br*1.26,0.12,0.05);},90); setTimeout(function(){beep(_br*1.5,0.22,0.05);},190);
       // the first customer: the village receives the new workshop — no coin, no sound; the walk IS the delay
       (function(np){ var ctok=runTok; setTimeout(function(){ if(S.over||runTok!==ctok) return;
@@ -2241,7 +2259,7 @@ function endGame(){
     b.appendChild(strip); })();
   // 📜 write this run into the village book — and show the book right here, where the itch lives
   var stN=(S.hist||[]).reduce(function(a,v){return a+((v|0)&3);},0), scN=S.stormCount|0;   // the sky's part of the year: stamps that fell, storm seasons endured
-  var ch=loadChron(); ch.push({ti:ti,tv:tv,te:te,yc:S.yearCard|0,cn:S.constraint|0,nB:nB,ts:ts,wk:wk.name,then:wk.btai*wk.bgan*wk.bban,now:prod(wk),hs:S.hands|0,st:stN,sc:scN}); saveChron(ch);
+  var ch=loadChron(); ch.push({ti:ti,tv:tv,te:te,yc:S.yearCard|0,cn:S.constraint|0,nB:nB,ts:ts,wk:wk.name,then:wk.btai*wk.bgan*wk.bban,now:prod(wk),hs:S.hands|0,st:stN,sc:scN,h:(S.hist||[]).slice(0,16).map(function(v){return v|0;})}); saveChron(ch);
   var seen={}; ch.forEach(function(r){ if(r&&r.ti) seen[r.ti]=1; }); var nSeen=Object.keys(seen).length;
   var wasGold=_goldSeal; _goldSeal=nSeen>=6;
   if(_goldSeal&&!wasGold){ var gl=document.createElement("p"); gl.style.cssText="text-align:center;color:#E3A63B;font-weight:700;margin:4px 0"; gl.textContent=(L==="vi")?"🏆 Sổ xóm đã trọn sáu kết — dấu ×0 ở góc tranh nay mạ vàng.":"🏆 The book holds all six endings — the ×0 seal in the corner is gold now."; b.appendChild(gl); }
@@ -2397,6 +2415,9 @@ function renderSheet(){
   var sT=seenAll(p)||p.seen.tai, sG=seenAll(p)||p.seen.gan, sB=seenAll(p)||p.seen.ban, all=seenAll(p);
   el("valTai").textContent=sT?p.tai:"?"; el("valGan").textContent=sG?p.gan:"?"; el("valBan").textContent=sB?p.ban:"?";
   el("barTai").style.width=(sT?p.tai*10:0)+"%"; el("barGan").style.width=(sG?p.gan*10:0)+"%"; el("barBan").style.width=(sB?p.ban*10:0)+"%";
+  // and mark the track itself as unread — a zero-width fill alone reads as a factor at zero
+  [["barTai",sT],["barGan",sG],["barBan",sB]].forEach(function(f){ var tr=el(f[0]).parentNode;
+    if(tr) tr.classList.toggle("unk",!f[1]); });
   // entropy, drawn: a dashed tick at each factor's nature — the tending above it is what a season can wash back (hidden until the factor is seen; gone once they bloom)
   [["Tai","tai",sT],["Gan","gan",sG],["Ban","ban",sB]].forEach(function(f){ var nt=el("nat"+f[0]); if(!nt) return;
     var bv=p["b"+f[1]], show=f[2]&&!p.started&&fin(bv)&&p[f[1]]>bv;
@@ -2475,6 +2496,7 @@ function rosterEdges(){ var b=el("roster"); if(!b) return;
   b.classList.toggle("mR", more>2 && b.scrollLeft<more-2); }
 function renderLog(){
   el("log").innerHTML=S.log.map(function(m){return "<div"+(m.div?' class="ldiv"':"")+">"+(m[L]||m.vi)+"</div>";}).join("")||"<div>"+t("talkFirst")+"</div>";
+  logEdges();
 }
 function setLang(x){ L=x; document.documentElement.lang=x;
   document.querySelectorAll(".conL,#conLbl").forEach(function(e2){ var v2=e2.getAttribute("data-"+x); if(v2) e2.textContent=v2; });
@@ -2511,7 +2533,7 @@ el("log").addEventListener("click",function(ev){ if(ev.target.closest&&ev.target
   if(line&&!line.classList.contains("ldiv")&&S&&!S.over){ var txt=line.textContent, hit=null;
     S.cast.forEach(function(p){ if(active(p)&&p.known&&txt.indexOf(p.name)>=0&&(hit===null||txt.indexOf(p.name)<txt.indexOf(hit.name))) hit=p; });   // the FIRST name in the line
     if(hit){ if(S.linking!=null&&S.linking!==hit.id) completeLink(hit.id); else selectPerson(hit.id); line.style.background="rgba(227,166,59,.35)"; setTimeout(function(){ line.style.background=""; },350); return; } }
-  el("log").classList.toggle("tall"); beep(el("log").classList.contains("tall")?523:392,0.04); });   // the log opens to a page when tapped — 24 lines are kept, only 4 showed
+  el("log").classList.toggle("tall"); logEdges(); setTimeout(logEdges,280); beep(el("log").classList.contains("tall")?523:392,0.04); });   // re-read after the max-height transition settles   // the log opens to a page when tapped — 24 lines are kept, only 4 showed
 el("roster").addEventListener("click",function(ev){ var c=ev.target.closest?ev.target.closest(".rc"):null; if(!c||!S||S.over) return;
   var id=+c.getAttribute("data-id"); if(!fin(id)) return;
   if(S.linking!=null){ if(id!==S.linking) completeLink(id); return; }   // the roster is a tap surface like the map
@@ -2609,12 +2631,14 @@ function renderHelp(){
 }
 function helpToggle(force){ var o=el("helpOvl"), open=o.classList.contains("show"), want=(force===undefined)?!open:!!force;
   if(want===open) return; if(want){ renderHelp(); o.classList.add("show"); el("helpBody").scrollTop=0; helpEdges(); beep(523,0.05); } else { o.classList.remove("show"); beep(392,0.05); } }
-// which way the Sổ tay still has pages — the vertical twin of rosterEdges()
-function helpEdges(){ var b=el("helpBody"); if(!b) return;
-  var more=b.scrollHeight-b.clientHeight;
+// which way a vertical strip still has more — the Sổ tay body and the log both use it
+function edgeFadeY(b){ if(!b) return; var more=b.scrollHeight-b.clientHeight;
   b.classList.toggle("mT", more>2 && b.scrollTop>2);
   b.classList.toggle("mB", more>2 && b.scrollTop<more-2); }
+function helpEdges(){ edgeFadeY(el("helpBody")); }
+function logEdges(){ edgeFadeY(el("log")); }
 el("helpBody").addEventListener("scroll",helpEdges,{passive:true});
+el("log").addEventListener("scroll",logEdges,{passive:true});
 el("helpBtn").onclick=function(){ helpToggle(); }; el("helpClose").onclick=function(){ helpToggle(false); };
 el("helpOvl").addEventListener("click",function(ev){ if(ev.target===el("helpOvl")) helpToggle(false); });   // tap the paper margin to close
 // ---------- keyboard (desktop play) ----------
