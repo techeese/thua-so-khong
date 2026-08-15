@@ -351,3 +351,10 @@ that is now impossible because a gate catches it stays here, with the gate named
   viewport, so an injected `body{width:Npx}` never constrains it and the probe reports `helpOvl`,
   `.card`, `helpTtl`, `helpClose` as "overflowing". Exclude fixed-position subtrees from width probes,
   or you will chase the same four elements again (this is the second time).
+- **A probe whose subject can still roll is a flaky gate, and it will fail on the day two sessions run
+  `gate.sh` at once.** Gate 21 read `lifted=false` twice today on committed code that passes 31/31 in
+  isolation: Chú Ba at 9×3×2, river 10, has a 4 % bloom roll every season, and a pre-lift bloom removes
+  him from the circle's `!started` filter. Practice: when a probe asserts on ONE person across a
+  `nextSeason()`, pin that person's own dice (wrap `chance` for them, restore after) — and before hunting a
+  regression, run the failing stanza alone 10× against HEAD in a worktree; if it passes, it is the dice,
+  not the diff. Reproduce the flake by forcing `Math.random=()=>0` before you fix it.

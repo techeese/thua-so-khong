@@ -1,5 +1,23 @@
 # Changelog — Thừa Số Không
 
+## gate repair — 2026-08-15 — Gate 21 stops flaking (engine tick, no product change)
+
+Closes: `done.sh` → *release gates RED — the world is honest about the ceiling: `WORLD_BAD … lifted=false`*,
+seen twice today on committed code that passes the same probe in isolation (31/31 across two commits).
+The gate itself was right; its subject was rolling dice. Chú Ba sits at 9×3×2 on a river of 10, so
+`chance(ba)` is the ceiling — **4 % a season** — and when he blooms in the lift season `started=true`
+lands *before* the circle looks; the lift filter is `!started`, so `lifted` reads false about one run in
+25. The probe's own comment had already recorded "observed lifted=false on identical code".
+
+- `gate.sh` Gate 21: Ba's roll alone is pinned to 0 for the two lift seasons (`chance` wrapped, then
+  restored); every other roll stays live and every assertion is unchanged.
+- *Evidence:* forcing `Math.random=()=>0` (every roll lands) reproduces the exact failure on the unpinned
+  probe (`lifted=false`) and passes on the pinned one; the repaired stanza ran 12/12 green. Nothing in
+  `index.html` moved; live == repo unaffected.
+- A `done.sh` gate that turns red on a die throw forces Gear 1 on a quiet loop for nothing — that is
+  why this is convergent work and not polish. Recorded in `GATES-LEDGER.md` → Tightenings and
+  `LANDMINES.md`.
+
 ## v0.57 — 2026-08-15 — the print fits a phone held sideways
 
 A graphics round from the owner's `/loop 5m` session. The pointer said this brief was close to spent

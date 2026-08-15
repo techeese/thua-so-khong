@@ -111,3 +111,8 @@ Record here when an existing gate is made stricter, with the old and new thresho
   that, plus the log strip, which keeps 24 lines, shows about four and taps open to a page while
   `cursor:pointer` was its only affordance. Every prior clause kept.
 - **Gate 23 (v0.48):** now also asserts the established roof reads 🛡 0% after the hand and that the real coverable count is 2 (shelter tarps every standing roof, not only young ones).
+- **Gate 21 (gate repair, 2026-08-15):** the subject's own bloom roll is pinned to 0 during the two lift
+  seasons (`chance` wrapped for Ba only, restored after) so `lifted` can no longer read false on a 4 % die.
+  Old: the same six assertions, flaking about one run in 25. New: the same six assertions, deterministic
+  for the subject; every other roll in the season stays live. Negative-tested: with every roll forced to
+  land the unpinned probe fails exactly as observed and the pinned one passes.

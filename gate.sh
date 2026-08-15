@@ -566,8 +566,12 @@ setTimeout(function(){ try{
   // take the lift instead and the assertion flakes (observed lifted=false on identical code). The
   // twelve trials above drift the rest of the cast, so put every other neighbour out of the running.
   S.cast.forEach(function(q){ if(q!==ba&&q.ban<=2) q.ban=4; });
+  // and pin the subject's own dice: at 9×3×2 on a river of 10, chance(ba) is the ceiling 4 %/season, and a bloom
+  // in the lift season sets started=true BEFORE the circle looks — the lift filter is !started, so lifted read
+  // false on identical code about one run in 25. Only ba's roll is pinned; every other roll in the season is live.
+  var C0=chance; chance=function(q){ return q===ba?0:C0(q); };
   S.hui=1; ba.ban=2; ba.started=false; ba.known=true; nextSeason(); var lifted=(ba.ban===3&&ba.seen.ban===true);
-  ba.ban=3; nextSeason(); var notPast3=(ba.ban===3);
+  ba.ban=3; nextSeason(); var notPast3=(ba.ban===3); chance=C0;
   var ok = trials>=6 && maiMom===0 && vuMom>0 && noLiftWithoutHui && lifted && notPast3;
   document.title=(ok?"WORLD_OK":"WORLD_BAD")+" trials="+trials+" maiMom="+maiMom.toFixed(2)+" vuMom="+vuMom.toFixed(2)+" noLiftWithoutHui="+noLiftWithoutHui+" lifted="+lifted+" notPast3="+notPast3;
 }catch(e){ document.title="THREW: "+e.message; } },600);
