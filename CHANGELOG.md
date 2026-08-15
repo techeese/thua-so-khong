@@ -18,6 +18,26 @@ lands *before* the circle looks; the lift filter is `!started`, so `lifted` read
   why this is convergent work and not polish. Recorded in `GATES-LEDGER.md` → Tightenings and
   `LANDMINES.md`.
 
+## v0.61 — 2026-08-15 — every word on the page is readable
+
+A graphics round from the owner's `/loop 5m` session, third down the accessibility seam. This one
+needed no browser flags and no emulation: contrast is arithmetic, so it was measured directly against
+the live DOM.
+
+- **Five text/background pairs were below WCAG AA**, every one of them the warm grey `--dim` on paper:
+  the tagline *mười nhân với không vẫn bằng không* at **2.89:1**, the footer at **2.89**, the log's
+  season dividers at **3.27**, and — the one that matters most — the **per-verb hints at 4.12**, which
+  is where the game states its arithmetic (`+2 TÀI · 1⚡ → 18%`). Small dim text on a mid-tone paper is
+  exactly where a hand-drawn palette quietly stops being legible.
+- **`--dim` moved from `#7a6f5d` to `#544B3D`** — the same warm brown-grey, two steps down. It stays
+  lighter than the body ink, so the hierarchy holds and secondary text still reads as secondary; the
+  log dividers now share it instead of their own lighter `#8a7a5f`. Nothing else in the palette moved,
+  and the canvas's use of `#8a7a5f` for scene work was left alone: that is paint, not type.
+- *Evidence:* new **Gate 45** walks the live DOM, pairs each text node's computed colour with its
+  effective background, and measures the contrast ratio: **59 elements checked, 0 failures**.
+  Negative-tested by restoring the old `--dim`: `CONTRAST_BAD checked=66 fails=6`. The gate now guards
+  the palette — any future colour change that makes text unreadable turns it red.
+
 ## v0.60 — 2026-08-15 — the keyboard can see where it is
 
 A graphics round from the owner's `/loop 5m` session, continuing down the accessibility seam v0.59

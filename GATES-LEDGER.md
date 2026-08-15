@@ -67,6 +67,8 @@ Rules:
 | `Gate 42` | 1 | the year no one dared — with constraint 4 tied the failure night is refused (no hand, GAN unchanged, button struck through), the intro offers the fourth tied hand, a save carries it back; without it the failure night works (v0.58) |
 | `Gate 43` | 1 | Reduce Motion is obeyed by the print — with `prefers-reduced-motion: reduce` the drifting petals, rain streaks, bloom confetti and idle bob all stop (0/0/0/0.0) while the motes keep flying, and without it they all still run; asserted by running the same probe under both settings (v0.59) |
 | `Gate 44` | 1 | the keyboard can see where it is — focus draws a 3px ring in the xóm's own ink with a paper halo, inverted to paper-on-ink over the red button and the selected chip; every roster chip is Tab-reachable (was 0 of 6, plain divs) and Enter on a focused chip picks that villager (v0.60) |
+| `Gate 45` | 1 | every word on the page is readable — walks the live DOM pairing each text node's computed colour with its effective background and measures WCAG contrast; zero failures required (five were failing when written, the worst at 2.89:1). Guards the palette against a future colour change that makes text unreadable (v0.61) |
+| `Gate 46` | 1 | a tied hand is named at the ceiling — when the factor that caps a known row is this year's tied hand, the sheet says "tay ấy bị trói năm nay"; with no tie the line ends at the percentage (v0.60) |
 
 ## Convergence gates — `done.sh`
 

@@ -145,26 +145,26 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **the accessibility seam is the one
-with road left.** v0.59 gave Reduce Motion the canvas (it had reached one button); v0.60 gave the
-keyboard a ring it can see and a roster it can reach (chips were plain divs, 0 of 6 Tab-reachable).
-Next on this seam, in order: **the canvas has no `role` and no `aria-label`** — a screen reader is
-told nothing about the xóm at all, and the sheet/roster carry the same information in DOM, so a
-concise live description is reachable rather than fanciful; then **keyboard-only play end to end**
-(the number keys select, but can a Tab-only player reach the verbs, the pot, the ending card's
-buttons?); then **forced-colors / high-contrast**, which like Reduce Motion cannot reach a canvas
-through CSS and needs a JS branch. Measured and clean, do not re-open without a new reason: device
-pixel ratio (1×/2×/3×), 320/360px width, English at 320px, float density in paced play. Measured and
-**declined** as invisible and pre-existing: the world's bottom edge 2.3 logical px past the backing
-store. Still unvaried: a run left idle for many minutes (timer/beat accumulation), a save restored at a
-different viewport. **If a tick finds only cosmetic preference, ship nothing and say so** — and note
-the owner has twice asked again after such a tick, so report plainly and keep going rather than stop.
-Rules earned the hard way: no seeded whole-run gate (v0.45); never let a gate reimplement the logic it
-tests (Gate 35's first draft passed on the broken build); negative-test every new gate; check modals at
-short HEIGHTS; `scrollIntoView` per element; an inline style set by JS silently kills a media query
-(v0.57); sizing a responsive element from JS freezes it; take the PEAK of a transient; and when adding
-focusability, assert ACTIVATION too, not just that the element can be focused. Unique heredoc tag per
-gate. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **the accessibility seam keeps
+paying.** v0.59 Reduce Motion reached the canvas; v0.60 gave the keyboard a visible ring and a
+reachable roster; v0.61 fixed five WCAG failures in the quiet text (`--dim` 2.89:1 → clear) and left
+**Gate 45** guarding the palette. Next on this seam, in order: **the canvas has no `role` and no
+`aria-label`** — a screen reader is told nothing about the xóm, and the sheet and roster already carry
+the same facts in DOM, so a concise description is reachable rather than fanciful (this is semantics,
+not graphics — give it its own round and do not bolt a token label on); then **keyboard-only play end
+to end** (number keys select, but can a Tab-only player reach the verbs, the pot, the ending card's
+buttons and finish a season?); then **forced-colors / high-contrast**, which like Reduce Motion cannot
+reach a canvas through CSS and needs a JS branch. Measured and clean, do not re-open without a new
+reason: device pixel ratio (1×/2×/3×), 320/360px width, English at 320px, float density paced.
+Measured and **declined** as invisible and pre-existing: the world's bottom edge 2.3 logical px past
+the backing store. Still unvaried: a long-idle run (timer/beat accumulation), a save restored at a
+different viewport. **If a tick finds only cosmetic preference, ship nothing and say so** — the owner
+has twice asked again after such a tick, so report plainly and keep going rather than stop. Rules
+earned the hard way: no seeded whole-run gate (v0.45); never let a gate reimplement the logic it tests;
+negative-test every new gate against a deliberately broken copy (this caught Gate 35 and confirmed 40,
+43, 44, 45); check modals at short HEIGHTS; `scrollIntoView` per element; an inline style set by JS
+silently kills a media query; sizing a responsive element from JS freezes it; take the PEAK of a
+transient; assert ACTIVATION when adding focusability. Unique heredoc tag per gate. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

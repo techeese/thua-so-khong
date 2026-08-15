@@ -1374,6 +1374,80 @@ PYEOFFOCUS
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,780 --virtual-time-budget=9000 --dump-dom "file://$TMP/fk.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "FOCUS_OK" && pass "the keyboard can see where it is: $T" || fail "the keyboard can see where it is: $T"
 
+# Gate 46: a tied hand is named at the ceiling — in the year no one dared, a known 10×3×10 row reads "GAN 3 chặn ở 8% — tay ấy bị trói năm nay";
+# with no tie the same row ends at "8%".
+python3 - "$TMP" <<'PYEOF43'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  var mai=S.cast[2]; mai.known=true; mai.started=false; mai.seen={tai:true,gan:true,ban:true}; mai.tai=10; mai.gan=3; mai.ban=10; mai.mom=0; S.von=10;
+  S.constraint=4; selectPerson(2); renderSheet(); var tied=document.getElementById("multLine").textContent;
+  S.constraint=0; renderSheet(); var free=document.getElementById("multLine").textContent;
+  var ok=/GAN 3 (chặn ở|caps it at) 8% — (tay ấy bị trói năm nay|that hand is tied this year)/.test(tied) && /GAN 3 (chặn ở|caps it at) 8%/.test(free) && !/trói|tied/.test(free);
+  document.title=(ok?"TIED_OK":"TIED_BAD")+" tied="+/trói|tied/.test(tied)+" free="+(!/trói|tied/.test(free));
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/tied.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF43
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/tied.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "TIED_OK" && pass "a tied hand is named at the ceiling: $T" || fail "a tied hand is named at the ceiling: $T"
+
+# Gate 45: every word on the page is readable — walks the live DOM, pairs each text node's computed
+# colour with its effective background, and measures WCAG contrast. Five pairs were failing when this
+# was written, all of them the warm grey --dim on paper: the tagline and the footer at 2.89:1, the log
+# dividers at 3.27, the per-verb hints at 4.12 — the hints being where the game states its arithmetic.
+# Guards the palette: any future colour change that makes text unreadable turns this red.
+python3 - "$TMP" <<'PYEOFCON'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+function lum(c){ var m=c.match(/\d+(\.\d+)?/g); if(!m) return null;
+  var v=[0,1,2].map(function(i){ var x=(+m[i])/255; return x<=0.03928?x/12.92:Math.pow((x+0.055)/1.055,2.4); });
+  return 0.2126*v[0]+0.7152*v[1]+0.0722*v[2]; }
+function bgOf(el){ var e=el;
+  while(e&&e!==document.documentElement){ var b=getComputedStyle(e).backgroundColor;
+    if(b&&b!=="rgba(0, 0, 0, 0)"&&b!=="transparent") return b; e=e.parentElement; }
+  return "rgb(217, 196, 154)"; }
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<7;s++){ S.acts=3; S.nudged=true; nextSeason(); }
+  S.cast.forEach(function(p){ p.known=true; });
+  selectPerson(1); render(); renderSheet();
+  setTimeout(function(){ try{
+    var bad=[], seen={}, checked=0;
+    var all=document.querySelectorAll("body *");
+    for(var i=0;i<all.length;i++){ var e=all[i];
+      if(!e.offsetParent) continue;
+      var hasText=[].slice.call(e.childNodes).some(function(n){ return n.nodeType===3&&n.textContent.trim().length>1; });
+      if(!hasText) continue;
+      var cs=getComputedStyle(e), fs=parseFloat(cs.fontSize), fw=(cs.fontWeight==="bold"?700:parseInt(cs.fontWeight)||400);
+      var fg=lum(cs.color), bg=lum(bgOf(e));
+      if(fg===null||bg===null) continue;
+      checked++;
+      var ratio=(Math.max(fg,bg)+0.05)/(Math.min(fg,bg)+0.05);
+      var need=((fs>=24)||(fs>=18.66&&fw>=700))?3:4.5;
+      if(ratio<need){ var key=cs.color+"|"+bgOf(e)+"|"+Math.round(fs);
+        if(seen[key]) continue; seen[key]=1;
+        bad.push((e.id||(e.className||"").toString().split(" ")[0]||e.tagName)+" "+Math.round(fs)+"px="+ratio.toFixed(2)); } }
+    var ok = bad.length===0 && checked>=15;
+    document.title=(ok?"CONTRAST_OK":"CONTRAST_BAD")+" checked="+checked+" fails="+bad.length
+      +(bad.length?(" :: "+bad.slice(0,6).join(" | ")):"");
+  }catch(e2){ document.title="THREW2: "+e2.message; } },400);
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/co.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOFCON
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=9000 --dump-dom "file://$TMP/co.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "CONTRAST_OK" && pass "every word on the page is readable: $T" || fail "every word on the page is readable: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

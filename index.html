@@ -25,7 +25,7 @@
 <style>
   :root{
     --paper:#EAD9B8; --ink:#2B2320; --red:#C1443C; --gold:#E3A63B;
-    --indigo:#2E4A62; --leaf:#6C8F3D; --lotus:#D97C8E; --dim:#7a6f5d;
+    --indigo:#2E4A62; --leaf:#6C8F3D; --lotus:#D97C8E; --dim:#544B3D;   /* was #7a6f5d — 2.89:1 on the page paper; this clears WCAG AA on all three grounds */
   }
   *{box-sizing:border-box}
   html,body{overscroll-behavior-y:none}
@@ -121,7 +121,7 @@
   .log{margin-top:8px;font-size:12.5px;color:#4d4335;max-height:76px;overflow:auto;background:#efe3c5;border:2px solid #c9b78c;border-radius:10px;padding:6px 10px;cursor:pointer;transition:max-height .25s}
   .log.tall{max-height:300px}
   @media(min-width:521px){ .log{max-height:110px} .log.tall{max-height:360px} }
-  .log .ldiv{text-align:center;color:#8a7a5f;font-size:11px;letter-spacing:.04em;margin:3px 0 1px;border-top:1px dashed rgba(138,122,95,.45);padding-top:2px}
+  .log .ldiv{text-align:center;color:var(--dim);font-size:11px;letter-spacing:.04em;margin:3px 0 1px;border-top:1px dashed rgba(138,122,95,.45);padding-top:2px}
   .log div{padding:1px 0}
   /* overlays */
   /* A card taller than the window had nowhere to go: the overlay did not scroll, so on a short
@@ -210,7 +210,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.60</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.61</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -612,6 +612,13 @@ function renderChron(){
   var c=loadChron();
   var cr=document.getElementById("conRow"); if(cr) cr.style.display=c.length?"block":"none";
   // 🃏 the years you've lived can be chosen again; the rest stay face-down until the book has them
+  // ⛓ each tied-hand chip says how many times you've lived it (and your best under it) — same courtesy the year chips get
+  try{ document.querySelectorAll("#conRow .con").forEach(function(b){ var n=+b.getAttribute("data-c"), cnt=0, best=null;
+      c.forEach(function(r){ if(!r||(r.cn|0)!==n) return; cnt++; if(!best||(r.ts|0)>(best.ts|0)) best=r; });
+      var old=b.querySelector(".cnt"); if(old) old.remove();
+      if(cnt){ var sp=document.createElement("span"); sp.className="cnt"; sp.style.cssText="display:block;font-size:9px;opacity:.75"; sp.textContent="×"+cnt+(best?(" · "+(best.ts|0)+(L==="vi"?" bậc":" t")):""); b.appendChild(sp);
+        b.title=(L==="vi"?CONSTRAINTS[n].nv:CONSTRAINTS[n].ne)+(best?((L==="vi"?" — tốt nhất: ":" — best: ")+((L==="vi")?best.tv:best.te)+" · "+(best.ts|0)+(L==="vi"?" bậc":" tiers")):""); }
+      else b.title=(L==="vi"?CONSTRAINTS[n].nv:CONSTRAINTS[n].ne); }); }catch(e){}
   var yr=document.getElementById("ycRow"), yb=document.getElementById("ycChips");
   if(yr&&yb){ yr.style.display=c.length?"block":"none"; var seenY={}; c.forEach(function(r){ if(r&&Number.isFinite(r.yc)) seenY[r.yc]=1; });
     var hh=""; YEAR_CARDS.forEach(function(y,i){ var ok=!!seenY[i];
@@ -1769,6 +1776,7 @@ function selectPerson(id){
   var p=S.cast[id]; S.sel=id;
   if(!p.known){ p.known=true; bubble(p,quoteFor(p)); voice(p);
     if(!S.revealSeen){ S.revealSeen=true; logMsg(p.name+" — "+STR.reveal.vi, p.name+" — "+STR.reveal.en); }   // the bubble + card ARE the feedback; say it once
+    logMsg("💬 "+p.name+": "+quoteFor(p).replace(/^“|”$/g,"").replace(/^"|"$/g,""), "💬 "+p.name+": "+(function(){ var l0=L; L="en"; var q=quoteFor(p); L=l0; return q.replace(/^“|”$/g,""); })());   // the words are the clue — kept in the log, tappable, after the bubble has gone
     unlockCheck(); save(); }
   else { p._ci=(p._ci|0)+1;
     var pool2=(p.chat||[]).concat(p.started&&p.chatB?[p.chatB]:[]);   // once they've bloomed, the shop line joins their idle talk
@@ -2526,7 +2534,8 @@ function renderSheet(){
       ?((L==="vi"?"bậc ":"tier ")+trNow+"/3"+stormLine(p)+(held?(L==="vi"?" · sông "+S.von+"/10 giữ bậc — cả xóm góp thêm":" · river "+S.von+"/10 holds it — the xóm must pour in"):trNow<3?(L==="vi"?" · vun tiếp để lên bậc":" · keep tending to rise"):(L==="vi"?" · một thương hiệu":" · a brand")))
       :((hasZero(p)?(t("sprout")+" 0% · "+(L==="vi"?"thừa số "+zeroOf(p)+" bằng không":zeroOf(p)+" is zero"))   // the arithmetic says it before the narrator would
         :(t("sprout")+" ~"+pc+"% "+t("perSeason")
-          +((prod(p)/1000*0.9*vonMul()+(p.mom||0))>ceilOf(weakest(p).m)+1e-9?((L==="vi"?" · "+t(weakest(p).k)+" "+weakest(p).m+" chặn ở ":" · "+t(weakest(p).k)+" "+weakest(p).m+" caps it at ")+Math.round(ceilOf(weakest(p).m)*100)+"%"):"")))
+          +((prod(p)/1000*0.9*vonMul()+(p.mom||0))>ceilOf(weakest(p).m)+1e-9?((L==="vi"?" · "+t(weakest(p).k)+" "+weakest(p).m+" chặn ở ":" · "+t(weakest(p).k)+" "+weakest(p).m+" caps it at ")+Math.round(ceilOf(weakest(p).m)*100)+"%"
+            +((weakest(p).k==="gan"&&conBan(4))||(weakest(p).k==="tai"&&conBan(3))||(weakest(p).k==="ban"&&conBan(2))?(L==="vi"?" — tay ấy bị trói năm nay":" — that hand is tied this year"):"")):"")))   // v0.60: when the capping factor's verb is this year's tied hand, the sheet says so — the ceiling can only come from the xóm this year
       +(L==="vi"?" · sông ":" · river ")+S.von+"/10 ×"+vonMul().toFixed(2)
       +((p.mom||0)>0?(L==="vi"?" · mầm đang nhú 🌱":" · pushing at the soil 🌱"):"")
 ))

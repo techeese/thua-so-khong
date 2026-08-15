@@ -373,3 +373,9 @@ that is now impossible because a gate catches it stays here, with the gate named
   chips were clickable `<div>`s — 0 of 6 Tab-reachable. Adding `tabindex` alone would have created six
   stops that do nothing on Enter. Ship `tabindex` + `role` + a key handler together, and assert the
   activation in the gate, not just the focusability.
+- **A hand-drawn palette fails contrast in its quiet text, not its loud text.** Every heading and body
+  string here was fine; what failed AA was the secondary tier — the tagline, the footer, the log
+  dividers and the per-verb hints, all one warm grey (`--dim #7a6f5d`) at 10–12px on mid-tone paper,
+  the worst at 2.89:1. Audit the *small dim* text first, and remember the hints are not decoration: they
+  are where this game states its arithmetic. Contrast needs no browser flag — pair each text node's
+  computed colour with its effective background and do the maths (Gate 45).
