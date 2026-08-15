@@ -1,5 +1,21 @@
 # Changelog — Thừa Số Không
 
+## gate repair — 2026-08-15 — Gate 49 stops flaking, and now checks the strict year (engine tick, no product change)
+
+Closes: `done.sh` → *release gates RED — a paid forecast prints next season's odds: `FORECAST_BAD unread=true
+young=false old=false today=false`* — read twice tonight on committed code (v0.74) that passes the same probe
+3/3 in an isolated worktree. Since **v0.70** the strict year (`S.yearCard===1`) rolls stamps at **25/10** through
+`stampOdds()`, and the probe's fresh start draws the year card at random, so about one run in six the sheet
+printed 25 %/10 % where the probe demanded 15 %/5 %. Same class as Gate 21's die earlier today.
+
+- `gate.sh` Gate 49: the year is pinned (`S.yearCard=4`) for the 15/5 assertions; **and the gate ratchets up** —
+  the strict year is now asserted too (`⬛ 25% mùa này` on the young roof, `⬛ 10%` on the established one),
+  so the printed number is proven to follow the card, not just the sky.
+- *Evidence:* forcing `S.yearCard=1` on the old assertions reproduces the exact failure signature
+  (`young=false old=false today=false`); the repaired stanza ran 12/12 green; `bash -n` OK. Nothing in
+  `index.html` moved; live == repo unaffected.
+- Recorded in `GATES-LEDGER.md` → Tightenings and `LANDMINES.md`.
+
 ## v0.74 — 2026-08-15 — the narrative layer keeps its voice
 
 Closes: an **owner directive given in session** — a deep review of the story / dialogue / text-presentation /

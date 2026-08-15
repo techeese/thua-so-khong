@@ -145,3 +145,8 @@ Record here when an existing gate is made stricter, with the old and new thresho
   that is not written down is a gate the ratchet is not protecting. Negative-tested on the live gap:
   the tightened check failed with `unrecorded-in-ledger: Gate-60` before the row was added.
 - **Gate 12 (v0.74):** Bé Ngân's wrong-hand answer is matched in HER register (`STR.wrongTai.em`), and the gate now also asserts no bubble of hers contains the word `tôi`. Old: her line was the shared tôi line. New: the same four counts, plus `toiOnNgan=false`. Negative-tested by Gate 63's probe on the pre-v0.74 code (her line read "Cái này tôi…").
+- **Gate 49 (gate repair, 2026-08-15):** the fresh run's year card is pinned (`S.yearCard=4`) so the 15/5
+  assertions cannot flake when the strict year is drawn (since v0.70 that card rolls 25/10), and two clauses
+  are added: with `S.yearCard=1` the young roof prints `⬛ 25%` and the established one `⬛ 10%`. Old: four
+  assertions, flaking about one run in six. New: six assertions, deterministic. Negative-tested: forcing the
+  strict year on the old assertions reproduces the observed failure.

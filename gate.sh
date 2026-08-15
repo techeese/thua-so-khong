@@ -1535,14 +1535,18 @@ setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-v1");
   document.getElementById("startBtn").click();
   S.season=6; S.acts=3; S.un.probe=true;
+  S.yearCard=4;   // pin the year: since v0.70 the strict year (card 1) rolls stamps at 25/10, and a fresh start draws the card at random — the 15/5 assertions below flaked one run in six
   var mai=S.cast[2], vu=S.cast[3]; mai.known=true; vu.known=true; mai.started=true; vu.started=true;
   S.ships.push({x:420,y:300,owner:mai.name,pid:2,age:0,shel:0}); S.ships.push({x:300,y:420,owner:vu.name,pid:3,age:5,shel:0});
   S.luat=6; S.luatNext=2; S.probeSeen=false; selectPerson(2); var unread=document.getElementById("multLine").textContent, none=!/⬛|🛡/.test(unread);
   S.probeSeen=true; renderSheet(); var young=document.getElementById("multLine").textContent, y15=/⬛ 15% (mùa tới|next season)/.test(young);
   selectPerson(3); var old=document.getElementById("multLine").textContent, o5=/⬛ 5% (mùa tới|next season)/.test(old);
   S.luat=2; renderSheet(); var today=document.getElementById("multLine").textContent, t5=/⬛ 5% (mùa này|this season)/.test(today);
-  var ok=none&&y15&&o5&&t5;
-  document.title=(ok?"FORECAST_OK":"FORECAST_BAD")+" unread="+none+" young="+y15+" old="+o5+" today="+t5;
+  // and the strict year prints ITS odds — the sheet and the roll share stampOdds(), so the printed number must follow the card
+  S.yearCard=1; renderSheet(); var strictOld=document.getElementById("multLine").textContent, s10=/⬛ 10% (mùa này|this season)/.test(strictOld);
+  selectPerson(2); var strictYoung=document.getElementById("multLine").textContent, s25=/⬛ 25% (mùa này|this season)/.test(strictYoung);
+  var ok=none&&y15&&o5&&t5&&s10&&s25;
+  document.title=(ok?"FORECAST_OK":"FORECAST_BAD")+" unread="+none+" young="+y15+" old="+o5+" today="+t5+" strictOld10="+s10+" strictYoung25="+s25;
 }catch(e){ document.title="THREW: "+e.message; } },600);
 </script>"""
 open(tmp+"/fc.html","w").write(html.replace("</body>",drv+"</body>"))

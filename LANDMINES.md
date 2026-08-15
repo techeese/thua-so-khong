@@ -517,3 +517,9 @@ that is now impossible because a gate catches it stays here, with the gate named
   landed inside the mechanic loop's v0.73 commit ("a dry river halves every ceiling") while its `done.sh` /
   `LANDMINES.md` edits stayed uncommitted; the next tick found a v0.74-in-progress it did not write. When two
   loops share a tree, the version bump is a race — read `git diff` before bumping, and name what you carried.
+- **A probe that starts a fresh run inherits a random year card — and since v0.70 the card changes the numbers.**
+  Gate 49 asserted the 15/5 stamp odds and flaked one run in six, exactly when the strict year (25/10) was
+  drawn; the failure signature was `young=false old=false today=false` with everything else true. Any probe
+  that reads a number the year card can move (stamp odds, the free forecast, market-road pay, quiet-hands
+  fade) must set `S.yearCard` explicitly after `startBtn.click()`. Same lesson as Gate 21's bloom die: if the
+  stanza passes alone in a worktree and fails inside `gate.sh`, it is dice, not the diff.
