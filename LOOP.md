@@ -31,6 +31,8 @@ this project's mechanism operates on.** Read it first, every tick.
 | gear file | write `1`/`2`/`3` to `/Users/Admin/Desktop/coding/.claude/tsk-gear` each tick |
 | ship | bump footer version in `index.html` · CHANGELOG · one commit · push · **curl the live URL** |
 | deploy check | `gh run list --workflow=pages.yml --limit 1`, then verify the live version string |
+| tick model | `claude-fable-5` at `--effort xhigh`, `--fallback-model claude-opus-5` |
+| grader model | `claude-fable-5` at `--effort low` — independent, never sees the investigator's context |
 
 Session runs in `/Users/Admin/Desktop/coding`; all game commands run in `thua-so-khong/`.
 

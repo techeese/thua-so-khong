@@ -177,5 +177,7 @@ cat <<EOF
   line. An independent grader (separate process, different model) appends that
   after your tick, because an agent grading its own work always says it mattered,
   and an era whose every tick self-grades 'new-argument' never ends.
+  Do NOT invoke the grader yourself either — leave the entry with no verdict and
+  exit. Choosing your own scorer and writing its brief is the same conflict.
 EOF
 exit 10

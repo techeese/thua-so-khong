@@ -39,6 +39,16 @@ that is now impossible because a gate catches it stays here, with the gate named
   healthy loop. The verdict is now written by an independent grader (separate process, different
   model, no view of the investigator's reasoning, instructed to default to `confirms-known`).
   Generalises: **never let the component that did the work score the work.**
+- **Never edit a script a live process is executing — stage and rename.** Bash reads a script
+  *incrementally* as it runs, so rewriting the same inode makes the running shell resume from a
+  shifted byte offset and execute garbage. Write the new version to a temp file and `mv` it over:
+  the rename gives new content a fresh inode while the live process finishes safely on the old one.
+  Nearly corrupted a running tick this way on 2026-08-15.
+- **Restart the loop immediately after any config change — do not wait for the running tick.**
+  Owner's standing practice (2026-08-15). Waiting buys nothing: the `tree-clean` gate makes an
+  interrupted tick recoverable by design (the next tick's Gear 1 job is to finish the stranded
+  work), while waiting guarantees a full cycle runs on stale config. Kill order matters —
+  `rm` the flag FIRST so launchd stops relaunching, then stop the job.
 - **An owner directive must be machine-detectable or it will be silently ignored.** `done.sh`
   originally had no way to see a note in `OWNER-GATE.md`; the loop would read the directive, find
   every gate green, return CONVERGED and go back to vigil without doing the work. Open directives
