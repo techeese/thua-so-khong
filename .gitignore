@@ -1,3 +1,5 @@
 .DS_Store
 lab/*
 !lab/NOTES.md
+# the loop's own scratch (tsk-gear) — must not dirty the tree done.sh checks
+.claude/
