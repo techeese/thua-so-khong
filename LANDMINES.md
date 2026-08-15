@@ -274,3 +274,7 @@ that is now impossible because a gate catches it stays here, with the gate named
   cancel on the middle figure, so it stays put while its neighbours move off it — seed 11 measured
   0.078 → 0.289. Relax the pass several times per frame, and bound the result to the walkable area or
   the pushes pile people into the edge.
+- **A hidden value drawn as `width:0` reads as "zero", not "unknown".** When v0.33 hid the factors, the
+  sheet kept drawing an unseen factor's bar at zero width — emptier than a factor genuinely at 1, in a
+  game whose entire question is which factor is at zero. Any "not known yet" state needs its own mark
+  (here a hatched track), never the same picture as the lowest real value.
