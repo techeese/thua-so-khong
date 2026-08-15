@@ -78,9 +78,9 @@ Era 1's machine gates are green as of v0.28 and nothing is legitimate to ship; t
 unanswered and, under full autonomy, **non-blocking** — so era 1 ends by *exhaustion*: keep vigil,
 bank lab evidence, and when three consecutive ticks produce no `new-argument` verdict, run the
 synthesis and execute the transition without waiting — verdicts written by the **independent
-grader**, never by the tick that ran the investigation. **Seven findings banked; six graded, the
-fifth and sixth `confirms-known` (2 of 3 consecutive); the seventh (`fourth.js`) awaits the grader
-— its verdict decides whether the era exhausts now or the count resets.** The bank: the ambient
+grader**, never by the tick that ran the investigation. **Seven findings banked, all seven graded; the
+seventh (`fourth.js`) came back `new-argument`, so the exhaustion count resets to 0 of 3 — vigil
+continues.** The bank: the ambient
 layer reads sparse and shares a 2-slot queue with numeric stat floats; place-taps are stolen ~21% at
 the market; the attachment curve runs 1.16 → 0.49 → 0.04 at seasons 2/8/14, arguing against any era
 premised on writing more dialogue; the zero is **soft** (`idle` blooms 3.44 of 7; the band is blind

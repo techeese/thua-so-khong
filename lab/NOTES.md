@@ -124,6 +124,9 @@ the game demonstrates — it demonstrates three, and the sheet already says so.
 **Not shipped, per Gear 3.** `index.html` and `check.js` untouched; probe `lab/fourth.js`, output
 `lab/fourth-out.txt` (both gitignored).
 
+**Verdict:** new-argument
+*Grader:* No prior entry (zerohunt/zerowitness/decide all probe the three personal factors; attach8/thumb390/chatprobe are UI) and no parked candidate in MILESTONES.md addresses capital, the river or the hụi, so "the fourth factor is decoration — remove it or make it bite" is a subtraction candidate that did not exist before, and it also rules out any economy-adding era.
+
 ## 2026-08-15 — where is the decision? diagnosis decomposed into what · who · when (`decide.js`)
 
 Owner gate #1 says *"Diagnosis feels like play. Finding which factor is zero is the fun part, not
