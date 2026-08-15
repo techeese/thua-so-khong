@@ -1106,6 +1106,77 @@ PYEOF37
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/tell.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "TELL_OK" && pass "the fate warnings do not tell: $T" || fail "the fate warnings do not tell: $T"
 
+# Gate 38: mechanic state survives a refresh — a guess-answer already given (wrongSaid) and the circle's first-time line (circleSeen) round-trip
+# through save()/load(); a save without the fields (older schema) loads them as unset, not as garbage.
+python3 - "$TMP" <<'PYEOF38'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.season=3; var ng=S.cast[0]; ng.known=true; ng.wrongSaid={tai:true,gan:false,ban:false}; S.circleSeen=true; save();
+  var raw=JSON.parse(localStorage.getItem("thua-so-khong-v1")); var wsSaved=raw.s.cast[0].ws, csSaved=raw.s.cs;
+  fresh(); var okLoad=load(); var ng2=S.cast[0];
+  var round=okLoad&&ng2.wrongSaid&&ng2.wrongSaid.tai===true&&ng2.wrongSaid.gan===false&&S.circleSeen===true;
+  // an older save shape: strip the fields and reload — unset, not garbage
+  delete raw.s.cast[0].ws; delete raw.s.cs; localStorage.setItem("thua-so-khong-v1",JSON.stringify(raw)); fresh(); var okOld=load(); var ng3=S.cast[0];
+  var oldOk=okOld&&ng3.wrongSaid&&ng3.wrongSaid.tai===false&&S.circleSeen===false;
+  var ok=wsSaved===1&&csSaved===true&&round&&oldOk;
+  document.title=(ok?"PERSIST_OK":"PERSIST_BAD")+" ws="+wsSaved+" cs="+csSaved+" roundtrip="+round+" oldSchema="+oldOk;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/persist.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF38
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/persist.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "PERSIST_OK" && pass "mechanic state survives a refresh: $T" || fail "mechanic state survives a refresh: $T"
+
+# Gate 39: a card taller than the window still has a way out — the overlay did not scroll, so on a
+# short viewport (a phone in landscape, a small laptop window) the ending card's own "Chơi lại" button
+# sat off-screen with no way to reach it: measured UNREACHABLE at 533px and 433px tall. Asserted at
+# three heights, and by scrolling the overlay rather than by trusting that it fits.
+python3 - "$TMP" <<'PYEOFEND'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<style>html,body{width:390px;margin:0 auto}</style>
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1"); localStorage.removeItem("thua-so-khong-chronicle");
+  document.getElementById("startBtn").click();
+  for(var seas=0; seas<16; seas++){
+    for(var i=0;i<7;i++){ var c=S.cast[i]; if(c&&!c.known&&(c.arrives===undefined||S.season>=c.arrives)&&!c.gone) selectPerson(i); }
+    var un=S.cast.filter(function(p){return p.known&&!p.started&&!p.gone;});
+    if(un.length){ selectPerson(un[0].id); actNerve(); }
+    S.nudged=true; nextSeason(); if(S.over) break;
+  }
+  setTimeout(function(){ try{
+    var ov=document.getElementById("endOvl"), card=ov.querySelector(".card");
+    var again=[].slice.call(card.querySelectorAll("button")).filter(function(b){ return /Chơi lại|Play again/.test(b.textContent); })[0];
+    if(!again){ document.title="ENDOUT_BAD noPlayAgainButton"; return; }
+    function reachable(){ ov.scrollTop=ov.scrollHeight;
+      var r=again.getBoundingClientRect(), ok=r.top>=0&&r.bottom<=innerHeight+1;
+      ov.scrollTop=0; return ok; }
+    var tall=card.getBoundingClientRect().height;
+    var ok=reachable();
+    document.title=(ok?"ENDOUT_OK":"ENDOUT_BAD")+" winH="+innerHeight+" cardH="+Math.round(tall)
+      +" tallerThanWindow="+(tall>innerHeight)+" playAgainReachable="+ok;
+  }catch(e2){ document.title="THREW2: "+e2.message; } },9500);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/eo.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOFEND
+ENDFAIL=0
+for WH in 600,760 600,620 600,520; do
+  T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=$WH --virtual-time-budget=26000 --dump-dom "file://$TMP/eo.html" 2>/dev/null | grep -o "<title>[^<]*</title>" | head -1)
+  echo "$T" | grep -q "ENDOUT_OK" || { ENDFAIL=1; ENDMSG="$WH → $T"; }
+done
+[ "$ENDFAIL" -eq 0 ] && pass "a card taller than the window still has a way out (390px @ 3 heights)" \
+                     || fail "a card taller than the window still has a way out: $ENDMSG"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

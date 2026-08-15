@@ -318,3 +318,10 @@ that is now impossible because a gate catches it stays here, with the gate named
   point on screen"* — hit tests, tooltips, anything spatial the player aims at — must read `drawX`;
   anything about where a villager actually IS in the world reads `p.x`. Getting it backwards is
   invisible in a screenshot and only shows up when a thumb misses.
+- **A `position:fixed` overlay that centres its card will hide the card's own controls on a short
+  viewport, with no scroll to recover them.** `.ovl` used `display:flex;align-items:center` and no
+  `overflow`, so an ending card taller than the window pushed its "Chơi lại" button off-screen and
+  nothing could scroll to it — unreachable at 533px and 433px tall, not merely below the fold. Any
+  modal that can outgrow the viewport needs `overflow-y:auto` on the overlay plus `margin:auto` on the
+  card (flex centring alone clips the overflowing edge). Check modals at SHORT heights, not just narrow
+  widths — the 390px probe recipe only varies width and would never have caught this.

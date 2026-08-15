@@ -1,5 +1,28 @@
 # Changelog — Thừa Số Không
 
+## v0.56 — 2026-08-15 — a card taller than the window still has a way out
+
+A graphics round from the owner's `/loop 5m` session, on the last measurable question the pointer had
+left: *does the ending card's density hurt a first-time reader?* The answer turned out not to be a
+matter of taste at all.
+
+- **On a short viewport the ending card had no way out.** The overlay is `position:fixed` with the card
+  centred — and it did not scroll. Measured at a true 390px width: at **533px tall** the card is 673px
+  and its own `Chơi lại / Play again` button sits at y=624–670, off-screen; at **433px tall**, worse.
+  Not merely below the fold — **unreachable**, because there was nothing to scroll. A phone in
+  landscape or a small laptop window ends the run with no way to start another. The overlay scrolls
+  now, with `margin:auto` on the card so it stays centred whenever it does fit.
+- *Evidence:* new **Gate 39**, asserted at **three viewport heights** (673 / 533 / 433) by actually
+  scrolling the overlay and re-reading the button's rect, rather than trusting that it fits:
+  `ENDOUT_OK winH=433 cardH=640 tallerThanWindow=true playAgainReachable=true`.
+- **Negative-tested** against a copy with the overlay's scrolling removed:
+  `playAgainReachable=false` at both 533px and 433px. The gate fails on the bug it was written for.
+
+Density itself was measured and left alone: ~200 words on the card. That is a lot, but it is the
+payoff screen and reading it is optional — the *defect* was that the way out could not be reached, and
+that is what shipped. This closes the last item on the graphics pointer that was answerable by
+measurement rather than preference.
+
 ## v0.54 — 2026-08-15 — you can tap what you can see
 
 A graphics round from the owner's `/loop 5m` session, taking on the still-unticked half of the owner
@@ -23,6 +46,24 @@ regression this loop had itself introduced.
 
 This answers the machine half of that owner gate. The felt half — real thumbs on a real phone — stays
 the owner's to tick, and the gate does not pretend otherwise.
+
+## v0.55 — 2026-08-15 — mechanic state survives a refresh; the year cards measured
+
+Closes: under the owner's standing `/loop 3m` directive, an integrity gap in the state my ticks added,
+plus a measurement the owner should have.
+
+- **`wrongSaid` and `circleSeen` persist.** The once-per-factor guess-answer (v0.34/v0.44) and the
+  circle's first-time line (v0.40) lived only in memory: a refresh mid-run repeated them. Saved as
+  `ws` bits per person and `cs`; an older save loads them unset (`fin()`-guarded, per the save
+  contract). Gate 3 (poisoned save) still green.
+- **Measured, not changed — the year cards do not move a diagnosing player.** Per card, 600 seeded
+  runs: hunter **6.96–6.99** blooms / **15.5–16.6** tiers across all six (flood 6.96/16.6 · strict
+  6.99/15.9 · market-road 6.99/16.1 · quiet-hands 6.99/16.5 · reunion 6.99/15.5 · restless-wind
+  6.99/15.5); the spreader spans 4.91 (flood) → 5.64 (quiet-hands), idle 2.39 → 2.59. The cards
+  change the story and the price of spreading, not the diagnosis — consistent with the synthesis's
+  "decoration or unproven" and a matter for the engine's balance era, not a tick.
+- *Evidence:* new **Gate 38** (`PERSIST_OK ws=1 cs=true roundtrip=true oldSchema=true`). Gates green,
+  hash-bracketed. No balance changed.
 
 ## v0.54 — 2026-08-15 — the fate warnings do not tell
 

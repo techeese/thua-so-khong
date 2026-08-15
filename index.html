@@ -115,7 +115,12 @@
   .log .ldiv{text-align:center;color:#8a7a5f;font-size:11px;letter-spacing:.04em;margin:3px 0 1px;border-top:1px dashed rgba(138,122,95,.45);padding-top:2px}
   .log div{padding:1px 0}
   /* overlays */
-  .ovl{position:fixed;inset:0;background:rgba(43,35,32,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+  /* A card taller than the window had nowhere to go: the overlay did not scroll, so on a short
+     viewport (a phone in landscape, a small laptop window) the ending card's own "Chơi lại"
+     button sat off-screen and could not be reached at all — measured unreachable at 533px tall.
+     The overlay scrolls now; margin:auto keeps the card centred whenever it does fit. */
+  .ovl{position:fixed;inset:0;background:rgba(43,35,32,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:16px;overflow-y:auto;overscroll-behavior:contain}
+  .ovl>.card{margin:auto}
   .ovl.show{display:flex}
   /* the first screen is the xóm's only introduction — at .55 the village behind the card went to mud.
      The card carries a 3px ink border and a hard shadow, so it holds its own over a lighter wash.
@@ -196,7 +201,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.54</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.56</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -665,9 +670,9 @@ function cl(v,lo,hi,fb){ return fin(v)?Math.max(lo,Math.min(hi,v)):fb; }
 function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:2,   // NOTE: every NEW save field MUST get a fin()-guarded default in load()
   meta:{lang:L,muted:!!META.muted},
   s:{season:S.season,acts:S.acts,luat:S.luat,von:S.von,hui:S.hui,build:S.build,built:!!S.built,
-     gtmPaid:!!S.gtmPaid,hlp:!!S.hoaLienPaid,hs:S.hands|0,idl:S.idle|0,vb:VERBS.map(function(k){return (S.vb&&S.vb[k])|0;}),ps:!!S.potSeason,hist:(S.hist||[]).map(function(v){return v|0;}),pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
+     gtmPaid:!!S.gtmPaid,hlp:!!S.hoaLienPaid,hs:S.hands|0,idl:S.idle|0,vb:VERBS.map(function(k){return (S.vb&&S.vb[k])|0;}),ps:!!S.potSeason,cs:!!S.circleSeen,hist:(S.hist||[]).map(function(v){return v|0;}),pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
      arr:S.cast[6].arrives,baf:S.baFadeStart,sc:S.stormCount|0,ss:S.stormStreak|0,yc:S.yearCard|0,gp:S.gtmPays|0,cn:S.constraint|0,
-     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,sn:((p.seen&&p.seen.tai)?1:0)|((p.seen&&p.seen.gan)?2:0)|((p.seen&&p.seen.ban)?4:0),bt:p.btai,bg:p.bgan,bb:p.bban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0,hd:p.hands|0,lh:fin(p.lastH)?(p.lastH|0):-1,pr:(p.pr16||[]).map(function(v){return v|0;})};}),
+     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,sn:((p.seen&&p.seen.tai)?1:0)|((p.seen&&p.seen.gan)?2:0)|((p.seen&&p.seen.ban)?4:0),ws:((p.wrongSaid&&p.wrongSaid.tai)?1:0)|((p.wrongSaid&&p.wrongSaid.gan)?2:0)|((p.wrongSaid&&p.wrongSaid.ban)?4:0),bt:p.btai,bg:p.bgan,bb:p.bban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0,hd:p.hands|0,lh:fin(p.lastH)?(p.lastH|0):-1,pr:(p.pr16||[]).map(function(v){return v|0;})};}),
      ships:S.ships.map(function(w){return {x:w.x,y:w.y,owner:w.owner,pid:w.pid,yours:!!w.yours,age:w.age|0,shel:w.shel|0};}),
      scars:(S.scars||[]).map(function(c){return {x:c.x,y:c.y,s:c.s|0};}),
      log:S.log.slice(0,12)}})); }catch(e){} }
@@ -686,7 +691,8 @@ function load(){
       p.tai=cl(c.tai,0,10,p.tai); p.gan=cl(c.gan,0,10,p.gan); p.ban=cl(c.ban,0,10,p.ban);
       p.btai=cl(c.bt,0,10,p.tai); p.bgan=cl(c.bg,0,10,p.gan); p.bban=cl(c.bb,0,10,p.ban);   // this run's jittered nature (fallback: loaded stats, never a re-jitter)
       p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; p.mom=cl(c.mom,0,0.5,0); p.hands=fin(c.hd)?cl(c.hd,0,64,0):0; p.lastH=(fin(c.lh)&&c.lh>=0)?cl(c.lh,0,15,0):undefined; p.pr16=Array.isArray(c.pr)?c.pr.slice(0,16).map(function(v){return fin(v)?cl(v,0,1000,0):0;}):[];
-      var sn=fin(c.sn)?(c.sn|0):7; p.seen={tai:!!(sn&1),gan:!!(sn&2),ban:!!(sn&4)}; });   // a save from before v0.33 has seen everything
+      var sn=fin(c.sn)?(c.sn|0):7; p.seen={tai:!!(sn&1),gan:!!(sn&2),ban:!!(sn&4)};   // a save from before v0.33 has seen everything
+      var ws=fin(c.ws)?(c.ws|0):0; p.wrongSaid={tai:!!(ws&1),gan:!!(ws&2),ban:!!(ws&4)}; });   // v0.55: an answer already given is not given twice after a refresh
     S.cast[6].arrives=cl(s.arr,2,8,6); S.baFadeStart=cl(s.baf,5,9,8);   // 2 / 5: the reunion year pulls both clocks early — the clamp must admit that on reload
     S.stormCount=cl(s.sc,0,16,0); S.stormStreak=cl(s.ss,0,16,0); S.yearCard=fin(s.yc)?cl(s.yc,0,5,0):S.yearCard; S.constraint=fin(s.cn)?cl(s.cn,0,3,0):0; S.gtmPays=fin(s.gp)?cl(s.gp,0,2,0):(s.gtmPaid?1:0);
     S.lienWarned=S.season>=11; S.tetSeen=S.season>=4; S.hoardSeen=S.season>=2; S.placesTold=S.season>=3; S.baFade=S.season>=(S.baFadeStart||8); S.baRescued=S.baFade&&(pairExists(0,1)||S.cast[1].started); S.stormSeen=S.season>0; S.tierTaught=S.ships.length>0||S.season>1; S.lienNgan=pairExists(0,6); S.classSeen=S.cast[2].started; S.revealSeen=S.cast.some(function(p){return p.known;});
@@ -703,6 +709,7 @@ function load(){
     S.flySeen=S.ships.length>=3; S.nightSeen=true;
     S.luatNext=cl(s.luatNext,1,10,driftLuat(S.luat)); S.probeSeen=!!s.probeSeen;   // a paid forecast survives a refresh
     S.potSeason=!!s.ps; S.potSeen=S.hui>0;   // a pot already taken this season stays taken
+    S.circleSeen=!!s.cs;   // v0.55: the circle's first-time line, once per run — across refreshes too
     return true;
   }catch(e){ return false; }
 }
@@ -2343,6 +2350,11 @@ function endGame(){
   var crushes=S.cast.reduce(function(a,p){return a+p.crushCount;},0);
   if(crushes>0) ep(7,"Con dấu đã rơi "+crushes+" lần. Người ngã vì con dấu cần bàn tay của bạn gấp đôi.",
                      "The stamp fell "+crushes+" times. Those it fell on need your hand twice as much.");
+  // how much of the xóm you actually read: met of present, rows fully read of met — diagnosis needs the numbers first
+  (function(){ var pres=S.cast.filter(function(q){return !q.gone&&(q.arrives===undefined||q.arrives<=15);}), met=pres.filter(function(q){return q.known;}), read=met.filter(function(q){return seenAll(q);});
+    if(!pres.length) return;
+    ep(4,"Bạn đã ngồi với "+met.length+"/"+pres.length+" người"+(met.length?(" — đọc trọn hàng số của "+read.length+"."):".")+(met.length<pres.length?" Có người bạn chưa hề chạm.":""),
+         "You sat with "+met.length+"/"+pres.length+" people"+(met.length?(" — read the whole row of "+read.length+"."):".")+(met.length<pres.length?" Someone you never touched.":"")); })();
   // where the hands went: the person you spent most on — and whether it was the right person
   (function(){ var most=null; S.cast.forEach(function(q){ if((q.hands|0)>0&&(!most||(q.hands|0)>(most.hands|0))) most=q; });
     if(!most||(most.hands|0)<3) return; var hn=most.hands|0;
@@ -2748,7 +2760,12 @@ if(load()){ el("intro").classList.remove("show"); setLang(L);   // resume a mid-
     S.log.unshift({vi:"↩ Bạn trở lại xóm — "+STR.seasons.vi[S.season%4]+" "+(2026+Math.floor(S.season/4))+" · "+yc.em+" "+yc.nv+" · còn "+S.acts+"⚡ · "+S.ships.length+" xưởng · sông "+S.von+"/10.",
                    en:"↩ Back in the xóm — "+STR.seasons.en[S.season%4]+" "+(2026+Math.floor(S.season/4))+" · "+yc.em+" "+yc.ne+" · "+S.acts+"⚡ left · "+S.ships.length+" workshops · river "+S.von+"/10."});
     S.log=S.log.slice(0,24); renderLog(); })(); }
-else { setLang(L);
+else {
+  // first visit, no save, no book: the page speaks the visitor's language — ?lang= wins, then the browser's; a returning player's saved choice is never touched (load() sets L)
+  try{ var ql=(new URLSearchParams(location.search).get("lang")||"").toLowerCase();
+    if(ql==="en"||ql==="vi") L=ql;
+    else if(!loadChron().length){ var nl=((navigator.language||navigator.userLanguage||"")+"").toLowerCase(); if(nl&&nl.indexOf("vi")!==0) L="en"; } }catch(e){}
+  setLang(L);
   // 🔗 a challenge link: ?y=<year card>&c=<constraint> pre-ties the intro's chips — a friend's ending pastes the same year, the same tied hand.
   // Only when no run is in progress (a resumed xóm is never overridden), and only for a year the book already holds — face-down years stay face-down.
   try{ var qs=new URLSearchParams(location.search), qy=parseInt(qs.get("y"),10), qc=parseInt(qs.get("c"),10), got=false;

@@ -60,6 +60,8 @@ Rules:
 | `Gate 36` | 1 | a partial row prints its bound — with one factor seen the sheet says trần ≤ ceilOf(it), the hand on the lowest seen factor says the bound it would reach, hands on unseen factors stay silent, and still no `→ N%` anywhere until the row is known (v0.53) |
 | `Gate 35` | 1 | you can tap what you can see — at a true 390px the thumb target is ≥22 CSS px of radius and a real click dispatched at each villager's DRAWN position selects that villager; negative-tested by putting the hit test back on `p.x`, which misses 3 of 4 (v0.54) |
 | `Gate 37` | 1 | the fate warnings do not tell — Bé Ngân's season-9 line (and Cô Liên's at 11) names the factor in the log only if it has been touched; untouched, the log states the fact and the person's bubble stays the clue (v0.54) |
+| `Gate 38` | 1 | mechanic state survives a refresh — a guess-answer already given and the circle's first-time line round-trip through save/load; an older save without the fields loads them unset, not as garbage (v0.55) |
+| `Gate 39` | 1 | a card taller than the window still has a way out — at a true 390px and three viewport heights (673/533/433) the ending card's `Chơi lại` button is reachable by scrolling the overlay; it was unreachable at the two short heights before, the overlay having no scroll at all (v0.56) |
 
 ## Convergence gates — `done.sh`
 
