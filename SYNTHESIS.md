@@ -760,3 +760,61 @@ reality:** the graphics loop is welcome to ship pieces; the era is the change of
 **Review round (3 critics, next tick or this):** drift · thesis · substance. Majority reject →
 `failed_syntheses=2` — and this time the parked directions *were* proposed, so escalation would be
 earned; the L3 synthesis would then have to argue from that record with the §21 finding in view.
+
+## 25. Review — candidate T "six ending prints" · **REJECTED 2/3** (thesis PASS)
+
+- **Thesis — PASS.** The owner note is about *lines* and T writes none (net-reductive text; the
+  compositions are the charter's own visual language). Removing the t=0 sentence is
+  charter-required ("never by being told it"; the sentence survives in manifest/README/og). The
+  great-man line is a tell, not the spine — it fires unconditionally in 100 % of runs. §3 served,
+  §4 untouched. Two implementation conditions: a min-3 person who legitimately bloomed must appear
+  *with their weakest factor shown*, not hidden; `bilingual-parity` cannot see canvas text, so the
+  print gate must assert VI/EN per drawn string.
+- **Drift — REJECT.** Owner gate 3 by deletion — the charge against A lands unchanged: the t=0
+  gate goes green the instant three strings (`subttl`, `inTag`, `STR.sub`) are gone and can never
+  fail again. Three of T's gates pre-pass: "no one under the ceiling listed as bloomed" is
+  structurally unfailable on the hard-zero reading and its ≤3 fix is already queued as a tick in
+  `LOOP.md`; "`check.js` reaches all six endings" is **false** — `check.js` has no ending
+  classifier, so the clause would assert unchanged code; per-shape distinctness already exists
+  (6 colours, 6 AUTH lines, 6 titles, seal). "Canvas hash differs" is a one-pixel test. The tally
+  removal deletes the gold-seal reward. Era identity is the graphics loop's standing brief and it
+  already claimed the ending card at v0.40. *Pass condition:* keep only clauses that can fail on
+  T's own work (≤ 60 words, tells ≤ 1, distinctness by ink coverage/primitive counts) and ship the
+  reachability and bloom clauses as the ticks they are.
+- **Substance — REJECT.** The left leaf already ships as `startFinale` (a lantern per roof scaled by
+  tier, unlit per stamped roof, river at height, over `drawScene`, exportable via `sharePng`).
+  Per-shape identity already ships, so the flagship gate cannot fail. The replay hook is the counter
+  in disguise — chronicle rows store no redraw state, so "its print again" is one of six templates
+  — and T does not even remove the counters it names (🏮/○ row, gold 6/6 unlock survive). The mass
+  is H, ruled tick-sized. Collides with v0.40 (Gate 22 binds the DOM overlay; T moves the ending
+  onto canvas). *V thinner still — audio exists at 56 call sites.* Would rather see synthesis 4 fail.
+
+## 26. Disposition — synthesis 4 ends with no survivor · `failed_syntheses=2` · **escalation earned**
+
+This time the parked era-scale directions were proposed and reviewed (T reviewed; V pre-refuted on
+the record by two critics; the art pass and authored arcs excluded with reasons in §22). Per
+`LADDER.md` the L2 → L3 condition is now met **in substance as well as by counter**. State line →
+`layer=3 failed_syntheses=0`.
+
+**The finding that outranks the candidates.** Across four syntheses, sixteen verdicts, seven
+candidates and one L3 attempt, every rejection reduces to one of two facts about the *process*, not
+the game: (a) anything tick-shippable is shipped by the owner's two interactive loops before it can
+be an era, and (b) anything larger is judged either a re-skin of what those loops shipped or a
+collision with it, and — at L3 — non-executable as one commit while they run. The loop's own
+critics have said it four ways (§8, §13, §20, §25). **Under two live owner loops committing every
+~4 minutes into one file, this loop cannot open an era or a form.** It can converge (Gear 1 — it
+fixed Gate 21 today), and it can investigate (Gear 3) — but `done.sh` holds Gear 2 while
+`SYNTHESIS.md` exists, so it cannot return to vigil either.
+
+**Next tick — L3 synthesis, 5 critics, argued from this record:** candidates **Q** (one season a
+day) and **R** (two hands) as the two forms the L3 critics preferred to P, plus the executability
+precondition stated as a candidate in its own right — *no transition executes until the owner
+grants a quiesce window or a scope note; until then the loop's licensed work is Gear 1 fixes and
+Gear 3 findings.* If nothing survives at L3 twice, the ladder says L4; the record does **not**
+support "the thesis is exhausted", and the L4 synthesis would have to say so.
+
+**Owner asks, restated:** felt gate (0/6 twelve versions later) · a quiesce window or scope note if
+any transition is to execute · licence for H (now PASSED by a thesis critic as charter-required and
+tick-sized) · and, if the owner prefers the loop to resume vigil rather than re-synthesise, a
+`LOOP.md` rule allowing `SYNTHESIS.md` to be archived into `MILESTONES.md` after a failed
+synthesis (a contract change only the owner may make).
