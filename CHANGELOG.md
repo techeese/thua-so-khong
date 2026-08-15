@@ -1,5 +1,32 @@
 # Changelog — Thừa Số Không
 
+## v0.38 — 2026-08-15 — the weakest factor sets the ceiling
+
+Closes: under the owner's standing `/loop 3m` directive, the one pass condition every critic in both
+of the engine's review rounds converged on (`SYNTHESIS.md` §9.1: *"make the weakest factor actually
+decide — a person with a 2 or 3 still blooms 4.5–13.5 %/season; until information has value, no band
+can prove the thesis"*). Measured first: a factor cap on **tier** changes nothing — the product
+thresholds already require min ≥3 for a shop and ≥6 for a brand — so the shape had to change at the
+**bloom**.
+
+- **`ceilOf(m)`.** The weakest factor caps sprout chance: 1 → 0 (v0.30) · 2 → 4 %/season · 3 → 8 % ·
+  4 → 15 % · 5 → 25 % · ≥6 → the product decides (0.85 cap as before). `chance()` = min(ceiling,
+  product-based). A 10×2×10 at a full river was 18 %/season; it is 4 %. The sheet says which factor
+  binds when it binds — *mầm ~8% mỗi mùa · GAN 3 chặn ở 8%* — and the per-verb "→ N%" now shows the
+  weakest hand as the only one that moves the ceiling. Help card states the table.
+- **Priced honestly** (`check.js`, 1200 seeded runs): hunter **6.97 / 16.1** (unchanged) · spreader
+  5.95 → **5.34** · linker 6.70 → **6.09** · idle 2.78 → **2.47** · misreader 6.98 / 16.0 · new
+  *maxer* (polish the strong: raise the highest factor of the highest-product person) 4.11 → **3.40
+  blooms / 5.0 tiers**. Diagnosis loses nothing; everything that routes around the weakest factor
+  loses ~10 %.
+- **Gate 0 ratchets up with capping assertions** — the first band clauses that can fail on the
+  thesis itself rather than on a race: `chance({10,2,10},10) ≤ 0.04`, `chance({10,3,10},10) ≤ 0.08`,
+  `tiers.maxer < 0.4·tiers.hunter`. Every prior clause kept (recorded under *Tightenings*).
+- *Evidence:* new **Gate 16** (`CEIL_OK c2=0.04 c3=0.08 c8=0.72 says=true`). Nineteen gates green,
+  hash-bracketed. Gate 7's probe now reads Ngân's nerve hand as `→ 8%` (GAN 3 caps her) — correct.
+- **Provenance:** the `/loop 5m` graphics session's in-tree edits at commit time ship here under
+  owner authority, unreviewed.
+
 ## v0.37 — 2026-08-15 — the road precedes the label
 
 Closes: under the owner's standing `/loop 3m` directive, the second of the engine's own findings on

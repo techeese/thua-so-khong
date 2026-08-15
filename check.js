@@ -27,8 +27,9 @@ function activeSim(c,season){ return !c.gone && (c.arrives===undefined||season>=
 function vonMul(von){ return 0.3+0.7*von/10; }                    // capital multiplies (mirrors index.html): a thin river ×0.37, a full one ×1.0
 function tierCap(von){ return von<=3?1:von<=6?2:3; }              // and holds depth: a low river keeps every workshop a stall (mirrors index.html shipTier)
 function tierOf(p,von){ var pv=p.tai*p.gan*p.ban; return Math.min(tierCap(von), pv<300?1:pv<600?2:3); }
-function chance(p,von){ if(Math.min(p.tai,p.gan,p.ban)<=1) return 0;   // the zero bites (mirrors index.html hasZero)
-  return Math.min(0.85,(p.tai*p.gan*p.ban)/1000*0.9*vonMul(von)+(p.mom||0)); }
+function ceilOf(m){ return m<=1?0:m===2?0.04:m===3?0.08:m===4?0.15:m===5?0.25:0.85; }   // v0.38: the weakest factor sets the ceiling (mirrors index.html)
+function chance(p,von){ var m=Math.min(p.tai,p.gan,p.ban); if(m<=1) return 0;   // the zero bites (mirrors index.html hasZero)
+  return Math.min(ceilOf(m),(p.tai*p.gan*p.ban)/1000*0.9*vonMul(von)+(p.mom||0)); }
 
 function lcg(seed){ var s=seed>>>0; return function(){ s=(1103515245*s+12345)>>>0; return s/4294967296; }; }
 
@@ -60,6 +61,9 @@ function run(strategy,seed){
         if(best){ if(best.gan<=best.tai&&best.gan<=best.ban){ best.gan=Math.min(10,best.gan+2); communal(best); }
           else if(best.tai<=best.ban) best.tai=Math.min(10,best.tai+2);
           else best.ban=Math.min(10,best.ban+2); }
+      } else if(strategy==="maxer"){          // polish the strong: raise the HIGHEST factor of the highest-product unbloomed person (anti-diagnosis)
+        var mx=null,mxv=-1; here.forEach(function(c){ if(c.started)return; var pv=c.tai*c.gan*c.ban; if(pv>mxv){mxv=pv;mx=c;} });
+        if(mx){ var kx=(mx.tai>=mx.gan&&mx.tai>=mx.ban)?"tai":(mx.gan>=mx.ban)?"gan":"ban"; mx[kx]=Math.min(10,mx[kx]+2); if(kx==="gan") communal(mx); }
       } else if(strategy==="spreader"){           // effort everywhere, no diagnosis
         var c2=here[Math.floor(rnd()*here.length)], k=["tai","gan","ban"][Math.floor(rnd()*3)];
         if(c2&&!c2.started){ c2[k]=Math.min(10,c2[k]+2); if(k==="gan") communal(c2); }
@@ -132,8 +136,8 @@ function run(strategy,seed){
   return {n:cast.filter(function(p){return p.started;}).length, ts:tsum};
 }
 
-var N=1200, sums={hunter:0,spreader:0,linker:0,idle:0,misreader:0}, tiers={hunter:0,spreader:0,linker:0,idle:0,misreader:0};
-["hunter","spreader","linker","idle","misreader"].forEach(function(st){
+var N=1200, sums={hunter:0,spreader:0,linker:0,idle:0,misreader:0,maxer:0}, tiers={hunter:0,spreader:0,linker:0,idle:0,misreader:0,maxer:0};
+["hunter","spreader","linker","idle","misreader","maxer"].forEach(function(st){
   for(var i=0;i<N;i++){ var r2=run(st,1009+i*53); sums[st]+=r2.n; tiers[st]+=r2.ts; }
   sums[st]/=N; tiers[st]/=N;
 });
@@ -143,6 +147,7 @@ console.log("  spreader (effort everywhere) : "+sums.spreader.toFixed(2));
 console.log("  linker   (spam Kết nối)      : "+sums.linker.toFixed(2));
 console.log("  idle     (do nothing)        : "+sums.idle.toFixed(2));
 console.log("  misreader (hunter, 30% wrong first hand): "+sums.misreader.toFixed(2)+" · tiers "+tiers.misreader.toFixed(1));
+console.log("  maxer (polish the strong): "+sums.maxer.toFixed(2)+" · tiers "+tiers.maxer.toFixed(1));
 console.log("tiers: hunter "+tiers.hunter.toFixed(1)+" · spreader "+tiers.spreader.toFixed(1)+" · linker "+tiers.linker.toFixed(1)+" · idle "+tiers.idle.toFixed(1));
 
 // linker note: the sim's linker SORTS by lowest BẠN — semi-diagnostic by construction. The hunter saturates the
@@ -153,7 +158,10 @@ var ok = sums.hunter > sums.spreader + 0.5 && sums.hunter > sums.linker && sums.
       && sums.idle <= 4.0                        // difficulty ceiling: doing nothing must NOT earn a thriving xóm
       && tiers.hunter > tiers.spreader + 3       // rooted depth, not just bloom count, separates diagnosis
       && tiers.hunter > tiers.linker + 1.0       // …and separates the one-dimension linker where blooms saturate
-      && sums.misreader > sums.spreader + 0.5;   // v0.35: a fair player who misreads the hidden row 30% of the time still clearly beats effort-everywhere
+      && sums.misreader > sums.spreader + 0.5    // v0.35: a fair player who misreads the hidden row 30% of the time still clearly beats effort-everywhere
+      // v0.38 — the CAPPING assertions: the weakest factor decides, as a function and as an outcome
+      && chance({tai:10,gan:2,ban:10},10) <= 0.04 && chance({tai:10,gan:3,ban:10},10) <= 0.08   // a 2 or a 3 caps a life, whatever the other two are
+      && tiers.maxer < 0.4*tiers.hunter;         // polishing the strong earns under 40% of the diagnostician's rooted depth
 // (margin recalibrated 1.5→1.0 at v0.17: Cô Mai's school legitimately compounds with breadth strategies —
 //  school × connections is thesis-TRUE; the gate demands strict hunter dominance, not an arbitrary gap)
 console.log(ok ? "\n✅ BAND HOLDS: diagnosis beats spreading, link-spam, and idling — the multiplication teaches itself."

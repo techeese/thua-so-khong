@@ -97,6 +97,10 @@
   /* overlays */
   .ovl{position:fixed;inset:0;background:rgba(43,35,32,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
   .ovl.show{display:flex}
+  /* the first screen is the xóm's only introduction — at .55 the village behind the card went to mud.
+     The card carries a 3px ink border and a hard shadow, so it holds its own over a lighter wash.
+     Only the intro: the help card and the ending still want the room dark. */
+  #intro{background:rgba(43,35,32,.40)}
   .card{max-width:520px;width:100%;background:var(--paper);border:3px solid var(--ink);border-radius:16px;padding:22px;box-shadow:6px 6px 0 rgba(43,35,32,.5)}
   .card{position:relative}
   .card h2{font:700 24px Georgia,serif;margin:0 0 4px;text-align:center}
@@ -161,7 +165,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.37</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.38</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -514,8 +518,10 @@ function prod(p){ return p.tai*p.gan*p.ban; }
 function hasZero(p){ return Math.min(p.tai,p.gan,p.ban)<=1; }   // a factor at 1 IS the zero — mười nhân với không vẫn bằng không
 function vonMul(){ return 0.3+0.7*S.von/10; }   // 🌊 capital multiplies too — a thin river ×0.37, a full one ×1.0 (the charter's fourth factor, no longer a rounding)
 function tierCap(){ return S.von<=3?1:S.von<=6?2:3; }   // and holds depth: a low river keeps every workshop a stall — what riverLow always said
+function ceilOf(m){ return m<=1?0:m===2?0.04:m===3?0.08:m===4?0.15:m===5?0.25:0.85; }   // 🧮 the weakest factor sets the CEILING — 1 is zero, 2 caps at 4 %/season, 3 at 8, 4 at 15, 5 at 25; from 6 the product decides
+function weakest(p){ var m=Math.min(p.tai,p.gan,p.ban); return {m:m,k:(m===p.gan)?"gan":(m===p.tai)?"tai":"ban"}; }
 function chance(p){ if(hasZero(p)) return 0;   // the zero bites: no amount of the other two factors carries a sprout past it
-  return Math.min(0.85, prod(p)/1000*0.9*vonMul()+(p.mom||0)); }   // mom = a tended sprout pushing at the soil
+  return Math.min(ceilOf(Math.min(p.tai,p.gan,p.ban)), prod(p)/1000*0.9*vonMul()+(p.mom||0)); }   // …and no amount of them lifts a sprout past its weakest factor's ceiling   // mom = a tended sprout pushing at the soil
 function driftLuat(l){ var r=Math.random();
   if(l<4){ if(r<0.25) return l+1; if(r<0.33) return Math.max(1,l-1); return l; }   // storms are arcs you dig out of, not identities
   if(S&&S.yearCard===1){ if(r<0.10) return Math.min(10,l+1); if(r<0.25) return Math.max(1,l-1); return l; }   // the strict year: clear skies don't last
@@ -1132,7 +1138,10 @@ function drawScene(now){
 
 
   // --- first-tap hint: a pulsing ring until you've talked to anyone ---
-  if(!S.over && !S.cast.some(function(p){return p.known;})){
+  // ...but not while the intro card is up. The card already says "hãy chạm vào một người và trò
+  // chuyện" in words, and it sits over the ring — so the xóm was pointing at a villager from behind
+  // the sheet of paper telling you the same thing. Beats own the screen; everything else yields.
+  if(!S.over && !S.cast.some(function(p){return p.known;}) && !el("intro").classList.contains("show")){
     var hp=S.cast[0], pulse=2+Math.sin(now*0.005)*1.6;
     ctx.strokeStyle="#C1443C"; ctx.lineWidth=2.5; ctx.setLineDash([4,5]);
     ctx.beginPath(); ctx.ellipse(hp.x,hp.y-4,24+pulse,32+pulse,0,0,6.28); ctx.stroke(); ctx.setLineDash([]);
@@ -1272,6 +1281,15 @@ function banyan(x,y,now){
   [[x-34,-34,38],[x+30,-40,34],[x-2,-58,42]].forEach(function(b){
     ctx.beginPath(); ctx.ellipse(b[0]+sway,y+b[1],b[2],b[2]*0.62,0,0,6.28);
     ctx.fillStyle="#6C8F3D"; ctx.fill(); ink(3.5); ctx.stroke(); });
+  // 🏮 Trung thu: in autumn the children's lanterns hang from the banyan — three paper lanterns, star · fish · moon, swaying with the crown
+  if(S&&S.season%4===2&&!S.over){ [[-30,-16,"#C1443C"],[4,-8,"#E3A63B"],[30,-20,"#D97C8E"]].forEach(function(l,i){
+      var lx=x+l[0]+sway*0.8, ly=y+l[1]+Math.sin(now*0.004+i)*1.2;
+      ctx.strokeStyle="#3a2a1e"; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(lx,ly-10); ctx.lineTo(lx,ly-3); ctx.stroke();
+      ctx.fillStyle=l[2]; ink(1.5);
+      if(i===0){ ctx.beginPath(); for(var k=0;k<5;k++){ var a1=-Math.PI/2+k*2*Math.PI/5, a2=a1+Math.PI/5; ctx.lineTo(lx+Math.cos(a1)*6,ly+Math.sin(a1)*6); ctx.lineTo(lx+Math.cos(a2)*2.6,ly+Math.sin(a2)*2.6); } ctx.closePath(); ctx.fill(); ctx.stroke(); }   // ngôi sao
+      else if(i===1){ ctx.beginPath(); ctx.ellipse(lx,ly,6.5,3.6,0,0,6.28); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.moveTo(lx+6,ly); ctx.lineTo(lx+10,ly-3); ctx.lineTo(lx+10,ly+3); ctx.closePath(); ctx.fill(); ctx.stroke(); }   // cá chép
+      else { ctx.beginPath(); ctx.arc(lx,ly,5.5,0,6.28); ctx.fill(); ctx.stroke(); }   // trăng
+      ctx.fillStyle="#E3A63B"; ctx.fillRect(lx-1.2,ly+6,2.4,3); }); }
 }
 function dinh(x,y){ // the communal house (đình) — with the upturned đao corners
   ink(3.5); ctx.fillStyle="#b8797a";
@@ -1286,6 +1304,9 @@ function dinh(x,y){ // the communal house (đình) — with the upturned đao co
   ctx.fillStyle="#8a6642"; ctx.fillRect(x-10,y+44,20,30); ctx.strokeRect(x-10,y+44,20,30);
   ctx.strokeStyle="rgba(58,42,30,.4)"; ctx.lineWidth=1.4;
   ctx.strokeRect(x-46,y+40,22,20); ctx.strokeRect(x+24,y+40,22,20);
+  // 🧧 Tết: a red couplet either side of the đình door through spring, once the first year has turned
+  if(S&&S.season>=4&&S.season%4===0&&!S.over){ ctx.fillStyle="#C1443C"; ctx.fillRect(x-17,y+46,5,26); ctx.fillRect(x+12,y+46,5,26);
+    ctx.fillStyle="#E3A63B"; for(var ci=0;ci<4;ci++){ ctx.fillRect(x-15.5,y+49+ci*6,2,2); ctx.fillRect(x+13.5,y+49+ci*6,2,2); } }
   // 🪙 the hụi rounds hang under the eave — one small red lantern per round the circle has closed this year
   var hn=S.hui|0; if(hn>0){ var hx0=x-(hn-1)*9;
     for(var hi=0;hi<hn;hi++){ var lx=hx0+hi*18, ly=y+34+Math.sin(performance.now()*0.002+hi)*0.8;
@@ -2249,7 +2270,8 @@ function renderSheet(){
     +(all?"<small>"+(p.started
       ?((L==="vi"?"bậc ":"tier ")+trNow+"/3"+(held?(L==="vi"?" · sông "+S.von+"/10 giữ bậc — cả xóm góp thêm":" · river "+S.von+"/10 holds it — the xóm must pour in"):trNow<3?(L==="vi"?" · vun tiếp để lên bậc":" · keep tending to rise"):(L==="vi"?" · một thương hiệu":" · a brand")))
       :((hasZero(p)?(t("sprout")+" 0% · "+(L==="vi"?"thừa số "+zeroOf(p)+" bằng không":zeroOf(p)+" is zero"))   // the arithmetic says it before the narrator would
-        :(t("sprout")+" ~"+pc+"% "+t("perSeason")))
+        :(t("sprout")+" ~"+pc+"% "+t("perSeason")
+          +((prod(p)/1000*0.9*vonMul()+(p.mom||0))>ceilOf(weakest(p).m)+1e-9?((L==="vi"?" · "+t(weakest(p).k)+" "+weakest(p).m+" chặn ở ":" · "+t(weakest(p).k)+" "+weakest(p).m+" caps it at ")+Math.round(ceilOf(weakest(p).m)*100)+"%"):"")))
       +(L==="vi"?" · sông ":" · river ")+S.von+"/10 ×"+vonMul().toFixed(2)
       +((p.mom||0)>0?(L==="vi"?" · mầm đang nhú 🌱":" · pushing at the soil 🌱"):"")
 ))
@@ -2381,9 +2403,27 @@ function renderHelp(){
   var vi=(L==="vi"), yc=YEAR_CARDS[S.yearCard|0], mc=(S.yearCard===5)?"0.15":"0.09";
   function sec(t,body){ return "<p style=\"margin:8px 0 2px\"><b>"+t+"</b></p><div class=\"small\" style=\"font-size:12.5px;color:#4d4335\">"+body+"</div>"; }
   var h="";
+  // 📍 the xóm right now — a live status page above the rules: season, hands, river & cap, and one line per person (what you know, what threatens)
+  if(S&&!S.over&&S.cast.some(function(p){return p.known;})){
+    var cap=tierCap(), rows=[];
+    S.cast.forEach(function(p){ if(!active(p)||!p.known) return;
+      var st;
+      if(p.started){ var tr=tierOf(p); st=(vi?"xưởng bậc ":"workshop tier ")+tr+(tr<cap&&tr<3?(vi?" · vun tiếp":" · keep tending"):"")+(tr===cap&&tr<3?(vi?" · sông giữ bậc":" · river holds it"):""); }
+      else { var sa=seenAll(p), z=zeroOf(p), sn=p.seen||{}, seenN=["tai","gan","ban"].filter(function(k){return sn[k];}).length;
+        st=(sa?(hasZero(p)?(vi?"số không: "+z+" — 0%":"zero: "+z+" — 0%"):(z?(vi?"thấp nhất: "+z+" · ":"lowest: "+z+" · "):"")+Math.round(chance(p)*100)+"%"):(vi?("mới biết "+seenN+"/3 thừa số"):("read "+seenN+"/3 factors")))
+           +((p.mom||0)>0?" 🌱":"")+((p.hands|0)>0?(" · "+(p.hands|0)+"⚡"):""); }
+      var threat="";
+      if(p.id===0&&!p.started&&S.season>=9&&p.gan<3) threat=" 🚌";
+      if(p.id===6&&!p.started&&S.season>=10&&p.ban<4&&!S.pairs.some(function(pr){return pr[0]===6||pr[1]===6;})) threat=" 🛶";
+      if(p.id===1&&!p.started&&S.baFade&&!S.apprentice) threat=" 🕯";
+      rows.push("<b>"+p.name+"</b> — "+st+threat); });
+    h+=sec(vi?"📍 Xóm lúc này":"📍 The xóm now",
+      (STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4))+" · "+S.acts+"⚡ · "+(vi?"sông ":"river ")+S.von+"/10 ("+(vi?"bậc tối đa ":"tier cap ")+cap+")"
+       +"<br>"+rows.join("<br>")));
+  }
   h+=sec(vi?"Phép nhân":"The multiplication",
-         vi?"Mỗi người là <b>TÀI × GAN × BẠN</b>. Thừa số nào ở mức <b>1</b> là số không — người đó không nở (0%), dù hai thừa số kia có cao đến đâu. Việc của bạn là <b>chẩn đoán</b>: con số ẩn cho đến khi tay bạn chạm vào — lời họ nói là manh mối; đoán thừa số thấp nhất và nâng đúng nó. Tích ≥100 thì mầm bắt đầu nhú (🌱), càng cao càng dễ nở xưởng."
-           :"Each person is <b>SKILL × NERVE × ALLIES</b>. A factor at <b>1</b> is a zero — that person cannot bloom (0%), however high the other two stand. Your job is <b>diagnosis</b>: the numbers stay hidden until your hand touches them — their words are the clue; guess the lowest factor and raise exactly that. Product ≥100 and a sprout starts pushing (🌱); higher means likelier to open a workshop.");
+         vi?"Mỗi người là <b>TÀI × GAN × BẠN</b>. Thừa số nào ở mức <b>1</b> là số không — người đó không nở (0%), dù hai thừa số kia có cao đến đâu. Việc của bạn là <b>chẩn đoán</b>: con số ẩn cho đến khi tay bạn chạm vào — lời họ nói là manh mối; đoán thừa số thấp nhất và nâng đúng nó. Tích ≥100 thì mầm bắt đầu nhú (🌱), càng cao càng dễ nở xưởng — nhưng thừa số thấp nhất đặt <b>trần</b>: 2 → tối đa 4%/mùa · 3 → 8% · 4 → 15% · 5 → 25%; hai thừa số kia cao đến đâu cũng không vượt qua."
+           :"Each person is <b>SKILL × NERVE × ALLIES</b>. A factor at <b>1</b> is a zero — that person cannot bloom (0%), however high the other two stand. Your job is <b>diagnosis</b>: the numbers stay hidden until your hand touches them — their words are the clue; guess the lowest factor and raise exactly that. Product ≥100 and a sprout starts pushing (🌱); higher means likelier to open a workshop — but the weakest factor sets a <b>ceiling</b>: 2 → at most 4%/season · 3 → 8% · 4 → 15% · 5 → 25%; however high the other two stand, they do not lift it past that.");
   h+=sec(vi?"Tay (⚡)":"Hands (⚡)",
          vi?"Mỗi mùa 3⚡ (mùa giông 2⚡, sau ba mùa giông liền lại 3⚡). 📖 Dạy +2 TÀI · 🏮 Đêm thất bại +2 GAN (người từng ngã đến nghe, +1) · 🤝 Kết nối +2 BẠN cho mối đầu, +1 mối sau · 🪙 Góp hụi +1 sông · 🧧 Hốt hụi (đã góp rồi): sông −1, mầm của một người nhú +6% — cả vòng góp cho một nhà · 🛠 Tự xây 4 lần thì xong · 🔍 Nghe ngóng biết trời mùa tới · 🛡 Che chắn xưởng non."
            :"3⚡ per season (storm 2⚡; after three storm seasons in a row, back to 3⚡). 📖 Teach +2 SKILL · 🏮 Failure night +2 NERVE (those who fell come listen, +1) · 🤝 Connect +2 ALLIES first bond, +1 after · 🪙 Hụi +1 river · 🧧 Take the pot (once you've paid in): river −1, one person's sprout +6% — the whole circle pays one member · 🛠 Build 4 times to ship · 🔍 Ask around for next season's sky · 🛡 Shelter young workshops.");

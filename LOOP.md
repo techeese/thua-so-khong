@@ -93,7 +93,12 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.37: the road precedes the label — strangers walk their factor before you have spoken to them,
+**v0.38: the weakest factor sets the ceiling — 2 → 4 %/season · 3 → 8 % · 4 → 15 % · 5 → 25 %
+(Gate 16; Gate 0 gains capping clauses and a *maxer* strategy: hunter unchanged 6.97/16.1, spreader
+5.34, idle 2.47, maxer 3.40/5.0). This is the critics' §9.1 pass condition, shipped under owner
+authority; the engine's synthesis 2 should read it as done and price its era against it. ⚠ v0.37 sped
+walk cadence 6–12 s → 4.5–9 s; the critics hold cadence frozen unless the owner says so — OWNER may
+veto. v0.37: the road precedes the label — strangers walk their factor before you have spoken to them,
 cadence 4.5–9 s (Gate 15); the engine rejected Era A 3/3 and is reviewing B "watching is reading"
 re-scoped, so mechanic ticks now serve B's channel without deciding B's identity (labels stay until
 the transition says otherwise). v0.36: the TÀI zero walks — errand 11 LEARN sends a low-TÀI neighbour to watch the most skilled

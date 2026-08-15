@@ -36,10 +36,12 @@ Rules:
 | `Gate 11` | 1 | the factors are hidden until touched — a fresh talk shows `? × ? × ?` and no per-verb answer, one hand on GAN reveals GAN alone, answers appear only once the row is known, a bloom shows everything (v0.33) |
 | `Gate 12` | 1 | a hand in the wrong place gets an answer — teach Bé Ngân on her strongest factor while GAN sits at 1 and she says so in her own voice once, ~0.9s after the float; a second teach says nothing more; nerve (the zero) draws no such line (v0.34) |
 | `Gate 13` | 1 | the names stay readable — six villagers jammed into 150px of the far bank produce no label printed over another villager's label and no label crossing the printed frame; overlap measured on the true ink box, not an estimate (v0.34) |
-| `Gate 15` | 1 | the girl's clock — Bé Ngân with NERVE under 3 at season 11 walks to the road and is gone; with NERVE ≥3 she stays (v0.35) |
+| `Gate 17` | 1 | the girl's clock — Bé Ngân with NERVE under 3 at season 11 walks to the road and is gone; with NERVE ≥3 she stays (v0.35) |
+| `Gate 19` | 1 | the intro yields — while the intro card is up the xóm does not also point at a villager: the pulsing first-tap ring and its words are absent before Begin and back after it (v0.37) |
 | `Gate 16` | 1 | the strip says it scrolls — on a 390px phone the roster is wider than its box, and the chips at a live edge fade into the paper: right edge only at the start, both in the middle, left edge only at the end (v0.36) |
 | `Gate 14` | 1 | the TÀI zero walks — a low-TÀI neighbour picks the LEARN errand ≥20% of the time and it carries them to the most skilled pair of hands; a high-TÀI neighbour never picks it (v0.36) |
 | `Gate 15` | 1 | strangers walk — with nobody yet spoken to, the errand governor still sends people on the road: the road precedes the label (v0.37) |
+| `Gate 16` | 1 | the ceiling — the weakest factor caps a life: 10×2×10 at a full river sprouts ≤4 %/season, 10×3×10 ≤8 %, and the sheet names the capping factor; Gate 0 gains the capping assertions `chance(10,2,10)≤0.04`, `chance(10,3,10)≤0.08`, `tiers.maxer < 0.4·tiers.hunter` (v0.38) |
 
 ## Convergence gates — `done.sh`
 
@@ -74,4 +76,4 @@ open in `OWNER-GATE.md` forever, so the honest version of the answer is always s
 
 Record here when an existing gate is made stricter, with the old and new threshold.
 
-- *(none yet)*
+- **Gate 0 (v0.38):** three capping clauses added — `chance({10,2,10},10) ≤ 0.04`, `chance({10,3,10},10) ≤ 0.08`, `tiers.maxer < 0.4·tiers.hunter` (a new anti-diagnosis strategy, *polish the strong*). Every prior clause kept.

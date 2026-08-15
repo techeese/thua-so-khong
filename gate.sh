@@ -354,7 +354,7 @@ PYEOF12
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=600,900 --virtual-time-budget=9000 --dump-dom "file://$TMP/l.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "LABEL_OK" && pass "the names stay readable: $T" || fail "the names stay readable: $T"
 
-# Gate 15: the girl's clock — Bé Ngân with NERVE under 3 at season 11 walks to the road and is gone; with NERVE ≥3 she stays.
+# Gate 17: the girl's clock — Bé Ngân with NERVE under 3 at season 11 walks to the road and is gone; with NERVE ≥3 she stays.
 python3 - "$TMP" <<'PYEOF13'
 import sys
 tmp=sys.argv[1]; html=open("index.html").read()
@@ -458,6 +458,60 @@ open(tmp+"/s.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOF15
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/s.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "STRANGER_OK" && pass "strangers walk: $T" || fail "strangers walk: $T"
+
+# Gate 18: the ceiling — the weakest factor caps a life: 10×2×10 at a full river sprouts ≤4 %/season, 10×3×10 ≤8 %, and the sheet says which factor caps it.
+python3 - "$TMP" <<'PYEOF16'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  var p=S.cast[2]; p.seen={tai:true,gan:true,ban:true}; p.mom=0; S.von=10;
+  p.tai=10; p.gan=2; p.ban=10; var c2=chance(p);
+  p.gan=3; var c3=chance(p);
+  p.gan=8; var c8=chance(p);
+  p.gan=3; selectPerson(2); renderSheet(); var ml=document.getElementById("multLine").textContent, says=/GAN 3 (chặn ở|caps it at) 8%/.test(ml);
+  var ok = Math.abs(c2-0.04)<1e-9 && Math.abs(c3-0.08)<1e-9 && c8>0.5 && says;
+  document.title=(ok?"CEIL_OK":"CEIL_BAD")+" c2="+c2+" c3="+c3+" c8="+c8.toFixed(2)+" says="+says;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/e.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF16
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/e.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "CEIL_OK" && pass "the ceiling: $T" || fail "the ceiling: $T"
+
+# Gate 19: the intro yields — while the intro card is up, the xóm must not ALSO point at a villager.
+# The card says "hãy chạm vào một người và trò chuyện" in words and sits over the pulsing ring that
+# says it in pictures. The ring must be gone before Begin and back after it (charter 4: beats own the
+# screen, everything else yields — and a hint you cannot see is not a hint).
+python3 - "$TMP" <<'PYEOF19'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+var HINT=0,_of=null;
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  _of=ctx.fillText.bind(ctx);
+  ctx.fillText=function(t,x,y){ if(/chạm để trò chuyện|tap to talk/.test(String(t))) HINT++; return _of(t,x,y); };
+  var intro=document.getElementById("intro");
+  var openBefore=intro.classList.contains("show");
+  HINT=0; drawScene(performance.now()); var during=HINT;
+  document.getElementById("startBtn").click();
+  HINT=0; drawScene(performance.now()); var after=HINT;
+  var ringBack = after>0 && !S.cast.some(function(p){return p.known;});
+  var ok = openBefore===true && during===0 && ringBack;
+  document.title=(ok?"INTRO_OK":"INTRO_BAD")+" cardUp="+openBefore+" hintWhileCardUp="+during+" hintAfterBegin="+after;
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/i.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF19
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/i.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "INTRO_OK" && pass "the intro yields: $T" || fail "the intro yields: $T"
 
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
