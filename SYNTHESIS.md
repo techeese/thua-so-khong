@@ -617,3 +617,70 @@ decides per life, ambient silent; the charter names cast size and run length as 
 **Next tick:** **five** critics briefed to reject — drift · thesis · substance · *form-necessity*
 (could an era have done this?) · *owner-reality* (does it survive two live owner loops and the
 open device/felt gates?). Majority reject → `failed_syntheses=1` at L3; a second failure earns L4.
+
+## 20. L3 review — candidate P "seven lives" · **REJECTED 5/5** · 2026-08-15
+
+- **Drift — REJECT.** "Kept where they still bind" is the unratcheted retirement that killed A and
+  G: in a one-life run `check.js`'s linker branch is dead, spreader collapses, the flywheel can never
+  fire, so Gate 0's clauses vanish or change meaning. The flagship gate is `ceilOf` restated —
+  authored zeros are literal 1s, polish-the-strong blooms 0.0 %/4000 lives, "≥ 3×" is x/0. "idle
+  0/7" is false today (per-life 4-season idle blooms 8–40 % on persons 1–5) — passable only by
+  retuning to clear the loop's own gate. Capital leaves play (`von` rises only at `season%4===3` or
+  via a flywheel one person can't fire). 8–11 hands for a job needing 1–4; every clock and the storm
+  tail never fire.
+- **Thesis — REJECT.** P dissolves the collective, and that is not the waived "cast size": MENTORS
+  drip, Cô Mai's class, the flywheel, the circle lift, the pot, the value chains, six authored bonds
+  are structurally dead or degenerate to "the circle pays the protagonist" — D was rejected for less.
+  §1 inverted: with the world's lifts dead the player is the *sole* causal agent of a life, seven
+  times. §3 stops being felt — the multiplication bites today only through opportunity cost across
+  seven people; P removes the competitor (two teaches take 1→5 with nothing forgone). Ledger breach:
+  Gates 17/13/21 lose their populations; Gate 5's "16-season" claim is arithmetically false (7×4=28).
+  P *does* need new strings and shrinks the unseen pool (PAIR_TALK needs two known background
+  villagers). Owner gate 2 ("by season 8") becomes unanswerable; gate 3 untouched (H out of scope).
+- **Substance — REJECT.** P refutes its own diagnosis: the channel "needs time" and P cuts the run
+  16→4 (errands/run 1.8–4.5 → 0.5–1.1) — G's denominator trick, 4× harder. Attention gate passes by
+  division. Demolition inventory, none of it measured false. The fates die. Per-life band cannot fail.
+  *Backs R or Q over P.*
+- **Form-necessity — REJECT, and record that L2 was never exhausted.** There are **zero completed
+  eras**: `MILESTONES.md` and `HISTORY.md` mark Era 1 OPEN, `git tag` is empty. §16's escalation
+  argument indicts the *process* (two sessions writing one tree), not the form — and the record
+  shows the owner loops already steer around claimed scope on request. **Non-tick-shippable L2
+  candidates existed and were never proposed**: `MILESTONES.md` → *Candidate directions* parks the
+  Đông Hồ art pass proper, the endings pass (authored diptychs, "fates seen"), the audio pass +
+  haptics, more authored arcs — LADDER's L2 row explicitly licenses "art, audio, endings"; no round
+  proposed any of them. Twelve rejections of four self-selected tick-sized candidates is not
+  exhaustion. P is an era wearing L3 (run length and cast focus are charter-listed era knobs).
+  *Backs: revert the state line to `layer=2`, ship H if licensed, put a parked non-tick-shippable
+  direction to three critics.*
+- **Owner-reality — REJECT.** "One commit, one revert" is not available: 51 commits today, 28 in
+  the last two hours, into one 231 KB file by two owner sessions; the tree moved during the review;
+  the engine may not touch either session's uncommitted edits, so P cannot take a clean baseline. P
+  silently discards owner-authority work (Gates 11/16/17/22, Gate 5) and requires an owner-only
+  retirement act it never asks for. The felt gate disfavours P twice ("by season 8"; all six boxes
+  still unticked — the owner has never reported the form failing). *Backs recording the finding
+  that no form transition is executable while both loops ship every four minutes, and asking the
+  owner for the felt gate and a quiesce window.*
+
+## 21. Disposition — L3 review invalidates the escalation; ladder corrected to L2
+
+The five critics did not merely reject P; two of them, independently, found the **escalation itself
+unearned in substance**: synthesis 2's "no survivor" came from proposing only the class of candidate
+the owner's loops absorb, while the parked, genuinely era-scale directions in `MILESTONES.md` were
+never put to critics. Escalation is *earned, never chosen* — and a counter that was tripped by
+candidate selection rather than by exhaustion must not be allowed to stand, or the loop climbs to
+L4 by choosing badly twice.
+
+`LADDER.md` state → **`layer=2 failed_syntheses=1`**: synthesis 1 (A, B) stands as one genuine L2
+failure; synthesis 2 (G, F) is voided as an exhaustion claim by the L3 review — its rejections
+remain on the record above. This L3 attempt is recorded as **not counting** toward L3→L4 (the layer
+was entered on an invalid premise); it is not a "form change survived", either.
+
+**Synthesis 3 at L2 (next tick, 3 critics)** must propose from the parked non-tick-shippable
+directions — at least: **the endings pass** (authored diptychs per outcome shape, the card becomes
+the arithmetic — H folded in as its reductive core), **the Đông Hồ art pass proper**, **the audio
+pass** — each read against that morning's tree, priced honestly against *less narration* and *see
+what exists before adding*, with a gate that can fail on the thing the era changes.
+
+**Owner asks, recorded (not requirements):** (1) the felt gate — all six boxes are still unticked
+twelve versions later; (2) a quiesce window or scope note if a transition is ever to execute as one
+commit; (3) H — licence for the t=0 tagline removal and the arithmetic-only ending.
