@@ -1,4 +1,4 @@
-<!-- STATE layer=2 failed_syntheses=1 -->
+<!-- STATE layer=3 failed_syntheses=0 -->
 # THE LADDER — improvement never halts, it escalates
 
 Owner's design (2026-08-15): *"it should not halt… the goal is improve forever. We can have

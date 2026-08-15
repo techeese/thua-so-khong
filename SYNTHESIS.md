@@ -451,3 +451,61 @@ owner note, not to an era.
   the same fates the owner shipped as v0.35–v0.36); save migration risk (a landmine class here);
   danger of a return-hero arc — the gates above make the block remember *you* only as scars, never
   as a name.
+
+## 15. Review round 4 — candidate F "the book remembers" · **REJECTED 3/3**
+
+- **Drift — REJECT.** F's premise is already code: `fresh()` jitters every factor *except* the
+  authored zero (`p.zkey`, index.html:489–491) — every run already gives every person the same zero
+  at the same value; `loadChron()` already seeds run 2 twice ("the book remembers — no training
+  wheels on run 2+", :507–509; year card can't repeat, :500). "Seeded in ≥ 3 ways" is ~2–3 today.
+  Front-loading the known zero makes the core act free (Gate 11 moot on run 2+); carried roof age
+  ≥ 2 makes run-2 workshops storm-immune and voids the shelter verb. Every gate driver wipes the
+  chronicle and `check.js` is declared untouched → no gate can see F. *Pass:* memory carries only
+  liabilities; `check.js` gets a memory-seeded run 2 with `run-2 hunter ≤ run-1 hunter`.
+- **Thesis — REJECT.** The return *is* the great-man affordance moved up a level — the player is
+  the only entity with cross-run continuity and privileged knowledge (§1). Adds authored lines
+  exactly where the owner said *"do not write new lines… I want to see what already exists"* (§2 +
+  directive). Not about the multiplication: touches no factor, no `chance()`, no `ceilOf()`; serves
+  owner gate 2, not the thesis; none of its gates can fail on whether the weakest factor decides.
+  Defined around done work (`CHRON_KEY` persists 10 runs, fates, unlocks). No lab evidence — L2
+  requires it (LADDER). Scar + adjacent voice line = ambient pushing meaning by adjacency (§4).
+- **Substance — REJECT.** Half shipped (`loadChron` seeding, `renderChron` unlocks, `scarAt`
+  already exists — F persists it past `endGame`'s `removeItem`); materially one save field, a
+  seeding pass, ~7 lines, delete the tally: a tick. Every F gate is an existence probe; "the xóm
+  remembers" is unfalsifiable. No telemetry that anyone starts run 2, while the first-run findings
+  (`chatter()` dead strings, t=0 tagline, 155-word card, great-man line) sit unspent. "Playing
+  becomes coming back to a place" is L3 language — rhetorically L3, materially L1, never L2.
+  *Would rather see synthesis 2 fail: record `failed_syntheses=2`, ship H as a tick, escalate.*
+
+## 16. Disposition — synthesis 2 ends with no surviving candidate · **escalation to L3 earned**
+
+Twelve independent verdicts, four candidates (A, B, G, F) plus one excluded as shipped (E), all
+rejected on the record. Per `LADDER.md` — *"L2 → L3: two consecutive syntheses in which no
+candidate era survived adversarial review"* — the state line moves to **`layer=3`**, with the
+counter reset for the new layer's own syntheses (`failed_syntheses=0`; the L2 record above is the
+earned failure).
+
+**What the L2 record established, for the L3 synthesis to carry:**
+1. Every candidate expressible as mechanic or graphics ticks is absorbed by the owner's two
+   interactive loops within minutes of being written down (E shipped as v0.38 caps; B's channel as
+   v0.36/v0.37; A's label split as v0.32/v0.35). At L2 the loop can only propose what the owner's
+   L1 loops will ship first — an era cannot be defined around done work, so **no L2 era can survive
+   while that is true.** This is a fact about the *form of development*, and it is why the ladder
+   escalates rather than halts.
+2. Six pass conditions recur across all four rounds: Gate 0 must be able to fail on what the era
+   changes; keep every clause; ambient/walk *rate per run* frozen unless the owner is asked; no
+   new authored lines; the frame (t=0 tagline) and the ending (card + great-man line) are the two
+   charter-violating surfaces — tick-sized, charter-required, licence-less (H); read the tree the
+   morning of the review.
+3. **L3's own burden** — "evidence spanning ≥ 2 completed eras" — cannot be met literally: Era 1
+   is the only era and it closed by exhaustion without a transition. The L3 synthesis must say so
+   in its first line and argue from what exists (one era, 10 lab investigations, 12 rejections),
+   with 5 critics briefed to reject and the drift lens mandatory. If nothing survives at L3 twice,
+   the ladder says L4; the record so far does not license skipping there.
+
+**H, restated for whoever holds a licence:** remove the t=0 thesis sentence from header and intro;
+make the ending the arithmetic (rows, `×` lines, fates) with no great-man closing line. Named
+charter-required by two thesis critics; tick-sized; not the loop's to approve for itself.
+
+**Next tick (Gear 2, L3 · FORM, 5 critics):** a form synthesis — what kind of game — read against
+that morning's tree.
