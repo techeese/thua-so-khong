@@ -1,5 +1,31 @@
 # Changelog — Thừa Số Không
 
+## v0.31 — 2026-08-15 — the river is the fourth factor
+
+Closes: the second item of the `LOOP.md` bank — *either make capital a factor or stop presenting it
+as one* — under the owner's standing in-session directive (`/loop 3m`, mechanic/gameplay upgrades).
+The charter says talent, nerve, connection **and capital** multiply; the code had the river as a
+×0.64–1.0 rounding, the hụi verb "cost 0.70 tiers for 0.00 blooms", and `riverLow` promised a
+mechanic ("any workshop stays a street stall") that did not exist.
+
+- **Sprouts multiply by the river.** `vonMul()` = 0.3 + 0.7·river/10 — a thin river ×0.37, a full
+  one ×1.0 (was 0.6 + 0.4·river/10). Every hụi coin is now +7% relative on *every* named sprout: a
+  real breadth-vs-depth choice against +2 on one person.
+- **The river holds depth.** `shipTier()` is capped by `tierCap()` — river ≤3 keeps every workshop a
+  stall, ≤6 at most a shop, a brand only above. `riverLow` is now true. The sheet says so when it
+  bites: *bậc 1/3 · sông 3/10 giữ bậc — cả xóm góp thêm* — and the sprout line prints the
+  multiplier beside the river (*sông 3/10 ×0.51*). Tier is computed in one place, so stamps
+  (tier-2 steps down, tier-1 is erased), the flywheel (tiers ≥4), Cô Mai's class reach and the
+  ending all inherit it. Help card (Sổ tay) rewritten for both.
+- `check.js` mirrored (`vonMul`, `tierCap`, `tierOf`, and the four tier sites). *Evidence:* band —
+  hunter **6.98** / spreader 5.97 / linker 6.74 / idle **2.80** (was 3.03); tiers hunter 16.1 ·
+  spreader 10.7 · linker 14.4 · idle 2.8. Diagnosis still saturates; everyone else pays. New
+  **Gate 8** (`RIVER_OK c1=0.170 c10=0.461 ratio=2.70 tiers@2/5/9=1/2/3`).
+- **Provenance:** the owner's `/loop 5m` session was again writing to the same file (per-person
+  voice pitches, a carved far bank, phone-scaled banners, bubble de-overlap, header wrap) — gate-green
+  in tree, shipped here unreviewed under owner authority; the owner has said all loops keep running.
+- `./gate.sh` 🟢 nine gates green on the committed tree.
+
 ## v0.30 — 2026-08-15 — the zero bites
 
 Closes: the owner's in-session directive of 2026-08-15 (`/loop 3m` — *"read the code and make some

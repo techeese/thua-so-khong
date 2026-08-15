@@ -160,6 +160,31 @@ PYEOF7
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/z.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "ZERO_OK" && pass "zero bites: $T" || fail "zero bites: $T"
 
+# Gate 8: capital is a factor — the same person sprouts ~2.7× likelier on a full river than a thin one, and a
+# 640-product workshop is a stall on a river ≤3, a shop on ≤6, a brand only when the water is high.
+python3 - "$TMP" <<'PYEOF8'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  var p=S.cast[2]; p.tai=8; p.gan=8; p.ban=8; p.mom=0;
+  S.von=1; var c1=chance(p); S.von=10; var c10=chance(p);
+  var sh={pid:2}; p.tai=10; p.gan=8; p.ban=8;   // product 640 — a brand by product alone
+  S.von=2; var t2=shipTier(sh); S.von=5; var t5=shipTier(sh); S.von=9; var t9=shipTier(sh);
+  var ratio=c10/c1;
+  var ok = ratio>2.5 && ratio<2.9 && t2===1 && t5===2 && t9===3;
+  document.title=(ok?"RIVER_OK":"RIVER_BAD")+" c1="+c1.toFixed(3)+" c10="+c10.toFixed(3)+" ratio="+ratio.toFixed(2)+" tiers@2/5/9="+t2+"/"+t5+"/"+t9;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/r.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF8
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/r.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "RIVER_OK" && pass "capital is a factor: $T" || fail "capital is a factor: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

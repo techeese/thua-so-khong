@@ -93,18 +93,17 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.30 shipped the first bite of the reductive-zero bank: a factor at 1 is a literal zero
-(`chance()`=0, no momentum, sheet reads 0%, wrong verbs read "→ 0%"), Gate 7 guards it.** The owner
-now runs TWO interactive sessions in this tree — `/loop 5m` "add something more" and `/loop 3m`
-"changes/upgrades regarding mechanic and gameplay" — both edit `index.html`, both ship under owner
-authority; each commit names what it carried from the other. Remaining bank, in order the next
-mechanic ticks should take it: **a price for being wrong** (a wrong factor costs ~8% of tiers, a
-wrong person costs nothing); **either make capital a factor or stop presenting it as one** (the
-river is a 0.64–1.0 multiplier; `riverLow` copy promises a mechanic that does not exist); the
-ending card calling a ≤3-factor person "bloomed" beside its own `×` arithmetic — and now, with the
-zero literal at 1, decide whether `zeroOf()`'s ≤3 label should tighten or become "gần số không";
-`schoolfirst`, a fair `spreaderU`, and a capital that bites each turn the band gate red on the first
-commit and carry a balance decision. Era-1 exhaustion count stands at 2 of 3 `confirms-known`
-verdicts; the autonomous engine loop (`tsk-loop-runner.sh`) keeps vigil concurrently and must
-never commit or revert either owner session's uncommitted edits. Standing owner directives: less
-narration · simple opening · buildings mean something · ambient = silent and numberless.
+**v0.30 made a factor at 1 a literal zero (Gate 7); v0.31 made the river the fourth factor — sprouts
+×(0.3+0.7·river/10), tier capped by the river (Gate 8).** The owner runs TWO interactive sessions in
+this tree — `/loop 5m` "add something more" and `/loop 3m` "mechanic/gameplay upgrades" — and has
+said **all loops keep running**; both edit `index.html`, both ship under owner authority, each
+commit brackets `gate.sh` with a hash check and names what it carried from the other. Remaining
+mechanic bank, in order: **a price for being wrong** (a wrong factor costs ~8% of tiers, a wrong
+person costs nothing — with the zero literal and the river biting, measure again before designing);
+the ending card calling a ≤3-factor person "bloomed" beside its own `×` arithmetic, and whether
+`zeroOf()`'s ≤3 label should tighten now that 1 is the zero; `schoolfirst`, a fair `spreaderU`, and
+a hunter-with-hụi in `check.js` (the sim's hunter never contributes, so the river's new weight is
+untested as a *strategy*). Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the
+autonomous engine loop keeps vigil concurrently and must never commit or revert either owner
+session's uncommitted edits. Standing owner directives: less narration · simple opening · buildings
+mean something · ambient = silent and numberless.

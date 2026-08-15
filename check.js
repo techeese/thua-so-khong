@@ -22,8 +22,11 @@ function makeCast(rnd){ return [
   return o; }); }
 function activeSim(c,season){ return !c.gone && (c.arrives===undefined||season>=c.arrives); }
 
+function vonMul(von){ return 0.3+0.7*von/10; }                    // capital multiplies (mirrors index.html): a thin river ×0.37, a full one ×1.0
+function tierCap(von){ return von<=3?1:von<=6?2:3; }              // and holds depth: a low river keeps every workshop a stall (mirrors index.html shipTier)
+function tierOf(p,von){ var pv=p.tai*p.gan*p.ban; return Math.min(tierCap(von), pv<300?1:pv<600?2:3); }
 function chance(p,von){ if(Math.min(p.tai,p.gan,p.ban)<=1) return 0;   // the zero bites (mirrors index.html hasZero)
-  return Math.min(0.85,(p.tai*p.gan*p.ban)/1000*0.9*(0.6+0.4*von/10)+(p.mom||0)); }
+  return Math.min(0.85,(p.tai*p.gan*p.ban)/1000*0.9*vonMul(von)+(p.mom||0)); }
 
 function lcg(seed){ var s=seed>>>0; return function(){ s=(1103515245*s+12345)>>>0; return s/4294967296; }; }
 
@@ -70,7 +73,7 @@ function run(strategy,seed){
       if(!st.started&&st.tai<10){ st.tai=Math.min(10,st.tai+drip); st._dripped=true; } } });
     // 📖 Cô Mai's class (mirrors index.html): breadth up to TÀI 7, reach = her workshop tier; idle knows no one
     if(cast[2].started && (cast[2].age|0)>=1 && strategy!=="idle"){   // class opens once her roof has weathered a season
-      var pv2=cast[2].tai*cast[2].gan*cast[2].ban, reach=pv2<300?1:pv2<600?2:3;
+      var reach=tierOf(cast[2],von);
       if(pairsSet["2-4"]) reach++;   // 📚 Mai×Hoa (mirrors index.html): the stall sends one more pupil
       cast.filter(function(q){return q!==cast[2]&&activeSim(q,season)&&!q.started&&q.tai<7&&!q._dripped;})
           .sort(function(a3,b3){return a3.tai-b3.tai;}).slice(0,reach)
@@ -92,12 +95,10 @@ function run(strategy,seed){
     // age-based stamp risk (mirrors index.html): young workshops 15%, established 5%, only under a heavy sky
     // tier-based stamps (mirrors index.html): established workshops step down (owner gan−2), only tier-1 is erased
     if(luat<4) cast.forEach(function(p){ if(p.started&&!p.born&&rnd()<(((p.age|0)<2)?0.15:0.05)){
-      var prodv=p.tai*p.gan*p.ban;
-      if(prodv>=300){ p.gan=Math.max(0,p.gan-2); p.mom=0; }
+      if(tierOf(p,von)>=2){ p.gan=Math.max(0,p.gan-2); p.mom=0; }
       else { p.started=false; p.crushedOnce=true; p.gan=Math.max(0,p.gan-3); p.mom=0; } } });
     // the recycling flywheel now counts TIERS (mirrors index.html): sum(tier)>=4 → the river feeds itself
-    var tsum=cast.reduce(function(a,c){ if(!c.started) return a;
-      var pv=c.tai*c.gan*c.ban; return a+(pv<300?1:pv<600?2:3); },0);
+    var tsum=cast.reduce(function(a,c){ return a+(c.started?tierOf(c,von):0); },0);
     if(tsum>=((yc===0)?6:4)) von=Math.min(10,von+1);
     cast.forEach(function(p){ if(p.started){ p.age=(p.age|0)+1; p.born=false; } });
     // the elder's clock (mirrors index.html; the sim has no apprenticeship, so blooming him is the only save)
@@ -115,8 +116,7 @@ function run(strategy,seed){
     if(season%4===3 && strategy!=="idle") cast.forEach(function(p){ if(activeSim(p,season+1)&&!p.started&&p.tai*p.gan*p.ban>=100&&(p.mom||0)>0)
       p.mom=Math.min((yc===5)?0.15:0.09,(p.mom||0)+0.03); });
   }
-  var tsum=cast.reduce(function(a,c){ if(!c.started) return a;
-    var pv=c.tai*c.gan*c.ban; return a+(pv<300?1:pv<600?2:3); },0);
+  var tsum=cast.reduce(function(a,c){ return a+(c.started?tierOf(c,von):0); },0);
   return {n:cast.filter(function(p){return p.started;}).length, ts:tsum};
 }
 
