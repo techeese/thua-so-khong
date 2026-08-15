@@ -93,7 +93,9 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.72: the restless-wind year's hands land +3 (fade stays 50 %) — the third card with an identity
+**Staged v0.73 (a dry river ≤2 halves every ceiling — `apply-dryriver.py`: chance, sheet reason, help, the pot's
+after-state at von−1, Gate 61) — ships the moment the box clears (load 10–19, six concurrent gate runs
+all evening). v0.72: the restless-wind year's hands land +3 (fade stays 50 %) — the third card with an identity
 (Gate 60; hunter 6.98/14.2). v0.71: in a flood year the river never rises on its own — paying in beats not paying in for the first
 time (6.91/11.7 vs 6.69/11.3; Gate 59). v0.70: the strict year's stamps fall harder (25/10; Gate 57).**
 **Looking tick: constraint 4 validated end-to-end (Ngân's fate follows witnessed blooms; 8.6⚡/bloom);
