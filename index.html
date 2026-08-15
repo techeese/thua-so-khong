@@ -82,6 +82,10 @@
   /* action bar */
   .bar{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center}
   .bar .next{background:var(--red);color:#fff;flex:1;min-width:150px;padding:11px;font-size:15px}
+  /* the hand is spent: nothing left to do this season but turn it — the button breathes, once a second, so the eye finds it */
+  .bar .next.ready{animation:nextbreath 1.6s ease-in-out infinite}
+  @keyframes nextbreath{0%,100%{box-shadow:2px 2px 0 var(--ink)}50%{box-shadow:2px 2px 0 var(--ink),0 0 0 4px rgba(193,68,60,.28)}}
+  @media (prefers-reduced-motion: reduce){ .bar .next.ready{animation:none;outline:2px solid rgba(193,68,60,.5);outline-offset:2px} }
   .bar .spacer{flex:1}
   /* character sheet */
   .sheet{margin-top:8px;background:#f5ead0;border:3px solid var(--ink);border-radius:14px;padding:12px;display:none}
@@ -192,7 +196,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.52</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.53</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -246,6 +250,7 @@
     <div id="shareRow" style="display:flex;gap:6px;justify-content:center;margin-top:8px">
       <button id="copyBtn" style="padding:6px 10px;font-size:12px">📋 <span data-vi="chép kết" data-en="copy ending" class="conL">chép kết</span></button>
       <button id="pngBtn" style="padding:6px 10px;font-size:12px">🖼 <span data-vi="lưu tranh" data-en="save print" class="conL">lưu tranh</span></button>
+      <button id="sameBtn" style="padding:6px 10px;font-size:12px">🔁 <span data-vi="năm này lần nữa" data-en="this year again" class="conL">năm này lần nữa</span></button>
     </div>
     <button class="go" id="againBtn">Chơi lại / Play again</button>
   </div>
@@ -1644,8 +1649,13 @@ cv.addEventListener("click",function(e){
   var r=cv.getBoundingClientRect();
   var mx=(e.clientX-r.left)*(W/r.width), my=(e.clientY-r.top)*(H/r.height);
   var hitR=Math.max(34, 22*(W/r.width));   // ≥22 CSS px of tap slop on any screen — phone thumbs welcome
+  // Tap what you can SEE. v0.45's elbow-room nudge moves the figure on the paper (drawX) without
+  // touching the simulation (p.x) — which left the hit test aimed at a body that is no longer there:
+  // measured 13 CSS px adrift at 390, and one tap in seven landing on the neighbour instead.
   var best=-1,bd=1e9;
-  S.cast.forEach(function(p){ if(!active(p)) return; var d=Math.hypot(p.x-mx,p.y-4-my); if(d<hitR&&d<bd){bd=d;best=p.id;} });
+  S.cast.forEach(function(p){ if(!active(p)) return;
+    var px=(p.drawX!==undefined?p.drawX:p.x);
+    var d=Math.hypot(px-mx,p.y-4-my); if(d<hitR&&d<bd){bd=d;best=p.id;} });
   if(S.linking!=null){
     if(best>=0 && best!==S.linking) completeLink(best);
     else { S.linking=null; beep(294,0.06); buzz(20); logMsg("(thôi, để dịp khác)","(never mind)"); renderSheet(); }
@@ -1658,7 +1668,7 @@ cv.addEventListener("click",function(e){
     S.looked=S.looked||{}; var wk="w"+(shipHit.yours?"y":shipHit.pid); if(S.looked[wk]===S.season) return; S.looked[wk]=S.season;
     var trW=shipTier(shipHit), spk=shipHit.yours?null:S.cast[shipHit.pid];
     if(spk&&(!active(spk)||spk.gone)) spk=null;
-    if(!spk){ var nd0=1e9; S.cast.forEach(function(p){ if(!active(p)||!p.known) return; var d0=Math.hypot(p.x-mx,p.y-my); if(d0<nd0){nd0=d0;spk=p;} }); }
+    if(!spk){ var nd0=1e9; S.cast.forEach(function(p){ if(!active(p)||!p.known) return; var d0=Math.hypot((p.drawX!==undefined?p.drawX:p.x)-mx,p.y-my); if(d0<nd0){nd0=d0;spk=p;} }); }
     if(!spk) return;
     var TIERSAY=shipHit.yours
       ?[null,{vi:"“Xưởng của bạn đấy. Cả xóm đi ngang đều ngó vào.”",en:"“That's yours. The whole xóm looks in when they pass.”"}]
@@ -1892,6 +1902,7 @@ function see(p,k){ if(!p) return; if(!p.seen) p.seen={tai:false,gan:false,ban:fa
         logMsg("🔎 "+p.name+" — cả ba thừa số đã hiện. Thừa số thấp nhất: "+zk+". Tay nào nâng đúng nó, tích mới chạy.",
                "🔎 "+p.name+" — all three factors showing. Lowest: "+zk+". Only the hand that raises it makes the product move."); }
     },1400); } }
+function seenMin(p){ if(!p||!p.seen) return null; var m=null; ["tai","gan","ban"].forEach(function(k){ if(p.seen[k]&&(m===null||p[k]<m)) m=p[k]; }); return m; }   // the lowest factor you have SEEN — the true minimum is at most this, so the ceiling is at most ceilOf(it)
 function seenAll(p){ return !!p&&(p.started||(!!p.seen&&p.seen.tai&&p.seen.gan&&p.seen.ban)); }   // a bloom shows everything; until then, only what your hands (or the season) have touched
 function floatOn(p,txt,col){ bubbles.push({p:p,lay:layoutBubble(txt),at:performance.now(),until:performance.now()+1200});
   // every number that floats over a person is a number the player has now SEEN — teach, nerve, link, drip, class, witness, fade, the elder's clock
@@ -2425,6 +2436,7 @@ function render(){
   el("buildBtn").disabled=S.acts<=0||S.built||S.over;
   el("probeBtn").disabled=(S.yearCard!==1&&S.acts<=0)||S.probeSeen||S.over;
   el("nextBtn").disabled=S.over;
+  el("nextBtn").classList.toggle("ready",!S.over&&(S.acts|0)===0&&S.cast.some(function(p){return p.known;}));   // hands spent → the season is ready to turn
   el("langBtn").textContent=L==="vi"?"EN":"VI";
   el("muteBtn").textContent=META.muted?"🔇":"🔊";
   el("lblTai").textContent=t("tai"); el("lblGan").textContent=t("gan"); el("lblBan").textContent=t("ban");
@@ -2460,6 +2472,7 @@ function renderSheet(){
   el("multLine").innerHTML=(all?(p.tai+" × "+p.gan+" × "+p.ban+" = <b>"+pr+"</b>")
       :((sT?p.tai:"?")+" × "+(sG?p.gan:"?")+" × "+(sB?p.ban:"?")+" = <b>?</b>"
         +"<small>"+(L==="vi"?"lời họ nói là manh mối — thừa số nào gần không? Tay chạm vào đâu, con số hiện ra ở đó":"their words are the clue — which factor is near zero? Where your hand lands, that number shows")
+        +(function(){ var sm=seenMin(p); return (sm===null||p.started)?"":((L==="vi"?" · trần ≤ ":" · ceiling ≤ ")+Math.round(ceilOf(sm)*100)+"%"); })()   // v0.53: what a partial row already bounds — the ceiling can only be lower than the lowest number you have seen allows
         +(L==="vi"?" · sông ":" · river ")+S.von+"/10</small>"))
     +(all?"<small>"+(p.started
       ?((L==="vi"?"bậc ":"tier ")+trNow+"/3"+stormLine(p)+(held?(L==="vi"?" · sông "+S.von+"/10 giữ bậc — cả xóm góp thêm":" · river "+S.von+"/10 holds it — the xóm must pour in"):trNow<3?(L==="vi"?" · vun tiếp để lên bậc":" · keep tending to rise"):(L==="vi"?" · một thương hiệu":" · a brand")))
@@ -2505,8 +2518,10 @@ function renderSheet(){
       // face. Say which: the verb names the ceiling instead of a delta it cannot deliver.
       var capped=same&&known;
       if(BTN[i]) BTN[i].classList.toggle("maxed",!!capped);
+      // a partial row: the hand on the lowest SEEN factor moves the ceiling's bound — say the bound it would reach (≤); hands on unseen factors stay silent
+      var bound=""; if(!known&&!same&&!p.started&&p.seen&&p.seen[FK[i]]){ var sm=seenMin(p); if(sm!==null&&p[FK[i]]===sm){ var m2=Math.min(q.tai,q.gan,q.ban), sm2=null; ["tai","gan","ban"].forEach(function(k){ if(p.seen[k]&&(sm2===null||q[k]<sm2)) sm2=q[k]; }); bound=(L==="vi"?" · trần ≤ ":" · ceiling ≤ ")+Math.round(ceilOf(sm2)*100)+"%"; } }   // no arrow: a bound is not an answer (Gate 11 keeps "no → until the row is known")
       hints[i].textContent=capped?(t(FK[i])+" 10 · "+(L==="vi"?"hết mức":"maxed"))
-        :(base[i]+((same||!known)?"":(p.started?(" → "+prod(q)+(tQ>tNow?((L==="vi"?" ↑bậc ":" ↑tier ")+tQ):"")):(" → "+Math.round(chance(q)*100)+"%")))); });   // the reading stays yours — no verb is bolded
+        :(base[i]+((same||!known)?bound:(p.started?(" → "+prod(q)+(tQ>tNow?((L==="vi"?" ↑bậc ":" ↑tier ")+tQ):"")):(" → "+Math.round(chance(q)*100)+"%")))); });   // the reading stays yours — no verb is bolded
   })();
 }
 var BEH_G={1:"🧹",2:"🪑",3:"…",4:"🧺",5:"👥",6:"🔨",7:"🌊",8:"👀",9:"🐔",10:"🌱",11:"📖",12:"🌾"};   // the errands, as glyphs
@@ -2603,6 +2618,8 @@ el("actPill").onclick=function(){ if(!S||S.over) return; beep(523,0.05);
          S.acts>0?("⚡ "+S.acts+" hand"+(S.acts>1?"s":"")+" left this season — each is a lesson, a night, a bond, or a hụi round."):"⚡ Out of hands — they refill next season"+(S.luat<4&&S.stormStreak<=2?" (storm: 2⚡)":" (3⚡)")+"."); };
 el("teachBtn").onclick=actTeach; el("nerveBtn").onclick=actNerve; el("linkBtn").onclick=actLink; el("potBtn").onclick=actPot;
 el("huiBtn").onclick=actHui; el("buildBtn").onclick=actBuild; el("probeBtn").onclick=actProbe; el("shelBtn").onclick=actShel;
+// 🔁 the same year again — same card, same tied hand — for the player who has just seen where the zero was and wants another go at it
+el("sameBtn").onclick=function(){ window._pendYc=S.yearCard|0; window._pendCon=S.constraint|0; beep(523,0.06); el("againBtn").click(); };
 el("againBtn").onclick=function(){ el("endOvl").classList.remove("show"); try{localStorage.removeItem(SAVE_KEY);}catch(e){} fresh(); S.sel=-1;
   var c2=loadChron(); if(c2.length){ var last=c2[c2.length-1], sn2={}; c2.forEach(function(r){if(r&&r.ti)sn2[r.ti]=1;});
     logMsg("📜 Sổ xóm ghi: "+last.tv+".","📜 The village book records: "+last.te+"."); void sn2; }

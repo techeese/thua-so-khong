@@ -1,5 +1,21 @@
 # Changelog — Thừa Số Không
 
+## v0.53 — 2026-08-15 — a partial row prints its bound
+
+Closes: under the owner's standing `/loop 3m` directive, the arithmetic a half-known row already
+carries and the sheet withheld. Since v0.33 a row reads `? × 3 × ? = ?` until every factor is touched
+— but one seen factor already bounds the outcome: the true minimum is at most that number, so the
+ceiling (v0.38) is at most `ceilOf(it)`.
+
+- **The sheet prints the bound** — *trần ≤ 8%* for a `? × 3 × ?` row — and **the hand on the lowest
+  seen factor prints the bound it would reach** (*+2 GAN · 1⚡ · trần ≤ 25%*); hands on unseen
+  factors stay silent, and no point answer (*→ N%*) appears until the row is known, so v0.33's rule
+  and Gate 11 stand as written. `seenMin()` is the one helper; the bound is monotone in `ceilOf`, so
+  it is never wrong, only loose.
+- *Evidence:* new **Gate 36** (`BOUND_OK sheet=true nerve="trần ≤ 25%" teachSilent=true
+  noPoint=true`); id 35 had just been taken by the graphics session — renumbered before committing.
+  Gates green, hash-bracketed. No balance changed.
+
 ## v0.52 — 2026-08-15 — a ceiling is not an empty hand
 
 A graphics round from the owner's `/loop 5m` session. It began by **measuring the item the pointer

@@ -57,6 +57,7 @@ Rules:
 | `Gate 32` | 1 | the partner's gain is on the chip — with Kết nối armed, each candidate's roster chip reads +2 BẠN (no bonds yet) or +1 BẠN (already bonded); disarmed, no gain shows (v0.52) |
 | `Gate 33` | 1 | a ceiling is not an empty hand — a verb switched off because its factor stands at 10 names the ceiling and promises no delta, keeps that face when the hands also run out, and is visually distinct from a verb merely unaffordable; bilingual (v0.52) |
 | `Gate 34` | 1 | every GAN move prints — an erased stall floats −3 GAN ⬛ on its owner, a stepped-down shop −2 GAN ⬛, and finishing your own roof +1 GAN 🛠 on everyone you have met (v0.51) |
+| `Gate 36` | 1 | a partial row prints its bound — with one factor seen the sheet says trần ≤ ceilOf(it), the hand on the lowest seen factor says the bound it would reach, hands on unseen factors stay silent, and still no `→ N%` anywhere until the row is known (v0.53) |
 
 ## Convergence gates — `done.sh`
 

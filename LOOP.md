@@ -93,7 +93,8 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.51: every GAN move prints — step-down −2, erasure −3, your roof's +1 (Gate 34). v0.50: the grader's `check.js:47` mirror defect closed (`<=2`), band holds; the tarp says how long it
+**v0.53: a partial row prints its bound — trần ≤ ceilOf(lowest seen), on the sheet and on the hand
+that would move it (Gate 36); no point answer until the row is known. v0.51: every GAN move prints — step-down −2, erasure −3, your roof's +1 (Gate 34). v0.50: the grader's `check.js:47` mirror defect closed (`<=2`), band holds; the tarp says how long it
 holds. v0.49: while a link is armed each candidate chip prints +2/+1 BẠN (Gate 32); the lab found v0.46's
 speech lane rescued 0/480 calls (harmless, ineffective — the blocks were speech). v0.48: shelter tarps every standing roof (Gate 23 tightened) — the late game's "hold what you built"
 decision; measured: a plausible player blooms 7/7 by s8 and idles 21 of the last 24 hands (back-half

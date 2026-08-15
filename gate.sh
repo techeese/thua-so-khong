@@ -1011,6 +1011,75 @@ PYEOF33
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/gm.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "GANMOVE_OK" && pass "every GAN move prints: $T" || fail "every GAN move prints: $T"
 
+# Gate 36: a partial row prints its bound — Bé Ngân after one failure night (GAN 3 seen, TÀI/BẠN unseen): the sheet says trần ≤ 8%, the nerve hand says
+# trần ≤ 25% (GAN 5 would be the lowest seen), the teach hand (unseen factor) says nothing; still no "→ N%" anywhere until the row is known.
+python3 - "$TMP" <<'PYEOF35'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  var ng=S.cast[0]; ng.tai=8; ng.gan=1; ng.ban=4; selectPerson(0); S.acts=3; actNerve();
+  var ml=document.getElementById("multLine").textContent, nh=document.getElementById("nerveHint").textContent, th=document.getElementById("teachHint").textContent;
+  var ok=/(trần|ceiling) ≤ 8%/.test(ml)&&/(trần|ceiling) ≤ 25%/.test(nh)&&!/(trần|ceiling)/.test(th)&&!/→ \d+%/.test(nh+th+ml);
+  document.title=(ok?"BOUND_OK":"BOUND_BAD")+" sheet="+(/(trần|ceiling) ≤ 8%/.test(ml))+" nerve="+nh.slice(-14)+" teachSilent="+(!/(trần|ceiling)/.test(th))+" noPoint="+(!/→ \d+%/.test(nh+th+ml));
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/bound.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF35
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/bound.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "BOUND_OK" && pass "a partial row prints its bound: $T" || fail "a partial row prints its bound: $T"
+
+# Gate 35: you can tap what you can see — the machine half of the owner gate "390px hands · canvas tap
+# targets all reachable". v0.45's elbow-room nudge moves a figure on the paper (drawX) without touching
+# the simulation (p.x), and the hit test was still aimed at p.x: 13 CSS px adrift at 390, one tap in
+# seven selecting the neighbour. Asserts three things at a true 390: the thumb target is at least 22
+# CSS px of radius, tapping each villager where they are DRAWN selects that villager, and every active
+# villager owns a reachable patch of canvas rather than being buried under a neighbour's zone.
+python3 - "$TMP" <<'PYEOF35'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<style>html,body{width:390px;margin:0 auto}</style>
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<7;s++){ S.acts=3; S.nudged=true; nextSeason(); }
+  S.cast.forEach(function(p){ p.known=true; p.arriveT=0; });   // nobody mid arrival-slide
+  var act=S.cast.filter(function(p){ return active(p)&&!p.gone; });
+  act.slice(0,4).forEach(function(p,i){ p.x=p.tx=p.hx=460+i*12; p.y=p.ty=p.hy=420; p.amb=0; p.vUntil=0; });
+  for(var f=0;f<60;f++){ act.forEach(function(p){ p.tx=p.x; p.ty=p.y; p.arriveT=0; }); drawScene(1000+f*16); }
+  var r=document.getElementById("cv").getBoundingClientRect(), k=r.width/W;
+  var hitR=Math.max(34, 22*(W/r.width));
+  function pick(mx,my){ var best=-1,bd=1e9;
+    S.cast.forEach(function(p){ if(!active(p)) return;
+      var px=(p.drawX!==undefined?p.drawX:p.x);
+      var d=Math.hypot(px-mx,p.y-4-my); if(d<hitR&&d<bd){bd=d;best=p.id;} });
+    return best; }
+  // 1. tap each villager where they are drawn
+  var missed=0;
+  act.forEach(function(p){ if(pick((p.drawX!==undefined?p.drawX:p.x), p.y)!==p.id) missed++; });
+  // 2. raster the whole canvas: everyone must own some reachable ground
+  var area={}; act.forEach(function(p){ area[p.id]=0; });
+  for(var gx=0; gx<W; gx+=8) for(var gy=200; gy<H; gy+=8){ var id=pick(gx,gy); if(id>=0) area[id]++; }
+  var minArea=1e9, orphan=0;
+  act.forEach(function(p){ var a=area[p.id]|0; if(a<minArea) minArea=a; if(a===0) orphan++; });
+  var thumbCss=hitR*k;
+  var ok = thumbCss>=21.5 && missed===0 && orphan===0 && minArea>=4 && act.length>=5;
+  document.title=(ok?"TAP_OK":"TAP_BAD")+" thumbCss="+thumbCss.toFixed(1)+" villagers="+act.length
+    +" tappedWhereDrawnMissed="+missed+" unreachable="+orphan+" minTapCells="+minArea;
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/tp.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF35
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=600,900 --virtual-time-budget=9000 --dump-dom "file://$TMP/tp.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "TAP_OK" && pass "you can tap what you can see: $T" || fail "you can tap what you can see: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."
