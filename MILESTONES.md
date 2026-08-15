@@ -175,6 +175,15 @@ the fair-opponent era's work, or the owner's. Numbers are as of v0.68 (ceiling �
   ≥6 tiers in every year* → **no change at all** (12.3 → 12.4): the flywheel threshold is not a lever;
   the year-end +1s carry the river to 10 regardless, so a river that can *fall* is the only capital
   lever left.
+- **A river that can fall — priced, and it does not bite** (1200 runs): *no roof standing at year-end
+  → river −1* moves idle 2.47 → 2.43 and nothing else; *year-end rise needs a roof* moves nothing.
+  Structural reason: since v0.38 `chance = min(ceiling, product × river)`, and for everyone whose
+  weakest factor is ≤5 the ceiling binds, so the river multiplier is *irrelevant to exactly the
+  people a low river would hurt*. Capital now matters only above the ceiling (weakest ≥6) and as
+  the tier cap. That is thesis-consistent (no amount of capital compensates a zero) — but it means
+  the "fourth factor" is, in play, a tier cap plus a late multiplier, and any era that wants capital
+  to *decide* must let it act on the ceiling (e.g. a river ≤2 lowering every ceiling one step),
+  which is a charter §3 conversation, not a tick.
 - **The witness bound (v0.57)** is the one balance change a tick did ship, because it converts idle
   back-half hands into work: hunter 16.0 → 12.3 tiers in the sim, unchanged blooms, every band
   clause held. If the fair-opponent era finds it too steep, the knob is the cap (5), not the rule.
