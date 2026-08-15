@@ -684,6 +684,88 @@ PYEOF24
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=9000 --dump-dom "file://$TMP/h.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "SOTAY_OK" && pass "the Sổ tay keeps its way out: $T" || fail "the Sổ tay keeps its way out: $T"
 
+# Gate 25: elbow room — villagers must not print on top of one another. THE FIRST SEEDED GATE:
+# Math.random AND performance.now are both driven from the harness, so two builds see identical dice
+# and identical walks and a before/after difference means something. Without that, this metric was
+# unmeasurable — three runs of near-identical code gave avgNamed 4.15 / 4.58 / 3.77 and a real fix and
+# a no-op were indistinguishable. Baseline on v0.42 over these three seeds: overlapFrac 0.240.
+python3 - "$TMP" <<'PYEOF25'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+var SEEDS=[11,22,88];
+var _s=0; function lcg(seed){ _s=seed>>>0; }
+Math.random=function(){ _s=(1103515245*_s+12345)>>>0; return _s/4294967296; };
+var VT=0; performance.now=function(){ return VT; };   // visit() stamps p.vUntil from this — leaving it real leaks wall time into who is walking
+var out=[], si=0;
+function runSeed(seed, done){
+  lcg(seed); VT=0;
+  localStorage.removeItem("thua-so-khong-v1"); localStorage.removeItem("thua-so-khong-chronicle");
+  try{ fresh(); }catch(e){}
+  document.getElementById("startBtn").click();
+  var frames=0, hit=0;
+  for(var seas=0; seas<16; seas++){
+    for(var i=0;i<7;i++){ var c=S.cast[i]; if(c&&!c.known&&(c.arrives===undefined||S.season>=c.arrives)&&!c.gone) selectPerson(i); }
+    var un=S.cast.filter(function(p){return p.known&&!p.started&&!p.gone;});
+    if(un.length){ selectPerson(un[0].id); actNerve(); }
+    for(var f=0;f<8;f++){
+      VT=1000+seas*1000+f*120; drawScene(VT);
+      var act=S.cast.filter(function(p){ return !p.gone && (p.arrives===undefined||S.season>=p.arrives); });
+      frames++;
+      var h=false;
+      for(var a=0;a<act.length;a++) for(var b=a+1;b<act.length;b++){
+        var pa=act[a], pb=act[b];
+        var ax=(pa.drawX!==undefined?pa.drawX:pa.x), bx=(pb.drawX!==undefined?pb.drawX:pb.x);
+        if(Math.abs(ax-bx)<26 && Math.abs(pa.y-pb.y)<34) h=true; }
+      if(h) hit++;
+    }
+    VT=1000+seas*1000+960; S.nudged=true; nextSeason(); if(S.over) break;
+  }
+  out.push(hit/frames); done();
+}
+setTimeout(function step(){
+  if(si>=SEEDS.length){
+    var O=0; out.forEach(function(v){ O+=v; }); var frac=O/out.length;
+    var ok = out.length===3 && frac<=0.13;
+    document.title=(ok?"ELBOW_OK":"ELBOW_BAD")+" seeds="+out.length+" overlapFrac="+frac.toFixed(4)
+      +" perSeed="+out.map(function(v){return v.toFixed(3);}).join(",")+" (v0.42 baseline 0.240)";
+    return;
+  }
+  runSeed(SEEDS[si++], function(){ setTimeout(step,10); });
+},500);
+</script>"""
+open(tmp+"/el.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF25
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,780 --virtual-time-budget=120000 --dump-dom "file://$TMP/el.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "ELBOW_OK" && pass "elbow room: $T" || fail "elbow room: $T"
+
+# Gate 26: the hand that crosses a threshold says so — a bloomed 7×5×8=280 shows "→ 350 ↑bậc 2" on the hand that lifts the product past 300 at a
+# river that can carry a shop, plain "→ 350" when the river holds it at a stall, and no arrow on a hand that stays under 300.
+python3 - "$TMP" <<'PYEOF24'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  var mai=S.cast[2]; mai.known=true; mai.started=true; mai.seen={tai:true,gan:true,ban:true}; mai.tai=7; mai.gan=5; mai.ban=8;   // 280
+  S.ships.push({x:420,y:300,owner:mai.name,pid:2,age:2}); S.von=5; S.acts=3; selectPerson(2); renderSheet();
+  var t1=document.getElementById("teachHint").textContent, n1=document.getElementById("nerveHint").textContent;   // teach → 9×5×8=360 ↑tier 2 · nerve → 7×7×8=392 ↑tier 2
+  S.von=2; renderSheet(); var t2=document.getElementById("teachHint").textContent;                                  // river ≤3 holds a stall: no arrow
+  mai.tai=4; mai.gan=5; mai.ban=8; S.von=5; renderSheet(); var t3=document.getElementById("teachHint").textContent;  // 160 → 240: under 300, no arrow
+  var ok=/→ 360 ↑(bậc|tier) 2/.test(t1)&&/→ 392 ↑(bậc|tier) 2/.test(n1)&&/→ 360$/.test(t2)&&/→ 240$/.test(t3);
+  document.title=(ok?"RUNG_OK":"RUNG_BAD")+" teach="+t1.slice(-16)+" nerve="+n1.slice(-16)+" held="+t2.slice(-8)+" under="+t3.slice(-8);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/rung.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF24
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/rung.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "RUNG_OK" && pass "the hand that crosses a threshold says so: $T" || fail "the hand that crosses a threshold says so: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

@@ -176,7 +176,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.42</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.43</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -1157,6 +1157,31 @@ function drawScene(now){
     ctx.fillStyle="#E3A63B"; ctx.fillRect(ln.x-4,ln.y-11+fl2,8,3); ctx.fillRect(ln.x-3,ln.y+10+fl2,6,5);
   });
   lblR.length=0;
+  // 🧍🧍 elbow room — villagers were printing on top of one another in a fifth of all frames, which is
+  // also why the bank could not name everyone: two figures at one spot are two labels at one spot.
+  // This is a DRAW-time nudge only. p.x is never touched, so the sim, the errands and the thesis band
+  // see nothing of it; the figures just decline to share a square of paper. Eased, so nobody jumps.
+  (function(){ var act=[], ci;
+    for(ci=0;ci<S.cast.length;ci++) if(active(S.cast[ci])) act.push(S.cast[ci]);
+    for(ci=0;ci<act.length;ci++) act[ci]._sepT=act[ci]._sepX||0;
+    // relax several times: with three in a cluster a single pass has the pushes cancel, so the
+    // middle one stays put while its neighbours separate — measurably WORSE than doing nothing.
+    for(var it=0;it<5;it++)
+      for(var a=0;a<act.length;a++) for(var b=a+1;b<act.length;b++){
+        var pa=act[a], pb=act[b];
+        if(Math.abs(pa.y-pb.y)>=34) continue;
+        var d=(pa.x+pa._sepT)-(pb.x+pb._sepT), ad=Math.abs(d);
+        if(ad>=30) continue;
+        var push=(30-ad)/2, dir=(ad<0.01)?((pa.id<pb.id)?-1:1):(d>0?1:-1);
+        pa._sepT+=push*dir*0.5; pb._sepT-=push*dir*0.5; }
+    for(ci=0;ci<act.length;ci++){ var p3=act[ci];
+      var t=Math.max(-22,Math.min(22,p3._sepT||0));
+      // and keep the nudged figure on the paper — an unbounded offset pushed people into the frame
+      // edge, where they piled up and overlapped MORE than they had before (seed 11, measured).
+      t=Math.max(40-p3.x, Math.min(W-40-p3.x, t));
+      p3._sepX=(p3._sepX||0)+(t-(p3._sepX||0))*0.25;
+      if(Math.abs(p3._sepX)<0.05) p3._sepX=0; }
+  })();
   var dn=0, di, de;
   for(di=0;di<S.ships.length;di++){ de=dlBuf[dn]||(dlBuf[dn]={z:0,s:null,p:null});
     de.z=S.ships[di].y+30; de.s=S.ships[di]; de.p=null; dn++; }
@@ -1448,7 +1473,7 @@ function person(p,now){
   if(atT){ if(beh===2) bob*=0.4; else if(beh===7) bob*=0.3; }
   var awk=p.arriveT?Math.min(1,(now-p.arriveT)/1800):1;
   if(awk>=1) p.arriveT=0;
-  var x=p.x+(1-awk)*(W+70-p.x), y=p.y+bob+(atT&&beh===2?4:0)+(awk<1?Math.abs(Math.sin(now*0.02))*2:0), sc=p.young?0.85:1;
+  var x=p.x+(p._sepX||0)+(1-awk)*(W+70-p.x), y=p.y+bob+(atT&&beh===2?4:0)+(awk<1?Math.abs(Math.sin(now*0.02))*2:0), sc=p.young?0.85:1;
   p.drawX=x;
   // shadow — flat and light (a print barely casts one)
   ctx.fillStyle="rgba(43,35,32,.10)"; ctx.beginPath(); ctx.ellipse(x,p.y+22,15,4.4,0,0,6.28); ctx.fill();
@@ -1602,7 +1627,8 @@ cv.addEventListener("click",function(e){
              {vi:"“Người ta gọi là thương hiệu. Tôi vẫn gọi là cái xưởng.”",en:"“People call it a brand. I still call it the workshop.”"}];
     var sayW=TIERSAY[shipHit.yours?1:trW]||TIERSAY[1];
     if(!shipHit.yours&&spk&&spk.id===shipHit.pid){ var prU=prod(spk), trU=prU<300?1:prU<600?2:3;   // held down by the river, not by their hands — they say so
-      if(trU>trW) sayW={vi:"“Tay tôi đủ — nước thì chưa. Sông đầy hơn, mái này lên bậc.”",en:"“My hands are ready — the water isn't. Higher river, higher roof.”"}; }
+      if(trU>trW) sayW={vi:"“Tay tôi đủ — nước thì chưa. Sông đầy hơn, mái này lên bậc.”",en:"“My hands are ready — the water isn't. Higher river, higher roof.”"};
+      if(S.luat<4&&!shipHit.born&&(shipHit.shel|0)<=0&&(shipHit.age|0)<2) sayW={vi:"“Mái mới, trời này… mười lăm phần trăm là con dấu rơi. Có tấm bạt thì đỡ.”",en:"“A young roof, this sky… fifteen in a hundred the stamp falls. A tarp would help.”"}; }   // the exposed one asks, in effect, for the shelter hand
     visit(spk,shipHit.x-30,shipHit.y+24,5200); voice(spk,0.06);
     (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,ln[L]); },1300); })(spk,sayW);
     return;
@@ -1827,7 +1853,7 @@ function nextSeason(){
   S.linking=null;
   flushPend(true);   // any pending lessons land BEFORE this season's burst, not inside it
   var _preActive=S.cast.filter(active).map(function(p){return p.id;});
-  var _rc={von0:S.von, bloom:0, stamp:0, fade:0};   // the season's ledger — one recap line closes each season in the log
+  var _rc={von0:S.von, bloom:0, stamp:0, fade:0, sky:S.luat<4?"☁️":(S.luat>=7?"☀️":"")};   // the season's ledger — one recap line closes each season in the log; the sky it ran under is part of it
   if(S.acts>0){ S.idle=(S.idle|0)+S.acts; _rc.idle=S.acts; }   // hands left on the table this season — counted, shown at the end, never carried
   // one gentle first-turn nudge: don't let a new player skip past their whole hand
   if(S.season===0 && S.acts===2 && !S.nudged){ S.nudged=true;
@@ -1984,7 +2010,7 @@ function nextSeason(){
       if(_rc.bloom) b.push("🌸"+_rc.bloom); if(_rc.stamp) b.push("⬛"+_rc.stamp);
       if(dv) b.push("🌊"+(dv>0?"+":"")+dv); if(_rc.fade) b.push((lang==="vi"?"phai ":"faded ")+_rc.fade); if(_rc.idle) b.push("⚡"+_rc.idle+(lang==="vi"?" trống":" unused"));
       return b.length?(" · "+b.join(" ")):""; }
-    var yr=" "+(2026+Math.floor(S.season/4));
+    var yr=" "+(2026+Math.floor(S.season/4))+(_rc.sky?(" "+_rc.sky):"");
     S.log.unshift({vi:"── "+STR.seasons.vi[S.season%4]+yr+bits("vi")+" ──",en:"── "+STR.seasons.en[S.season%4]+yr+bits("en")+" ──",div:true});
     S.hist=(S.hist||[]).slice(0,S.season); S.hist[S.season]=(Math.min(3,_rc.bloom)*4)+Math.min(3,_rc.stamp);   // one small int per season: blooms×4 + stamps — the run's timeline, for the ending
     S.log=S.log.slice(0,24); renderLog(); })();
@@ -2398,7 +2424,8 @@ function renderSheet(){
     var vs=[after(2,0,0),after(0,2,0),after(0,0,gL)], hints=[el("teachHint"),el("nerveHint"),el("linkHint")], base=[STR.teachH[L],STR.nerveH[L],(gL===2?STR.linkH[L]:STR.linkH[L].replace("+2","+1"))];
     var known=seenAll(p);   // the per-verb answer needs the whole row — until then the verb is a guess, and the guess is the game
     vs.forEach(function(q,i){ var same=(q.tai===p.tai&&q.gan===p.gan&&q.ban===p.ban);   // a maxed factor: nothing to show
-      hints[i].textContent=base[i]+((same||!known)?"":(p.started?(" → "+prod(q)):(" → "+Math.round(chance(q)*100)+"%"))); });   // the reading stays yours — no verb is bolded
+      var tNow=p.started?Math.min(tierCap(),prod(p)<300?1:prod(p)<600?2:3):0, tQ=p.started?Math.min(tierCap(),prod(q)<300?1:prod(q)<600?2:3):0;   // the hand that crosses a threshold says so — and the river's cap is honoured, so a held tier does not promise a rung it cannot climb
+      hints[i].textContent=base[i]+((same||!known)?"":(p.started?(" → "+prod(q)+(tQ>tNow?((L==="vi"?" ↑bậc ":" ↑tier ")+tQ):"")):(" → "+Math.round(chance(q)*100)+"%"))); });   // the reading stays yours — no verb is bolded
   })();
 }
 function renderRoster(){
@@ -2408,6 +2435,7 @@ function renderRoster(){
     if(!active(p)) return;
     var cls="rc"+(p.known?"":" unk")+(S.sel===p.id?" sel":"")+((S.linking!=null&&S.linking!==p.id&&p.known&&!pairExists(S.linking,p.id))?" cand":"");
     var z=(p.known&&!p.started)?zeroOf(p):null, tag=p.started?(tierOf(p)>=3?"🪜🪜🪜":tierOf(p)===2?"🪜🪜":"🌸"):(z?("<small>"+(hasZero(p)?"×0 ":"")+z+"</small>"):((p.known&&(p.mom||0)>0)?"🌱":""));
+    if(p.started&&S.luat<4&&typeof stormLine==="function"){ var sl=stormLine(p), m9=sl.match(/(🛡|⬛) (\d+)%/); if(m9) tag+=" <small>"+m9[1]+m9[2]+"%</small>"; }   // the sky's number on the chip, under a heavy sky
     var nm=p.known?p.name:(L==="vi"?"?":"?");
     // three dots per known, un-bloomed person: which of TÀI · GAN · BẠN your hands have touched — the row's progress, at a glance
     var dots=(p.known&&!p.started)?("<span class=\"sd\" title=\"TÀI · GAN · BẠN\">"+["tai","gan","ban"].map(function(k){ return (p.seen&&p.seen[k])?"●":"○"; }).join("")+"</span>"):"";
@@ -2505,7 +2533,7 @@ function renderHelp(){
     var cap=tierCap(), rows=[];
     S.cast.forEach(function(p){ if(!active(p)||!p.known) return;
       var st;
-      if(p.started){ var tr=tierOf(p); st=(vi?"xưởng bậc ":"workshop tier ")+tr+(tr<cap&&tr<3?(vi?" · vun tiếp":" · keep tending"):"")+(tr===cap&&tr<3?(vi?" · sông giữ bậc":" · river holds it"):""); }
+      if(p.started){ var tr=tierOf(p); st=(vi?"xưởng bậc ":"workshop tier ")+tr+(tr<cap&&tr<3?(vi?" · vun tiếp":" · keep tending"):"")+(tr===cap&&tr<3?(vi?" · sông giữ bậc":" · river holds it"):"")+(typeof stormLine==="function"?stormLine(p):""); }
       else { var sa=seenAll(p), z=zeroOf(p), sn=p.seen||{}, seenN=["tai","gan","ban"].filter(function(k){return sn[k];}).length;
         st=(sa?(hasZero(p)?(vi?"số không: "+z+" — 0%":"zero: "+z+" — 0%"):(z?(vi?"thấp nhất: "+z+" · ":"lowest: "+z+" · "):"")+Math.round(chance(p)*100)+"%"):(vi?("mới biết "+seenN+"/3 thừa số"):("read "+seenN+"/3 factors")))
            +((p.mom||0)>0?" 🌱":"")+((p.hands|0)>0?(" · "+(p.hands|0)+"⚡"):""); }

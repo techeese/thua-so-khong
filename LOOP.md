@@ -93,7 +93,9 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.41: the law's number is printed — a bloomed person's sheet says ⬛ 15%/5%/🛡 0% under a heavy sky and
+**v0.43: `↑bậc N` on the hand that crosses a tier line the river can carry (Gate 26). ⚠ The engine's
+§31 disposition (X): transitions cannot execute while both owner loops commit into `index.html`
+every 4–7 min — the ladder is blocked on the OWNER (quiesce window / scope note). v0.41: the law's number is printed — a bloomed person's sheet says ⬛ 15%/5%/🛡 0% under a heavy sky and
 the shelter button says how many roofs one hand covers (Gate 23); measured: ~6 storm seasons a run,
 0.35 erasures + 0.9 step-downs for the hunter. The engine is at L3 (form), candidate P "seven lives"
 under five critics — mechanic ticks ship only what P would inherit whole (arithmetic honesty).

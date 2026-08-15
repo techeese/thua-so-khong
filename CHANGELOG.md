@@ -1,5 +1,23 @@
 # Changelog — Thừa Số Không
 
+## v0.43 — 2026-08-15 — the hand that crosses a threshold says so
+
+Closes: under the owner's standing `/loop 3m` directive, the last per-verb readout that told less than
+it knew. For a bloomed person the sheet's hands read *→ 360* — a product, with the tier lines (300 /
+600) and the river's cap left for the player to remember.
+
+- **`↑bậc N` on the crossing hand.** When a hand would lift a workshop's product across a tier line
+  the river can carry, the hint says so: *+2 TÀI · 1⚡ → 360 ↑bậc 2*. Held by the river (≤3 → stall,
+  ≤6 → shop) it stays *→ 360* — no rung is promised that cannot be climbed; under the line, no arrow.
+  Tending after the bloom now has the same legible answer as tending before it.
+- *Evidence:* new **Gate 26** (`RUNG_OK teach="→ 360 ↑bậc 2" nerve="→ 392 ↑bậc 2" held="→ 360"
+  under="→ 240"`); ids 24–25 were taken by the graphics session's in-tree gates minutes earlier —
+  checked for duplicates before committing. Twenty-six gates green, hash-bracketed; no balance changed.
+- **OWNER, from the engine's disposition (`SYNTHESIS.md` §31, unanimous 5 critics):** *no era or form
+  transition can execute as one commit while both owner loops commit into `index.html` every 4–7
+  minutes* — the autonomous ladder is blocked on you until you grant a quiesce window or a scope
+  note. This loop keeps shipping only what any era would inherit whole.
+
 ## v0.42 — 2026-08-15 — the Sổ tay keeps its way out
 
 A graphics round from the owner's `/loop 5m` session, on the help card — the third and last of the
