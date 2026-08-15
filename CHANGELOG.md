@@ -1,5 +1,38 @@
 # Changelog — Thừa Số Không
 
+## v0.33 — 2026-08-15 — the numbers hide until your hand touches them
+
+Closes: the open owner gate *"Diagnosis feels like play — finding which factor is zero is the fun
+part, not homework"* on its machine side, under the owner's standing `/loop 3m` directive. Measured
+first: even at **2 hands a season** the perfect-information hunter still blooms 6.94/7 (3 hands:
+6.98), so tension for a diagnosing player cannot come from scarcity — the sim's hunter *is* a
+player who reads the row. And the row was handed over free: talk once and all three numbers, the
+product, the sprout %, the zero tag and the per-verb "→ N%" appeared. Each cast quote was authored
+as a clue to that person's zero (*"Dad says medicine is safer"* → GAN; *"back… and feel like a
+guest"* → BẠN; *"only lack a product of my OWN"* → TÀI) and did no work.
+
+- **Each factor is `?` until touched.** `p.seen{tai,gan,ban}`; a bloom shows all. What reveals: any
+  number that floats over a person — teach, nerve, link, the mentor drip, Cô Mai's class, a
+  witnessed bloom's +1 GAN, fade, the elder's −1 TÀI 🕯 (`floatOn` marks what it prints, so the world
+  reveals what the world does to them). The sheet reads `? × 3 × ? = ?` with one line under it —
+  *lời họ nói là manh mối — thừa số nào gần không? Tay chạm vào đâu, con số hiện ra ở đó* — until
+  the row is known; then the product, sprout %, river multiplier and the "→ N%" per-verb answers
+  appear as before. The map's `×0 số không: X` / `gần không: X` label and the roster tag print only
+  once *that* factor has been touched; the pot needs a known row (*chưa hiểu người ta*).
+  A wrong guess costs a hand on a factor that wasn't the zero — the natural price, felt not told.
+  Saves from before carry `seen`=all (`sn` bits; missing → 7). Help card and the one teaching line
+  (`STR.reveal`) rewritten to what is now true.
+- Also measured and closed from the bank: **hụi and the pot as strategies** — hunter-with-hụi
+  6.98 blooms / 15.1 tiers, pot-every-season 6.76 / 13.9 vs hunter 6.98 / 16.1: neither is a spam
+  channel; the pot is a net loss when spammed and situational when not. `check.js` notes the sim
+  keeps perfect information on purpose.
+- *Evidence:* new **Gate 11** (`HIDDEN_OK v0=??? mult0=true hint0=true unnamed=true
+  afterNerve=?/3/? all=true hint2="→ 9%"`). Gates 7 and 10 harnesses now set the row as learned
+  before asserting (assertions unchanged). Band unchanged (hunter 6.98 / spreader 5.97 / linker 6.74
+  / idle 2.80). Twelve gates green, hash-bracketed. Sheet screenshot read: `? × 3 × ? = ?`.
+- **Provenance:** the `/loop 5m` graphics session's in-tree work at commit time ships here under
+  owner authority, unreviewed.
+
 ## v0.32 — 2026-08-15 — the print fits a phone, and it is gated
 
 A graphics round from the owner's `/loop 5m` session (*"review it and make some

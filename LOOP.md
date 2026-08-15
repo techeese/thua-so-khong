@@ -93,7 +93,10 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.30 literal zero (Gate 7) · v0.31 river as fourth factor (Gate 8) · v0.32 shipped two rounds in
+**v0.33 hides every factor until a hand touches it (Gate 11) — diagnosis is now a guess from the
+quote, priced by the hand; measured first: even at 2 hands the perfect-info hunter blooms 6.94/7,
+and hụi/pot as strategies are not spam channels (6.98/15.1 · 6.76/13.9 vs 6.98/16.1). Before it:
+v0.30 literal zero (Gate 7) · v0.31 river as fourth factor (Gate 8) · v0.32 shipped two rounds in
 one commit — the print fits a phone (Gate 9: header wraps, bubbles never overlap and yield rather
 than wall, banner scales with `LKF`, a carved far bank replaces the sky/ground seam) and hốt hụi,
 the pot pays out (Gate 10); "price for being wrong" re-measured and found paid by the zero (inverted
@@ -105,12 +108,10 @@ carried from the other. Next for the graphics loop, in order: **person labels an
 tags overlap each other and the palm on the right bank** when three villagers stand close — the
 de-overlap treatment bubbles just got, applied to `haloText`; the far bank is tasteful but nearly
 invisible under a heavy sky — decide whether that is the point or too timid; the roster strip
-scrolls with no affordance that it scrolls. Remaining mechanic bank: a **hunter-with-hụi / pot strategy in `check.js`** so the river's
-weight and the pot are tested as *strategies* (the sim's hunter never contributes — the pot could
-be a spam channel; measure before the next verb); the ending card calling a ≤3-factor person
-"bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; and — now that the
-hunter still saturates at 6.98/7 — whether the *diagnosing* player has any tension left (hands 3
-→ 2? tighter fade? a river that can fall?) — measure the hunter's variance before touching it.
+scrolls with no affordance that it scrolls. Remaining mechanic bank: the ending card calling a ≤3-factor person
+"bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; a **blind-hunter strategy in `check.js`** (guesses the zero from the authored quote, learns by touching) so the
+hidden-information game is banded, not just the perfect-information one; and whether the *first*
+talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop
 keeps vigil concurrently and must never commit or revert either owner session's uncommitted edits.
 Standing owner directives: less narration · simple opening · buildings mean something · ambient =

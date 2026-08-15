@@ -20,6 +20,8 @@ function makeCast(rnd){ return [
   if(idx===6) o.arrives=5+Math.floor(rnd()*4);
   if(idx===3) o.arrives=1; if(idx===1) o.arrives=2; if(idx===4) o.arrives=3; if(idx===5) o.arrives=4;   // the xóm gathers (mirrors index.html)
   return o; }); }
+// v0.33: the game hides each factor until a hand touches it — the sim's hunter keeps perfect information on purpose:
+// it is the player who reads every quote right, and the band asks whether THAT player beats spreading and idling.
 function activeSim(c,season){ return !c.gone && (c.arrives===undefined||season>=c.arrives); }
 
 function vonMul(von){ return 0.3+0.7*von/10; }                    // capital multiplies (mirrors index.html): a thin river ×0.37, a full one ×1.0

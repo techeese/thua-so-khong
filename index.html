@@ -151,7 +151,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.32</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.33</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -262,7 +262,7 @@ var STR={
   huiDone:{vi:"Phiên hụi góp xong — ai cũng kêu hết tiền, mà ai cũng góp đủ. Sông đầy thêm một chút.",en:"The hụi round closes — everyone pleads poverty, everyone pays in full. The river rises a little."},
   riverLow:{vi:"Dòng sông cạn — xưởng nào mở cũng chỉ là gánh hàng.",en:"The river runs low — any workshop stays a street stall."},
   talkFirst:{vi:"Chạm vào một người để trò chuyện.",en:"Tap a person to talk."},
-  reveal:{vi:"Bạn ngồi nghe. Giờ bạn nhìn thấy các thừa số.",en:"You sit and listen. Now you can see the factors."}
+  reveal:{vi:"Bạn ngồi nghe. Lời họ nói là manh mối — tay chạm vào đâu, con số hiện ra ở đó.",en:"You sit and listen. Their words are the clue — where your hand lands, that number shows."}
 };
 function t(k){return (STR[k]||{})[L]||"";}
 
@@ -464,7 +464,7 @@ function fresh(){
   S.cast.forEach(function(p9){ p9.amb=0; p9.beh=0; p9.legs=0; p9.dwl=0; p9.chain=0; p9.behForce=0; p9.bfAt=0; });
   S.cast[2].behForce=2; S.cast[2].bfAt=performance.now()+8000;    // Mai sits at the đình — what the hall is FOR
   S.cast[0].behForce=3; S.cast[0].bfAt=performance.now()+20000;   // Ngân approaches it and turns back — what GAN-1 IS
-  S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false; p.mom=0;
+  S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false; p.mom=0; p.seen={tai:false,gan:false,ban:false};   // 🔎 you learn a factor by touching it — the quote is the clue, the hand is the answer
     var m=Math.min(p.tai,p.gan,p.ban);
     p.zkey = (m===p.gan)?"gan":(m===p.tai)?"tai":"ban";   // their original zero — quotes evolve when it turns
     // YEAR VARIANTS — every run is a different year in the same xóm (authored zeros stay true)
@@ -575,7 +575,7 @@ function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:2,   // N
   s:{season:S.season,acts:S.acts,luat:S.luat,von:S.von,hui:S.hui,build:S.build,built:!!S.built,
      gtmPaid:!!S.gtmPaid,hlp:!!S.hoaLienPaid,hs:S.hands|0,ps:!!S.potSeason,hist:(S.hist||[]).map(function(v){return v|0;}),pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
      arr:S.cast[6].arrives,baf:S.baFadeStart,sc:S.stormCount|0,ss:S.stormStreak|0,yc:S.yearCard|0,gp:S.gtmPays|0,cn:S.constraint|0,
-     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,bt:p.btai,bg:p.bgan,bb:p.bban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0};}),
+     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,sn:((p.seen&&p.seen.tai)?1:0)|((p.seen&&p.seen.gan)?2:0)|((p.seen&&p.seen.ban)?4:0),bt:p.btai,bg:p.bgan,bb:p.bban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0};}),
      ships:S.ships.map(function(w){return {x:w.x,y:w.y,owner:w.owner,pid:w.pid,yours:!!w.yours,age:w.age|0,shel:w.shel|0};}),
      scars:(S.scars||[]).map(function(c){return {x:c.x,y:c.y,s:c.s|0};}),
      log:S.log.slice(0,12)}})); }catch(e){} }
@@ -593,7 +593,8 @@ function load(){
     if(Array.isArray(s.cast)) s.cast.forEach(function(c,i){ var p=S.cast[i]; if(!p||!c) return;
       p.tai=cl(c.tai,0,10,p.tai); p.gan=cl(c.gan,0,10,p.gan); p.ban=cl(c.ban,0,10,p.ban);
       p.btai=cl(c.bt,0,10,p.tai); p.bgan=cl(c.bg,0,10,p.gan); p.bban=cl(c.bb,0,10,p.ban);   // this run's jittered nature (fallback: loaded stats, never a re-jitter)
-      p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; p.mom=cl(c.mom,0,0.5,0); });
+      p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; p.mom=cl(c.mom,0,0.5,0);
+      var sn=fin(c.sn)?(c.sn|0):7; p.seen={tai:!!(sn&1),gan:!!(sn&2),ban:!!(sn&4)}; });   // a save from before v0.33 has seen everything
     S.cast[6].arrives=cl(s.arr,2,8,6); S.baFadeStart=cl(s.baf,5,9,8);   // 2 / 5: the reunion year pulls both clocks early — the clamp must admit that on reload
     S.stormCount=cl(s.sc,0,16,0); S.stormStreak=cl(s.ss,0,16,0); S.yearCard=fin(s.yc)?cl(s.yc,0,5,0):S.yearCard; S.constraint=fin(s.cn)?cl(s.cn,0,3,0):0; S.gtmPays=fin(s.gp)?cl(s.gp,0,2,0):(s.gtmPaid?1:0);
     S.lienWarned=S.season>=11; S.tetSeen=S.season>=4; S.hoardSeen=S.season>=2; S.baFade=S.season>=(S.baFadeStart||8); S.baRescued=S.baFade&&(pairExists(0,1)||S.cast[1].started); S.stormSeen=S.season>0; S.tierTaught=S.ships.length>0||S.season>1; S.lienNgan=pairExists(0,6); S.classSeen=S.cast[2].started; S.revealSeen=S.cast.some(function(p){return p.known;});
@@ -1379,21 +1380,36 @@ function person(p,now){
   // name + zero hint — paper-haloed and phone-compensated; MOVERS carry no label (returns on arrival)
   if(p.amb && d>2 && S.sel!==p.id){ ctx.textAlign="left"; return; }
   ctx.font=FONT_LBL; ctx.textAlign="center"; ctx.fillStyle="#2B2320";
-  var lw=ctx.measureText(p.name).width, ly2=p.y+36+(LKF-1)*4;
-  var clash=lblR.some(function(r){ return Math.abs(r[1]-ly2)<14*LKF && Math.abs(r[0]-x)<(r[2]+lw)/2+6; });
-  if(!clash||S.sel===p.id){
-    haloText(p.name,x,ly2); lblR.push([x,ly2,lw]);
-    if(p.known && !p.started){
-      var z=zeroOf(p);
+  var lw=ctx.measureText(p.name).width, ly2=p.y+36+(LKF-1)*4, gap=12+(LKF-1)*6;
+  // the red zero-hint was never registered in lblR, so a neighbour's NAME could print straight
+  // through it and two hints always collided — measure both lines, then ladder the pair down into
+  // clear ground rather than dropping the villager's name outright
+  var hint=null, hw=0;
+  if(p.known && !p.started){ var z=zeroOf(p);
+    hint=z? (zeroWord(p)+z) : seenAll(p)? (Math.round(chance(p)*100)+"% "+t("sprout")) : null;   // ×0: a factor at 1 — nothing blooms until it moves · nothing printed for what you have not learned
+    if(hint){ ctx.font=FONT_HINT; hw=ctx.measureText(hint).width; ctx.font=FONT_LBL; } }
+  function cx(ww){ return Math.max(16+ww/2, Math.min(W-16-ww/2, x)); }   // a name on the far bank used to bleed straight past the printed frame
+  var nx=cx(lw), hx2=cx(hw);
+  function hits(cc,yy,ww){ return lblR.some(function(r){
+    return Math.abs(r[1]-yy)<13*LKF && Math.abs(r[0]-cc)<(r[2]+ww)/2+6; }); }
+  var ny=ly2, ok=false;
+  for(var t2=0;t2<4;t2++){ var cy=ly2+t2*13*LKF;
+    if(!hits(nx,cy,lw) && !(hint&&hits(hx2,cy+gap,hw))){ ny=cy; ok=true; break; } }
+  if(ok||S.sel===p.id){
+    if(!ok) ny=ly2;   // the one you are talking to always prints, in place, whatever else is there
+    haloText(p.name,nx,ny); lblR.push([nx,ny,lw]);
+    if(hint){
       ctx.font=FONT_HINT; ctx.fillStyle="#C1443C";
-      haloText(z? (zeroWord(p)+z) : (Math.round(chance(p)*100)+"% "+t("sprout")), x, p.y+48+(LKF-1)*10);   // ×0: a factor at 1 — nothing blooms until it moves
+      haloText(hint,hx2,ny+gap); lblR.push([hx2,ny+gap,hw]);
     }
   }
   ctx.textAlign="left";
 }
 function zeroOf(p){ var m=Math.min(p.tai,p.gan,p.ban);
   if(m>3) return null;
-  if(m===p.gan) return t("gan"); if(m===p.tai) return t("tai"); return t("ban"); }
+  var k=(m===p.gan)?"gan":(m===p.tai)?"tai":"ban";
+  if(!seenAll(p)&&!(p.seen&&p.seen[k])) return null;   // a zero you have not touched is not yet a zero you can name
+  return t(k); }
 function zeroWord(p){ return hasZero(p)?(L==="vi"?"×0 số không: ":"×0 zero: "):(L==="vi"?"gần không: ":"near zero: "); }   // 1 is the zero; 2–3 is the edge of it — say which
 function layoutBubble(txt){
   var fs=Math.round(12*LKF), lh=Math.round(15*LKF);
@@ -1600,7 +1616,7 @@ function actHui(){ if(!S.un.hui||S.over||S.acts<=0||S.hui>=huiMax()||conBan(1)) 
   logMsg(STR.huiDone.vi,STR.huiDone.en); render(); save(); }
 // 🧧 hốt hụi — the pot: what a hụi is FOR. The whole circle pays one member; the river dips, that sprout pushes harder.
 // A tradeoff, not a gift: −1 river is −7% on every named sprout (and may drop a tier cap) for +6% on one — and never past a zero.
-function potOk(p){ return !!p&&p.known&&!p.started&&!p.gone&&S.un.hui&&(S.hui|0)>=1&&!conBan(1)&&S.von>=2&&!hasZero(p)&&prod(p)>=100&&!S.potSeason; }
+function potOk(p){ return !!p&&p.known&&seenAll(p)&&!p.started&&!p.gone&&S.un.hui&&(S.hui|0)>=1&&!conBan(1)&&S.von>=2&&!hasZero(p)&&prod(p)>=100&&!S.potSeason; }
 function potAfter(p){ return Math.min(0.85,prod(p)/1000*0.9*(0.3+0.7*Math.max(1,S.von-1)/10)+Math.min((S.yearCard===5)?0.15:0.09,(p.mom||0)+0.06)); }   // what the pot would make of them — river dipped, sprout pushed
 function actPot(){ var p=cur(); if(!potOk(p)||S.acts<=0||S.over) return; if(!spend()) return;
   var cap=(S.yearCard===5)?0.15:0.09; p.mom=Math.min(cap,(p.mom||0)+0.06); S.potSeason=true;
@@ -1612,6 +1628,7 @@ function actPot(){ var p=cur(); if(!potOk(p)||S.acts<=0||S.over) return; if(!spe
     logMsg("🧧 "+p.name+" hốt hụi — cả vòng góp cho một người: sông vơi một chút, mầm nhú mạnh hơn.",
            "🧧 "+p.name+" takes the pot — the whole circle pays one member: the river dips a little, the sprout pushes harder."); }
   else logMsg("🧧 "+p.name+" hốt hụi.","🧧 "+p.name+" takes the pot.");
+  gossip("“Phiên này "+p.name+" hốt. Cả vòng góp cho một nhà.”","“"+p.name+" took the pot this round. The whole circle paid one house.”",p.id);
   render(); renderSheet(); save(); }
 function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notices — asking around is free
   if(!S.un.probe||S.probeSeen||S.over||(!free&&S.acts<=0)) return;
@@ -1637,7 +1654,11 @@ function actBuild(){ if(!S.un.build||S.over||S.acts<=0||S.built) return; if(!spe
   }
   render(); renderSheet(); save();
 }
-function floatOn(p,txt,col){ bubbles.push({p:p,lay:layoutBubble(txt),at:performance.now(),until:performance.now()+1200}); }
+function see(p,k){ if(!p) return; if(!p.seen) p.seen={tai:false,gan:false,ban:false}; p.seen[k]=true; }
+function seenAll(p){ return !!p&&(p.started||(!!p.seen&&p.seen.tai&&p.seen.gan&&p.seen.ban)); }   // a bloom shows everything; until then, only what your hands (or the season) have touched
+function floatOn(p,txt,col){ bubbles.push({p:p,lay:layoutBubble(txt),at:performance.now(),until:performance.now()+1200});
+  // every number that floats over a person is a number the player has now SEEN — teach, nerve, link, drip, class, witness, fade, the elder's clock
+  ["tai","gan","ban"].forEach(function(k){ if(txt&&txt.indexOf(t(k))>=0) see(p,k); }); }
 
 // ---------- the season tick ----------
 function nextSeason(){
@@ -1686,7 +1707,7 @@ function nextSeason(){
   S.cast.forEach(function(p){
     if(p.started||!active(p)) return;
     if(Math.random()<chance(p)){
-      p.started=true; p.mom=0; _rc.bloom++;
+      p.started=true; p.mom=0; _rc.bloom++; see(p,"tai"); see(p,"gan"); see(p,"ban");
       if(p.id===1) baRescue();   // the kiln lit — the elder's clock stops here too
       var spot=shipSpot(p);
       S.ships.push({x:spot.x,y:spot.y,owner:p.name,pid:p.id,age:0,born:true});
@@ -2115,8 +2136,9 @@ function renderSheet(){
   sh.classList.add("show");
   el("pName").textContent=p.name+(p.started?(L==="vi"?" — đã mở xưởng 🌸":" — workshop open 🌸"):"");
   el("pQuote").textContent=quoteFor(p);
-  el("valTai").textContent=p.tai; el("valGan").textContent=p.gan; el("valBan").textContent=p.ban;
-  el("barTai").style.width=(p.tai*10)+"%"; el("barGan").style.width=(p.gan*10)+"%"; el("barBan").style.width=(p.ban*10)+"%";
+  var sT=seenAll(p)||p.seen.tai, sG=seenAll(p)||p.seen.gan, sB=seenAll(p)||p.seen.ban, all=seenAll(p);
+  el("valTai").textContent=sT?p.tai:"?"; el("valGan").textContent=sG?p.gan:"?"; el("valBan").textContent=sB?p.ban:"?";
+  el("barTai").style.width=(sT?p.tai*10:0)+"%"; el("barGan").style.width=(sG?p.gan*10:0)+"%"; el("barBan").style.width=(sB?p.ban*10:0)+"%";
   var n7=el("notch7"); if(n7) n7.style.display=(S.classSeen&&!p.started)?"block":"none";
   var pr=prod(p), pc=Math.round(chance(p)*100);
   var trProd=pr<300?1:pr<600?2:3, trNow=Math.min(tierCap(),trProd), held=p.started&&trProd>trNow;   // held: the product earned a tier the river won't carry yet
@@ -2124,8 +2146,11 @@ function renderSheet(){
   if(tb){ tb.style.display=p.started?"block":"none";
     if(p.started){ var lo2=trNow===1?0:trNow===2?300:600, hi2=trNow===1?300:trNow===2?600:600;
       el("tierFill").style.width=(trNow===3?100:Math.round((pr-lo2)/(hi2-lo2)*100))+"%"; } }
-  el("multLine").innerHTML=p.tai+" × "+p.gan+" × "+p.ban+" = <b>"+pr+"</b>"
-    +"<small>"+(p.started
+  el("multLine").innerHTML=(all?(p.tai+" × "+p.gan+" × "+p.ban+" = <b>"+pr+"</b>")
+      :((sT?p.tai:"?")+" × "+(sG?p.gan:"?")+" × "+(sB?p.ban:"?")+" = <b>?</b>"
+        +"<small>"+(L==="vi"?"lời họ nói là manh mối — thừa số nào gần không? Tay chạm vào đâu, con số hiện ra ở đó":"their words are the clue — which factor is near zero? Where your hand lands, that number shows")
+        +(L==="vi"?" · sông ":" · river ")+S.von+"/10</small>"))
+    +(all?"<small>"+(p.started
       ?((L==="vi"?"bậc ":"tier ")+trNow+"/3"+(held?(L==="vi"?" · sông "+S.von+"/10 giữ bậc — cả xóm góp thêm":" · river "+S.von+"/10 holds it — the xóm must pour in"):trNow<3?(L==="vi"?" · vun tiếp để lên bậc":" · keep tending to rise"):(L==="vi"?" · một thương hiệu":" · a brand")))
       :((hasZero(p)?(t("sprout")+" 0% · "+(L==="vi"?"thừa số "+zeroOf(p)+" bằng không":zeroOf(p)+" is zero"))   // the arithmetic says it before the narrator would
         :(t("sprout")+" ~"+pc+"% "+t("perSeason")))
@@ -2137,7 +2162,7 @@ function renderSheet(){
         ?(" · "+(L==="vi"?"lúc đến ":"on arrival ")+p.btai+"×"+p.bgan+"×"+p.bban+"="+(p.btai*p.bgan*p.bban)
           +((pr>p.btai*p.bgan*p.bban)?" ↗":(pr<p.btai*p.bgan*p.bban)?" ↘":""))
         :"")
-    +"</small>";
+    +"</small>":"");
   el("teachBtn").disabled=S.acts<=0||p.tai>=10||S.over||conBan(3);   // tending doesn't stop at the bloom — tiers keep the verbs alive
   el("teachBtn").style.textDecoration=conBan(3)?"line-through 2px #C1443C":""; el("teachBtn").style.opacity="";
   el("nerveBtn").disabled=S.acts<=0||p.gan>=10||S.over;
@@ -2148,15 +2173,16 @@ function renderSheet(){
   var pb=el("potBtn"); pb.style.display=(S.un.hui&&(S.hui|0)>=1&&!p.started&&!conBan(1))?"":"none";   // the pot exists once you have paid in — the button appears with it
   pb.disabled=!potOk(p)||S.acts<=0||S.over; el("potLbl").textContent=t("pot");
   el("potHint").textContent=potOk(p)?(t("potH")+" → "+Math.round(potAfter(p)*100)+"%")
-                              :(S.von<2?(L==="vi"?"sông cạn — không còn gì để hốt":"river too thin — nothing to take"):S.potSeason?(L==="vi"?"phiên này đã hốt":"taken this season"):hasZero(p)?(L==="vi"?"không đẩy nổi số không":"nothing pushes past a zero"):prod(p)<100?(L==="vi"?"mầm chưa nhú (tích <100)":"no sprout yet (product <100)"):t("potH"));
+                              :(!seenAll(p)?(L==="vi"?"chưa hiểu người ta":"you don't know them yet"):S.von<2?(L==="vi"?"sông cạn — không còn gì để hốt":"river too thin — nothing to take"):S.potSeason?(L==="vi"?"phiên này đã hốt":"taken this season"):hasZero(p)?(L==="vi"?"không đẩy nổi số không":"nothing pushes past a zero"):prod(p)<100?(L==="vi"?"mầm chưa nhú (tích <100)":"no sprout yet (product <100)"):t("potH"));
   // what each hand would DO to this person — the multiplication's answer, per verb, before you spend
   // (the weakest factor moves the product most; showing the three deltas side by side is the thesis as a UI)
   (function(){
     function after(dt,dg,db){ var q={tai:Math.min(10,p.tai+dt),gan:Math.min(10,p.gan+dg),ban:Math.min(10,p.ban+db),mom:p.mom||0}; return q; }
     var lk=S.pairs.filter(function(pr){return pr[0]===p.id||pr[1]===p.id;}).length, gL=lk===0?2:1;
     var vs=[after(2,0,0),after(0,2,0),after(0,0,gL)], hints=[el("teachHint"),el("nerveHint"),el("linkHint")], base=[STR.teachH[L],STR.nerveH[L],(gL===2?STR.linkH[L]:STR.linkH[L].replace("+2","+1"))];
+    var known=seenAll(p);   // the per-verb answer needs the whole row — until then the verb is a guess, and the guess is the game
     vs.forEach(function(q,i){ var same=(q.tai===p.tai&&q.gan===p.gan&&q.ban===p.ban);   // a maxed factor: nothing to show
-      hints[i].textContent=base[i]+(same?"":(p.started?(" → "+prod(q)):(" → "+Math.round(chance(q)*100)+"%"))); });   // the reading stays yours — no verb is bolded
+      hints[i].textContent=base[i]+((same||!known)?"":(p.started?(" → "+prod(q)):(" → "+Math.round(chance(q)*100)+"%"))); });   // the reading stays yours — no verb is bolded
   })();
 }
 function renderRoster(){
@@ -2216,7 +2242,12 @@ el("seasonPill").style.cursor="pointer"; el("tierPill").style.cursor="pointer"; 
 el("seasonPill").onclick=function(){ if(!S||S.over) return;
   var yc=YEAR_CARDS[S.yearCard|0]; banner(yc.em+" "+(L==="vi"?yc.nv:yc.ne),1700); beep(523,0.05);
   S.looked=S.looked||{}; if(S.looked.yc===S.season) return; S.looked.yc=S.season;
-  logMsg(yc.fv+(S.constraint?(" · ⛓ "+CONSTRAINTS[S.constraint].nv):""), yc.fe+(S.constraint?(" · ⛓ "+CONSTRAINTS[S.constraint].ne):"")); };
+  logMsg(yc.fv+(S.constraint?(" · ⛓ "+CONSTRAINTS[S.constraint].nv):""), yc.fe+(S.constraint?(" · ⛓ "+CONSTRAINTS[S.constraint].ne):""));
+  // and the year so far, as the ending will draw it — 🌸 per bloom, ⬛ per stamp, · quiet, ▶ where you stand, ░ still to come
+  if(S.season>0){ var cells=[]; for(var si=0;si<16;si++){ if(si===S.season){ cells.push("▶"); continue; } if(si>S.season){ cells.push("░"); continue; }
+      var v=(S.hist||[])[si]|0, bl=v>>2, st=v&3, c=""; for(var bi=0;bi<bl;bi++) c+="🌸"; for(var ti=0;ti<st;ti++) c+="⬛"; cells.push(c||"·"); }
+    var strip=cells.slice(0,4).join("")+" │ "+cells.slice(4,8).join("")+" │ "+cells.slice(8,12).join("")+" │ "+cells.slice(12,16).join("");
+    logMsg((L==="vi"?"mười sáu mùa: ":"sixteen seasons: ")+strip,(L==="vi"?"mười sáu mùa: ":"sixteen seasons: ")+strip); } };
 el("tierPill").onclick=function(){ if(!S||S.over||!S.ships.length) return; beep(523,0.05);
   S.looked=S.looked||{}; if(S.looked.tp===S.season) return; S.looked.tp=S.season;
   var rows=S.ships.slice().sort(function(a,b){return shipTier(b)-shipTier(a);}).map(function(s){ var tr=shipTier(s);
@@ -2240,8 +2271,8 @@ function renderHelp(){
   function sec(t,body){ return "<p style=\"margin:8px 0 2px\"><b>"+t+"</b></p><div class=\"small\" style=\"font-size:12.5px;color:#4d4335\">"+body+"</div>"; }
   var h="";
   h+=sec(vi?"Phép nhân":"The multiplication",
-         vi?"Mỗi người là <b>TÀI × GAN × BẠN</b>. Thừa số nào ở mức <b>1</b> là số không — người đó không nở (0%), dù hai thừa số kia có cao đến đâu. Việc của bạn là <b>chẩn đoán</b>: tìm thừa số thấp nhất và nâng đúng nó. Tích ≥100 thì mầm bắt đầu nhú (🌱), càng cao càng dễ nở xưởng."
-           :"Each person is <b>SKILL × NERVE × ALLIES</b>. A factor at <b>1</b> is a zero — that person cannot bloom (0%), however high the other two stand. Your job is <b>diagnosis</b>: find the lowest factor and raise exactly that. Product ≥100 and a sprout starts pushing (🌱); higher means likelier to open a workshop.");
+         vi?"Mỗi người là <b>TÀI × GAN × BẠN</b>. Thừa số nào ở mức <b>1</b> là số không — người đó không nở (0%), dù hai thừa số kia có cao đến đâu. Việc của bạn là <b>chẩn đoán</b>: con số ẩn cho đến khi tay bạn chạm vào — lời họ nói là manh mối; đoán thừa số thấp nhất và nâng đúng nó. Tích ≥100 thì mầm bắt đầu nhú (🌱), càng cao càng dễ nở xưởng."
+           :"Each person is <b>SKILL × NERVE × ALLIES</b>. A factor at <b>1</b> is a zero — that person cannot bloom (0%), however high the other two stand. Your job is <b>diagnosis</b>: the numbers stay hidden until your hand touches them — their words are the clue; guess the lowest factor and raise exactly that. Product ≥100 and a sprout starts pushing (🌱); higher means likelier to open a workshop.");
   h+=sec(vi?"Tay (⚡)":"Hands (⚡)",
          vi?"Mỗi mùa 3⚡ (mùa giông 2⚡, sau ba mùa giông liền lại 3⚡). 📖 Dạy +2 TÀI · 🏮 Đêm thất bại +2 GAN (người từng ngã đến nghe, +1) · 🤝 Kết nối +2 BẠN cho mối đầu, +1 mối sau · 🪙 Góp hụi +1 sông · 🧧 Hốt hụi (đã góp rồi): sông −1, mầm của một người nhú +6% — cả vòng góp cho một nhà · 🛠 Tự xây 4 lần thì xong · 🔍 Nghe ngóng biết trời mùa tới · 🛡 Che chắn xưởng non."
            :"3⚡ per season (storm 2⚡; after three storm seasons in a row, back to 3⚡). 📖 Teach +2 SKILL · 🏮 Failure night +2 NERVE (those who fell come listen, +1) · 🤝 Connect +2 ALLIES first bond, +1 after · 🪙 Hụi +1 river · 🧧 Take the pot (once you've paid in): river −1, one person's sprout +6% — the whole circle pays one member · 🛠 Build 4 times to ship · 🔍 Ask around for next season's sky · 🛡 Shelter young workshops.");
@@ -2269,7 +2300,7 @@ function helpToggle(force){ var o=el("helpOvl"), open=o.classList.contains("show
 el("helpBtn").onclick=function(){ helpToggle(); }; el("helpClose").onclick=function(){ helpToggle(false); };
 el("helpOvl").addEventListener("click",function(ev){ if(ev.target===el("helpOvl")) helpToggle(false); });   // tap the paper margin to close
 // ---------- keyboard (desktop play) ----------
-// 1–7 talk to a person · ←/→ cycle · D dạy · N đêm · L kết nối · H hụi · B xây · P nghe ngóng · S che chắn · Space/Enter mùa sau · Esc thôi · M mute
+// 1–7 talk to a person · ←/→ cycle · D dạy · N đêm · L kết nối · H hụi · O hốt hụi · B xây · P nghe ngóng · S che chắn · Space/Enter mùa sau · Esc thôi · M mute
 document.addEventListener("keydown",function(ev){
   if(ev.metaKey||ev.ctrlKey||ev.altKey) return;
   var k=ev.key, introOn=el("intro").classList.contains("show"), endOn=el("endOvl").classList.contains("show"), helpOn=el("helpOvl").classList.contains("show");
@@ -2292,6 +2323,7 @@ document.addEventListener("keydown",function(ev){
   else if(K==="n") actNerve();
   else if(K==="l"){ if(S.linking!=null){ S.linking=null; renderSheet(); render(); } else actLink(); }
   else if(K==="h") actHui();
+  else if(K==="o"){ if(typeof actPot==="function") actPot(); }   // O — hỐt hụi: take the pot for the person on the card
   else if(K==="g") actPot();
   else if(K==="b") actBuild();
   else if(K==="p") actProbe();

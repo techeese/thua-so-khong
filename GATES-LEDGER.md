@@ -33,6 +33,7 @@ Rules:
 | `Gate 8` | 1 | capital is a factor — the same person sprouts ~2.7× likelier on a full river than a thin one; a 640-product workshop is a stall at river ≤3, a shop at ≤6, a brand only when the water is high (v0.31) |
 | `Gate 9` | 1 | the print fits a phone — at a true 390px nothing outside the `overflow-x:auto` roster crosses the edge (`bodySW≤390`), no two speech bubbles print over each other however many neighbours talk at once, and the season banner scales with `LKF` like every other text on the block (v0.32) |
 | `Gate 10` | 1 | the pot — hốt hụi pays one member from the river: river −1, that sprout +0.06 momentum, once a season, only after paying in, never past a zero, never below river 1 (v0.32) |
+| `Gate 11` | 1 | the factors are hidden until touched — a fresh talk shows `? × ? × ?` and no per-verb answer, one hand on GAN reveals GAN alone, answers appear only once the row is known, a bloom shows everything (v0.33) |
 
 ## Convergence gates — `done.sh`
 

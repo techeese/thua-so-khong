@@ -146,7 +146,7 @@ window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
 setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-v1");
   document.getElementById("startBtn").click();
-  var ng=S.cast[0]; ng.tai=9; ng.gan=1; ng.ban=9; S.von=10;   // nine times zero times nine — teach and link both have room, both still read 0%
+  var ng=S.cast[0]; ng.tai=9; ng.gan=1; ng.ban=9; S.von=10; ng.seen={tai:true,gan:true,ban:true};   // v0.33: the row must be learned before the sheet reads it   // nine times zero times nine — teach and link both have room, both still read 0%
   selectPerson(0);
   var c0=chance(ng), sheet0=document.getElementById("multLine").textContent, hint0=document.getElementById("teachHint").textContent, hintN=document.getElementById("nerveHint").textContent;
   var blooms=0; for(var i=0;i<400;i++){ if(Math.random()<chance(ng)) blooms++; }
@@ -238,7 +238,7 @@ setTimeout(function(){ try{
   document.getElementById("startBtn").click();
   S.un.hui=true; S.hui=1; S.von=5; S.acts=3; S.constraint=0; S.yearCard=2;
   selectPerson(0); var okZero=!potOk(S.cast[0]);                 // Bé Ngân's GAN is 1 — nothing pushes past a zero
-  selectPerson(2); var mai=S.cast[2]; mai.tai=6; mai.gan=4; mai.ban=7; mai.mom=0; renderSheet();
+  selectPerson(2); var mai=S.cast[2]; mai.tai=6; mai.gan=4; mai.ban=7; mai.mom=0; mai.seen={tai:true,gan:true,ban:true}; renderSheet();   // v0.33: the pot needs a known row
   var shown=document.getElementById("potBtn").style.display!=="none", hint0=document.getElementById("potHint").textContent;
   var acts0=S.acts; actPot();
   var a1=(S.von===4&&Math.abs(mai.mom-0.06)<1e-9&&S.acts===acts0-1&&S.potSeason===true&&!potOk(mai));
@@ -252,6 +252,37 @@ open(tmp+"/p.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOF9
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/p.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "POT_OK" && pass "the pot: $T" || fail "the pot: $T"
+
+# Gate 11: the factors are hidden until touched — a fresh talk shows "? × ? × ?" and no per-verb answer; one hand on GAN
+# reveals GAN alone; the row's answers appear only once all three are known; a bloom shows everything.
+python3 - "$TMP" <<'PYEOF11'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  selectPerson(0); var ng=S.cast[0];
+  var v0=[document.getElementById("valTai").textContent,document.getElementById("valGan").textContent,document.getElementById("valBan").textContent].join("");
+  var m0=document.getElementById("multLine").textContent, h0=document.getElementById("nerveHint").textContent;
+  var lbl0=(zeroOf(ng)===null);                            // GAN 1 sits unnamed until touched
+  S.acts=3; actNerve();
+  var v1=[document.getElementById("valTai").textContent,document.getElementById("valGan").textContent,document.getElementById("valBan").textContent];
+  var h1=document.getElementById("nerveHint").textContent;
+  actTeach(); selectPerson(2); S.un.link=true; selectPerson(0); actLink(); completeLink(2);   // touch the other two
+  var all=seenAll(ng), h2=document.getElementById("nerveHint").textContent;
+  var ok = v0==="???" && /\? × \? × \?/.test(m0) && h0.indexOf("→")<0 && lbl0
+        && v1[0]==="?" && v1[1]===String(ng.gan) && v1[2]==="?" && h1.indexOf("→")<0
+        && all && /→ \d+%/.test(h2);
+  document.title=(ok?"HIDDEN_OK":"HIDDEN_BAD")+" v0="+v0+" mult0="+/\? × \? × \?/.test(m0)+" hint0="+(h0.indexOf("→")<0)+" unnamed="+lbl0+" afterNerve="+v1.join("/")+" all="+all+" hint2="+h2.slice(-6);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/h.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF11
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/h.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "HIDDEN_OK" && pass "hidden until touched: $T" || fail "hidden until touched: $T"
 
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
