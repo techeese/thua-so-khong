@@ -325,3 +325,18 @@ that is now impossible because a gate catches it stays here, with the gate named
   modal that can outgrow the viewport needs `overflow-y:auto` on the overlay plus `margin:auto` on the
   card (flex centring alone clips the overflowing edge). Check modals at SHORT heights, not just narrow
   widths — the 390px probe recipe only varies width and would never have caught this.
+- **An inline style set by JS silently kills a media query.** `fit()` wrote `cv.style.height`, so the
+  landscape rule capping the canvas at `70vh` never applied — dead from the day it was written, and
+  invisible unless you measure the rendered box against what the stylesheet asks for. When JS sizes an
+  element that CSS also sizes, JS must read the constraint (`matchMedia`, or clear the inline value and
+  measure) rather than assume it owns the box. **Check that a media query actually changes something**
+  before trusting it exists.
+- **"Scroll to the bottom and look" is not a reachability test.** An element in the MIDDLE of a long
+  page ends up *above* the viewport when you scroll to the end, and reads as unreachable. Use
+  `scrollIntoView` per element. A first landscape probe reported the MÙA SAU button unreachable on this
+  mistake; every control was in fact fine.
+- **Sizing a responsive element from JS freezes it.** Fixing the landscape cap by computing the canvas
+  box in `fit()` and writing `style.width` in px worked at every size I *tested* — and broke the 390px
+  gate, because a px width only updates on `resize` while `width:100%` tracks every layout change.
+  Prefer letting CSS own the box (`aspect-ratio` + a `max-width` cap) and let JS size only the backing
+  store. If JS must write a dimension, re-run it on more than `resize`.
