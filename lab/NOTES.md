@@ -70,6 +70,11 @@ not only in how many.
 **Harness:** `lab/lowbloom.js` — `node lab/lowbloom.js` prints the table above (`lowbloom-out.txt`).
 Gitignored except this note.
 
+**Verdict:** confirms-known
+*Grader:* The entry itself claims neither a new era nor a defect; its substantive result — the v0.38 weakest-factor ceiling doing the thesis' work, and the ending's `× × =` / tier arithmetic already sitting beside the word — re-measures what `zerohunt.js`, `threefloors.js` and `zerowitness.js` already argued about who blooms and what the card witnesses, and its "fold bloomed into stall/workshop tier language" idea is a reductive nudge inside existing candidates, not a new one.
+**Defect:** no
+**Proposal:** no
+
 ## 2026-08-15 — the band's opponents are wasteful: a fair spreader sits 0.46 tiers under the hunter and a cap-faithful maxer keeps 88 % (`fairopp.js`)
 
 **Provenance.** Two independent critics reviewing candidate Y (`SYNTHESIS.md` §32–34) each extended
