@@ -93,7 +93,8 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.58: a fourth tied hand — 🚫🏮 the year no one dared (no failure nights; nerve only from the xóm,
+**v0.61: the ceiling names a tied hand (Gate 46); v0.57 validated in the game — a tending player
+climbs 13 → 21 tiers by s14 with all 43 hands used. v0.58: a fourth tied hand — 🚫🏮 the year no one dared (no failure nights; nerve only from the xóm,
 to 5) (Gate 42). v0.57: a witnessed bloom lifts GAN only to 5 — every world-lift now has a ceiling (Gate 41); priced:
 hunter 6.89/12.3, band holds. v0.55: guess-answers and the circle's first line persist across a refresh (Gate 38); measured: the six
 year cards do not move the hunter (6.96–6.99 / 15.5–16.6) — story and spreader-price only, for the

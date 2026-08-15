@@ -38,6 +38,22 @@ the live DOM.
   Negative-tested by restoring the old `--dim`: `CONTRAST_BAD checked=66 fails=6`. The gate now guards
   the palette — any future colour change that makes text unreadable turns it red.
 
+## v0.61 — 2026-08-15 — a tied hand is named at the ceiling; v0.57 read in the real game
+
+Closes: under the owner's standing `/loop 3m` directive, one legibility gap the fourth tied hand
+opened, and a validation the owner should have.
+
+- **Validated in the game, not the sim:** a scripted plausible player who also tends after the
+  bloom now blooms 7/7 by season 9 and climbs **13 → 21 tiers by season 14 with all 43 hands used**
+  (v0.48 had measured 21 of the last 24 hands idle). The witness bound (v0.57) did what it was for:
+  the back half is the tier climb, and every brand is reachable by hand.
+- **The ceiling names a tied hand.** In a constraint year, when the factor that caps a known row is
+  the tied one, the sheet says so — *GAN 3 chặn ở 8% — tay ấy bị trói năm nay* — so the player knows
+  the ceiling can only come from the xóm this year (a witnessed bloom to 5, the class to 7, the
+  circle to 3). Plain years unchanged.
+- *Evidence:* new **Gate 46** (`TIED_OK tied=true free=true`); ids 43–45 were the graphics
+  session's, checked before committing. Gates green, hash-bracketed. No balance changed.
+
 ## v0.60 — 2026-08-15 — the keyboard can see where it is
 
 A graphics round from the owner's `/loop 5m` session, continuing down the accessibility seam v0.59
