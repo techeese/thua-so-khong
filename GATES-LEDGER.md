@@ -54,6 +54,7 @@ Rules:
 | `Gate 29` | 1 | speech has its own lane — with three stat floats up and no beat, chatter() still produces a speech bubble; with two speech bubbles up it still refuses (the two-slot rule counts speech, rate untouched) (v0.47) |
 | `Gate 30` | 1 | an unread factor does not look like a zero — an unseen factor hatches its whole track instead of drawing width:0 (which was emptier than a factor genuinely at 1); revealing it at 1 removes the hatch and shows a real width (v0.47) |
 | `Gate 31` | 1 | the roster's dots say which factor — the three touched/untouched dots carry the sheet's own factor colours (asserted equal to the `barTai`/`barGan`/`barBan` backgrounds, so roster and sheet cannot drift apart), filled for touched and hollow for not, in a lighter key on the selected chip (v0.48) |
+| `Gate 32` | 1 | the partner's gain is on the chip — with Kết nối armed, each candidate's roster chip reads +2 BẠN (no bonds yet) or +1 BẠN (already bonded); disarmed, no gain shows (v0.49) |
 
 ## Convergence gates — `done.sh`
 

@@ -1,5 +1,22 @@
 # Changelog — Thừa Số Không
 
+## v0.49 — 2026-08-15 — the partner's gain is on the chip
+
+Closes: under the owner's standing `/loop 3m` directive, the one choice on the sheet made from memory.
+Kết nối raises *both* people — the first bond +2, every later one +1 — but while a link was armed
+the roster only highlighted candidates; whom to tap was a memory of who already had bonds.
+
+- **While a link is armed, each candidate's chip prints what *they* would gain** — *+2 BẠN* for a
+  neighbour with no bonds, *+1 BẠN* after — the same arithmetic the sheet gives the selected person.
+  Disarmed, the chips read as before. Nothing about hidden rows leaks: the bond count is the
+  player's own history, not a factor.
+- *Evidence:* new **Gate 32** (`PARTNER_OK off=true mai="Cô Mai +2 BẠN" vu="Anh Vũ +1 BẠN"`); ids
+  30–31 were taken by the graphics session's in-tree gates minutes earlier — checked before
+  committing. Thirty gates green, hash-bracketed; phone gate green with the longer chips.
+- Honest note: the engine's lab measured v0.46's speech lane as rescuing **0 of 480** `chatter()`
+  calls — floats die at ≤2.7 s and chatter fires at ≥3 s, so the two-slot blocks were speech, not
+  floats. v0.46 is harmless and correct in principle; it did not change what a player hears.
+
 ## v0.48 — 2026-08-15 — the roster's dots say which factor
 
 A graphics round from the owner's `/loop 5m` session, on the roster chips' dot vocabulary — the last

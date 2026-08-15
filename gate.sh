@@ -914,6 +914,31 @@ PYEOF31
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=7000 --dump-dom "file://$TMP/dt.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "DOTS_OK" && pass "the roster's dots say which factor: $T" || fail "the roster's dots say which factor: $T"
 
+# Gate 32: the partner's gain is on the chip — with Kết nối armed on Bé Ngân, Cô Mai's chip (no bonds) reads +2 BẠN and Anh Vũ's (one bond) reads +1 BẠN;
+# disarmed, neither shows a gain.
+python3 - "$TMP" <<'PYEOF30'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+function chip(id){ var c=document.querySelector('#roster .rc[data-id="'+id+'"]'); return c?c.textContent:""; }
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.season=2; S.cast[0].known=true; S.cast[2].known=true; S.cast[3].known=true; S.un.link=true; S.acts=3;
+  S.pairs=[[3,4]];   // Anh Vũ already has one bond (with Chị Hoa)
+  selectPerson(0); render(); var mai0=chip(2), vu0=chip(3), off=!/\+\d/.test(mai0)&&!/\+\d/.test(vu0);
+  actLink(); render(); var mai1=chip(2), vu1=chip(3);
+  var ok=off&&/\+2 (BẠN|ALLIES)/.test(mai1)&&/\+1 (BẠN|ALLIES)/.test(vu1)&&S.linking===0;
+  document.title=(ok?"PARTNER_OK":"PARTNER_BAD")+" off="+off+" mai="+mai1+" vu="+vu1;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/partner.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF30
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/partner.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "PARTNER_OK" && pass "the partner's gain is on the chip: $T" || fail "the partner's gain is on the chip: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

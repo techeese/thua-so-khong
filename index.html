@@ -189,7 +189,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.48</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.49</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -450,6 +450,7 @@ function chatter(){
   var p=here[Math.floor(Math.random()*here.length)];
   if(p.crushCount>0&&!p.started&&p.qc) bubble(p,p.qc[L]);
   else if(S.luat<4&&p.chatS&&Math.random()<0.5) bubble(p,p.chatS[L]);
+  else if(YEAR_CARDS[S.yearCard|0].chat&&Math.random()<0.22) bubble(p,YEAR_CARDS[S.yearCard|0].chat[L]);   // the year has its own small talk
   else if(Math.random()<0.35) bubble(p,CHAT_SEASONAL[S.season%4][L]);
   else if(p.started&&p.chatB&&Math.random()<0.5) bubble(p,p.chatB[L]);   // a workshop owner talks shop
   else if(p.chat&&p.chat.length) bubble(p,p.chat[Math.floor(Math.random()*p.chat.length)][L]);
@@ -457,17 +458,23 @@ function chatter(){
 // YEAR CARDS — each year, one lever is scarce. The diagnosis differs, not just the arithmetic.
 var YEAR_CARDS=[
   {em:"🌊",nv:"Năm lũ",ne:"the flood year",
-   fv:"🌊 Năm lũ — sông khó tự đầy, xóm trông cả vào hụi.",fe:"🌊 A flood year — the river struggles to fill itself; the xóm leans on the hụi."},
+   fv:"🌊 Năm lũ — sông khó tự đầy, xóm trông cả vào hụi.",fe:"🌊 A flood year — the river struggles to fill itself; the xóm leans on the hụi.",
+   chat:{vi:"“Lũ rút rồi mà sông vẫn đục.”",en:"“The flood's gone but the river's still murky.”"}},
   {em:"📋",nv:"Năm xét kỹ",ne:"the strict year",
-   fv:"📋 Năm xét kỹ — trời lâu quang, nhưng trên xã dán thông báo (nghe ngóng miễn phí).",fe:"📋 A strict year — the sky clears slowly, but the commune posts notices (asking around is free)."},
+   fv:"📋 Năm xét kỹ — trời lâu quang, nhưng trên xã dán thông báo (nghe ngóng miễn phí).",fe:"📋 A strict year — the sky clears slowly, but the commune posts notices (asking around is free).",
+   chat:{vi:"“Trên xã lại dán giấy mới.”",en:"“The commune posted another notice.”"}},
   {em:"🛤",nv:"Năm đường chợ",ne:"the market-road year",
-   fv:"🛤 Năm đường chợ — đường mới mở, hàng ra tới huyện được giá gấp đôi.",fe:"🛤 A market-road year — goods reaching the district fetch double."},
+   fv:"🛤 Năm đường chợ — đường mới mở, hàng ra tới huyện được giá gấp đôi.",fe:"🛤 A market-road year — goods reaching the district fetch double.",
+   chat:{vi:"“Xe huyện giờ chạy tới tận đây.”",en:"“The district cart comes all the way out here now.”"}},
   {em:"🍵",nv:"Năm tay lặng",ne:"the quiet-hands year",
-   fv:"🍵 Năm tay lặng — nghề truyền nhanh, công vun bền.",fe:"🍵 A quiet-hands year — craft passes quickly, tending holds longer."},
+   fv:"🍵 Năm tay lặng — nghề truyền nhanh, công vun bền.",fe:"🍵 A quiet-hands year — craft passes quickly, tending holds longer.",
+   chat:{vi:"“Năm nay ai cũng chậm tay mà chắc.”",en:"“Everyone's slower this year — and surer.”"}},
   {em:"🧧",nv:"Năm đoàn tụ",ne:"the reunion year",
-   fv:"🧧 Năm đoàn tụ — thuyền về sớm, mà đèn nhà ai cũng lụi sớm.",fe:"🧧 A reunion year — the sampan comes home early, and the old lamps dim early too."},
+   fv:"🧧 Năm đoàn tụ — thuyền về sớm, mà đèn nhà ai cũng lụi sớm.",fe:"🧧 A reunion year — the sampan comes home early, and the old lamps dim early too.",
+   chat:{vi:"“Năm nay nhà nào cũng có người về.”",en:"“Someone came home to every house this year.”"}},
   {em:"🌾",nv:"Năm gió chướng",ne:"the restless-wind year",
-   fv:"🌾 Năm gió chướng — vun mà chưa nở thì gió cuốn đi; nhưng mầm nào sắp bung lại càng gắng.",fe:"🌾 A restless-wind year — tending that hasn't bloomed blows away; but a sprout near the surface pushes twice as hard."}];
+   fv:"🌾 Năm gió chướng — vun mà chưa nở thì gió cuốn đi; nhưng mầm nào sắp bung lại càng gắng.",fe:"🌾 A restless-wind year — tending that hasn't bloomed blows away; but a sprout near the surface pushes twice as hard.",
+   chat:{vi:"“Gió này, phơi gì cũng bay.”",en:"“This wind takes whatever you hang out.”"}}];
 // what each person's workshop puts on the market stall — the counter shows what the xóm makes
 var GOODS={0:"💻",1:"🏺",2:"📚",3:"🔧",4:"🧺",5:"💡",6:"🎨"};
 function stallGoods(){ var g=[]; S.ships.forEach(function(sh){ var e=sh.yours?"🛠":GOODS[sh.pid]; if(e&&g.length<8) g.push(e); }); return g; }
@@ -2495,6 +2502,7 @@ function renderRoster(){
     var z=(p.known&&!p.started)?zeroOf(p):null, tag=p.started?(tierOf(p)>=3?"🪜🪜🪜":tierOf(p)===2?"🪜🪜":"🌸"):(z?("<small>"+(hasZero(p)?"×0 ":"")+z+"</small>"):((p.known&&(p.mom||0)>0)?"🌱":""));
     if(p.started&&S.luat<4&&typeof stormLine==="function"){ var sl=stormLine(p), m9=sl.match(/(🛡|⬛) (\d+)%/); if(m9) tag+=" <small>"+m9[1]+m9[2]+"%</small>"; }   // the sky's number on the chip, under a heavy sky
     var nm=p.known?p.name:(L==="vi"?"?":"?");
+    if(cls.indexOf(" cand")>=0){ tag=(tag?tag+" ":"")+"<small>+"+(pairCount(p.id)===0?2:1)+" "+t("ban")+"</small>"; }   // v0.49: while a link is armed, each candidate shows what THEY would gain — the first bond +2, every later one +1
     // three dots per known, un-bloomed person: which of TÀI · GAN · BẠN your hands have touched — the row's progress, at a glance
     var dots=(p.known&&!p.started)?("<span class=\"sd\" title=\"TÀI · GAN · BẠN\">"+["tai","gan","ban"].map(function(k){ return "<i class=\""+k+((p.seen&&p.seen[k])?" on":"")+"\"></i>"; }).join("")+"</span>"):"";
     h+="<div class=\""+cls+"\" data-id=\""+p.id+"\"><i style=\"background:"+p.color+"\"></i>"+nm+dots+(tag?" "+tag:"")+"</div>"; });
