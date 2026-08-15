@@ -18,6 +18,42 @@ lands *before* the circle looks; the lift filter is `!started`, so `lifted` read
   why this is convergent work and not polish. Recorded in `GATES-LEDGER.md` → Tightenings and
   `LANDMINES.md`.
 
+## v0.63 — 2026-08-15 — a name is never buried by a body
+
+A graphics round from the owner's `/loop 5m` session. Two ticks had found nothing, so this one went
+back to simply **looking at the game** — the mechanic loop has added a great deal since the last plain
+visual review — and a screenshot showed Chú Ba's red zero-tag reading *"**ạn** không: GAN"*, its first
+letter behind Anh Tú's shoulder.
+
+- **Labels were painted inside each villager's own turn**, so anyone drawn later covered the names of
+  everyone standing above them on the bank. v0.45's elbow-room nudge only separates villagers at the
+  **same height**, and a label sits ~36px *below* its owner — exactly where the next one down the bank
+  is standing. Measured on that arrangement: **4 of 4 body-overlaps buried the label**, including a
+  `×0 số không:` zero-tag, which is the one piece of text the whole thesis runs on.
+- **Every label is now deferred and flushed in a second pass**, after the last body and roof. The
+  villager names, the red zero-hints and the workshops' own words all go down last. *Measured before →
+  after:* buried **4 → 0**, with the body-overlaps themselves unchanged at 3 — the boxes still overlap
+  in a crowd, which is fine and unavoidable; what no longer happens is a body painting over a name.
+- *Evidence:* new **Gate 48**, asserted by **paint order rather than geometry** (my first attempt
+  measured overlap and reported "3 before, 3 after" — true, and beside the point, because the fix
+  changes who paints last, not whether the boxes intersect). Non-vacuous: at least one body-overlap must
+  exist for the gate to mean anything. `BURY_OK labels=9 bodyOverlaps=3 buried=0`.
+- **Gate 13 was updated, not weakened.** It attributed each label to whoever was being drawn when
+  `haloText` fired; with the second pass that is nobody, so it now reads the owner from `lblOwner`.
+  Same assertions, same thresholds — `LABEL_OK cross=0 bleed=0`.
+
+## v0.62 — 2026-08-15 — the ladder has a top
+
+Closes: under the owner's standing `/loop 3m` directive, the one goal of the back half with no visible
+far end. Since v0.57 the second eight seasons are the tier climb; the season pill said *🪜 13 bậc*
+and nothing about how far the ladder goes.
+
+- **The tier pill reads `N/max`** — three rungs per neighbour still in the xóm, plus one for your own
+  stall once it stands: *🪜 13/21 bậc*, *4/22* with your roof, *3/18* after someone has left. The
+  ending's *Mùa vàng* threshold (12) and the flywheel's (4) now sit on a visible scale.
+- *Evidence:* new **Gate 47** (`LADDER_OK full="3/21" built="4/22" oneGone="3/18"`). Gates green,
+  hash-bracketed; phone gates green with the longer pill. No balance changed.
+
 ## v0.61 — 2026-08-15 — every word on the page is readable
 
 A graphics round from the owner's `/loop 5m` session, third down the accessibility seam. This one

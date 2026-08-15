@@ -69,6 +69,8 @@ Rules:
 | `Gate 44` | 1 | the keyboard can see where it is — focus draws a 3px ring in the xóm's own ink with a paper halo, inverted to paper-on-ink over the red button and the selected chip; every roster chip is Tab-reachable (was 0 of 6, plain divs) and Enter on a focused chip picks that villager (v0.60) |
 | `Gate 45` | 1 | every word on the page is readable — walks the live DOM pairing each text node's computed colour with its effective background and measures WCAG contrast; zero failures required (five were failing when written, the worst at 2.89:1). Guards the palette against a future colour change that makes text unreadable (v0.61) |
 | `Gate 46` | 1 | a tied hand is named at the ceiling — when the factor that caps a known row is this year's tied hand, the sheet says "tay ấy bị trói năm nay"; with no tie the line ends at the percentage (v0.61) |
+| `Gate 47` | 1 | the ladder has a top — the tier pill reads N/21 with the whole xóm present, N/22 once your own stall stands, N/18 after a neighbour has left; the left number is the live tierSum (v0.63) |
+| `Gate 48` | 1 | a name is never buried by a body — with villagers staggered down the bank (the arrangement the elbow-room nudge does not touch), every label is painted after every body: asserted by paint order, not geometry, and non-vacuous (at least one body-overlap must exist). 4 of 4 were buried before, including a ×0 zero-tag (v0.63) |
 
 ## Convergence gates — `done.sh`
 

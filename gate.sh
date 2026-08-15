@@ -329,8 +329,11 @@ setTimeout(function(){ try{
   for(var s=0;s<7;s++){ try{ S.acts=3; nextSeason(); }catch(e){} }
   var _oh=haloText;
   haloText=function(txt,x,y){ var m=ctx.measureText(txt);
+    // labels are painted in a second pass now (v0.62), outside person(), so the owner comes from
+    // lblOwner rather than from whoever was being drawn when haloText fired
+    var owner=(typeof lblOwner!=="undefined"&&lblOwner>=0)?lblOwner:_pid;
     _lbl.push({x:x-m.width/2,y:y-m.actualBoundingBoxAscent,w:m.width,
-               h:m.actualBoundingBoxAscent+m.actualBoundingBoxDescent,pid:_pid}); return _oh(txt,x,y); };
+               h:m.actualBoundingBoxAscent+m.actualBoundingBoxDescent,pid:owner}); return _oh(txt,x,y); };
   var _op=person;
   person=function(p,now){ _pid=p.id; try{ return _op(p,now); } finally{ _pid=-1; } };
   var crowd=S.cast.filter(function(p){return !p.gone;});
@@ -1447,6 +1450,76 @@ open(tmp+"/co.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOFCON
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=9000 --dump-dom "file://$TMP/co.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "CONTRAST_OK" && pass "every word on the page is readable: $T" || fail "every word on the page is readable: $T"
+
+# Gate 47: the ladder has a top — the tier pill reads N/21 with the whole xóm present (three rungs each), N/22 once your own stall stands, N/18 after
+# one neighbour has left; the count on the left is the live tierSum.
+python3 - "$TMP" <<'PYEOF47'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.tierTaught=true; var mai=S.cast[2]; mai.started=true; mai.tai=10; mai.gan=8; mai.ban=8; S.von=10; S.ships.push({x:420,y:300,owner:mai.name,pid:2,age:2});
+  render(); var t1=document.getElementById("tierPill").textContent;
+  S.built=true; S.ships.push({x:120,y:470,owner:"you",yours:true}); render(); var t2=document.getElementById("tierPill").textContent;
+  S.built=false; S.ships.pop(); S.cast[0].gone=true; render(); var t3=document.getElementById("tierPill").textContent;
+  var ok=/🪜 3\/21/.test(t1)&&/🪜 4\/22/.test(t2)&&/🪜 3\/18/.test(t3);
+  document.title=(ok?"LADDER_OK":"LADDER_BAD")+" full="+t1+" built="+t2+" oneGone="+t3;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/ladder.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF47
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/ladder.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "LADDER_OK" && pass "the ladder has a top: $T" || fail "the ladder has a top: $T"
+
+# Gate 48: a name is never buried by a body — labels used to be painted inside each villager's own turn,
+# so anyone drawn later covered the names of everyone standing above them on the bank. v0.45's nudge only
+# separates villagers at the SAME height, and a label sits ~36px BELOW its owner, right where the next
+# one down is standing: measured 4 of 4 body-overlaps buried, including a ×0 zero-tag. Labels are flushed
+# in a second pass now. Asserts by PAINT ORDER, not geometry — the boxes still overlap in a crowd, which
+# is fine; what must never happen is a body painting over a name that was already down.
+python3 - "$TMP" <<'PYEOFBURY'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+var LBL=[], PID=-1, TICK=0, bodyAt={};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<7;s++){ S.acts=3; S.nudged=true; nextSeason(); }
+  S.cast.forEach(function(p){ p.known=true; p.arriveT=0; });
+  var act=S.cast.filter(function(p){return active(p)&&!p.gone;});
+  // stagger them down the bank: close in x, ~38px apart in y — the arrangement the nudge does NOT touch
+  act.slice(0,4).forEach(function(p,i){ p.x=p.tx=p.hx=700+(i%2)*10; p.y=p.ty=p.hy=380+i*38; p.amb=0; p.vUntil=0; });
+  var _oh=haloText, _op=person;
+  haloText=function(t,x,y){ var m=ctx.measureText(t); TICK++;
+    var owner=(typeof lblOwner!=="undefined"&&lblOwner>=0)?lblOwner:PID;
+    LBL.push({pid:owner,paint:TICK,x:x-m.width/2,y:y-m.actualBoundingBoxAscent,
+              w:m.width,h:m.actualBoundingBoxAscent+m.actualBoundingBoxDescent,t:t});
+    return _oh(t,x,y); };
+  person=function(p,now){ PID=p.id; TICK++; bodyAt[p.id]=TICK; try{ return _op(p,now); } finally{ PID=-1; } };
+  for(var f=0;f<40;f++){ act.forEach(function(q){ q.tx=q.x; q.ty=q.y; q.arriveT=0; });
+    LBL.length=0; TICK=0; bodyAt={}; drawScene(2000+f*16); }
+  function body(p){ var x=(p.drawX!==undefined?p.drawX:p.x); return {x:x-13,y:p.y-26,w:26,h:50}; }
+  var buried=0, overlaps=0;
+  LBL.forEach(function(l){ if(l.pid<0) return;
+    act.forEach(function(p){ if(p.id===l.pid) return;
+      var b=body(p);
+      if(!(l.x<b.x+b.w&&l.x+l.w>b.x&&l.y<b.y+b.h&&l.y+l.h>b.y)) return;
+      overlaps++; if(bodyAt[p.id]>l.paint) buried++; }); });
+  var ok = LBL.length>=4 && overlaps>=1 && buried===0;   // overlaps>=1 keeps it non-vacuous
+  document.title=(ok?"BURY_OK":"BURY_BAD")+" labels="+LBL.length+" bodyOverlaps="+overlaps+" buried="+buried;
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/by.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOFBURY
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,800 --virtual-time-budget=9000 --dump-dom "file://$TMP/by.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "BURY_OK" && pass "a name is never buried by a body: $T" || fail "a name is never buried by a body: $T"
 
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }

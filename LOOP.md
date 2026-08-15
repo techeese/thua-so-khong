@@ -93,7 +93,7 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.61: the ceiling names a tied hand (Gate 46); v0.57 validated in the game — a tending player
+**v0.62: the tier pill reads N/max — the ladder has a visible top (Gate 47). v0.61: the ceiling names a tied hand (Gate 46); v0.57 validated in the game — a tending player
 climbs 13 → 21 tiers by s14 with all 43 hands used. v0.58: a fourth tied hand — 🚫🏮 the year no one dared (no failure nights; nerve only from the xóm,
 to 5) (Gate 42). v0.57: a witnessed bloom lifts GAN only to 5 — every world-lift now has a ceiling (Gate 41); priced:
 hunter 6.89/12.3, band holds. v0.55: guess-answers and the circle's first line persist across a refresh (Gate 38); measured: the six
@@ -146,26 +146,25 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **the accessibility seam keeps
-paying.** v0.59 Reduce Motion reached the canvas; v0.60 gave the keyboard a visible ring and a
-reachable roster; v0.61 fixed five WCAG failures in the quiet text (`--dim` 2.89:1 → clear) and left
-**Gate 45** guarding the palette. Next on this seam, in order: **the canvas has no `role` and no
-`aria-label`** — a screen reader is told nothing about the xóm, and the sheet and roster already carry
-the same facts in DOM, so a concise description is reachable rather than fanciful (this is semantics,
-not graphics — give it its own round and do not bolt a token label on); then **keyboard-only play end
-to end** (number keys select, but can a Tab-only player reach the verbs, the pot, the ending card's
-buttons and finish a season?); then **forced-colors / high-contrast**, which like Reduce Motion cannot
-reach a canvas through CSS and needs a JS branch. Measured and clean, do not re-open without a new
-reason: device pixel ratio (1×/2×/3×), 320/360px width, English at 320px, float density paced.
-Measured and **declined** as invisible and pre-existing: the world's bottom edge 2.3 logical px past
-the backing store. Still unvaried: a long-idle run (timer/beat accumulation), a save restored at a
-different viewport. **If a tick finds only cosmetic preference, ship nothing and say so** — the owner
-has twice asked again after such a tick, so report plainly and keep going rather than stop. Rules
-earned the hard way: no seeded whole-run gate (v0.45); never let a gate reimplement the logic it tests;
-negative-test every new gate against a deliberately broken copy (this caught Gate 35 and confirmed 40,
-43, 44, 45); check modals at short HEIGHTS; `scrollIntoView` per element; an inline style set by JS
-silently kills a media query; sizing a responsive element from JS freezes it; take the PEAK of a
-transient; assert ACTIVATION when adding focusability. Unique heredoc tag per gate. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **alternate measuring with
+looking.** v0.62 and the tick before it measured five dimensions and found nothing; v0.63 then found a
+real defect by simply taking a screenshot of the current build — a zero-tag half-buried behind another
+villager's shoulder, because labels were painted inside each villager's turn and v0.45's nudge only
+separates villagers at the same HEIGHT while a label hangs 36px below its owner. Labels now flush in a
+second pass (Gate 48, asserted by paint order). The mechanic loop ships fast, so **after every few of
+its versions, look at the game again** rather than only probing dimensions. Measured and clean, do not
+re-open without a new reason: device pixel ratio, 320/360px width, English at 320px, long-idle
+accumulation, clipped text, verb-row raggedness, float density paced. Measured and **declined**: the
+world's bottom edge 2.3px past the backing store (invisible, pre-existing); forced-colors (headless
+Chrome cannot emulate it and a wrong high-contrast palette is worse than none — needs a real Windows
+machine). Still open on the accessibility seam, both NOT graphics so ask before taking them: the canvas
+has no `role`/`aria-label`, and keyboard-only play end to end. **If a tick finds only cosmetic
+preference, ship nothing and say so.** Rules earned the hard way: no seeded whole-run gate; never let a
+gate reimplement the logic it tests; negative-test every new gate; when a fix changes DRAW ORDER assert
+paint order, not geometry; check modals at short HEIGHTS; `scrollIntoView` per element; an inline style
+set by JS silently kills a media query; sizing a responsive element from JS freezes it; take the PEAK of
+a transient; assert ACTIVATION with focusability. Heredoc tags collide across sessions — grep before
+choosing one, and note `PYEOF12`/`PYEOF13` do NOT match Gates 12/13. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

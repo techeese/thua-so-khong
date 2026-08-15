@@ -64,7 +64,7 @@
   .roster .rc.unk{opacity:.55;font-weight:500}
   .roster .rc.sel{background:var(--ink);color:#f5ead0}
   .roster .rc.sel i{border-color:#f5ead0}
-  .roster .rc small{font-weight:600;font-size:10px;color:var(--red)} .roster .rc.sel small{color:#EFB7C4}
+  .roster .rc small{font-weight:600;font-size:10px;color:#A83630} .roster .rc.sel small{color:#EFB7C4}   /* the zero tag: a shade darker than --red — 4.22:1 on the chip paper was under AA at 10px */
   .roster .rc.cand{outline:2px dashed var(--leaf);outline-offset:1px}
   .roster .rc.gone{opacity:.4;cursor:default;box-shadow:none;text-decoration:line-through;font-weight:500}
   .roster .rc .do{opacity:.7;font-size:11px}
@@ -210,7 +210,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.61</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.63</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -515,6 +515,7 @@ function baRescue(){ var ba=S.cast[1]; if(!S.baFade||S.baRescued||!active(ba)) r
   visit(ba,ba.hx,ba.hy,4000);
   logMsg("🏺 Chú Ba rời bậc đình về lại lò — nghề đã có người giữ. Tay ông thôi run.",
          "🏺 Chú Ba leaves the đình steps for his kiln — the craft is held now. His hands steady.");
+  gossip("“Chú Ba về lại lò rồi kìa. Tay hết run.”","“Chú Ba's back at the kiln. His hands have stopped shaking.”",1);
   petals(ba.x,ba.y-24,12,["#8a6642","#E3A63B"]); beep(392,0.1,0.03); setTimeout(function(){beep(523,0.14,0.03);},140); }
 // each voice has its own pitch — the elder low, the girl high; the ear learns who's talking before the eye finds the bubble
 var VOICE=[659,294,494,392,440,587,523];   // Ngân · Ba · Mai · Vũ · Hoa · Tú · Liên
@@ -831,6 +832,12 @@ function stampAt(x,y){ stamps.push({x:x,y:y,t:0}); shake=CALM?0:1; beat(2400); b
 var shake=0, glows=[], lanterns=[];
 var dlBuf=[]; function dlCmp(a,b){ return a.z-b.z; }
 var lblR=[];   // per-frame label rects — clustered villagers don't print gibberish
+// ...and a queue, because a NAME must never be painted over by a BODY. Labels used to be drawn inside
+// each villager's own turn, so anyone drawn later covered the names of everyone above them on the bank:
+// measured 3 of 8 labels buried when the bank stacks people vertically (v0.45's nudge only separates
+// villagers at the SAME height, and a label sits ~36px below its owner — right where the next one down
+// is standing). Every label is deferred and flushed after the last body.
+var lblQ=[], lblOwner=-1;
 var motes=[];   // 📖 book motes — the class visibly leaves Cô Mai's workshop for each student
 // people go WHERE their story happens — a visit overrides idle wander for a few seconds
 var DINH={x:470,y:265}, CHO={x:560,y:490}, BEN={x:80,y:H-75};   // đình steps · market stall · river landing
@@ -863,7 +870,7 @@ function execBeh(p,beh,now){
   else if(beh===7){ dx=BEN.x+26; dy=peopleFloor(); }
   else if(beh===8){ if(!S.ships.length) beh=1; else { var sh3=S.ships[(p.id+S.season)%S.ships.length]; dx=sh3.x-40; dy=sh3.y+26; } }
   else if(beh===10){ dx=p.hx+6; dy=p.hy+14; dur=5000+Math.random()*2000; }   // beside their own sprout
-  else if(beh===12){ dx=668+Math.random()*170; dy=438; dur=6000+Math.random()*2500; }   // at the paddy's edge
+  else if(beh===12){ dx=668+Math.random()*170; dy=438; dur=6000+Math.random()*2500; S.harv=Math.min(44,(S.harv|0)+4); }   // at the paddy's edge — and four more tufts come down
   else if(beh===11){ var ms=learnMaster(p); if(!ms) beh=1; else { var msh=null; S.ships.forEach(function(sh){ if(sh.pid===ms.id) msh=sh; });
     dx=(msh?msh.x:ms.hx)+(p.hx<ms.hx?-34:34); dy=(msh?msh.y+24:ms.hy+8); dur=6500+Math.random()*2500; } }   // 11 LEARN — a low-TÀI neighbour goes to watch the most skilled pair of hands at work
   else if(beh===9){ var c2=chicks[0],bd=1e9; chicks.forEach(function(c3){ var dd=Math.hypot(c3.x-p.x,c3.y-p.y); if(dd<bd){bd=dd;c2=c3;} });
@@ -1085,7 +1092,10 @@ function drawScene(now){
     ctx.strokeStyle="rgba(120,100,60,.18)"; ctx.lineWidth=1;
     for(var r2=0;r2<rows;r2++){ ctx.beginPath(); ctx.moveTo(px0-8,py0+r2*dy+6); ctx.lineTo(px0+cols*dx,py0+r2*dy+6); ctx.stroke(); }   // the bunds
     for(var r3=0;r3<rows;r3++) for(var c3=0;c3<cols;c3++){ var tx=px0+c3*dx+((r3%2)*6), ty=py0+r3*dy+6, ph2=(c3*7+r3*3)%10;
-      if(stage===3){ ctx.strokeStyle="rgba(140,110,60,.7)"; ctx.lineWidth=1.4; ctx.beginPath(); ctx.moveTo(tx-2,ty); ctx.lineTo(tx-2,ty-3); ctx.moveTo(tx+2,ty); ctx.lineTo(tx+2,ty-3); ctx.stroke(); continue; }
+      var cut=(stage===2&&(r3*cols+c3)<(S.harv|0));   // 🌾 in autumn the field is cut row by row as the harvest errands land — the xóm's work, visible in the paddy
+      if(stage===3||cut){ ctx.strokeStyle="rgba(140,110,60,.7)"; ctx.lineWidth=1.4; ctx.beginPath(); ctx.moveTo(tx-2,ty); ctx.lineTo(tx-2,ty-3); ctx.moveTo(tx+2,ty); ctx.lineTo(tx+2,ty-3); ctx.stroke();
+        if(cut&&(c3%3===1)){ ctx.strokeStyle="#C9A23B"; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(tx-6,ty-1); ctx.lineTo(tx+6,ty-2); ctx.stroke(); }   // a sheaf laid on the bund
+        continue; }
       var hgt=stage===0?5:stage===1?12:11, col=stage===2?"#C9A23B":stage===0?"#8fbf6a":"#5f9a4a";
       ctx.strokeStyle=col; ctx.lineWidth=stage===0?1.2:1.6; ctx.beginPath();
       ctx.moveTo(tx,ty); ctx.quadraticCurveTo(tx+sw2*0.5,ty-hgt*0.6,tx+sw2+ph2*0.1,ty-hgt);
@@ -1239,7 +1249,7 @@ function drawScene(now){
     ctx.beginPath(); ctx.ellipse(ln.x,ln.y+fl2,8,11,0,0,6.28); ctx.fill(); ctx.stroke();
     ctx.fillStyle="#E3A63B"; ctx.fillRect(ln.x-4,ln.y-11+fl2,8,3); ctx.fillRect(ln.x-3,ln.y+10+fl2,6,5);
   });
-  lblR.length=0;
+  lblR.length=0; lblQ.length=0;
   // 🧍🧍 elbow room — villagers were printing on top of one another in a fifth of all frames, which is
   // also why the bank could not name everyone: two figures at one spot are two labels at one spot.
   // This is a DRAW-time nudge only. p.x is never touched, so the sim, the errands and the thesis band
@@ -1272,6 +1282,12 @@ function drawScene(now){
     de=dlBuf[dn]||(dlBuf[dn]={z:0,s:null,p:null}); de.z=S.cast[di].y+22; de.s=null; de.p=S.cast[di]; dn++; }
   dlBuf.length=dn; dlBuf.sort(dlCmp);
   for(di=0;di<dn;di++){ de=dlBuf[di]; if(de.s) workshop(de.s,now); else if(!(boat&&boat.inbound&&boat.who===de.p.id&&(now-boat.t0)/boat.dur<1)) person(de.p,now); }   // still aboard the incoming sampan
+  // the second pass: names last, so no body can bury one
+  if(lblQ.length){ ctx.textAlign="center";
+    for(var lq=0;lq<lblQ.length;lq++){ var Q=lblQ[lq];
+      ctx.font=Q.f; ctx.fillStyle=Q.c; lblOwner=Q.o; haloText(Q.t,Q.x,Q.y);
+      if(Q.dot){ ctx.fillStyle=Q.dot; ctx.beginPath(); ctx.arc(Q.x-Q.dw/2-6,Q.y-4,3,0,6.28); ctx.fill(); ctx.strokeStyle="#2B2320"; ctx.lineWidth=1; ctx.stroke(); } }
+    lblOwner=-1; ctx.textAlign="left"; }
 
   // --- smoke: the kiln burns when Chú Ba's workshop stands ("lò lại đỏ lửa"); every hearth smokes in winter ---
   (function(){
@@ -1374,6 +1390,9 @@ function drawScene(now){
   ctx.fillStyle=_goldSeal?"rgba(227,166,59,.92)":"rgba(193,68,60,.88)"; ctx.fillRect(W-48,H-48,32,32);   // gold once the book holds all six endings
   ctx.strokeStyle="rgba(245,234,208,.7)"; ctx.lineWidth=1.5; ctx.strokeRect(W-45,H-45,26,26);
   ctx.fillStyle="#f5ead0"; ctx.font="700 14px Georgia"; ctx.textAlign="center"; ctx.fillText("×0",W-32,H-27); ctx.textAlign="left";
+  // the print signs its season beside the seal — ✿ spring · ☼ summer · ❦ autumn · ❄ winter — and the year: the picture says when it was made, in the picture
+  if(S){ ctx.font="italic "+Math.round(11*LKF)+"px Georgia"; ctx.fillStyle="rgba(43,35,32,.6)"; ctx.textAlign="right";
+    ctx.fillText(["✿","☼","❦","❄"][Math.min(S.season,15)%4]+" "+STR.seasons[L][Math.min(S.season,15)%4]+" "+(2026+Math.floor(Math.min(S.season,15)/4)),W-56,H-24); ctx.textAlign="left"; }
 
   // --- speech bubbles ---
   var nnow=now;
@@ -1547,7 +1566,7 @@ function workshop(s,now){
   var lbl=(S.sel===s.pid||s.yours)?(word+" "+s.owner):word;
   // the workshop's own word was never registered either, so a villager's name printed straight through it
   var lblW=ctx.measureText(lbl).width, lblX=Math.max(16+lblW/2,Math.min(W-16-lblW/2,x)), lblY=y+30*sc+11+(LKF-1)*6;
-  haloText(lbl, lblX, lblY); lblR.push([lblX,lblY,lblW]);
+  lblQ.push({t:lbl,x:lblX,y:lblY,f:FONT_LBL,c:"#2B2320",o:-1}); lblR.push([lblX,lblY,lblW]);
   ctx.textAlign="left";
 }
 function person(p,now){
@@ -1642,10 +1661,9 @@ function person(p,now){
     if(!hits(nx,uy,lw) && !(hint&&hits(hx2,uy+gap,hw))){ ny=uy; ok=true; break; } }
   if(ok||S.sel===p.id){
     if(!ok) ny=ly2;   // nowhere clear at all: print in place rather than leave them nameless
-    haloText(p.name,nx,ny); lblR.push([nx,ny,lw]);
+    lblQ.push({t:p.name,x:nx,y:ny,f:FONT_LBL,c:"#2B2320",o:p.id,dot:p.known?p.color:null,dw:lw}); lblR.push([nx,ny,lw]);   // a known name carries their colour dot — the roster's, the pennant's, the thread's
     if(hint){
-      ctx.font=FONT_HINT; ctx.fillStyle="#C1443C";
-      haloText(hint,hx2,ny+gap); lblR.push([hx2,ny+gap,hw]);
+      lblQ.push({t:hint,x:hx2,y:ny+gap,f:FONT_HINT,c:"#C1443C",o:p.id}); lblR.push([hx2,ny+gap,hw]);
     }
   }
   ctx.textAlign="left";
@@ -2127,6 +2145,7 @@ function nextSeason(){
     S.cast.forEach(function(q){ q.pr16=(q.pr16||[]).slice(0,S.season); q.pr16[S.season]=Math.min(1000,prod(q)); });   // and each person's product at the season's close — their arc, season by season
     S.log=S.log.slice(0,24); renderLog(); })();
   S.season++;
+  if(S.season%4===0) S.harv=0;   // spring: the paddy stands again
   nightAt=performance.now();   // a night passes between seasons — the print dims, lamps show, the new season dawns
   // ☁️ storm tax: under a heavy sky the xóm spends a hand bracing roofs — but after two seasons the roofs are braced
   if(S.luat<4){ S.stormCount=(S.stormCount|0)+1; S.stormStreak=(S.stormStreak|0)+1; } else { S.stormStreak=0; }
@@ -2469,7 +2488,8 @@ function cur(){ return S.sel>=0?S.cast[S.sel]:null; }
 function render(){
   var sn=STR.seasons[L][S.season%4], yr=2026+Math.floor(S.season/4);
   el("seasonPill").textContent=YEAR_CARDS[S.yearCard|0].em+(S.constraint?CONSTRAINTS[S.constraint].g.slice(0,2):"")+" "+sn+" "+yr+" · "+Math.min(S.season+1,16)+"/16"+(S.probeSeen?(" → "+(S.luatNext>=4?"☀️":"☁️")):"");   // a tied hand shows on the pill all run, not just on the seal
-  var tp=el("tierPill"); if(tp){ var tsNow=tierSum(); tp.style.display=(S.tierTaught&&tsNow>0)?"":"none"; tp.textContent="🪜 "+tsNow+(L==="vi"?" bậc":" tiers"); }
+  var tp=el("tierPill"); if(tp){ var tsNow=tierSum(), tsMax=3*S.cast.filter(function(q){return !q.gone;}).length+(S.built?1:0);   // v0.62: the ladder has a top — three rungs per neighbour still here (+1 for your own stall) — so the climb has a visible far end
+    tp.style.display=(S.tierTaught&&tsNow>0)?"":"none"; tp.textContent="🪜 "+tsNow+"/"+tsMax+(L==="vi"?" bậc":" tiers"); }
   el("actPill").textContent="⚡ "+S.acts;
   renderRoster();
   el("subttl").textContent=t("sub"); el("foot").textContent=t("foot");
@@ -2716,7 +2736,7 @@ function renderHelp(){
       if(p.id===1&&!p.started&&S.baFade&&!S.apprentice) threat=" 🕯";
       rows.push("<span class=\"stRow\" data-sel=\""+p.id+"\" style=\"cursor:pointer;text-decoration:underline dotted\"><b>"+p.name+"</b></span> — "+st+threat); });   // the name is a way to the person
     h+=sec(vi?"📍 Xóm lúc này":"📍 The xóm now",
-      (STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4))+" · "+S.acts+"⚡ · "+(vi?"sông ":"river ")+S.von+"/10 ("+(vi?"bậc tối đa ":"tier cap ")+cap+")"
+      (STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4))+" · "+YEAR_CARDS[S.yearCard|0].em+" "+(vi?YEAR_CARDS[S.yearCard|0].nv:YEAR_CARDS[S.yearCard|0].ne)+(S.constraint?(" · ⛓ "+(vi?CONSTRAINTS[S.constraint].nv:CONSTRAINTS[S.constraint].ne)):"")+" · "+S.acts+"⚡ · "+(vi?"sông ":"river ")+S.von+"/10 ("+(vi?"bậc tối đa ":"tier cap ")+cap+")"+(S.luat<4?(vi?" · trời nặng ☁️":" · heavy sky ☁️"):"")
        +"<br>"+rows.join("<br>")));
   }
   h+=sec(vi?"Phép nhân":"The multiplication",

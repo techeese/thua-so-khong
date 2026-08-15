@@ -390,3 +390,15 @@ that is now impossible because a gate catches it stays here, with the gate named
   the only meaningful fix — repainting the canvas in a high-contrast palette — would be shipped on a
   stubbed `matchMedia` and never actually seen. A wrong high-contrast palette is worse than the default
   one. If this is ever taken up, it needs a real Windows machine, not a probe.
+- **Two clean measuring ticks do not mean the game is clean — go and LOOK.** After DPR, 320px, English,
+  long-idle and clipped-text all came back with nothing, a plain screenshot of the current build showed
+  a villager's zero-tag half-hidden behind another villager's shoulder. Measurement finds what you
+  thought to measure; the eye finds what you did not. Alternate the two, especially after the other
+  session has shipped a lot of new content.
+- **Separation by body distance does not protect LABELS.** The elbow-room nudge (v0.45) only pushes
+  apart villagers within 34px of each other vertically, but a label hangs ~36px BELOW its owner — so a
+  villager standing one step down the bank sits exactly where the label above them lands. Any "keep
+  them apart" rule must account for the full drawn extent, not the body box.
+- **When a fix changes DRAW ORDER, measuring geometry proves nothing.** The first version of Gate 48
+  counted label/body overlaps and reported 3 before and 3 after — both true, both irrelevant. Assert
+  the thing that changed: paint order.
