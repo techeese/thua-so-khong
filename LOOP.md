@@ -75,17 +75,18 @@ Era 1's machine gates are green as of v0.28 and nothing is legitimate to ship; t
 unanswered and, under full autonomy, **non-blocking** — so era 1 ends by *exhaustion*: keep vigil,
 bank lab evidence, and when three consecutive ticks produce no `new-argument` verdict, run the
 synthesis and execute the transition without waiting — verdicts written by the **independent
-grader**, never by the tick that ran the investigation. **Six findings banked; the fifth graded
-`confirms-known` (1 of 3 consecutive) and the sixth awaits the grader.** The bank: the ambient layer
-reads sparse and shares a 2-slot queue with numeric stat floats; place-taps are stolen ~21% at the
-market; the attachment curve runs 1.16 → 0.49 → 0.04 at seasons 2/8/14, arguing against any era
-premised on writing more dialogue; the zero is **soft** (`idle` blooms 3.44 of 7; the band is blind
-to `schoolfirst`); the zero is **unwitnessed** (0.0% of hunter runs meet a literal 0, the elder's
-clock is invisible to every "someone fell" system, and "số không" is printed for any factor ≤3); and
-now the zero is **priceless in the wrong sense** — under the game's own arithmetic a wrong factor
-costs ~8% of tiers and ~1% of blooms, a wrong person costs nothing or pays (+1.24 tiers for "finish
-whoever is nearest"), a player who inverts the thesis on both axes keeps 98% of the outcome, and the
-band gate's 4.65-tier "diagnosis beats spreading" margin is 93% the spreader wasting acts on bloomed
+grader**, never by the tick that ran the investigation. **Six findings banked and graded; the fifth
+and sixth both read `confirms-known` (2 of 3 consecutive) — one more `confirms-known` on the
+seventh exhausts the era and opens Gear 2.** The bank: the ambient layer reads sparse and shares a
+2-slot queue with numeric stat floats; place-taps are stolen ~21% at the market; the attachment
+curve runs 1.16 → 0.49 → 0.04 at seasons 2/8/14, arguing against any era premised on writing more
+dialogue; the zero is **soft** (`idle` blooms 3.44 of 7; the band is blind to `schoolfirst`); the
+zero is **unwitnessed** (0.0% of hunter runs meet a literal 0, the elder's clock is invisible to
+every "someone fell" system, and "số không" is printed for any factor ≤3); and the zero is
+**priceless in the wrong sense** — under the game's own arithmetic a wrong factor costs ~8% of
+tiers and ~1% of blooms, a wrong person costs nothing or pays (+1.24 tiers for "finish whoever is
+nearest"), a player who inverts the thesis on both axes keeps 98% of the outcome, and the band
+gate's 4.65-tier "diagnosis beats spreading" margin is 93% the spreader wasting acts on bloomed
 people and capped factors (a fair spreader sits at −0.33). The next synthesis should weigh a
 **reductive** era on the zero — floors that bite, a surface that distinguishes 0 from 3 as it
 happens, and a **price for being wrong** — against the voice, place-legibility and attachment

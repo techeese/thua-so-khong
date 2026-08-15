@@ -117,6 +117,9 @@ whoever blooms earliest, not whoever stood nearest zero.
 **Not shipped, per Gear 3.** `index.html` and `check.js` untouched; probe `lab/decide.js`, output
 `lab/decide-out.txt` (both gitignored).
 
+**Verdict:** confirms-known
+*Grader:* It adds a third lever ("the price of being wrong", plus a fairer `spreaderU` band opponent) inside the same "sharpness of the zero" candidate that `zerohunt.js` opened and `zerowitness.js` already refined, so it strengthens an existing era rather than opening or killing one.
+
 ## 2026-08-15 — the literal zero: who produces it, and does anything witness it? (`zerowitness.js`)
 
 The last vigil established the zero is *soft* — the authored floors are 1s and a 1 blooms about half
