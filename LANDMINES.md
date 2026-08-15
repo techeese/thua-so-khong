@@ -278,3 +278,16 @@ that is now impossible because a gate catches it stays here, with the gate named
   sheet kept drawing an unseen factor's bar at zero width — emptier than a factor genuinely at 1, in a
   game whose entire question is which factor is at zero. Any "not known yet" state needs its own mark
   (here a hatched track), never the same picture as the lowest real value.
+- **A harness that taps and then calls `nextSeason()` in the same synchronous burst leaves its OWN
+  tap quotes 3.0–3.3 s old at `chatter()` time (speech lives 3600 ms; chatter fires at ≥3000 ms).**
+  That inflated the ambient block count in `chatprobe.py` (70/120 vs 51/120 with a 4.5 s settle) and
+  mis-attributed the block to stat floats — which live 1200 ms and are always dead before chatter can
+  run. v0.46 was shipped on that misreading; measured after the fact it rescues 0 of 480 calls
+  (2026-08-15, `lab/lane.py`). Practice: any ambient/timing probe must put a settle gap between the
+  player's acts and the season change, and must record *which kind* of bubble is up, not how many.
+- **At tick start the working tree may be another session mid-ship, not stranded work.** 17:35–17:47
+  today: index.html/gate.sh dirty and being edited every ~2 min by the owner's `/loop 5m` session,
+  then v0.46 and v0.47 landed. Practice that cost nothing: `stat` the dirty files against `date`; if
+  they moved in the last minute, commit only your own file by name (the grader's verdict in
+  `lab/NOTES.md`), poll `git status` until the tree is clean (took ~9 min), then re-run `done.sh` —
+  the gear it returns on a clean tree is the real one (here it flipped 1 → 3).

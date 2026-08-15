@@ -19,6 +19,63 @@ argues for or against.
      **Measured:** …
      **Argues for/against:** <candidate era>  -->
 
+## 2026-08-15 — the speech lane, measured: v0.46 rescues zero chatter() calls, because floats are dead before chatter can fire (`lane.py`, `lane-settle.py`, `lane-src.py`)
+
+**Question.** v0.46 gave speech its own lane — `chatter()`/`pairTalkAt()` now count `speechCount()`
+instead of `bubbles.length` — on the `chatprobe.py` entry's prediction that stat floats sharing the
+two-slot queue were "53 of 120" of the block and that separating them "would roughly double the rate".
+Re-ran that harness A/B on the v0.45 tree (`git show 2a0c618:index.html`) vs today's v0.47 tree, 8 paced
+16-season runs a side, GAP 7000 ms, `drawScene` driven at 10 fps, and — new — recorded at every
+`chatter()` call how many bubbles were up, how many of them were speech, and whether the call was
+*floats-up-but-speech-free* (the only case the lane can rescue).
+
+**Measured, same harness as the chatprobe entry (taps fired synchronously right before `nextSeason`):**
+
+| | calls | blocked by ≥2 SPEECH | floats up, speech < 2 | ambient bubbles |
+|---|---|---|---|---|
+| v0.45 | 120 | 70 | **0** | 22 (2.75/run) |
+| v0.47 | 120 | 72 | **0** | 26 (3.25/run) |
+
+**Measured with a 4.5 s settle between the tick's taps and `nextSeason` (a player taps, then presses
+"next season" seconds later):**
+
+| | calls | blocked by ≥2 SPEECH | floats up, speech < 2 | ambient bubbles |
+|---|---|---|---|---|
+| v0.45 | 120 | 51 | **0** | 44 (5.50/run · 0.34/season) |
+| v0.47 | 120 | 49 | **0** | 51 (6.38/run · 0.40/season) |
+
+Across all **480** `chatter()` calls in the four configurations, **not one** was blocked by floats
+alone. Run-to-run spread is 0–5 bubbles, so 2.75→3.25 and 5.50→6.38 are noise, not the lane.
+
+**Why it is structural, not statistical.** `chatter()` is scheduled from `nextSeason()` at
+`max(3000, beatUntil−now+600)` ms and re-waits while a beat is up. Every stat float lives 1200 ms
+(`floatOn`, `:1870`); the only deferred float is the bloom's witnesses' *+1 GAN 🌸* at +1500 ms —
+gone by 2700 ms. So by the earliest instant `chatter()` can run, every float of the season is
+already pruned. The v0.46 CHANGELOG line "a bloom's six +1 GAN floats no longer silence the xóm"
+describes a collision that the timing never allowed. What *does* hold the two slots at 3 s is
+**speech**: in `lane-src.py` the bubbles up at chatter time trace to `selectPerson` (reveal quotes)
+30, anonymous `setTimeout` closures (visits/arrivals) 33, `actLink` 11, `completeLink` 1, all aged
+3000–3300 ms of a 3600 ms life. Half of that is the harness's own tap quotes (the settle run
+removes them: 70 → 51 blocks); the rest is the game's named-moment speech that outlives its beat.
+`pairTalkAt()` — walk-triggered, any time — is the one path where a float and a speech roll can
+coincide; not measured here.
+
+**Corrects the chatprobe entry.** Its "53 blocked by `bubbles.length>=2`" were speech, not floats,
+and roughly half were the harness's; the honest ambient rate with a settle is **~0.34–0.40 per
+season** on both trees, not 0.28. The lever it named ("separate the arrays") was the wrong lever.
+
+**Argues for/against.** Not a defect: the guard is correct, Gate 29 asserts a true property, nothing
+is broken. Against any further "louder xóm" work aimed at floats. If a synthesis ever wants the xóm
+heard more, the two honest levers are the deliberate 40 % mute roll and the fact that `waitQuiet`
+retries only on *beats* — a chatter roll that finds two speech bubbles up simply forfeits the season
+rather than trying again 2 s later. Both are cadence, which the owner has reserved; candidate
+material only.
+
+**Harness:** `lab/lane.py <gap> <runs> <html>` (chatprobe + per-call speech/float split),
+`lab/lane-settle.py` (same, with the 4.5 s settle), `lab/lane-src.py` (stack-tags each speech
+bubble's caller). Outputs `lab/lane-*.txt`; the v0.45 tree is `lab/index-v045.html`. Gitignored
+except this note.
+
 ## 2026-08-15 — the low bloom: who the ending calls "bloomed" while their own weakest factor sits at 2–4 (`lowbloom.js`)
 
 **Question.** LOOP.md's mechanic bank has carried, for many rounds, *"the ending card calling a ≤3-factor
