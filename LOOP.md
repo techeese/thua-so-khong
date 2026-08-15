@@ -78,21 +78,28 @@ Era 1's machine gates are green as of v0.28 and nothing is legitimate to ship; t
 unanswered and, under full autonomy, **non-blocking** — so era 1 ends by *exhaustion*: keep vigil,
 bank lab evidence, and when three consecutive ticks produce no `new-argument` verdict, run the
 synthesis and execute the transition without waiting — verdicts written by the **independent
-grader**, never by the tick that ran the investigation. **Six findings banked and graded; the fifth
-and sixth both read `confirms-known` (2 of 3 consecutive) — one more `confirms-known` on the
-seventh exhausts the era and opens Gear 2.** The bank: the ambient layer reads sparse and shares a
-2-slot queue with numeric stat floats; place-taps are stolen ~21% at the market; the attachment
-curve runs 1.16 → 0.49 → 0.04 at seasons 2/8/14, arguing against any era premised on writing more
-dialogue; the zero is **soft** (`idle` blooms 3.44 of 7; the band is blind to `schoolfirst`); the
-zero is **unwitnessed** (0.0% of hunter runs meet a literal 0, the elder's clock is invisible to
-every "someone fell" system, and "số không" is printed for any factor ≤3); and the zero is
-**priceless in the wrong sense** — under the game's own arithmetic a wrong factor costs ~8% of
-tiers and ~1% of blooms, a wrong person costs nothing or pays (+1.24 tiers for "finish whoever is
-nearest"), a player who inverts the thesis on both axes keeps 98% of the outcome, and the band
-gate's 4.65-tier "diagnosis beats spreading" margin is 93% the spreader wasting acts on bloomed
-people and capped factors (a fair spreader sits at −0.33). The next synthesis should weigh a
-**reductive** era on the zero — floors that bite, a surface that distinguishes 0 from 3 as it
-happens, and a **price for being wrong** — against the voice, place-legibility and attachment
-candidates; note that both `schoolfirst` and a fair `spreaderU` turn the band gate red on the first
-commit and carry a balance decision with them. Standing owner directives: less narration · simple
-opening · buildings mean something · ambient = silent and numberless.
+grader**, never by the tick that ran the investigation. **Seven findings banked; six graded, the
+fifth and sixth `confirms-known` (2 of 3 consecutive); the seventh (`fourth.js`) awaits the grader
+— its verdict decides whether the era exhausts now or the count resets.** The bank: the ambient
+layer reads sparse and shares a 2-slot queue with numeric stat floats; place-taps are stolen ~21% at
+the market; the attachment curve runs 1.16 → 0.49 → 0.04 at seasons 2/8/14, arguing against any era
+premised on writing more dialogue; the zero is **soft** (`idle` blooms 3.44 of 7; the band is blind
+to `schoolfirst`); the zero is **unwitnessed** (0.0% of hunter runs meet a literal 0, the elder's
+clock is invisible to every "someone fell" system, and "số không" is printed for any factor ≤3); the
+zero is **priceless in the wrong sense** (a wrong factor costs ~8% of tiers, a wrong person costs
+nothing or pays, an inverted player keeps 98%; the band's 4.65-tier margin is 93% the spreader's
+waste, a fair `spreaderU` sits at −0.33); and **the fourth factor is not a factor** — the river enters
+the math once, as a 0.64–1.0 multiplier that cannot zero anyone; its whole range moves the hunter's
+blooms by 0.00; it reaches 10 in 100% of diagnosing runs, 56% of it from the flywheel that blooms
+feed; the hụi verb costs the hunter 0.70 tiers for 0.00 blooms in every year card including the
+flood year, and its `🌱 X%` float shows the same integer 62% of the time (81% for the people nearest
+zero); `riverLow` promises a tier mechanic that does not exist; and the "không hụi" vow prices at ≥0.
+The next synthesis should weigh a **reductive** era on the zero — floors that bite, a surface that
+distinguishes 0 from 3 as it happens, a **price for being wrong**, and **either make capital a factor
+or stop presenting it as one** (drop the hụi verb, the vow, the sheet's river tag and `riverLow`) —
+against the voice, place-legibility and attachment candidates; note that `schoolfirst`, a fair
+`spreaderU`, and a capital that bites each turn the band gate red on the first commit and carry a
+balance decision. Two small defects with evidence, unshipped per Gear 3, for a Gear 1 tick or the
+owner: `cl(s.hui,0,3,0)` vs `huiMax()`=4 in a flood year, and the `riverLow` copy. Standing owner
+directives: less narration · simple opening · buildings mean something · ambient = silent and
+numberless.

@@ -130,6 +130,14 @@ that is now impossible because a gate catches it stays here, with the gate named
   acts — still blooms 3.44 of 7 workshops, and a strategy the gate does not test (`schoolfirst`)
   scores inside the gate's own margins. Do not cite a green `band` gate as evidence about the
   thesis; cite it as evidence about strategy ordering.
+- **In `check.js`'s frame, anything that makes a bloom fire SOONER reads as a tier LOSS.** The sim has
+  no post-bloom tending, so a bloom freezes that person's product for the rest of the run; a fuller
+  river (`lab/fourth.js`, 2026-08-15) fires the hunter's blooms a season earlier at product 438
+  instead of 478 and *lowers* tiers 16.13 → 15.55 while blooms stay at 6.99. In the game the
+  teach/nerve buttons stay live after a bloom, so the loss is recoverable there. Any lab measurement of
+  "does X help?" on tier depth — capital, school reach, momentum, inspiration — must be read on the
+  bloom channel or with post-bloom tending added to the mirror; the tier sign can invert. Cost: none
+  this tick (caught by attribution), but the raw table read "the river hurts the diagnosing player."
 
 ## Game internals
 
@@ -143,3 +151,8 @@ that is now impossible because a gate catches it stays here, with the gate named
   was never written** — when a layer seems thin, instrument the call site before authoring more.
 - **`_chaser` was assigned before `visit()`**, which cleared it — the chase animation dropped
   whenever a story visit landed in the same frame. Order matters around `visit()`.
+- **A sanitize clamp with a hard-coded max silently undoes a rule that varies by year card.**
+  `cl(s.hui,0,3,0)` (`index.html:473`) clamps the hụi counter to 3, but `huiMax()` is 4 in a flood
+  year — after four contributions a reload re-enables the button for a fifth (+1 river, one more act).
+  Found by reading, not by a gate (`lab/fourth.js`, 2026-08-15); not shipped, per Gear 3. Generalises
+  the NaN entry above: a sanitize bound must reference the rule's function, not a literal copy of it.

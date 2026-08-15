@@ -19,6 +19,111 @@ argues for or against.
      **Measured:** …
      **Argues for/against:** <candidate era>  -->
 
+## 2026-08-15 — the fourth factor: is capital a factor? the river and the hụi against the thesis (`fourth.js`)
+
+The charter's thesis names **four** multiplying factors — *"Talent (TÀI), nerve (GAN), connection (BẠN),
+and capital multiply."* Six vigils have measured the first three from every side (softness, witness,
+what/who/when). None has asked about the fourth. In the game capital is the river, `S.von`, 1–10, xóm-wide,
+raised by the hụi verb the player presses, by a quarterly clock, by the tier flywheel and by the Ba×Hoa
+market payout. This probe asks whether it is a factor at all — arithmetically, in play, and on screen.
+
+Harness: `check.js`'s sim verbatim, same seeds (`1009+i·53`, N=6000), paired; drift check exact
+(hunter 6.99/15.86 · spreader 6.25/11.21 · linker 6.80/14.54 · idle 3.44/3.44). Added: a river mode
+(natural / frozen at 1 / frozen at 10), the game's **Góp hụi** verb mirrored from `actHui`
+(`index.html:1179`: unlocks s≥2, s0 in a flood year; max 3, 4 in flood; +1 river per act, one act
+each), and attribution of every point of river rise to its source. `check.js`'s own strategies never
+press the hụi, so the band's canonical player has never once contributed to it.
+
+**1 · The river cannot be a zero, and the sheet knows it.** `S.von` enters the season math at exactly
+one place — `chance()` (`index.html:419`) — as `(0.6 + 0.4·von/10)`. Floor 0.64 at von 1 (the save
+sanitiser clamps it to `[1,10]`; no code path ever lowers it — the river only rises), ceiling 1.0: a
+**1.56× swing**, against **10× (and 0)** for each personal factor. Tiers, stamps, build and entropy never
+read it. The sheet prints `TÀI × GAN × BẠN = 288` and the river as a side tag (`· sông 7/10`); the
+ending's arrived/left arithmetic is three factors. At a hypothetical von 0 the multiplier would still be
+0.60. Unhelped Bé Ngân (1×9×9) blooms within 14 tries in 48.8% of lives at river 1, 65.3% at river 10,
+46.5% at river 0. No river state moves anyone across the line between possible and impossible.
+Constraint 3 is not violated — a zero on the river is unreachable — but "capital multiplies" is
+something the charter asserts and the code does not do: the game computes a product of three.
+
+**2 · The weight of the fourth factor, paired, over a range no run ever spans:**
+
+| river frozen | hunter blooms / tiers | spreader | linker | idle |
+|---|---|---|---|---|
+| **1** | 6.99 / **16.13** | 6.04 / 10.98 | 6.73 / 14.53 | 3.19 / 3.19 |
+| natural | 6.99 / 15.86 | 6.25 / 11.21 | 6.80 / 14.54 | 3.44 / 3.44 |
+| **10** | 6.99 / **15.55** | 6.28 / 11.03 | 6.75 / 14.13 | 3.76 / 3.76 |
+| Δ(10−1) | **0.00 ±0.00 / −0.58 ±0.02** | +0.24 / +0.06 | +0.01 / −0.40 | +0.57 / +0.57 |
+
+The whole dynamic range of capital moves the diagnosing player's bloom count by **0.00** and *lowers*
+tier depth by 0.58 (3.7%). It is worth +0.57 blooms (18%) to the player who does nothing. A hunter on the
+worst river (16.13) beats a spreader on the best (11.03) and an idler on the best (3.76) — the fourth
+factor cannot reorder the band. Attribution (§7): a fuller river fires the bloom **a season earlier**
+(mean s5.22 → s4.29) at a **lower product** (478 → 438), before the hunter has finished raising the
+person; tier-3 workshops standing 2.49 → 2.01, crushes unchanged (0.23 vs 0.25). Sim-frame caveat: the
+sim has no post-bloom tending, so in the game that tier loss is recoverable with later acts; the
+bloom-count reading (0.00) is not an artifact of the mirror. Per person, river 1→10 changes nobody's
+bloom rate under the hunter (100% throughout); under idle it lifts the borderline people ~+10 pts
+(Bé Ngân 25.8 → 36.4, Anh Tú 52.5 → 66.3, Cô Liên 17.8 → 26.3).
+
+**3 · The river is downstream of the outcome, not upstream of it.** Points of rise per hunter run:
+start 2.60 · quarterly clock 1.83 · **flywheel 5.58** · gtm 0.00. The flywheel (`tierSum() ≥ 4 → +1 per
+season`, `:1324`) is 56% of all rise and is a *consequence* of workshops standing. Von reaches 10 by the
+end in **100%** of hunter runs (99.4% spreader, 99.8% linker; idle 38%) and sits at 8.0 by s7. The mean
+multiplier at the moment a bloom is rolled is 0.75–0.78 — i.e. blooms are decided while the river is
+still ~4–5, and the river then fills *from* them. Seasons at von ≤2 (the bare-stall state): ~2 per run,
+6.0 in the flood year.
+
+**4 · The hụi verb, priced.** Paired against the same strategy without it:
+
+| | blooms | tiers | Δ blooms | Δ tiers | hụi acts |
+|---|---|---|---|---|---|
+| hunter + hụi FIRST (from unlock, first acts, to max) | 6.98 | 15.17 | −0.01 | **−0.70 ±0.02** | 3.20 |
+| hunter + hụi only in empty slots (nobody to tend) | 6.99 | 15.86 | 0.00 | 0.00 | 3.20 |
+| hunter + hụi LATE (s12+) | 6.99 | 15.86 | 0.00 | −0.01 | 3.20 |
+| huiOnly (idle + the 3 hụi acts, knows no one) | 3.63 | 3.63 | **+0.19** | +0.19 | 3.20 |
+
+Pressing the hụi early costs the diagnosing player 4.4% of tiers and buys 0.00 blooms — in **every**
+year card (−0.67 … −0.72), including the flood year whose card reads *"the xóm leans on the hụi"*
+(4 acts, −0.67 tiers, 0.00 blooms; the river ends at 10.00 with or without them). Pressed in slots
+where there is nobody to tend it is exactly free, because the river was reaching 10 anyway. Decomposed
+by pinning the river (so the hụi can add nothing): the pure act cost of three hụi presses is −0.54
+tiers; the river they buy is worth **−0.16** — the one thing the verb does (fill the river sooner)
+is itself worth ≤0 to the hunter in the sim's frame. The intro card's *"tie one of your own hands? —
+không hụi"* therefore prices at ≥0 for a diagnosing player: the tied hand was not doing anything.
+For the idle player the three presses are worth +0.19 blooms — the fourth factor is a lever mostly
+for the player who pulls no other.
+
+**5 · What the game says about the river against what it computes.**
+- `riverLow` (`:223`, fires s5 at von ≤3): *"The river runs low — any workshop stays a street stall."*
+  Tiers never read the river; the river-1 hunter stands **more** tier-3 workshops (2.49) than the
+  river-10 hunter (2.01). The line promises a mechanic that does not exist.
+- `actHui` (`:1181`) floats `🌱 <round(chance·100)>%` on every known sprout — *"every named sprout
+  visibly rises."* One point of river moves the multiplier by 0.04; on the authored cast at the hụi
+  seasons the rounded integer is **unchanged in 62.0%** of sprout-floats, and in **80.6%** for products
+  under 100 — the people nearest zero, the ones the thesis is about (mean change +0.38 points; ceiling
+  of visibility for the weakest, floor for the strongest since tended products run higher).
+- A save/load defect, minor and real: `cl(s.hui,0,3,0)` (`:473`) clamps the hụi counter to 3, but
+  `huiMax()` is 4 in a flood year, so after four contributions a reload re-enables the button for a
+  fifth (+1 river, one more act). Not shipped, per Gear 3.
+
+**Argues for:** a reductive candidate that the six earlier findings did not contain — **the fourth
+factor is decoration.** Either make capital a factor in the code's sense (a multiplicand that can bite:
+part of the product or the tier, with a floor that can approach 0 — a balance decision that would put
+the band gate on the table, like `schoolfirst` and `spreaderU`), or stop presenting it as one: drop
+the hụi verb, the vow, the river tag on the sheet and the `riverLow` promise, and let the river be
+what the charter already calls it — *"neither is anyone's to command,"* scenery on the same footing as
+the sky. Every standing owner directive is reductive and this is the largest single subtraction the
+lab has yet found with a number attached (one verb, one vow, one string, one tag; 0.00 blooms of
+consequence). It also sharpens the "price of being wrong" lever: the hụi is a verb whose only price is
+opportunity and whose reward is invisible on screen four times in five. **Argues against:** any era
+that adds economy — more hụi, a market, capital per person — since the existing capital dial has no
+leverage to build on; against reading the flood year as a capital challenge (its hụi return is 0.00
+blooms, its river ends at 10.00 regardless); and against citing "four factors multiply" as something
+the game demonstrates — it demonstrates three, and the sheet already says so.
+
+**Not shipped, per Gear 3.** `index.html` and `check.js` untouched; probe `lab/fourth.js`, output
+`lab/fourth-out.txt` (both gitignored).
+
 ## 2026-08-15 — where is the decision? diagnosis decomposed into what · who · when (`decide.js`)
 
 Owner gate #1 says *"Diagnosis feels like play. Finding which factor is zero is the fun part, not
