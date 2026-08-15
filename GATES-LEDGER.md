@@ -49,6 +49,7 @@ Rules:
 | `Gate 24` | 1 | the Sổ tay keeps its way out — the heading and the Đóng button stay in view at every scroll position, and the body's live edge fades: bottom only at the top, both in the middle, top only at the end (v0.42) |
 | `Gate 25` | 1 | elbow room — villagers do not print on top of one another: seeded overlap fraction ≤0.13 across three fixed seeds (v0.42 baseline 0.240). The first gate to drive BOTH `Math.random` and `performance.now` from the harness, so a before/after difference is real rather than dice (v0.43) |
 | `Gate 26` | 1 | the hand that crosses a threshold says so — a bloomed person's per-verb hint reads `→ 360 ↑bậc 2` on the hand that lifts the product past a tier line the river can carry, plain `→ 360` when the river holds it, no arrow under the line (v0.43) |
+| `Gate 27` | 1 | the middle hand misses too — Chú Ba at 9×3×2: a failure night (GAN 3, not his weakest) draws his answer in his own voice; a link (BẠN 2, the zero) draws none (v0.44) |
 
 ## Convergence gates — `done.sh`
 

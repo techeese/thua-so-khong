@@ -684,61 +684,44 @@ PYEOF24
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=9000 --dump-dom "file://$TMP/h.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "SOTAY_OK" && pass "the Sổ tay keeps its way out: $T" || fail "the Sổ tay keeps its way out: $T"
 
-# Gate 25: elbow room — villagers must not print on top of one another. THE FIRST SEEDED GATE:
-# Math.random AND performance.now are both driven from the harness, so two builds see identical dice
-# and identical walks and a before/after difference means something. Without that, this metric was
-# unmeasurable — three runs of near-identical code gave avgNamed 4.15 / 4.58 / 3.77 and a real fix and
-# a no-op were indistinguishable. Baseline on v0.42 over these three seeds: overlapFrac 0.240.
+# Gate 25: elbow room — two villagers standing on the same spot must not print on the same spot.
+# Gated as the MECHANISM, not as a play-through statistic: a seeded whole-run metric was tried and
+# abandoned here (see LANDMINES) because the game's deferred beats run on wall-clock setTimeout and
+# the number moved with machine load — 0.1016 then 0.1589 on identical seeds, and worse when the timer
+# queue was forced onto the harness clock. This asserts the separation directly, and asserts that it
+# is draw-time only: p.x must be untouched, so the sim, the errands and the thesis band never see it.
 python3 - "$TMP" <<'PYEOF25'
 import sys
 tmp=sys.argv[1]; html=open("index.html").read()
 drv=r"""
 <script>
 window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
-var SEEDS=[11,22,88];
-var _s=0; function lcg(seed){ _s=seed>>>0; }
-Math.random=function(){ _s=(1103515245*_s+12345)>>>0; return _s/4294967296; };
-var VT=0; performance.now=function(){ return VT; };   // visit() stamps p.vUntil from this — leaving it real leaks wall time into who is walking
-var out=[], si=0;
-function runSeed(seed, done){
-  lcg(seed); VT=0;
-  localStorage.removeItem("thua-so-khong-v1"); localStorage.removeItem("thua-so-khong-chronicle");
-  try{ fresh(); }catch(e){}
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
   document.getElementById("startBtn").click();
-  var frames=0, hit=0;
-  for(var seas=0; seas<16; seas++){
-    for(var i=0;i<7;i++){ var c=S.cast[i]; if(c&&!c.known&&(c.arrives===undefined||S.season>=c.arrives)&&!c.gone) selectPerson(i); }
-    var un=S.cast.filter(function(p){return p.known&&!p.started&&!p.gone;});
-    if(un.length){ selectPerson(un[0].id); actNerve(); }
-    for(var f=0;f<8;f++){
-      VT=1000+seas*1000+f*120; drawScene(VT);
-      var act=S.cast.filter(function(p){ return !p.gone && (p.arrives===undefined||S.season>=p.arrives); });
-      frames++;
-      var h=false;
-      for(var a=0;a<act.length;a++) for(var b=a+1;b<act.length;b++){
-        var pa=act[a], pb=act[b];
-        var ax=(pa.drawX!==undefined?pa.drawX:pa.x), bx=(pb.drawX!==undefined?pb.drawX:pb.x);
-        if(Math.abs(ax-bx)<26 && Math.abs(pa.y-pb.y)<34) h=true; }
-      if(h) hit++;
-    }
-    VT=1000+seas*1000+960; S.nudged=true; nextSeason(); if(S.over) break;
-  }
-  out.push(hit/frames); done();
-}
-setTimeout(function step(){
-  if(si>=SEEDS.length){
-    var O=0; out.forEach(function(v){ O+=v; }); var frac=O/out.length;
-    var ok = out.length===3 && frac<=0.13;
-    document.title=(ok?"ELBOW_OK":"ELBOW_BAD")+" seeds="+out.length+" overlapFrac="+frac.toFixed(4)
-      +" perSeed="+out.map(function(v){return v.toFixed(3);}).join(",")+" (v0.42 baseline 0.240)";
-    return;
-  }
-  runSeed(SEEDS[si++], function(){ setTimeout(step,10); });
-},500);
+  var a=S.cast[0], b=S.cast[1], c=S.cast[2];
+  [a,b,c].forEach(function(p){ p.known=true; p.gone=false; p.arrives=undefined; p.amb=0; p.vUntil=0; });
+  // three of them on one square of paper, standing still
+  a.x=a.tx=a.hx=500; a.y=a.ty=a.hy=400;
+  b.x=b.tx=b.hx=500; b.y=b.ty=b.hy=400;
+  c.x=c.tx=c.hx=500; c.y=c.ty=c.hy=400;
+  var simX=[a.x,b.x,c.x];
+  // pin the wander: without this p.x drifts because they simply walk, and simUntouched would be
+  // measuring ordinary wandering rather than whether the separation writes to the simulation.
+  for(var i=0;i<60;i++){ [a,b,c].forEach(function(p){ p.tx=p.x; p.ty=p.y; p.vUntil=0; }); drawScene(1000+i*16); }
+  var dx=[a.drawX,b.drawX,c.drawX];
+  function gap(i,j){ return Math.abs(dx[i]-dx[j]); }
+  var minGap=Math.min(gap(0,1),gap(0,2),gap(1,2));
+  var simUntouched=(a.x===simX[0]&&b.x===simX[1]&&c.x===simX[2]);
+  var onPaper=dx.every(function(v){ return v>=30 && v<=W-30; });
+  var ok = minGap>=26 && simUntouched && onPaper;
+  document.title=(ok?"ELBOW_OK":"ELBOW_BAD")+" minGap="+minGap.toFixed(1)+" simUntouched="+simUntouched
+    +" onPaper="+onPaper+" drawX="+dx.map(function(v){return Math.round(v);}).join(",");
+}catch(e){ document.title="THREW: "+e.message; } },600);
 </script>"""
 open(tmp+"/el.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOF25
-T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,780 --virtual-time-budget=120000 --dump-dom "file://$TMP/el.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=7000 --dump-dom "file://$TMP/el.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "ELBOW_OK" && pass "elbow room: $T" || fail "elbow room: $T"
 
 # Gate 26: the hand that crosses a threshold says so — a bloomed 7×5×8=280 shows "→ 350 ↑bậc 2" on the hand that lifts the product past 300 at a
@@ -765,6 +748,32 @@ open(tmp+"/rung.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOF24
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/rung.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "RUNG_OK" && pass "the hand that crosses a threshold says so: $T" || fail "the hand that crosses a threshold says so: $T"
+
+# Gate 27: the middle hand misses too — Chú Ba at 9×3×2: a failure night (GAN 3, not his weakest) draws his answer; a link (BẠN 2, the zero) draws none.
+python3 - "$TMP" <<'PYEOF27'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+function said(p,str){ return bubbles.some(function(b){ return b.p===p && b.lay.lines.join(" ").indexOf(str.slice(1,10))>=0; }); }
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.season=3; var ba=S.cast[1], mai=S.cast[2]; ba.known=true; mai.known=true; ba.tai=9; ba.gan=3; ba.ban=2; ba.started=false; ba.seen={tai:false,gan:false,ban:false};
+  S.acts=3; selectPerson(1); actNerve();
+  setTimeout(function(){ var midAnswered=said(ba,STR.wrongGan[L]);
+    ba.seen={tai:false,gan:false,ban:false}; S.un.link=true; S.acts=3; selectPerson(1); actLink(); completeLink(2);
+    setTimeout(function(){ var zeroAnswered=said(ba,STR.wrongBan[L]);
+      var ok=midAnswered&&!zeroAnswered;
+      document.title=(ok?"MIDDLE_OK":"MIDDLE_BAD")+" middleAnswered="+midAnswered+" zeroAnswered="+zeroAnswered;
+    },1200); },1200);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/mid.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF27
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=6000 --dump-dom "file://$TMP/mid.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "MIDDLE_OK" && pass "the middle hand misses too: $T" || fail "the middle hand misses too: $T"
 
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }

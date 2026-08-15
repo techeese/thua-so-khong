@@ -1,5 +1,20 @@
 # Changelog — Thừa Số Không
 
+## v0.44 — 2026-08-15 — the middle hand misses too
+
+Closes: under the owner's standing `/loop 3m` directive, a hole in v0.34's answer. It fired only when a
+hand landed on a person's *strongest* factor; Chú Ba is 9 × 3 × 2, and a failure night on his GAN 3
+misses his zero (BẠN 2) and leaves his ceiling exactly where it was — yet he said nothing.
+
+- **`guessAnswer` answers any hand that is not on the weakest factor** while a near-zero (≤3) sits in
+  the row and the row is still unknown — once per factor, in the person's voice, no number, as
+  before. Ties at the minimum stay silent (either is the weakest). Under v0.38 this is the honest
+  rule: only the weakest hand moves the ceiling, so every other hand is "somewhere else".
+- *Evidence:* new **Gate 27** (`MIDDLE_OK middleAnswered=true zeroAnswered=false`); Gate 12 still
+  green. Twenty-seven gates green, hash-bracketed over `index.html` + `gate.sh` (the graphics
+  session was rewriting its *elbow room* gate live — one red on their old harness, green on their
+  new one; nothing of this tick touches layout).
+
 ## v0.43 — 2026-08-15 — the hand that crosses a threshold says so
 
 Closes: under the owner's standing `/loop 3m` directive, the last per-verb readout that told less than

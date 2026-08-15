@@ -93,7 +93,9 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.43: `↑bậc N` on the hand that crosses a tier line the river can carry (Gate 26). ⚠ The engine's
+**v0.44: the guess-answer covers every hand that is not the weakest (Gate 27). The engine's synthesis 6
+picked Y "a fair opponent" (the `check.js` instrument era) — mechanic ticks now leave `check.js`'s
+opponents to it. v0.43: `↑bậc N` on the hand that crosses a tier line the river can carry (Gate 26). ⚠ The engine's
 §31 disposition (X): transitions cannot execute while both owner loops commit into `index.html`
 every 4–7 min — the ladder is blocked on the OWNER (quiesce window / scope note). v0.41: the law's number is printed — a bloomed person's sheet says ⬛ 15%/5%/🛡 0% under a heavy sky and
 the shelter button says how many roofs one hand covers (Gate 23); measured: ~6 storm seasons a run,

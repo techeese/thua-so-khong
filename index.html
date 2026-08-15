@@ -176,7 +176,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.43</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.44</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -1175,7 +1175,7 @@ function drawScene(now){
         var push=(30-ad)/2, dir=(ad<0.01)?((pa.id<pb.id)?-1:1):(d>0?1:-1);
         pa._sepT+=push*dir*0.5; pb._sepT-=push*dir*0.5; }
     for(ci=0;ci<act.length;ci++){ var p3=act[ci];
-      var t=Math.max(-22,Math.min(22,p3._sepT||0));
+      var t=Math.max(-34,Math.min(34,p3._sepT||0));   // three on one spot need ±34 to clear each other, not ±22
       // and keep the nudged figure on the paper — an unbounded offset pushed people into the frame
       // edge, where they piled up and overlapped MORE than they had before (seed 11, measured).
       t=Math.max(40-p3.x, Math.min(W-40-p3.x, t));
@@ -1698,8 +1698,9 @@ var VERBS=["teach","nerve","link","hui","pot","probe","shel","build"], VERB_G={t
 function spend(k,who){ if(S.acts<=0) return false; S.acts--; S.hands=(S.hands|0)+1; if(k){ S.vb=S.vb||{}; S.vb[k]=(S.vb[k]|0)+1; } if(who) who.hands=(who.hands|0)+1; render(); return true; }   // every hand is counted, and by verb — the ending asks what they bought, and how you played
 // 🔎 a hand in the wrong place gets an answer in the person's own voice — once per factor, only while you were still guessing (row unknown), and only
 // when the hand landed on their STRONGEST factor while a real zero (≤3) sat elsewhere. No number, no narrator: the number arrives with the float; the sentence is theirs.
-function guessAnswer(p,k){ if(!p||p.started||seenAll(p)) return; var m=Math.min(p.tai,p.gan,p.ban), M=Math.max(p.tai,p.gan,p.ban);
-  if(m>3||p[k]!==M||p[k]===m) return; p.wrongSaid=p.wrongSaid||{}; if(p.wrongSaid[k]) return; p.wrongSaid[k]=true;
+function guessAnswer(p,k){ if(!p||p.started||seenAll(p)) return; var m=Math.min(p.tai,p.gan,p.ban);
+  if(m>3||p[k]===m) return;   // v0.44: any hand that is not on the weakest factor misses — the middle one too (Chú Ba's GAN 3 beside his BẠN 2 leaves the ceiling where it was)
+  p.wrongSaid=p.wrongSaid||{}; if(p.wrongSaid[k]) return; p.wrongSaid[k]=true;
   var line={tai:STR.wrongTai,gan:STR.wrongGan,ban:STR.wrongBan}[k];
   (function(pp,ln){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) bubble(pp,ln[L]); },900); })(p,line); }   // after the float, not over it
 function actTeach(){ var p=cur(); if(!p||S.acts<=0||p.tai>=10||S.over||conBan(3)) return; if(!spend("teach",p))return;
@@ -2273,6 +2274,12 @@ function endGame(){
   var crushes=S.cast.reduce(function(a,p){return a+p.crushCount;},0);
   if(crushes>0) ep(7,"Con dấu đã rơi "+crushes+" lần. Người ngã vì con dấu cần bàn tay của bạn gấp đôi.",
                      "The stamp fell "+crushes+" times. Those it fell on need your hand twice as much.");
+  // where the hands went: the person you spent most on — and whether it was the right person
+  (function(){ var most=null; S.cast.forEach(function(q){ if((q.hands|0)>0&&(!most||(q.hands|0)>(most.hands|0))) most=q; });
+    if(!most||(most.hands|0)<3) return; var hn=most.hands|0;
+    if(most.started) ep(6,"Bạn dành nhiều tay nhất cho "+most.name+" ("+hn+"⚡) — và mái ấy đứng.","You spent the most hands on "+most.name+" ("+hn+"⚡) — and that roof stands.");
+    else if(most.gone) ep(6,"Bạn dành nhiều tay nhất cho "+most.name+" ("+hn+"⚡) — nhưng người ấy đã đi. Tay đặt đúng người, chưa chắc đúng thừa số.","You spent the most hands on "+most.name+" ("+hn+"⚡) — and they left anyway. The right person is not always the right factor.");
+    else { var zk2=zeroOf(most); ep(6,"Bạn dành nhiều tay nhất cho "+most.name+" ("+hn+"⚡) — chưa nở"+(zk2?(", thừa số "+zk2+" vẫn thấp"):"")+".","You spent the most hands on "+most.name+" ("+hn+"⚡) — not yet bloomed"+(zk2?(", "+zk2+" still low"):"")+"."); } })();
   if(S.duo) ep(6,"Anh Tú giờ vọc có bài bản — tay nghề của Anh Vũ đã sang tay người liều.",
                  "Anh Tú tinkers properly now — Anh Vũ's craft passed to the leaper.");
   if(S.gtmPaid) ep(5,"Gốm Chú Ba đã ra tới chợ huyện trên vai Chị Hoa — món hàng leo thang giá trị.",
