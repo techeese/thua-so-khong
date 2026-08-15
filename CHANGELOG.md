@@ -50,6 +50,17 @@ once, **29 overlapping bubble pairs**.
   `gần không:` label for a factor at 2–3 vs `×0 số không:` at 1; a river-capped workshop owner who
   says so when tapped; the mute button also silences cicadas; the acts row wraps on a phone.
 
+### v0.32 addendum — from the `/loop 3m` mechanic session: why the pot, and not "a price for being wrong"
+
+The bank item *a price for being wrong* was **re-measured before designing** and found already paid
+by v0.30's literal zero: a scratch `check.js` variant with an `inverted` strategy (right person,
+wrong factor — raise the *highest* factor of the lowest-minimum person) lands **3.99 blooms / 5.0
+tiers** against the hunter's 6.98 / 16.1 (it kept ~98% before v0.30); a `wrongperson` strategy
+(right factor, wrong person — tend the highest-product sprout) keeps 6.44 / 15.7, which is picking
+ripe fruit, not a thesis violation. No mechanic was added for it. The tick's mechanic became the pot,
+because the hụi had only ever paid *in*. Provenance for v0.32 itself is as the graphics session
+wrote above: two rounds, one commit, both gated.
+
 ## v0.31 — 2026-08-15 — the river is the fourth factor
 
 Closes: the second item of the `LOOP.md` bank — *either make capital a factor or stop presenting it
