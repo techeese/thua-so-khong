@@ -93,7 +93,8 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**Staged v0.73 (a dry river ≤2 halves every ceiling — `apply-dryriver.py`: chance, sheet reason, help, the pot's
+**v0.73 shipped: a dry river ≤2 halves every ceiling (Gate 62) — capital caps at its own near-zero like the
+other three; the pot's after-state reads the river it leaves. (Was staged as `apply-dryriver.py` — `apply-dryriver.py`: chance, sheet reason, help, the pot's
 after-state at von−1, Gate 61) — ships the moment the box clears (load 10–19, six concurrent gate runs
 all evening). v0.72: the restless-wind year's hands land +3 (fade stays 50 %) — the third card with an identity
 (Gate 60; hunter 6.98/14.2). v0.71: in a flood year the river never rises on its own — paying in beats not paying in for the first
@@ -152,29 +153,28 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **looking keeps paying — v0.71 came
-from a screenshot, not a probe.** The map read "Bé gánh Cô Mai · 9 mùa" because workshop words registered
-in the collision list without avoiding anything; Gate 13 could never have caught it, since its scenario
-is a forced crowd with no workshops in it. Lesson generalised: **a gate that poses a scene tests only the
-scene it poses** — Gate 58 plays a real thirteen-season run instead, and that is the shape to prefer for
-anything about the map. Keep alternating: LOOK at the game, then AUDIT what the mechanic loop ships (four
-finds now — Aa's canvas gap, the tied hand, their Gate 54 unrecorded, and the ids they take between
-ticks). Unaudited from their work: the `trần ≤ N%` bound wording, the tier-word format `xưởng X · N mùa`,
-and anything new in the header. The "name what stops you" sweep is DONE (v0.52/68/69/70) — apply that
-method only to NEW controls. Measured and clean, do not re-open: DPR, 320/360px, EN at 320, long-idle,
-clipped text, verb-row raggedness, float density paced, overlay reachability at short heights, big-text
-layout, the three hardest combinations. Declined with reasons: the 2.3px bottom-edge clip; forced-colors
-(a container query can rescue an unverifiable viewport rule — v0.65); the sparkline is CORRECT as linear.
-Not graphics, ask first: canvas `role`/`aria-label`, keyboard-only play end to end. **If a tick finds only
-cosmetic preference, ship nothing and say so.** Rules earned the hard way: no seeded whole-run gate; never
-let a gate reimplement the logic it tests; negative-test every new gate; a gate must never hard-code a
-value the world computes; when a fix changes DRAW ORDER assert paint order; measure a centred heading by
-its LINE BOXES; a container query cannot style its own container; check modals at short HEIGHTS;
-`scrollIntoView` per element; an inline style set by JS kills a media query; sizing a responsive element
-from JS freezes it; take the PEAK of a transient; assert ACTIVATION with focusability; a forced state is
-not a play state; an unfamiliar shape means read the code; `done.sh` checks ledger→`gate.sh` only;
-**re-check the next free gate id immediately before committing**; and if several suites are running, do
-not queue another. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: the three-way rotation is working —
+**LOOK** (v0.71 found a name and a roof-word merged, from a screenshot), **MEASURE** (v0.65 found a title
+under the stamp), **AUDIT** (v0.73 found the ratchet checking one direction only). Keep rotating. On the
+audit thread specifically, five finds so far: Aa's canvas gap, the tied hand, Gates 54 and 60 unrecorded,
+and the ids they take between ticks — so **always diff `gate.sh` ids against the ledger BOTH ways** (now
+automatic) and **re-check the free id immediately before committing**. When both loops write the same
+string from opposite ends, gate the PRECEDENCE, not just each side (Gate 61). Unaudited from their work:
+the `trần ≤ N%` bound wording, the tier-word format `xưởng X · N mùa`, the flood-year river copy. The
+"name what stops you" sweep is DONE — apply it only to NEW controls. Measured and clean, do not re-open:
+DPR, 320/360px, EN at 320, long-idle, clipped text, verb-row raggedness, float density paced, overlay
+reachability at short heights, big-text layout, the three hardest combinations. Declined with reasons:
+the 2.3px bottom-edge clip; forced-colors (a container query can rescue an unverifiable viewport rule —
+v0.65); the sparkline is CORRECT as linear. Not graphics, ask first: canvas `role`/`aria-label`,
+keyboard-only play end to end. **If a tick finds only cosmetic preference, ship nothing and say so.**
+Rules earned the hard way: patching an instance is not fixing a class (Gates 54→60); no seeded whole-run
+gate; never let a gate reimplement the logic it tests; negative-test every new gate; a gate must never
+hard-code a value the world computes; a gate that POSES a scene tests only that scene — play a real run
+(Gate 58); when a fix changes DRAW ORDER assert paint order; measure a centred heading by its LINE BOXES;
+a container query cannot style its own container; check modals at short HEIGHTS; `scrollIntoView` per
+element; an inline style set by JS kills a media query; sizing a responsive element from JS freezes it;
+take the PEAK of a transient; assert ACTIVATION with focusability; a forced state is not a play state; an
+unfamiliar shape means read the code; if several suites are running, do not queue another. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

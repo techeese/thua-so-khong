@@ -82,7 +82,9 @@ Rules:
 | `Gate 57` | 1 | the strict year's stamps fall harder — under a heavy sky a young roof reads ⬛ 25% and an established one ⬛ 10% in the strict year (15/5 elsewhere), and a 0.20 roll erases the young stall only in the strict year (v0.70) |
 | `Gate 58` | 1 | a roof's word never prints over a name — a workshop's label registered itself but avoided nothing, so a roof and a villager drawn in either order could print over each other; measured over a real thirteen-season run at 390px, three distinct collisions before, zero after, non-vacuous (roof words must actually be drawn) (v0.71) |
 | `Gate 59` | 1 | in a flood year the river never rises on its own — a year-end leaves the river where it was (3 → 3 at seasons 3 and 7); in a plain year it rises by one (v0.71) |
-| `Gate 60` | 1 | the wind lands harder — in the restless-wind year a failure night is +3 GAN (float and hint say +3) and a first bond +3/+3; in a plain year +2 and +2/+2 (v0.72) |
+| `Gate 60` | 1 | the wind lands harder — in the restless-wind year a failure night is +3 GAN (float and hint say +3) and a first bond +3/+3; in a plain year +2 and +2/+2 (v0.73) |
+| `Gate 61` | 1 | a refusal outranks a bonus — the restless-wind year's `+3 GAN` shows when the hand is playable, but a hand the year has tied or a factor at its ceiling replaces it entirely; all five combinations locked, because the two sessions write this hint from opposite ends (v0.73) |
+| `Gate 62` | 1 | a dry river halves every ceiling — 10×3×10 at river 2 sprouts ≤4 %/season and the sheet says sông cạn; at river 3 the same row is back to 8 % with no dry line (v0.73) |
 
 ## Convergence gates — `done.sh`
 
@@ -135,3 +137,9 @@ Record here when an existing gate is made stricter, with the old and new thresho
   Old: the same six assertions, flaking about one run in 25. New: the same six assertions, deterministic
   for the subject; every other roll in the season stays live. Negative-tested: with every roll forced to
   land the unpinned probe fails exactly as observed and the pinned one passes.
+- **`gates-ledger` (done.sh, v0.72):** the check now runs in **both directions**. Old: every ledger row
+  must exist in `gate.sh` (plus id uniqueness, added v0.39). New: that, **plus every gate in `gate.sh`
+  must have a row here**. A gate could previously live in the suite with no ledger entry and the ratchet
+  still reported intact — which happened twice, Gates 54 and 60, both from the concurrent session. A gate
+  that is not written down is a gate the ratchet is not protecting. Negative-tested on the live gap:
+  the tightened check failed with `unrecorded-in-ledger: Gate-60` before the row was added.

@@ -68,6 +68,7 @@
   .roster .rc.cand{outline:2px dashed var(--leaf);outline-offset:1px}
   .roster .rc.gone{opacity:.4;cursor:default;box-shadow:none;text-decoration:line-through;font-weight:500}
   .roster .rc .do{opacity:.7;font-size:11px}
+  .roster .rc small.pc{color:var(--dim);font-weight:600} .roster .rc.sel small.pc{color:#EFB7C4}
   /* The three dots say WHICH factors your hands have touched, but they were all one grey, so nothing
      said which dot was which — the only explanation was a title tooltip, which a thumb cannot reach.
      They now carry the same colours the sheet's bars carry (TÀI indigo · GAN đỏ son · BẠN leaf), so
@@ -226,7 +227,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.72</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.73</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -603,7 +604,8 @@ function hasZero(p){ return Math.min(p.tai,p.gan,p.ban)<=1; }   // a factor at 1
 function vonMul(){ return 0.3+0.7*S.von/10; }   // 🌊 capital multiplies too — a thin river ×0.37, a full one ×1.0 (the charter's fourth factor, no longer a rounding)
 function tierCap(){ return S.von<=3?1:S.von<=6?2:3; }   // and holds depth: a low river keeps every workshop a stall — what riverLow always said
 function handRaise(){ return (S.yearCard===5)?3:2; }   // v0.72: in the restless-wind year every hand lands harder (+3) — and every raise blows away faster (fade 50 %): the wind is strong both ways
-function ceilOf(m){ return m<=1?0:m===2?0.04:m===3?0.08:m===4?0.15:m===5?0.25:0.85; }   // 🧮 the weakest factor sets the CEILING — 1 is zero, 2 caps at 4 %/season, 3 at 8, 4 at 15, 5 at 25; from 6 the product decides
+function dryMul(){ return S.von<=2?0.5:1; }   // v0.73: a dry river (≤2) halves every ceiling — capital is the fourth factor, and at its own near-zero it caps like the other three
+function ceilOf(m){ return (m<=1?0:m===2?0.04:m===3?0.08:m===4?0.15:m===5?0.25:0.85)*dryMul(); }   // 🧮 the weakest factor sets the CEILING — 1 is zero, 2 caps at 4 %/season, 3 at 8, 4 at 15, 5 at 25; from 6 the product decides
 function weakest(p){ var m=Math.min(p.tai,p.gan,p.ban); return {m:m,k:(m===p.gan)?"gan":(m===p.tai)?"tai":"ban"}; }
 function chance(p){ if(hasZero(p)) return 0;   // the zero bites: no amount of the other two factors carries a sprout past it
   return Math.min(ceilOf(Math.min(p.tai,p.gan,p.ban)), prod(p)/1000*0.9*vonMul()+(p.mom||0)); }   // …and no amount of them lifts a sprout past its weakest factor's ceiling   // mom = a tended sprout pushing at the soil
@@ -684,6 +686,7 @@ function renderBook(box){
     var trav=(r.wk&&fin(r.then)&&fin(r.now))?(" · "+r.wk+" "+r.then+"→"+r.now):"";
     if(fin(r.hs)) trav+=" · "+(r.hs|0)+"⚡";
     if(fin(r.sc)&&(r.sc|0)>0) trav+=" · ☁️"+(r.sc|0); if(fin(r.st)&&(r.st|0)>0) trav+=" ⬛"+(r.st|0);   // how the sky treated that year
+    if(fin(r.fd)&&(r.fd|0)>0) trav+=" 🍂"+(r.fd|0);   // and how much the seasons took back
     d.innerHTML="<span>"+(c.length-i)+".</span> "+yc.em+cn+" <b>"+ttl+"</b> <span>· "+(r.nB|0)+(L==="vi"?" xưởng · ":" workshops · ")+(r.ts|0)+(L==="vi"?" bậc":" tiers")+trav+"</span>";
     // a row that remembers its seasons opens to its strip on tap — the year's shape, kept
     if(Array.isArray(r.h)&&r.h.some(function(v){return (v|0)>0;})){ d.style.cursor="pointer"; d.title=(L==="vi")?"chạm: mười sáu mùa":"tap: the sixteen seasons";
@@ -711,7 +714,7 @@ function importBook(txt){ try{ if(!txt) return -1; txt=String(txt).trim(); if(tx
     var arr=JSON.parse(decodeURIComponent(escape(atob(txt.slice(7))))); if(!Array.isArray(arr)) return -1;
     var cur=loadChron(), have={}; cur.forEach(function(r){ have[JSON.stringify(r)]=1; }); var added=0;
     arr.forEach(function(r){ if(!r||typeof r!=="object"||!fin(r.ti)||r.ti<1||r.ti>6) return; var rec={ti:r.ti|0,tv:String(r.tv||""),te:String(r.te||""),yc:fin(r.yc)?cl(r.yc,0,YEAR_CARDS.length-1,0):0,cn:fin(r.cn)?cl(r.cn,0,9,0):0,nB:fin(r.nB)?cl(r.nB,0,9,0):0,ts:fin(r.ts)?cl(r.ts,0,30,0):0};
-      ["wk","then","now","hs","st","sc"].forEach(function(k){ if(r[k]!==undefined&&(typeof r[k]==="string"||fin(r[k]))) rec[k]=r[k]; });
+      ["wk","then","now","hs","st","sc","fd"].forEach(function(k){ if(r[k]!==undefined&&(typeof r[k]==="string"||fin(r[k]))) rec[k]=r[k]; });
       if(Array.isArray(r.h)) rec.h=r.h.slice(0,16).map(function(v){return fin(v)?cl(v,0,15,0):0;});
       var key=JSON.stringify(rec); if(have[key]) return; have[key]=1; cur.push(rec); added++; });
     if(added){ saveChron(cur.slice(-10)); } return added; }catch(e){ return -1; } }
@@ -1983,7 +1986,7 @@ function actHui(){ if(!S.un.hui||S.over||S.acts<=0||S.hui>=huiMax()||conBan(1)) 
   logMsg(STR.huiDone.vi,STR.huiDone.en); render(); save(); }
 // 🧧 hốt hụi — the pot: what a hụi is FOR. The whole circle pays one member; the river dips, that sprout pushes harder.
 // A tradeoff, not a gift: −1 river is −7% on every named sprout (and may drop a tier cap) for +6% on one — and never past a zero.
-function potAfter(p){ return Math.min(ceilOf(Math.min(p.tai,p.gan,p.ban)),prod(p)/1000*0.9*(0.3+0.7*Math.max(1,S.von-1)/10)+Math.min((S.yearCard===5)?0.15:0.09,(p.mom||0)+0.06)); }   // what the pot would make of them — river dipped, sprout pushed, never past the weakest factor's ceiling
+function potAfter(p){ var m=Math.min(p.tai,p.gan,p.ban), v1=Math.max(1,S.von-1); return Math.min((ceilOf(m)/dryMul())*(v1<=2?0.5:1),prod(p)/1000*0.9*(0.3+0.7*v1/10)+Math.min((S.yearCard===5)?0.15:0.09,(p.mom||0)+0.06)); }   // v0.73: the ceiling at the river the pot leaves behind   // what the pot would make of them — river dipped, sprout pushed, never past the weakest factor's ceiling
 // the pot's price, printed: the river's multiplier before → after, and every roof whose tier the dip would drop (river 4→3 turns shops back into stalls)
 function potPrice(){ var v0=S.von, v1=Math.max(1,S.von-1), m0=0.3+0.7*v0/10, m1=0.3+0.7*v1/10;
   var cap0=v0<=3?1:v0<=6?2:3, cap1=v1<=3?1:v1<=6?2:3, drop=0;
@@ -2462,7 +2465,7 @@ function endGame(){
     b.appendChild(strip); })();
   // 📜 write this run into the village book — and show the book right here, where the itch lives
   var stN=(S.hist||[]).reduce(function(a,v){return a+((v|0)&3);},0), scN=S.stormCount|0;   // the sky's part of the year: stamps that fell, storm seasons endured
-  var ch=loadChron(); ch.push({ti:ti,tv:tv,te:te,yc:S.yearCard|0,cn:S.constraint|0,nB:nB,ts:ts,wk:wk.name,then:wk.btai*wk.bgan*wk.bban,now:prod(wk),hs:S.hands|0,st:stN,sc:scN,h:(S.hist||[]).slice(0,16).map(function(v){return v|0;})}); saveChron(ch);
+  var ch=loadChron(); ch.push({ti:ti,tv:tv,te:te,yc:S.yearCard|0,cn:S.constraint|0,nB:nB,ts:ts,wk:wk.name,then:wk.btai*wk.bgan*wk.bban,now:prod(wk),hs:S.hands|0,st:stN,sc:scN,fd:S.fadeN|0,h:(S.hist||[]).slice(0,16).map(function(v){return v|0;})}); saveChron(ch);
   var seen={}; ch.forEach(function(r){ if(r&&r.ti) seen[r.ti]=1; }); var nSeen=Object.keys(seen).length;
   var wasGold=_goldSeal; _goldSeal=nSeen>=6;
   if(_goldSeal&&!wasGold){ var gl=document.createElement("p"); gl.style.cssText="text-align:center;color:#E3A63B;font-weight:700;margin:4px 0"; gl.textContent=(L==="vi")?"🏆 Sổ xóm đã trọn sáu kết — dấu ×0 ở góc tranh nay mạ vàng.":"🏆 The book holds all six endings — the ×0 seal in the corner is gold now."; b.appendChild(gl); }
@@ -2544,7 +2547,7 @@ function endGame(){
   var shStrip=(function(){ var hst=S.hist||[]; if(!hst.some(function(v){return v>0;})) return ""; var cells=[];
     for(var si=0;si<16;si++){ var v=hst[si]|0, bl=v>>2, st=v&3, c=""; for(var bi=0;bi<bl;bi++) c+="🌸"; for(var ti2=0;ti2<st;ti2++) c+="⬛"; cells.push(c||"·"); }
     return cells.slice(0,4).join("")+"│"+cells.slice(4,8).join("")+"│"+cells.slice(8,12).join("")+"│"+cells.slice(12,16).join(""); })();
-  var shVerbs=VERBS.filter(function(k){return (S.vb&&S.vb[k]|0)>0;}).map(function(k){return VERB_G[k]+(S.vb[k]|0);}).join(" ");
+  var shVerbs=VERBS.filter(function(k){return (S.vb&&S.vb[k]|0)>0;}).map(function(k){return VERB_G[k]+(S.vb[k]|0);}).join(" ")+((S.fadeN|0)>0?(" 🍂"+(S.fadeN|0)):"");
   var shSky=((S.stormCount|0)>0?("☁️"+(S.stormCount|0)):"")+(stN>0?(" ⬛"+stN):"");
   var shExtra=(shStrip?("\n"+shStrip):"")+((shVerbs||shSky)?("\n"+[shVerbs,shSky.trim()].filter(Boolean).join(" · ")):"");
   S._share={
@@ -2654,6 +2657,7 @@ function renderSheet(){
       :((hasZero(p)?(t("sprout")+" 0% · "+(L==="vi"?"thừa số "+zeroOf(p)+" bằng không":zeroOf(p)+" is zero"))   // the arithmetic says it before the narrator would
         :(t("sprout")+" ~"+pc+"% "+t("perSeason")
           +((prod(p)/1000*0.9*vonMul()+(p.mom||0))>ceilOf(weakest(p).m)+1e-9?((L==="vi"?" · "+t(weakest(p).k)+" "+weakest(p).m+" chặn ở ":" · "+t(weakest(p).k)+" "+weakest(p).m+" caps it at ")+Math.round(ceilOf(weakest(p).m)*100)+"%"
+            +(S.von<=2?(L==="vi"?" — sông cạn, trần hạ nửa":" — the river is dry, the ceiling halves"):"")   // v0.73: capital at its own near-zero caps like the other three
             +((weakest(p).k==="gan"&&conBan(4))||(weakest(p).k==="tai"&&conBan(3))||(weakest(p).k==="ban"&&conBan(2))?(L==="vi"?" — tay ấy bị trói năm nay":" — that hand is tied this year"):"")):"")))   // v0.60: when the capping factor's verb is this year's tied hand, the sheet says so — the ceiling can only come from the xóm this year
       +(L==="vi"?" · sông ":" · river ")+S.von+"/10 ×"+vonMul().toFixed(2)
       +((p.mom||0)>0?(L==="vi"?" · mầm đang nhú 🌱":" · pushing at the soil 🌱"):"")
@@ -2721,6 +2725,7 @@ function renderRoster(){
     var cls="rc"+(p.known?"":" unk")+(S.sel===p.id?" sel":"")+((S.linking!=null&&S.linking!==p.id&&p.known&&!pairExists(S.linking,p.id))?" cand":"");
     var z=(p.known&&!p.started)?zeroOf(p):null, tag=p.started?(tierOf(p)>=3?"🪜🪜🪜":tierOf(p)===2?"🪜🪜":"🌸"):(z?("<small>"+(hasZero(p)?"×0 ":"")+z+"</small>"):((p.known&&(p.mom||0)>0)?"🌱":""));
     if(p.started&&S.luat<4&&typeof stormLine==="function"){ var sl=stormLine(p), m9=sl.match(/(🛡|⬛) (\d+)%/); if(m9) tag+=" <small>"+m9[1]+m9[2]+"%</small>"; }   // the sky's number on the chip, under a heavy sky
+    if(p.known&&!p.started&&seenAll(p)&&!hasZero(p)) tag+=" <small class=\"pc\">"+Math.round(chance(p)*100)+"%</small>";   // a read row shows its odds on the chip — who is closest, across the strip
     var nm=p.known?p.name:(L==="vi"?"?":"?");
     if(cls.indexOf(" cand")>=0){ tag=(tag?tag+" ":"")+"<small>+"+(pairCount(p.id)===0?2:1)+" "+t("ban")+"</small>"; }   // v0.49: while a link is armed, each candidate shows what THEY would gain — the first bond +2, every later one +1
     // three dots per known, un-bloomed person: which of TÀI · GAN · BẠN your hands have touched — the row's progress, at a glance
@@ -2856,8 +2861,8 @@ function renderHelp(){
        +"<br>"+rows.join("<br>")));
   }
   h+=sec(vi?"Phép nhân":"The multiplication",
-         vi?"Mỗi người là <b>TÀI × GAN × BẠN</b>. Thừa số nào ở mức <b>1</b> là số không — người đó không nở (0%), dù hai thừa số kia có cao đến đâu. Việc của bạn là <b>chẩn đoán</b>: con số ẩn cho đến khi tay bạn chạm vào — lời họ nói là manh mối; đoán thừa số thấp nhất và nâng đúng nó. Tích ≥100 thì mầm bắt đầu nhú (🌱), càng cao càng dễ nở xưởng — nhưng thừa số thấp nhất đặt <b>trần</b>: 2 → tối đa 4%/mùa · 3 → 8% · 4 → 15% · 5 → 25%; hai thừa số kia cao đến đâu cũng không vượt qua."
-           :"Each person is <b>SKILL × NERVE × ALLIES</b>. A factor at <b>1</b> is a zero — that person cannot bloom (0%), however high the other two stand. Your job is <b>diagnosis</b>: the numbers stay hidden until your hand touches them — their words are the clue; guess the lowest factor and raise exactly that. Product ≥100 and a sprout starts pushing (🌱); higher means likelier to open a workshop — but the weakest factor sets a <b>ceiling</b>: 2 → at most 4%/season · 3 → 8% · 4 → 15% · 5 → 25%; however high the other two stand, they do not lift it past that.");
+         vi?"Mỗi người là <b>TÀI × GAN × BẠN</b>. Thừa số nào ở mức <b>1</b> là số không — người đó không nở (0%), dù hai thừa số kia có cao đến đâu. Việc của bạn là <b>chẩn đoán</b>: con số ẩn cho đến khi tay bạn chạm vào — lời họ nói là manh mối; đoán thừa số thấp nhất và nâng đúng nó. Tích ≥100 thì mầm bắt đầu nhú (🌱), càng cao càng dễ nở xưởng — nhưng thừa số thấp nhất đặt <b>trần</b>: 2 → tối đa 4%/mùa · 3 → 8% · 4 → 15% · 5 → 25%; hai thừa số kia cao đến đâu cũng không vượt qua. Sông cạn (≤2) hạ mọi trần một nửa — vốn cũng là một thừa số."
+           :"Each person is <b>SKILL × NERVE × ALLIES</b>. A factor at <b>1</b> is a zero — that person cannot bloom (0%), however high the other two stand. Your job is <b>diagnosis</b>: the numbers stay hidden until your hand touches them — their words are the clue; guess the lowest factor and raise exactly that. Product ≥100 and a sprout starts pushing (🌱); higher means likelier to open a workshop — but the weakest factor sets a <b>ceiling</b>: 2 → at most 4%/season · 3 → 8% · 4 → 15% · 5 → 25%; however high the other two stand, they do not lift it past that. A dry river (≤2) halves every ceiling — capital is a factor too.");
   h+=sec(vi?"Tay (⚡)":"Hands (⚡)",
          vi?"Mỗi mùa 3⚡ (mùa giông 2⚡, sau ba mùa giông liền lại 3⚡). 📖 Dạy +2 TÀI · 🏮 Đêm thất bại +2 GAN (người từng ngã đến nghe, +1) · 🤝 Kết nối +2 BẠN cho mối đầu, +1 mối sau (🌾 năm gió chướng: mọi tay +3) · 🪙 Góp hụi +1 sông (đã góp thì vòng hụi mỗi mùa gọi người ít bạn nhất ra đình: +1 BẠN, tối đa 3) · 🧧 Hốt hụi (đã góp rồi): sông −1, mầm của một người nhú +6% — cả vòng góp cho một nhà · 🛠 Tự xây 4 lần thì xong · 🔍 Nghe ngóng biết trời mùa tới · 🛡 Che chắn: một tay chằng bạt mọi mái hai mùa (xưởng mới mở tự đứng mùa đầu)."
            :"3⚡ per season (storm 2⚡; after three storm seasons in a row, back to 3⚡). 📖 Teach +2 SKILL · 🏮 Failure night +2 NERVE (those who fell come listen, +1) · 🤝 Connect +2 ALLIES first bond, +1 after (🌾 restless-wind year: every hand +3) · 🪙 Hụi +1 river (once you've paid in, the circle sends for the loneliest neighbour each season: +1 ALLIES, up to 3) · 🧧 Take the pot (once you've paid in): river −1, one person's sprout +6% — the whole circle pays one member · 🛠 Build 4 times to ship · 🔍 Ask around for next season's sky · 🛡 Shelter: one hand tarps every roof for two seasons (a newborn stands its first season on its own).");

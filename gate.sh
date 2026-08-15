@@ -1947,6 +1947,65 @@ PYEOF60
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/wind.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "WIND_OK" && pass "the wind lands harder: $T" || fail "the wind lands harder: $T"
 
+# Gate 61: a refusal outranks a bonus — the two sessions write the same hint from opposite ends. The
+# mechanic loop raises a delta in the restless-wind year (+3 GAN, Gate 60); the graphics loop replaces the
+# delta entirely when the hand is refused (the year's tie, v0.68; the ceiling, v0.52). Both are right, and
+# the order between them is load-bearing: a hand you CANNOT play must never advertise a bigger prize.
+# Locks all five combinations, because a cross-session interaction is exactly what breaks silently.
+python3 - "$TMP" <<'PYEOFPREC'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<5;s++){ S.acts=3; S.nudged=true; nextSeason(); }
+  var p=S.cast[0]; p.known=true; p.started=false; p.seen={tai:true,gan:true,ban:true};
+  p.tai=6; p.gan=6; p.ban=6; S.acts=3; selectPerson(0);
+  function n(){ render(); renderSheet(); return document.getElementById("nerveHint").textContent.trim(); }
+  S.yearCard=0; S.constraint=0; var plain=n();
+  S.yearCard=5;               var wind=n();
+  S.constraint=4;             var windTied=n();
+  S.yearCard=0;               var tied=n();
+  S.yearCard=5; S.constraint=0; p.gan=10; var windCapped=n();
+  var ok = /\+2 GAN/.test(plain)
+        && /\+3 GAN/.test(wind)                                  // the wind bonus is really there
+        && /không ai dám/.test(windTied) && !/\+3/.test(windTied) // and the tie still wins over it
+        && /không ai dám/.test(tied)
+        && /hết mức/.test(windCapped) && !/\+3/.test(windCapped); // as does the ceiling
+  document.title=(ok?"PREC_OK":"PREC_BAD")+" plain='"+plain+"' wind='"+wind+"' windTied='"+windTied
+    +"' tied='"+tied+"' windCapped='"+windCapped+"'";
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/pr.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOFPREC
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=12000 --dump-dom "file://$TMP/pr.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "PREC_OK" && pass "a refusal outranks a bonus: $T" || fail "a refusal outranks a bonus: $T"
+
+# Gate 62: a dry river halves every ceiling — 10×3×10 at river 2 sprouts ≤4 %/season and the sheet says "sông cạn"; at river 3 the same row is back to 8 %.
+python3 - "$TMP" <<'PYEOF61'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click(); S.yearCard=2;
+  var mai=S.cast[2]; mai.known=true; mai.started=false; mai.seen={tai:true,gan:true,ban:true}; mai.mom=0; mai.tai=10; mai.gan=3; mai.ban=10;
+  S.von=2; selectPerson(2); renderSheet(); var c2=chance(mai), t2=document.getElementById("multLine").textContent, dry=/(sông cạn|river is dry)/.test(t2)&&/(chặn ở|caps it at) 4%/.test(t2);
+  S.von=3; renderSheet(); var c3=chance(mai), t3=document.getElementById("multLine").textContent, wet=/(chặn ở|caps it at) 8%/.test(t3)&&!/(sông cạn|river is dry)/.test(t3);
+  var ok=Math.abs(c2-0.04)<1e-9&&Math.abs(c3-0.08)<1e-9&&dry&&wet;
+  document.title=(ok?"DRY_OK":"DRY_BAD")+" c@2="+c2+" c@3="+c3+" dryLine="+dry+" wetLine="+wet;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/dry.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF61
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/dry.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "DRY_OK" && pass "a dry river halves every ceiling: $T" || fail "a dry river halves every ceiling: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

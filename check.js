@@ -31,7 +31,7 @@ function tierCap(von){ return von<=3?1:von<=6?2:3; }              // and holds d
 function tierOf(p,von){ var pv=p.tai*p.gan*p.ban; return Math.min(tierCap(von), pv<300?1:pv<600?2:3); }
 function ceilOf(m){ return m<=1?0:m===2?0.04:m===3?0.08:m===4?0.15:m===5?0.25:0.85; }   // v0.38: the weakest factor sets the ceiling (mirrors index.html)
 function chance(p,von){ var m=Math.min(p.tai,p.gan,p.ban); if(m<=1) return 0;   // the zero bites (mirrors index.html hasZero)
-  return Math.min(ceilOf(m),(p.tai*p.gan*p.ban)/1000*0.9*vonMul(von)+(p.mom||0)); }
+  return Math.min(ceilOf(m)*(von<=2?0.5:1),(p.tai*p.gan*p.ban)/1000*0.9*vonMul(von)+(p.mom||0)); }   // v0.73: a dry river halves every ceiling (mirrors index.html dryMul)
 
 function lcg(seed){ var s=seed>>>0; return function(){ s=(1103515245*s+12345)>>>0; return s/4294967296; }; }
 

@@ -18,6 +18,49 @@ lands *before* the circle looks; the lift filter is `!started`, so `lifted` read
   why this is convergent work and not polish. Recorded in `GATES-LEDGER.md` → Tightenings and
   `LANDMINES.md`.
 
+## v0.73 — 2026-08-15 — the ratchet checks both directions
+
+An **audit** round from the owner's `/loop 5m` session — the half of the method that reads what the
+mechanic loop has shipped rather than looking at the game. No pixels moved this tick; what changed is
+that a whole class of silent gap can no longer happen.
+
+- **A gate could live in `gate.sh` with no ledger row, and the ratchet still reported intact.** The check
+  ran one way only — every ledger row must exist in the suite — so the reverse went unnoticed. It has now
+  happened twice, Gates 54 and 60, both from the concurrent session, and I patched the first by hand in
+  v0.69 without fixing the cause. `done.sh` now verifies **both directions**: a gate that is not written
+  down is a gate the ratchet is not protecting. Recorded under Tightenings.
+- *Negative-tested on the live gap*: with the tightening in and Gate 60 still unrecorded, `done.sh`
+  failed with `unrecorded-in-ledger: Gate-60`. The row went in (the other session added theirs while I
+  worked) and it went green.
+- **A cross-session interaction locked.** The two loops write the same hint from opposite ends: the
+  mechanic loop *raises* a delta in the restless-wind year (`+3 GAN`, their Gate 60), and this loop
+  *replaces* the delta when the hand is refused (the year's tie v0.68, the ceiling v0.52). Both are
+  right, and the order between them is load-bearing — a hand you cannot play must never advertise a
+  bigger prize. Audited across five combinations and found already correct; **new Gate 61** locks it:
+  `plain '+2 GAN' · wind '+3 GAN' · windTied '🚫🏮 năm không ai dám' · windCapped 'GAN 10 · hết mức'`.
+
+## v0.73 — 2026-08-15 — a dry river halves every ceiling
+
+Closes: under the owner's standing `/loop 3m` directive, the last structural item on the parked list.
+The charter names capital among the four factors that multiply; v0.38's ceiling made the river silent
+for exactly the people a low river would hurt (their ceiling bound before the river's multiplier
+could), so capital acted only as a tier cap and a late multiplier.
+
+- **`dryMul()`** — a river at ≤2 halves every ceiling: at its own near-zero, capital caps a life the
+  way the other three factors do. `ceilOf()` inherits it, so the sheet's `→ N%`, the partial-row
+  bounds and the pot readouts follow; the sheet says why (*GAN 3 chặn ở 4% — sông cạn, trần hạ
+  nửa*), and **the pot's after-state is computed at the river the coin leaves behind** (von−1) — it
+  can no longer promise a ceiling the coin destroys. Help table: *"a dry river (≤2) halves every
+  ceiling — capital is a factor too."*
+- **Priced honestly** (`check.js` mirrored, 800 runs): across all cards nothing moves (the river
+  starts 2–4 and rises); in the flood year hunter 6.69 / 11.3 → 6.61 / 10.9, a hunter who pays in
+  6.90 (unchanged), spreader 4.63 → 3.98, idle 2.32 → 1.83 — it bites only where the river *is* the
+  zero and only for those who do not fill it: the flood year's lesson (v0.71), sharper. Every band
+  clause holds.
+- *Evidence:* new **Gate 62** (`DRY_OK c@2=0.04 c@3=0.08 dryLine=true wetLine=true`); id 61 was the
+  graphics session's, checked before committing. Gates green on a stable hash (one background pass
+  under load ~9 with six concurrent runs — bracketed, markers verified before commit).
+
 ## v0.72 — 2026-08-15 — the wind lands harder
 
 Closes: under the owner's standing `/loop 3m` directive, the third card identity from the parked
