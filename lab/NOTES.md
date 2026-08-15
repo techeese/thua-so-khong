@@ -86,6 +86,9 @@ already the quietest surface, and the two places the game lectures are both outs
 synthesis: (1) the header/intro tagline vs owner gate #3; (2) the ending card can list a ≤3-factor
 person as bloomed and print `× 1` beside "bloomed" — either the floor or the copy must move.
 
+**Verdict:** confirms-known
+*Grader:* The ending-card `× 1`-beside-bloomed finding is the soft zero of `zerohunt.js` and the witness/legibility lever of `zerowitness.js` restated on one more surface, the ending audit feeds the "Endings pass" already parked in MILESTONES.md, and the mid-run silence repeats attach8's sag — the tagline-vs-owner-gate-#3 observation is real but strengthens the existing reductive candidate rather than opening or killing an era.
+
 ## 2026-08-15 — the fourth factor: is capital a factor? the river and the hụi against the thesis (`fourth.js`)
 
 The charter's thesis names **four** multiplying factors — *"Talent (TÀI), nerve (GAN), connection (BẠN),
