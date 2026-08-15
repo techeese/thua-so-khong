@@ -818,3 +818,82 @@ any transition is to execute · licence for H (now PASSED by a thesis critic as 
 tick-sized) · and, if the owner prefers the loop to resume vigil rather than re-synthesise, a
 `LOOP.md` rule allowing `SYNTHESIS.md` to be archived into `MILESTONES.md` after a failed
 synthesis (a contract change only the owner may make).
+
+---
+
+# SYNTHESIS 5 — **L3 · FORM**, second attempt · 2026-08-15 (evening) · `layer=3 failed_syntheses=0`
+
+Escalation earned in substance (§26). Read against the tree of this hour: v0.42 live (help card
+"keeps its way out"); 56 commits in the last six hours by three sessions. Burden: L3 wants evidence
+spanning ≥ 2 completed eras; there are zero completed eras (Era 1 has no executed transition). This
+synthesis argues from the full record instead — 4 syntheses, 17 verdicts, 8 candidates — and states
+that up front. Five critics, drift lens mandatory.
+
+## 27. What the record says the form problem actually is
+
+The L3 critics on P (§20) named the two forms they would back — **Q** (one season a day) and **R**
+(two hands) — and one precondition: *no transition is executable as one commit while two owner
+sessions commit into the same file every ~4 minutes* (owner-reality lens; drift lens on G and P
+concurring). §26 concluded the same from the L2 record. So the honest L3 question is not only
+"which form?" but "under what conditions can any form transition execute at all?" — and that
+condition is a candidate in its own right, because a synthesis that only proposes what cannot
+execute is padding the record.
+
+## 28. Candidates
+
+### Q · "Mỗi ngày một mùa" (one season a day) — the daily xóm
+
+As §18-Q, re-scoped against the P review: the season advances by the calendar; you visit, spend
+your hands, leave; the xóm lives between visits — walks, storms, fates, the sampan — silently; a
+run is sixteen days. **What changes:** rhythm and medium (asynchronous, real-time-clocked); "MÙA SAU
+▶" is no longer the clock. **What does not:** cast, verbs, factors, ceilings, band, ambient rate per
+minute, every ledgered gate (a season is still a season; the 16-season VI/EN gate runs the sim
+clock, not the wall clock). **Gates (ratchet-up):** an absent-player band clause (skips k days) that
+must not beat the present idle; a between-visit probe (walks/fates fire while away, silently, and
+the morning block shows state, not text); no notification, streak, or counter; the wall clock is
+injectable so every gate is deterministic. **Cost:** the owner's felt gate is a 5-minute playtest —
+Q makes a run a sixteen-day wait unless a "play it through now" mode survives (which is the current
+game — so Q is a *second rhythm*, and the drift critic will ask what it removes: nothing; that is
+its weakness). PWA/offline become load-bearing (owner device gates 4–5 open).
+
+### R · "Hai bàn tay" (two hands) — pass-and-play
+
+As §18-R: two neighbours, one xóm, alternating seasons on one phone; the fate is a product of two
+players' hands — charter §1 embodied instead of asserted; diagnosis argued between people. **What
+changes:** structure (two seats), the sheet (whose hand), the ending (two neighbours read one
+arithmetic). **What does not:** everything the seven-person 16-season game is; every gate; the
+band, extended. **Gates:** two-seat band (two hunters ≥ one; hunter+idle < hunter alone — the absent
+hand costs the xóm; no seat can win alone); a seat-handoff probe (state survives, no seat sees the
+other's hidden row before touching it). **Cost:** most play is solitary; a phone passed is a design
+assumption the owner never made; the great-man risk becomes a pair; not measured by any lab entry.
+
+### X · The precondition — "no transition without a clean baseline" (a candidate about executability)
+
+**Claim:** no L2 or L3 transition can satisfy the manifest's *one commit, one revert* while the tree
+receives a commit every ~4 minutes from two other sessions into `index.html`. **What it proposes:**
+that the loop record this as the L3 result, keep converging (Gear 1) and — once the contract allows
+— investigating (Gear 3), and that any future transition wait for one of: an owner quiesce window,
+an owner scope note reserving a surface, or an owner-granted `LOOP.md` rule to archive a failed
+synthesis so vigil resumes. **Gates:** none — it changes no product code; it is a finding. **Cost:**
+it is not a form; if it "passes" it opens nothing, and the counter for this synthesis is decided by
+Q/R, not by X.
+
+## 29. Pick — **R · two hands**, with X recorded alongside whatever happens
+
+Why R over Q: R changes what playing *is* (a fate as the product of two people's hands — the fable's
+sentence with a second subject) while removing nothing and touching no gate; its band extension can
+fail (an absent seat must cost); it collides with no owner work (neither loop has touched
+structure). Q is a second rhythm laid beside the current one and removes nothing — a drift critic
+will call it additive and unfalsifiable; it also breaks the owner's 5-minute felt gate. X is
+recorded regardless: if R fails, X is the reason on record.
+
+**Drift, pre-answered:** every gate kept and binding; new clauses can fail (hunter+idle < hunter;
+two hunters ≥ one). **Thesis:** §1 embodied; §2–§4 untouched; no new lines beyond seat labels
+(bilingual). **Substance:** a stranger with a friend plays a different game; a stranger alone plays
+the same one — R adds a form without subtracting the current one, which the substance critic may
+call the same charge as Q. **Owner reality:** R is executable only under X.
+
+**Review (5 critics, next tick):** drift · thesis · substance · form-necessity · owner-reality.
+Majority reject → `failed_syntheses=1` at L3. A second L3 failure would meet the counter for L4 —
+and the record does not support "the thesis is exhausted"; the L4 synthesis would have to say so and
+propose nothing that is easier than the current thesis.
