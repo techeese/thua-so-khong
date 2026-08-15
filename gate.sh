@@ -1328,6 +1328,52 @@ echo "$RED" | grep -qE "motes=[1-9]" || CALMOK=0
 [ "$CALMOK" -eq 1 ] && pass "Reduce Motion is obeyed by the print: [normal $NORM] [reduce $RED]" \
                     || fail "Reduce Motion is obeyed by the print: [normal $NORM] [reduce $RED]"
 
+# Gate 44: the keyboard can see where it is, and the roster can be reached — the stylesheet said nothing
+# about focus at all, so a keyboard got Chrome's 1px blue ring: foreign to a paper-and-ink print and
+# nearly invisible on the red button and the ink-dark selected chip. And the ring had nowhere to land on
+# the roster, whose chips were plain divs: 0 of 6 reachable by Tab. Asserts the ring is the xóm's own and
+# thick, that it INVERTS on the dark grounds, that every chip is focusable, and — the clause that stops
+# this being theatre — that Enter on a focused chip actually picks that villager.
+python3 - "$TMP" <<'PYEOFFOCUS'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<6;s++){ S.acts=3; S.nudged=true; nextSeason(); }
+  S.cast.forEach(function(p){ p.known=true; });
+  selectPerson(1); render(); renderSheet();
+  setTimeout(function(){ try{
+    var sel="a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex='-1'])";
+    var chips=document.querySelectorAll(".roster .rc"), chipF=0;
+    chips.forEach(function(c){ if(c.matches(sel)) chipF++; });
+    function ring(el){ el.focus({focusVisible:true}); var cs=getComputedStyle(el);
+      return {w:parseFloat(cs.outlineWidth)||0, c:cs.outlineColor, halo:cs.boxShadow!=="none"}; }
+    var onPaper=ring(document.getElementById("helpBtn"));      // ink ground is light here
+    var onDark=ring(document.getElementById("nextBtn"));       // the red MÙA SAU button
+    var inkish=/rgb\(43, 35, 32\)/.test(onPaper.c);
+    var paperish=/rgb\(245, 234, 208\)/.test(onDark.c);
+    var chip=document.querySelector('.rc[data-id="0"]'), operable=false;
+    if(chip){ S.sel=-1; chip.focus();
+      chip.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter",bubbles:true}));
+      operable=(S.sel===0); }
+    var ok = chips.length>=5 && chipF===chips.length
+          && onPaper.w>=3 && onDark.w>=3 && inkish && paperish && onPaper.halo && onDark.halo
+          && operable;
+    document.title=(ok?"FOCUS_OK":"FOCUS_BAD")+" chips="+chips.length+"/"+chipF
+      +" onPaper="+onPaper.w+"px "+onPaper.c+" onDark="+onDark.w+"px "+onDark.c
+      +" inverts="+(inkish&&paperish)+" enterPicks="+operable;
+  }catch(e2){ document.title="THREW2: "+e2.message; } },400);
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/fk.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOFFOCUS
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,780 --virtual-time-budget=9000 --dump-dom "file://$TMP/fk.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "FOCUS_OK" && pass "the keyboard can see where it is: $T" || fail "the keyboard can see where it is: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

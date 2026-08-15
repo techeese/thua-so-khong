@@ -54,6 +54,12 @@
   .roster::-webkit-scrollbar{display:none}
   .roster .rc{flex:0 0 auto;display:flex;align-items:center;gap:5px;border:2px solid var(--ink);border-radius:12px;background:#f5ead0;padding:3px 8px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:2px 2px 0 var(--ink);white-space:nowrap;-webkit-user-select:none;user-select:none}
   .roster .rc:active{transform:translate(2px,2px);box-shadow:none}
+  /* Keyboard focus was the browser default: a 1px blue ring, foreign to a paper-and-ink print and
+     nearly invisible on the red button and the ink-dark selected chip. The xóm gets its own — thick,
+     in its own ink, with a paper halo so it still reads where the ground is dark, and inverted on the
+     two surfaces that ARE dark. :focus-visible only, so a mouse tap never paints a ring. */
+  :focus-visible{outline:3px solid var(--ink);outline-offset:2px;box-shadow:0 0 0 5px rgba(245,234,208,.9)}
+  .bar .next:focus-visible,.roster .rc.sel:focus-visible,.card .go:focus-visible{outline-color:#f5ead0;box-shadow:0 0 0 5px rgba(43,35,32,.6)}
   .roster .rc i{display:inline-block;width:10px;height:10px;border-radius:50%;border:1.5px solid var(--ink)}
   .roster .rc.unk{opacity:.55;font-weight:500}
   .roster .rc.sel{background:var(--ink);color:#f5ead0}
@@ -204,7 +210,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.59</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.60</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -622,7 +628,7 @@ function renderChron(){
   var seenYc2={}; c.forEach(function(r){ if(r&&Number.isFinite(r.yc)) seenYc2[r.yc]=1; });
   var ycRow2=["🌊","📋","🛤","🍵","🧧","🌾"].map(function(g,gi){ return seenYc2[gi]?g:"·"; }).join("");
   var seenCn2={}; c.forEach(function(r){ if(r&&r.cn) seenCn2[r.cn]=1; });
-  var cnRow2s=Object.keys(seenCn2).length?(" · ⛓ "+[1,2,3].map(function(n){return seenCn2[n]?CONSTRAINTS[n].g:"·";}).join("")):"";
+  var cnRow2s=Object.keys(seenCn2).length?(" · ⛓ "+Object.keys(CONSTRAINTS).map(function(n){return seenCn2[n]?CONSTRAINTS[n].g:"·";}).join("")):"";
   el2.textContent=(L==="vi"?"📜 Sổ xóm — mùa trước: ":"📜 Village book — last time: ")
     +((L==="vi"?last.tv:last.te)||"—")+" · "+(last.nB|0)+(L==="vi"?" xưởng":" workshops")
     +" · "+(L==="vi"?"kết đã thấy ":"endings seen ")+row+" "+n+"/6 · "+ycRow2+cnRow2s
@@ -2351,7 +2357,7 @@ function endGame(){
   var seenYc={}; ch.forEach(function(r){ if(r&&fin(r.yc)) seenYc[r.yc]=1; });
   var ycRow=["🌊","📋","🛤","🍵","🧧","🌾"].map(function(g,gi){ return seenYc[gi]?g:"·"; }).join("");
   var seenCn={}; ch.forEach(function(r){ if(r&&r.cn) seenCn[r.cn]=1; });
-  var cnRow=Object.keys(seenCn).length?(" · ⛓ "+[1,2,3,4].map(function(n){return seenCn[n]?CONSTRAINTS[n].g:"·";}).join("")):"";
+  var cnRow=Object.keys(seenCn).length?(" · ⛓ "+Object.keys(CONSTRAINTS).map(function(n){return seenCn[n]?CONSTRAINTS[n].g:"·";}).join("")):"";
   chp.textContent="📜 "+(L==="vi"?"kết đã thấy ":"endings seen ")+row+" "+nSeen+"/6 · "+ycRow+cnRow
     +(next?(" — "+((L==="vi")?HINTS[next].vi:HINTS[next].en)):"")+(L==="vi"?" · mở sổ ▾":" · open ▾");
   // --- beat 3: epilogues, three highest-signal; the rest fold away ---
@@ -2582,7 +2588,7 @@ function renderRoster(){
     var dots=(p.known&&!p.started)?("<span class=\"sd\" title=\"TÀI · GAN · BẠN\">"+["tai","gan","ban"].map(function(k){ return "<i class=\""+k+((p.seen&&p.seen[k])?" on":"")+"\"></i>"; }).join("")+"</span>"):"";
     // what they're doing right now — the errand glyph, so the strip reads the road too (silent, numberless: a broom, a stall, a friend, a sprout)
     var doing=(p.known&&p.amb&&p.beh&&p.vUntil>performance.now())?(BEH_G[p.beh]||""):"";
-    h+="<div class=\""+cls+"\" data-id=\""+p.id+"\"><i style=\"background:"+p.color+"\"></i>"+nm+dots+(tag?" "+tag:"")+(doing?(" <span class=\"do\" title=\""+(L==="vi"?"đang bận":"busy")+"\">"+doing+"</span>"):"")+"</div>"; });
+    h+="<div class=\""+cls+"\" tabindex=\"0\" role=\"button\" data-id=\""+p.id+"\"><i style=\"background:"+p.color+"\"></i>"+nm+dots+(tag?" "+tag:"")+(doing?(" <span class=\"do\" title=\""+(L==="vi"?"đang bận":"busy")+"\">"+doing+"</span>"):"")+"</div>"; });
   if(box.innerHTML!==h) box.innerHTML=h;
   rosterEdges();
 }
@@ -2636,6 +2642,9 @@ el("roster").addEventListener("click",function(ev){ var c=ev.target.closest?ev.t
   if(S.linking!=null){ if(id!==S.linking) completeLink(id); return; }   // the roster is a tap surface like the map
   selectPerson(id); });
 el("roster").addEventListener("scroll",rosterEdges,{passive:true});
+el("roster").addEventListener("keydown",function(ev){ if(ev.key!=="Enter"&&ev.key!==" "&&ev.key!=="Spacebar") return;
+  var c=ev.target&&ev.target.closest?ev.target.closest(".rc"):null; if(!c) return;
+  ev.preventDefault(); c.click(); });   // focusable but not operable would be worse than not focusable
 addEventListener("resize",rosterEdges);
 // the pills answer when tapped — the year card scrolls out of the log by season 3, the tier total hides which roofs it counts
 el("seasonPill").style.cursor="pointer"; el("tierPill").style.cursor="pointer"; el("actPill").style.cursor="pointer";
@@ -2796,7 +2805,7 @@ else {
   try{ var qs=new URLSearchParams(location.search), qy=parseInt(qs.get("y"),10), qc=parseInt(qs.get("c"),10), got=false;
     if(fin(qy)&&qy>=0&&qy<YEAR_CARDS.length){ var seenY={}; loadChron().forEach(function(r){ if(r&&Number.isFinite(r.yc)) seenY[r.yc]=1; });
       if(seenY[qy]){ window._pendYc=qy; got=true; } }
-    if(fin(qc)&&qc>=1&&qc<=3&&loadChron().length){ window._pendCon=qc; got=true; }
+    if(fin(qc)&&CONSTRAINTS[qc]&&loadChron().length){ window._pendCon=qc; got=true; }   // any authored constraint, however many there are
     if(got){ renderChron(); document.querySelectorAll("#conRow .con").forEach(function(b){ b.classList.toggle("on",+b.getAttribute("data-c")===(window._pendCon|0)); });
       var yc0=YEAR_CARDS[window._pendYc|0], cl0=window._pendCon?CONSTRAINTS[window._pendCon]:null, note=document.createElement("div"); note.className="small"; note.style.cssText="margin-top:6px;color:#C1443C;font-weight:700";
       note.textContent="🔗 "+((L==="vi")?"Lời thách: ":"A challenge: ")+(fin(window._pendYc)?(yc0.em+" "+((L==="vi")?yc0.nv:yc0.ne)):"")+(cl0?(" · ⛓ "+((L==="vi")?cl0.nv:cl0.ne)):"");

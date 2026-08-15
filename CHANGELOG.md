@@ -18,6 +18,28 @@ lands *before* the circle looks; the lift filter is `!started`, so `lifted` read
   why this is convergent work and not polish. Recorded in `GATES-LEDGER.md` → Tightenings and
   `LANDMINES.md`.
 
+## v0.60 — 2026-08-15 — the keyboard can see where it is
+
+A graphics round from the owner's `/loop 5m` session, continuing down the accessibility seam v0.59
+opened. Three things were measured; all three were real.
+
+- **The stylesheet said nothing about focus at all.** A keyboard player got Chrome's default 1px blue
+  ring — foreign to a paper-and-ink print, and nearly invisible on the two surfaces that matter most:
+  the red MÙA SAU button and the ink-dark selected chip. Focus now draws the xóm's own ring: **3px in
+  the ink**, with a paper halo so it still reads where the ground is dark, and **inverted to paper-on-ink**
+  over the red button and the selected chip. `:focus-visible` only, so a mouse tap never paints a ring.
+- **The ring had nowhere to land on the roster.** The chips were plain `<div>`s: **0 of 6 reachable by
+  Tab**. They now carry `tabindex` and `role="button"`, so every villager on the strip is keyboard-
+  reachable — and **Enter or Space picks that villager**, because focusable-but-not-operable would have
+  been worse than leaving them alone.
+- *Evidence:* new **Gate 44** — `chips=7/7 · onPaper=3px rgb(43,35,32) · onDark=3px rgb(245,234,208) ·
+  inverts=true · enterPicks=true`. The `enterPicks` clause is the one that stops this being decoration:
+  a beautiful ring on a control the keyboard cannot operate would have passed a weaker gate.
+
+Also measured and **not** fixed here, because it is not a graphics problem and deserves its own round:
+the canvas has no `role` and no `aria-label`, so a screen reader is told nothing about the xóm at all.
+Recorded in `LOOP.md` as the next item on this seam.
+
 ## v0.59 — 2026-08-15 — Reduce Motion reaches the print
 
 A graphics round from the owner's `/loop 5m` session, on the last unvaried dimension that turned out to

@@ -364,3 +364,12 @@ that is now impossible because a gate catches it stays here, with the gate named
   all: read the preference in JS (`matchMedia`, and listen for `change`, because a viewer can flip it
   mid-run) and branch the spawners. When you do, calm **decoration** and keep **meaning** — freezing the
   errand walks and the motes would have destroyed the channel the whole game teaches through.
+- **"No focus CSS" is not neutral — it hands the browser's blue ring to a hand-drawn palette.** This
+  project styled every button heavily and never mentioned `:focus`, so keyboard focus was a 1px blue
+  outline that all but vanished on the red primary button and the ink-dark selected chip. Style
+  `:focus-visible` deliberately (and invert it over dark grounds), or the most important state a
+  keyboard user has is the one nobody designed.
+- **A focus ring on an unreachable control is theatre; a reachable-but-inert one is worse.** The roster
+  chips were clickable `<div>`s — 0 of 6 Tab-reachable. Adding `tabindex` alone would have created six
+  stops that do nothing on Enter. Ship `tabindex` + `role` + a key handler together, and assert the
+  activation in the gate, not just the focusability.

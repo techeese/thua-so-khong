@@ -66,6 +66,7 @@ Rules:
 | `Gate 41` | 1 | witnessed courage stops at 5 — when a neighbour blooms, a known person at GAN 4 rises to 5 (float printed), a known person at GAN 5 stays 5 (no float), an unknown person is untouched (v0.57) |
 | `Gate 42` | 1 | the year no one dared — with constraint 4 tied the failure night is refused (no hand, GAN unchanged, button struck through), the intro offers the fourth tied hand, a save carries it back; without it the failure night works (v0.58) |
 | `Gate 43` | 1 | Reduce Motion is obeyed by the print — with `prefers-reduced-motion: reduce` the drifting petals, rain streaks, bloom confetti and idle bob all stop (0/0/0/0.0) while the motes keep flying, and without it they all still run; asserted by running the same probe under both settings (v0.59) |
+| `Gate 44` | 1 | the keyboard can see where it is — focus draws a 3px ring in the xóm's own ink with a paper halo, inverted to paper-on-ink over the red button and the selected chip; every roster chip is Tab-reachable (was 0 of 6, plain divs) and Enter on a focused chip picks that villager (v0.60) |
 
 ## Convergence gates — `done.sh`
 
