@@ -193,6 +193,12 @@ the fair-opponent era's work, or the owner's. Numbers are as of v0.68 (ceiling �
   (see the river entry) — deliberately left as flavour rather than forced. Also measured: since the
   witness bound, the fates bite spreaders far more (Ngân leaves 14–18 % of spreader runs, was 5 %;
   Liên 62–78 %) and hunters not at all — the people, not the numbers, now price neglect.
+- **Capital acting on the ceiling — priced, small, coherent, staged:** *a dry river (≤2) halves every
+  ceiling*. All cards: nothing moves (the river starts 2–4 and rises). Flood year: hunter 6.69 / 11.3
+  → 6.61 / 10.9, hunter-who-pays-in 6.90 unchanged, spreader 4.63 → 3.98, idle 2.32 → 1.83 — it
+  bites only where the river is the zero and only for those who do not fill it, which is exactly the
+  flood year's lesson (v0.71), sharper. Charter §3-aligned (capital is named among the four factors
+  that multiply). Staged as `apply-dryriver.py`; ships as v0.73 when a gate window opens.
 - **The witness bound (v0.57)** is the one balance change a tick did ship, because it converts idle
   back-half hands into work: hunter 16.0 → 12.3 tiers in the sim, unchanged blooms, every band
   clause held. If the fair-opponent era finds it too steep, the knob is the cap (5), not the rule.
