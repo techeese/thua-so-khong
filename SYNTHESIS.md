@@ -957,3 +957,65 @@ opponents). Priced honestly: it may find the game *easier* than the band says, a
 then tighten, not loosen. **This is the last L2 direction with recorded evidence; if it fails on
 review, escalation is earned in substance and X still blocks execution — the ladder is then
 blocked on the owner, and the loop says so.**
+
+---
+
+# SYNTHESIS 6 — L2 · ERA, fourth attempt · 2026-08-15 (night) · `layer=2 failed_syntheses=1`
+
+Per §31: the last L2 direction with recorded evidence. Read against the tree of this hour (v0.42
+live; co-session editing). X stands: nothing here executes until the owner lifts it — this synthesis
+is written so that, when X lifts, a reviewed candidate exists.
+
+## 32. Candidate Y · "Đối thủ công bằng" (a fair opponent) — the instrument era
+
+**Intent:** make the band able to fail on what the game claims. Today `check.js`'s Gate 0 proves the
+hunter beats a spreader that *discards 50.7 % of its acts* (`decide.js` §1: 93 % of the separation is
+that waste); the fair `spreaderU` (no discards) sits 0.33 tiers under the hunter and `maxerU`
+(anti-diagnosis on both axes) keeps 98 % of tiers — and neither is in the instrument. Six critics
+across the record demanded them with a *stated* margin (§9.2, §13, §20, §30). The band is also
+timeless: no walks, no beats, no storm huddle — so every information change is invisible to it.
+
+**Changes — instrument first, game second:**
+1. `check.js` gains **`spreaderU`** (every act lands, no diagnosis), **`maxerU`** (polish the
+   highest factor of the highest-product person), and a **time-aware mode**: walk cadence, storm
+   huddle and beat locks are simulated so a *watcher* (acts only on what a walk showed) and a
+   *label-reader* (acts on the printed hint) can be banded — the two strategies §8 said the
+   instrument could not see.
+2. Gate 0 gains clauses with **stated margins**, ratchet-up, every current clause kept:
+   `tiers.hunter > tiers.spreaderU + M₁`, `tiers.maxerU < 0.6·tiers.hunter`,
+   `watcher ≥ labelReader − ε` (information from the road is worth at least what the label says),
+   `sums.idle ≤ 4.0` unchanged. **M₁ and ε are set by measurement before the game is touched, then
+   frozen** — the era's first commit is the instrument and its numbers, and it must be RED against
+   today's game if the lab is right (Δ0.33 today; the gate demands ≥ 1.0).
+3. Only then the game: a **price for being wrong** where the honest instrument shows there is none
+   — the one lever the lab named (`decide.js`: wrong factor −8 %, wrong person 0) — designed against
+   `spreaderU`, not the wasteful spreader; balance re-derived until the frozen clauses pass, and the
+   pre-existing clauses still hold. No new verbs, no new lines, no rate change.
+
+**Gates:** the new Gate 0 clauses (with margins) · `checkjs-fresh` still binds · a "the instrument
+can fail" meta-gate: `check.js` run against the pre-era `index.html` snapshot must be **RED** on the
+new clauses and green on the old (the era proves it added a bar, not a rubber stamp) · every
+existing gate kept.
+
+**Removes:** the wasteful spreader as the *only* opponent (it stays as a clause; it stops being
+the proof).
+
+**Cost / might ruin:** it may show the game is easier than the band says (that is its purpose; the
+ratchet then tightens); balance changes touch what the owner's mechanic loop banded today (v0.38
+ceilings, v0.35 misreader) — X governs whether it can execute at all; a time-aware sim is real
+engineering (weeks), and it must mirror `index.html` faithfully or `checkjs-fresh` catches it.
+Not tick-shippable as an era; the instrument half might be shipped as ticks by the mechanic loop —
+if so, the era is defined around done work and the loop says so.
+
+**Drift, pre-answered:** the era's first deliverable is a *red* gate against today's game — the
+opposite of pre-passing. **Thesis:** §3 served at the instrument (the multiplication measured
+against a fair opponent), §1/§2/§4 untouched. **Substance:** invisible to a stranger on day one;
+visible as a game where being wrong costs — the owner's felt gate 1 is exactly this. **Owner
+reality:** blocked by X like everything else; collides with no owner surface until step 3.
+
+## 33. Pick — Y (sole candidate; the reductive alternative is the null: no era, keep converging)
+
+**Review (3 critics, next tick):** drift · thesis · substance. If Y is rejected: `failed_syntheses=2`
+in substance, the ladder is blocked on X, and the loop reports the ladder as owner-blocked and keeps
+converging (Gear 1) — it does not propose forms (§31) and does not climb to L4 on a counter that X
+makes unexecutable.
