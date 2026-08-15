@@ -1,5 +1,20 @@
 # Changelog — Thừa Số Không
 
+## v0.50 — 2026-08-15 — the instrument mirrors the game again (grader-classified defect closed)
+
+Closes: a **grader-classified defect** (`lab/NOTES.md`, the `checkjs-fresh` mirror entry) — Gear 1,
+obligatory: `check.js:47` dealt the storm-tax hand back one season early (`stormStreak<2` where the
+game uses `<=2`), so the sim's "mirrors index.html order" was false in 5.66 % of seasons. Under the
+owner's standing `/loop 3m` directive the same tick adds one small legibility item.
+
+- **`check.js:47` → `stormStreak<=2`.** Band re-run: hunter 6.97 / 16.0 · spreader 5.32 · linker 6.09
+  · idle 2.47 · misreader 6.99 · maxer 3.40 / 5.0 — holds; the mirror entry's formula grid stands at
+  0/40000 mismatches. Closed in the lab with `> FIXED v0.50`.
+- **The tarp says how long it holds** — the sheet's storm line reads *🛡 0% mùa này · bạt còn 2 mùa*
+  so the shelter's two-season cover is a read, not a memory. Gate 23's assertions unchanged.
+- Thirty gates green, hash-bracketed. The grader's verdict lines for the mirror and speech-lane
+  entries are committed here as the engine's contract requires of the next Gear 1 tick.
+
 ## v0.49 — 2026-08-15 — the partner's gain is on the chip
 
 Closes: under the owner's standing `/loop 3m` directive, the one choice on the sheet made from memory.

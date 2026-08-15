@@ -64,6 +64,12 @@ the hand budget the instrument thinks a storm year has.
 Not a proposal — recorded so the next synthesis or a Gear-1 tick with a licence knows the exact line
 (`check.js:47`, `<2` → `<=2`) and that the band survives it.
 
+**Verdict:** confirms-known
+*Grader:* It closes the `checkjs-fresh` ⏭ line and re-verifies the band that Gate 0 and the earlier `fairopp.js` / `zerohunt.js` entries already lean on; the storm-streak drift it finds moves no strategy more than 0.1 tier and opens or kills no candidate era.
+**Defect:** yes — `check.js:47` uses `stormStreak<2` where `index.html:2065` uses `stormStreak<=2`, so the sim's comment "mirrors index.html order" is false and it deals one extra hand in the second storm season (5.66 % of seasons); the one-token fix is `<2` → `<=2`.
+**Proposal:** no
+> FIXED v0.50 — `check.js:47` now `stormStreak<=2` (mirrors `index.html`); band re-run: hunter 6.97/16.0 · spreader 5.32 · linker 6.09 · idle 2.47 · misreader 6.99 · maxer 3.40/5.0 — holds; `checkjs-fresh` reads current.
+
 ## 2026-08-15 — the speech lane, measured: v0.46 rescues zero chatter() calls, because floats are dead before chatter can fire (`lane.py`, `lane-settle.py`, `lane-src.py`)
 
 **Question.** v0.46 gave speech its own lane — `chatter()`/`pairTalkAt()` now count `speechCount()`

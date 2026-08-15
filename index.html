@@ -126,6 +126,8 @@
   .card .tag{text-align:center;font-style:italic;color:var(--red);font-weight:700;margin-bottom:12px}
   .card p{font-size:14px;margin:8px 0}
   .card .go{width:100%;background:var(--red);color:#fff;margin-top:10px;padding:12px;font-size:16px}
+  /* a verb switched off by a CEILING, not by an empty hand — same disabled state, different fact */
+  button.maxed{opacity:.66!important;text-decoration:underline dotted 2px rgba(43,35,32,.45);text-underline-offset:3px}
   /* The Sổ tay was ONE long scroller: the heading and the Đóng button scrolled away with the text.
      1025px of card in an 813px window put the only way out at y=1009 — off-screen — leaving the
      undiscoverable margin-tap as the only visible exit. Now the body scrolls and the title and the
@@ -189,7 +191,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.49</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.50</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -521,7 +523,7 @@ function fresh(){
   S.cast.forEach(function(p9){ p9.amb=0; p9.beh=0; p9.legs=0; p9.dwl=0; p9.chain=0; p9.behForce=0; p9.bfAt=0; });
   S.cast[2].behForce=2; S.cast[2].bfAt=performance.now()+8000;    // Mai sits at the đình — what the hall is FOR
   S.cast[0].behForce=3; S.cast[0].bfAt=performance.now()+20000;   // Ngân approaches it and turns back — what GAN-1 IS
-  S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false; p.mom=0; p.hands=0; p.pr16=[]; p.seen={tai:false,gan:false,ban:false};   // 🔎 you learn a factor by touching it — the quote is the clue, the hand is the answer
+  S.cast.forEach(function(p){ p.known=false; p.started=false; p.crushCount=0; p.gone=false; p.mom=0; p.hands=0; p.lastH=undefined; p.pr16=[]; p.seen={tai:false,gan:false,ban:false};   // 🔎 you learn a factor by touching it — the quote is the clue, the hand is the answer
     var m=Math.min(p.tai,p.gan,p.ban);
     p.zkey = (m===p.gan)?"gan":(m===p.tai)?"tai":"ban";   // their original zero — quotes evolve when it turns
     // YEAR VARIANTS — every run is a different year in the same xóm (authored zeros stay true)
@@ -655,7 +657,7 @@ function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:2,   // N
   s:{season:S.season,acts:S.acts,luat:S.luat,von:S.von,hui:S.hui,build:S.build,built:!!S.built,
      gtmPaid:!!S.gtmPaid,hlp:!!S.hoaLienPaid,hs:S.hands|0,idl:S.idle|0,vb:VERBS.map(function(k){return (S.vb&&S.vb[k])|0;}),ps:!!S.potSeason,hist:(S.hist||[]).map(function(v){return v|0;}),pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
      arr:S.cast[6].arrives,baf:S.baFadeStart,sc:S.stormCount|0,ss:S.stormStreak|0,yc:S.yearCard|0,gp:S.gtmPays|0,cn:S.constraint|0,
-     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,sn:((p.seen&&p.seen.tai)?1:0)|((p.seen&&p.seen.gan)?2:0)|((p.seen&&p.seen.ban)?4:0),bt:p.btai,bg:p.bgan,bb:p.bban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0,hd:p.hands|0,pr:(p.pr16||[]).map(function(v){return v|0;})};}),
+     cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,sn:((p.seen&&p.seen.tai)?1:0)|((p.seen&&p.seen.gan)?2:0)|((p.seen&&p.seen.ban)?4:0),bt:p.btai,bg:p.bgan,bb:p.bban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0,hd:p.hands|0,lh:fin(p.lastH)?(p.lastH|0):-1,pr:(p.pr16||[]).map(function(v){return v|0;})};}),
      ships:S.ships.map(function(w){return {x:w.x,y:w.y,owner:w.owner,pid:w.pid,yours:!!w.yours,age:w.age|0,shel:w.shel|0};}),
      scars:(S.scars||[]).map(function(c){return {x:c.x,y:c.y,s:c.s|0};}),
      log:S.log.slice(0,12)}})); }catch(e){} }
@@ -673,7 +675,7 @@ function load(){
     if(Array.isArray(s.cast)) s.cast.forEach(function(c,i){ var p=S.cast[i]; if(!p||!c) return;
       p.tai=cl(c.tai,0,10,p.tai); p.gan=cl(c.gan,0,10,p.gan); p.ban=cl(c.ban,0,10,p.ban);
       p.btai=cl(c.bt,0,10,p.tai); p.bgan=cl(c.bg,0,10,p.gan); p.bban=cl(c.bb,0,10,p.ban);   // this run's jittered nature (fallback: loaded stats, never a re-jitter)
-      p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; p.mom=cl(c.mom,0,0.5,0); p.hands=fin(c.hd)?cl(c.hd,0,64,0):0; p.pr16=Array.isArray(c.pr)?c.pr.slice(0,16).map(function(v){return fin(v)?cl(v,0,1000,0):0;}):[];
+      p.known=!!c.known; p.started=!!c.started; p.crushCount=cl(c.crushCount,0,99,0); p.gone=!!c.gone; p.mom=cl(c.mom,0,0.5,0); p.hands=fin(c.hd)?cl(c.hd,0,64,0):0; p.lastH=(fin(c.lh)&&c.lh>=0)?cl(c.lh,0,15,0):undefined; p.pr16=Array.isArray(c.pr)?c.pr.slice(0,16).map(function(v){return fin(v)?cl(v,0,1000,0):0;}):[];
       var sn=fin(c.sn)?(c.sn|0):7; p.seen={tai:!!(sn&1),gan:!!(sn&2),ban:!!(sn&4)}; });   // a save from before v0.33 has seen everything
     S.cast[6].arrives=cl(s.arr,2,8,6); S.baFadeStart=cl(s.baf,5,9,8);   // 2 / 5: the reunion year pulls both clocks early — the clamp must admit that on reload
     S.stormCount=cl(s.sc,0,16,0); S.stormStreak=cl(s.ss,0,16,0); S.yearCard=fin(s.yc)?cl(s.yc,0,5,0):S.yearCard; S.constraint=fin(s.cn)?cl(s.cn,0,3,0):0; S.gtmPays=fin(s.gp)?cl(s.gp,0,2,0):(s.gtmPaid?1:0);
@@ -1463,7 +1465,13 @@ function workshop(s,now){
   if(s.tr===undefined){ s.tr=tr; }
   else if(tr>s.tr){ s.tr=tr;   // the tier-up gets the same vocabulary as a bloom — a milestone, not a mute scale pop
     glows.push({x:x,y:y,t:0}); petals(x,y-24,10,["#E3A63B","#D97C8E"]);
-    beep(659,0.1,0.05); setTimeout(function(){beep(784,0.14,0.05);},110); buzz(15);
+    var vt=(!s.yours&&fin(s.pid)&&typeof VOICE!=="undefined"&&VOICE[s.pid])?VOICE[s.pid]:659;   // the tier-up rings in the owner's voice, a fifth up — like their bloom, like their talk
+    beep(vt,0.1,0.05); setTimeout(function(){beep(vt*1.5,0.14,0.05);},110); buzz(15);
+    // …and the owner steps to their door and says so — a rung climbed is a moment, not a scale pop
+    var ow3=(!s.yours&&fin(s.pid))?S.cast[s.pid]:null;
+    if(ow3&&active(ow3)&&!(ow3.vUntil>now)){ visit(ow3,x-30,y+24,4200);
+      var lineT=(tr===3)?(ow3.qt||{vi:"“Người ta gọi là thương hiệu.”",en:"“People call it a brand.”"}):{vi:"“Có mái rồi. Còn phải vun tiếp.”",en:"“It has a roof now. Still needs tending.”"};
+      (function(o4,ln4){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok){ bubble(o4,ln4[L]); voice(o4,0.06); } },900); })(ow3,lineT); }
     var tp2=document.getElementById("tierPill"); if(tp2){ tp2.style.transition="transform .15s"; tp2.style.transform="scale(1.25)"; setTimeout(function(){tp2.style.transform="";},220); } }
   else if(tr<s.tr){ s.tr=tr; }
   ctx.save(); ctx.translate(x,y); ctx.scale(sc,sc); ctx.translate(-x,-y);
@@ -1730,7 +1738,7 @@ function unlockCheck(){
 
 // ---------- actions ----------
 var VERBS=["teach","nerve","link","hui","pot","probe","shel","build"], VERB_G={teach:"📖",nerve:"🏮",link:"🤝",hui:"🪙",pot:"🧧",probe:"🔍",shel:"🛡",build:"🛠"};
-function spend(k,who){ if(S.acts<=0) return false; S.acts--; S.hands=(S.hands|0)+1; if(k){ S.vb=S.vb||{}; S.vb[k]=(S.vb[k]|0)+1; } if(who) who.hands=(who.hands|0)+1; render(); return true; }   // every hand is counted, and by verb — the ending asks what they bought, and how you played
+function spend(k,who){ if(S.acts<=0) return false; S.acts--; S.hands=(S.hands|0)+1; if(k){ S.vb=S.vb||{}; S.vb[k]=(S.vb[k]|0)+1; } if(who){ who.hands=(who.hands|0)+1; who.lastH=S.season|0; } render(); return true; }   // every hand is counted, and by verb — the ending asks what they bought, and how you played
 // 🔎 a hand in the wrong place gets an answer in the person's own voice — once per factor, only while you were still guessing (row unknown), and only
 // when the hand landed on their STRONGEST factor while a real zero (≤3) sat elsewhere. No number, no narrator: the number arrives with the float; the sentence is theirs.
 function guessAnswer(p,k){ if(!p||p.started||seenAll(p)) return; var m=Math.min(p.tai,p.gan,p.ban);
@@ -1760,7 +1768,7 @@ function completeLink(otherId){
   if(!b.known){ bubble(a,(L==="vi")?"“Mình đã quen người ta đâu…”":"“I haven't even met them…”"); render(); return; }   // linking mode STAYS armed — a mistap on a stranger doesn't exit
   S.linking=null;
   if(!spend("link",a)){ renderSheet(); return; }
-  b.hands=(b.hands|0)+1;   // a bond is a hand on both
+  b.hands=(b.hands|0)+1; b.lastH=S.season|0;   // a bond is a hand on both
   var key=[Math.min(a.id,b.id),Math.max(a.id,b.id)];
   var again=S.pairs.some(function(pr){return pr[0]===key[0]&&pr[1]===key[1];});
   // the FIRST close friend changes a person (+2); every later connection adds a little (+1) — no pair-farming
@@ -1858,7 +1866,7 @@ function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notic
 // ⬛ the law's number, printed where it can be acted on: under a heavy sky a roof's stamp odds this season (young 15 %, established 5 %; a tarp 0 %; a newborn stands its first season)
 function stormLine(p){ if(!p.started||S.luat>=4) return ""; var sh=null; S.ships.forEach(function(w){ if(w.pid===p.id) sh=w; }); if(!sh) return "";
   var pct=sh.born?0:(sh.shel|0)>0?0:((sh.age|0)<2?15:5);
-  return " · "+((sh.shel|0)>0?"🛡 ":"⬛ ")+pct+"%"+(L==="vi"?" mùa này":" this season"); }
+  return " · "+((sh.shel|0)>0?"🛡 ":"⬛ ")+pct+"%"+(L==="vi"?" mùa này":" this season")+((sh.shel|0)>0?((L==="vi"?" · bạt còn ":" · tarp holds ")+(sh.shel|0)+(L==="vi"?" mùa":" season"+((sh.shel|0)===1?"":"s"))):""); }   // v0.50: how long the tarp holds
 function shelCovers(s){ return (s.shel|0)<=0 && !s.born; }   // v0.48: one hand tarps EVERY standing roof (a newborn stands its first season on its own) — the sheet prints ⬛ 5% on an established roof, so the hand must be able to answer it
 function shelTarget(){ var best=null; S.ships.forEach(function(s){ if(!shelCovers(s)) return; if(!best||(s.age|0)<(best.age|0)) best=s; }); return best; }
 function actShel(){ if(S.acts<=0||S.over||!shelTarget()) return; if(!spend("shel"))return;
@@ -2466,7 +2474,7 @@ function renderSheet(){
           +((pr>p.btai*p.bgan*p.bban)?" ↗":(pr<p.btai*p.bgan*p.bban)?" ↘":""))
         :"")
     +"</small>":"")
-    +(((p.hands|0)>0)?("<small>"+(p.hands|0)+"⚡"+(L==="vi"?" đã đặt vào đây":" placed here")+"</small>"):"")   // what this person has cost you so far — shown whether or not their row is read
+    +(((p.hands|0)>0)?("<small>"+(p.hands|0)+"⚡"+(L==="vi"?" đã đặt vào đây":" placed here")+((fin(p.lastH)&&!p.started&&(S.season-p.lastH)>=2)?((L==="vi"?" · lần cuối ":" · last ")+(S.season-p.lastH)+(L==="vi"?" mùa trước":" seasons ago")):"")+"</small>"):"")   // what this person has cost you so far, and how long since — shown whether or not their row is read
     // the arc as a sparkline — their product at each season's close, once the row is read: is the tending holding, or washing back?
     +((all&&p.pr16&&p.pr16.length>=2)?(function(){ var vs=p.pr16.slice(-16), mx=Math.max.apply(null,vs.concat([prod(p),1])), bars="▁▂▃▄▅▆▇█";
         return "<small style=\"letter-spacing:.5px\">"+(L==="vi"?"tích qua các mùa: ":"product by season: ")+vs.map(function(v){ return bars[Math.min(7,Math.round(v/mx*7))]; }).join("")+" "+(L==="vi"?"→ ":"→ ")+prod(p)+"</small>"; })():"");
@@ -2488,9 +2496,16 @@ function renderSheet(){
     var lk=S.pairs.filter(function(pr){return pr[0]===p.id||pr[1]===p.id;}).length, gL=lk===0?2:1;
     var vs=[after(2,0,0),after(0,2,0),after(0,0,gL)], hints=[el("teachHint"),el("nerveHint"),el("linkHint")], base=[STR.teachH[L],STR.nerveH[L],(gL===2?STR.linkH[L]:STR.linkH[L].replace("+2","+1"))];
     var known=seenAll(p);   // the per-verb answer needs the whole row — until then the verb is a guess, and the guess is the game
-    vs.forEach(function(q,i){ var same=(q.tai===p.tai&&q.gan===p.gan&&q.ban===p.ban);   // a maxed factor: nothing to show
+    var FK=["tai","gan","ban"], BTN=[el("teachBtn"),el("nerveBtn"),el("linkBtn")];
+    vs.forEach(function(q,i){ var same=(q.tai===p.tai&&q.gan===p.gan&&q.ban===p.ban);   // a maxed factor: nothing to add
       var tNow=p.started?Math.min(tierCap(),prod(p)<300?1:prod(p)<600?2:3):0, tQ=p.started?Math.min(tierCap(),prod(q)<300?1:prod(q)<600?2:3):0;   // the hand that crosses a threshold says so — and the river's cap is honoured, so a held tier does not promise a rung it cannot climb
-      hints[i].textContent=base[i]+((same||!known)?"":(p.started?(" → "+prod(q)+(tQ>tNow?((L==="vi"?" ↑bậc ":" ↑tier ")+tQ):"")):(" → "+Math.round(chance(q)*100)+"%"))); });   // the reading stays yours — no verb is bolded
+      // A factor already at 10 disabled its verb and greyed it exactly like "you have no hands left",
+      // while the hint still promised +2 of something it cannot give. Two different facts wore one
+      // face. Say which: the verb names the ceiling instead of a delta it cannot deliver.
+      var capped=same&&known;
+      if(BTN[i]) BTN[i].classList.toggle("maxed",!!capped);
+      hints[i].textContent=capped?(t(FK[i])+" 10 · "+(L==="vi"?"hết mức":"maxed"))
+        :(base[i]+((same||!known)?"":(p.started?(" → "+prod(q)+(tQ>tNow?((L==="vi"?" ↑bậc ":" ↑tier ")+tQ):"")):(" → "+Math.round(chance(q)*100)+"%")))); });   // the reading stays yours — no verb is bolded
   })();
 }
 function renderRoster(){
@@ -2611,7 +2626,8 @@ function renderHelp(){
       if(p.started){ var tr=tierOf(p); st=(vi?"xưởng bậc ":"workshop tier ")+tr+(tr<cap&&tr<3?(vi?" · vun tiếp":" · keep tending"):"")+(tr===cap&&tr<3?(vi?" · sông giữ bậc":" · river holds it"):"")+(typeof stormLine==="function"?stormLine(p):""); }
       else { var sa=seenAll(p), z=zeroOf(p), sn=p.seen||{}, seenN=["tai","gan","ban"].filter(function(k){return sn[k];}).length;
         st=(sa?(hasZero(p)?(vi?"số không: "+z+" — 0%":"zero: "+z+" — 0%"):(z?(vi?"thấp nhất: "+z+" · ":"lowest: "+z+" · "):"")+Math.round(chance(p)*100)+"%"):(vi?("mới biết "+seenN+"/3 thừa số"):("read "+seenN+"/3 factors")))
-           +((p.mom||0)>0?" 🌱":"")+((p.hands|0)>0?(" · "+(p.hands|0)+"⚡"):""); }
+           +((p.mom||0)>0?" 🌱":"")+((p.hands|0)>0?(" · "+(p.hands|0)+"⚡"):"")
+           +((fin(p.lastH)&&(S.season-p.lastH)>=2&&(p.hands|0)>0)?(vi?(" · lần cuối "+(S.season-p.lastH)+" mùa trước — vun chưa nở thì phai"):(" · last hand "+(S.season-p.lastH)+" seasons ago — un-bloomed tending fades")):""); }
       var threat="";
       if(p.id===0&&!p.started&&S.season>=9&&p.gan<3) threat=" 🚌";
       if(p.id===6&&!p.started&&S.season>=10&&p.ban<4&&!S.pairs.some(function(pr){return pr[0]===6||pr[1]===6;})) threat=" 🛶";

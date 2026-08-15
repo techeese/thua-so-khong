@@ -93,7 +93,8 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.49: while a link is armed each candidate chip prints +2/+1 BẠN (Gate 32); the lab found v0.46's
+**v0.50: the grader's `check.js:47` mirror defect closed (`<=2`), band holds; the tarp says how long it
+holds. v0.49: while a link is armed each candidate chip prints +2/+1 BẠN (Gate 32); the lab found v0.46's
 speech lane rescued 0/480 calls (harmless, ineffective — the blocks were speech). v0.48: shelter tarps every standing roof (Gate 23 tightened) — the late game's "hold what you built"
 decision; measured: a plausible player blooms 7/7 by s8 and idles 21 of the last 24 hands (back-half
 slack, for Y to weigh). v0.46: speech has its own lane — the two-slot ambient guard counts speech, not stat floats; rate

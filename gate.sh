@@ -939,6 +939,45 @@ PYEOF30
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/partner.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "PARTNER_OK" && pass "the partner's gain is on the chip: $T" || fail "the partner's gain is on the chip: $T"
 
+# Gate 33: a ceiling is not an empty hand — a verb switched off because its factor already stands at 10
+# looked EXACTLY like a verb switched off because you had no hands left (same opacity, same greyed
+# hint), and it still promised "+2 TÀI" it could not deliver. Two different facts wore one face. The
+# ceiling now names itself and keeps doing so when the hands run out, because it is the permanent one.
+python3 - "$TMP" <<'PYEOF33'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<5;s++){ S.acts=3; S.nudged=true; nextSeason(); }
+  var p=S.cast[0]; p.known=true; p.started=false; p.seen={tai:true,gan:true,ban:true};
+  p.tai=10; p.gan=5; p.ban=5;
+  selectPerson(0);
+  function st(id){ var e=document.getElementById(id), cs=getComputedStyle(e), h=e.querySelector("small");
+    return {op:+(+cs.opacity).toFixed(2), maxed:e.classList.contains("maxed"), hint:h?h.textContent.trim():""}; }
+  S.acts=3; render(); renderSheet();
+  var cap=st("teachBtn"), live=st("nerveBtn");
+  S.acts=0; render(); renderSheet();
+  var capNo=st("teachBtn"), noHand=st("nerveBtn");
+  setLang("en"); S.acts=3; render(); renderSheet();
+  var capEn=st("teachBtn");
+  var ok = cap.maxed && /10/.test(cap.hint) && !/\+2/.test(cap.hint)          // the ceiling names itself, promises nothing
+        && !live.maxed && /\+2/.test(live.hint) && live.op>0.9                // a live verb still offers its delta
+        && !noHand.maxed && /\+2/.test(noHand.hint)                           // an empty hand does not erase what the verb would do
+        && cap.op!==noHand.op && capNo.maxed && capNo.op===cap.op             // and the ceiling outranks the empty hand
+        && /maxed/.test(capEn.hint);                                          // bilingual, like every player-facing string
+  document.title=(ok?"CEILV_OK":"CEILV_BAD")+" capped='"+cap.hint+"'@"+cap.op+" live='"+live.hint+"'@"+live.op
+    +" noHands='"+noHand.hint+"'@"+noHand.op+" cappedNoHands@"+capNo.op+" en='"+capEn.hint+"'";
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/cv.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF33
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=8000 --dump-dom "file://$TMP/cv.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "CEILV_OK" && pass "a ceiling is not an empty hand: $T" || fail "a ceiling is not an empty hand: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."
