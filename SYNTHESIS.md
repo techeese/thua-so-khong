@@ -165,3 +165,72 @@ tells go to zero, the card can no longer flatter. It removes no gate.
 lens is moot (A adds nothing). Majority pass → `TRANSITION-PLAN.md`, then the manifest in one
 commit tagged `era-1-closed`. Majority reject → record here, defend B or re-synthesize; two
 consecutive failures → `failed_syntheses=1`, then escalate per `LADDER.md`.
+
+---
+
+## 6. Review round 1 — candidate A · **REJECTED 3/3** · 2026-08-15
+
+Three independent critics (separate processes, briefed to reject), read against v0.35.
+
+- **Drift lens — REJECT.** Two of A's five removals already shipped (`zeroWord` splits `×0` from
+  `gần không` since v0.32; v0.35's ending line agrees) — an era defined around a done thing. A's
+  proposed gates are structurally blind to A's changes (`check.js` plays with perfect information,
+  so tagline/label/card/queue cannot move the band by one bloom — "band holds" passes before any
+  code is written). A cites the band gate's flaw (93 % of "diagnosis beats spreading" is the
+  spreader's waste; fair `spreaderU` 15.53 vs hunter 15.86) and keeps the wasteful opponent.
+  "Year cards that don't change diagnosis" is an unratcheted deletion licence (anti-diagnosis keeps
+  98 % of tiers under that instrument, so nothing "changes diagnosis"). Owner gate 3 would be ticked
+  by deleting two strings, not by play. *Pass condition:* make `spreaderU` and a label-blind
+  strategy the instrument so removals are visible to Gate 0; append a standing content-removal gate.
+- **Thesis lens — REJECT.** Stale on arrival: v0.35 shipped three fate clocks keyed to the ≤3 sense
+  (Ngân leaves under NERVE 3; help card *"Ba số không, ba gương mặt"*), so "every surface agrees"
+  is false the day it ships or silently retunes owner-gate-2 machinery. Reconciling walk thresholds
+  to the label reconciles a working signal to vocabulary — `walks.py`: P(FALTER|gan==3)=0.00 vs 0.18
+  at ≤2 — either noise on a 3 or a near-silenced channel; it degrades B's only instrument. Bubbles
+  ≥ 8/run is a ~2× ambient rate change the owner explicitly reserved (*"don't quietly tune it to
+  taste"*), and speech no longer yielding to floats presses charter §4. Keeps the band gate the lab
+  discredited (68 % of hunter hands touch no low factor). Removing the tagline is charter-correct
+  and survives. *Pass condition:* keep the near-zero where the evidence puts it, drop the bubble
+  target, add a gate that measures whether the weakest factor decides.
+- **Substance lens — REJECT.** A is smaller than the ticks that preceded it (v0.35 alone: a
+  departing villager with a two-season clock, an epilogue, a band strategy, Gate 13). What remains
+  of "one zero, one word" is `zeroOf`'s `m>3` and `pickBeh`'s `gan<=2` — constant edits. The
+  tagline is a header edit. The ambient unblock is a clause-(c) defect fix in era clothes. B's
+  deferral is self-refuting: "proving a channel" — a TÀI walk (none exists), walks before `known`,
+  a watcher band — *is* the work, weeks of it, and it answers owner gate 1 on its felt side.
+  *Backs B.*
+
+**Disposition:** A does not transition. Its surviving parts are re-filed: tagline removal → a
+clause-(e)-style proposal for a grader to raise (or folded into B's "no factor text until touched");
+ambient queue split → `lab/NOTES.md` defect candidate for the grader (`attach8.py`/`chatprobe.py`);
+"one threshold" → dropped — the evidence puts the near-zero at ≤2 on the road and <3 on the clocks,
+and that is a finding, not a bug.
+
+## 7. Runner-up for review round 2 — **B · "Nhìn xóm mà đọc" (watching is reading)**, re-scoped
+
+Re-scoped against v0.35 and the critics' pass conditions:
+
+- **Keep** the near-zero thresholds where measured (walk ≤2, clocks <3, dice ≤1); B unifies
+  nothing by vocabulary — it removes the *printed* label and lets the road and the voice carry it.
+- **Add** a TÀI walk (a low-TÀI person carries the wrong tool / drops the load at the market);
+  walks fire **before** `known`; walk cadence tuned until a watcher at play speed sees ≥ 6
+  informative errands per run (currently 1.8–4.5). Cadence is a *walk* rate, not the ambient
+  bubble rate the owner reserved — walks are motion, silent and numberless (charter §4).
+- **Remove** map factor labels, roster factor tags and the `%` sprout hint on unstarted people;
+  keep the sheet's `?`/known row (v0.33) as the one place a number is ever printed, and only after
+  a hand touches it. `hỏi thăm` stays (owner-shipped verb) but is out of scope.
+- **Instrument** — answers the drift critic: `check.js` gains a **label-blind watcher** (acts only
+  on what walks/voice reveal) and the fair **`spreaderU`**; the era's Gate 0 becomes
+  `watcher ≥ 0.85·hunter`, `hunter > spreaderU + margin`, `idle` unchanged — the first band that is
+  visible to information changes and measures whether the weakest factor decides.
+- **Gates (proposed, ratchet-up):** watcher band as above · observer probe names a GAN/BẠN/TÀI zero
+  from walks alone ≥ 70 % each (`walks.py` harness, extended) · zero numeric factor text on canvas
+  before touch (probe: no `haloText` factor string for an unknown row) · a walk precedes the first
+  label for ≥ 80 % of people the player never touches by s4 · all 16 existing gates kept.
+- **Cost, stated:** removes the label/hint layer two owner loops have been polishing today (Gate 13
+  label-readability keeps its assertion on names, not factors); the felt gate "diagnosis feels like
+  play" is exactly the bet — a phone player who never watches loses legibility, and the era must
+  fail if the watcher band cannot be made to hold.
+
+**Next tick:** three critics on B as re-scoped (drift · thesis · substance). Majority reject →
+`failed_syntheses=1` in `LADDER.md`, and one more synthesis before escalation is earned.
