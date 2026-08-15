@@ -684,3 +684,79 @@ what exists before adding*, with a gate that can fail on the thing the era chang
 **Owner asks, recorded (not requirements):** (1) the felt gate — all six boxes are still unticked
 twelve versions later; (2) a quiesce window or scope note if a transition is ever to execute as one
 commit; (3) H — licence for the t=0 tagline removal and the arithmetic-only ending.
+
+---
+
+# SYNTHESIS 4 — L2 · ERA, third attempt · 2026-08-15 (evening) · `layer=2 failed_syntheses=1`
+
+Per §21: candidates are drawn from the **parked, genuinely era-scale directions** in `MILESTONES.md`
+→ *Candidate directions*, each checked against "could a 3-minute owner tick ship this?" before it is
+written down. Read against the tree of this hour: v0.40 shipped (ending card owns the screen; Gate 21
+deterministic); v0.41 in flight under the owner's loops. HEAD's gates green (verified in an isolated
+worktree). The two owner loops are graphics (`/loop 5m`) and mechanic (`/loop 3m`); neither has ever
+shipped audio, and neither has touched the ending's *shape* beyond honesty fixes.
+
+## 22. The parked directions, triaged
+
+| parked direction | tick-shippable? | lab evidence | disposition |
+|---|---|---|---|
+| Endings pass — authored diptychs per outcome-shape, a "fates seen" replay hook | **no** (six authored Đông Hồ diptychs, card rewrite, replay hook, gates) | `tell.py`: card 150–158 words, 3–4 tells, unconditional great-man line, ≤3 listed as bloomed (idle 62 %); owner gate 3; five critics named H charter-required | **candidate T** |
+| Audio pass beyond the pentatonic motif; haptics | **no** (a score, not a beep) | none in lab; charter §4 (ambient silent) bounds it to beats | **candidate V (swing)** |
+| Đông Hồ art pass proper — outlines, điệp ground, đỏ son / vàng nghệ | partly — the owner's graphics loop ships this class hourly | none | **excluded**: it is the `/loop 5m` session's standing directive; an era here would be defined around their work by the time critics read it |
+| More authored arcs — second special pair, bloom vignettes | no | `attach8.py`: 44 authored lines still unseen | **excluded**: contradicts the owner note *"do not write new lines… see what exists first"* |
+| The law lock as a live beat ("hỏi thăm trên xã") | **yes** (one verb's reveal) | none | **excluded** as tick-sized |
+
+## 23. Candidates
+
+### T · "Sáu bức tranh kết" (six ending prints) — the endings pass, with H as its reductive core
+
+**Intent:** the ending stops being a paragraph and becomes a *print*. Each of the six outcome shapes
+gets an authored Đông Hồ diptych — left leaf: the xóm as it stands (drawn from state: roofs, tiers,
+the river's height, who is gone); right leaf: the arithmetic — seven rows, seven `×` lines, seven
+fates, and the one line the xóm says. The header subtitle and intro tagline leave the frame; the
+great-man closing line leaves the card. A fate, once seen, can be tapped on the chronicle's block to
+show its print again — no counters, no "N/6".
+**Removes:** ~150 words per ending, the t=0 thesis sentence (both surfaces), the great-man line, the
+"endings seen 6/6" tally text (the prints *are* the record).
+**Adds:** six diptych compositions drawn on canvas from Đông Hồ primitives already in the file (no
+new image assets, no new lines beyond the seven `×` lines that already exist as data); one replay
+hook.
+**Gates (all current kept; ratchet-up):** `tell.py` harness as a gate — thesis-tells at t=0 = 0,
+ending tells ≤ 1, ending word count ≤ 60 excluding the arithmetic rows; six shapes → six visually
+distinct prints (probe: per-shape canvas hash differs, and each shape draws its own state — a
+storm-ending shows stamps, a golden ending shows brands); no person under the ceiling listed as
+bloomed; every shape reachable (`check.js` already reaches all six — assert it); the replay hook
+draws the same print again for the same chronicle row (idempotent hash); Gate 22 (card owns the
+screen) and Gate 5 (16-season VI/EN) untouched and still binding.
+**Cost / might ruin:** authored art in a project whose owner said "see what already exists before
+anyone adds" — the note was about *lines*, and T removes lines; still, six compositions is real
+work and the graphics loop may take pieces of it (T's era identity is the *shape* — card → print —
+which a tick does not decide). Owner gate 3 becomes answerable only by play, which is its point.
+
+### V · SWING — "Tiếng xóm" (the sound of the xóm) — the audio pass
+
+**Intent:** the beats get a score. Đàn bầu-like bends for a bloom, a low drum roll under a storm
+that stamps, the sampan's paddle when Cô Liên arrives, cicadas that thin as the sky closes, a Tết
+motif — all synthesised in WebAudio (no assets), all on *beats*, never on ambient (charter §4);
+haptics on phone for the three verbs and the stamp. **Gates:** an audio-graph probe (a beat creates
+its nodes; ambient creates none; mute creates none); a haptics probe; no audio without a user
+gesture; the pentatonic motif stays as the seed. **Cost:** taste-heavy, unmeasurable by the lab;
+adds where every directive is reductive; a phone in a pocket hears nothing.
+
+## 24. Pick — **T · six ending prints**
+
+Why T: it is the parked era with the strongest evidence behind it (`tell.py`, owner gate 3, five
+critics), it is reductive at its core (H) and additive only in the charter's own visual language, it
+cannot be shipped by a 3-minute tick as an era (six compositions + rewrite + gates), and its gate can
+fail on exactly what it changes (tells, words, per-shape distinctness, ceiling honesty). V is the
+bolder swing but has no lab evidence and no instrument that can judge it.
+
+**Drift, pre-answered:** every current gate kept and still binding (Gate 22 asserts the card owns
+the screen — a print is still the card); new clauses only tighten. **Thesis:** §2 served (the ending
+stops lecturing), §1 served (the great-man line goes), §3 (the arithmetic *is* the ending), §4
+untouched. **Substance:** a stranger finishes a run and sees a print, not a paragraph. **Owner
+reality:** the graphics loop is welcome to ship pieces; the era is the change of shape and the gate.
+
+**Review round (3 critics, next tick or this):** drift · thesis · substance. Majority reject →
+`failed_syntheses=2` — and this time the parked directions *were* proposed, so escalation would be
+earned; the L3 synthesis would then have to argue from that record with the §21 finding in view.
