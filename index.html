@@ -150,7 +150,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.28</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.29</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -858,6 +858,13 @@ function drawScene(now){
     ink(3); ctx.fillStyle="#8a6642"; ctx.beginPath();
     ctx.moveTo(bx,ry+13); ctx.quadraticCurveTo(bx+26,ry+22,bx+52,ry+13); ctx.lineTo(bx+44,ry+8); ctx.lineTo(bx+8,ry+8); ctx.closePath(); ctx.fill(); ctx.stroke();
   }
+  // 🌊 the flood year's river carries what the flood left — driftwood and torn reeds all year, however high it later runs
+  if(S.yearCard===0){ [[0.11,0,-4],[0.37,9,3],[0.63,4,-2],[0.86,12,5]].forEach(function(dd,i){
+      var ddx=((now*(0.014+i*0.003))+dd[0]*(W+120))%(W+120)-60, ddy=ry+10+dd[1]+Math.sin(now*0.003+i)*1.5;
+      ctx.save(); ctx.translate(ddx,ddy); ctx.rotate(dd[2]*0.06);
+      ink(1.6); ctx.fillStyle="#7a5a3a"; ctx.beginPath(); ctx.roundRect?ctx.roundRect(-11,-2.5,22,5,2.5):ctx.rect(-11,-2.5,22,5); ctx.fill(); ctx.stroke();
+      if(i%2){ ctx.strokeStyle="#5f7a3a"; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(6,-2); ctx.lineTo(10,-9); ctx.moveTo(8,-2); ctx.lineTo(13,-7); ctx.stroke(); }   // a torn reed still on it
+      ctx.restore(); }); }
   if(S.von>=7){ // lotus when the river is full
     [[170,0],[196,10],[820,4]].forEach(function(lp){
       var lx=lp[0],ly=ry+12+lp[1];
@@ -922,6 +929,13 @@ function drawScene(now){
     ctx.restore();
   }
   dinh(470,158);
+  // 🍵 the quiet-hands year: a tea tray sits on the đình steps all year — the craft passes at a slower table
+  if(S.yearCard===3){ var tx0=DINH.x+38, ty0=DINH.y+14;
+    ink(1.6); ctx.fillStyle="#efe2c2"; ctx.beginPath(); ctx.ellipse(tx0,ty0+2,16,5,0,0,6.28); ctx.fill(); ctx.stroke();      // the tray
+    ctx.fillStyle="#8a6642"; ctx.beginPath(); ctx.arc(tx0-6,ty0-3,4.5,0,6.28); ctx.fill(); ctx.stroke();                     // the pot
+    ctx.beginPath(); ctx.moveTo(tx0-2,ty0-5); ctx.lineTo(tx0+2,ty0-8); ctx.stroke(); ctx.beginPath(); ctx.arc(tx0-6,ty0-8,1.5,0,6.28); ctx.fill();   // spout, lid
+    ctx.fillStyle="#fffdf4"; [[4,-1],[9,1]].forEach(function(cp){ ctx.beginPath(); ctx.arc(tx0+cp[0],ty0+cp[1],2.2,0,6.28); ctx.fill(); ctx.stroke(); });   // two cups
+    if(smoke.length<40&&Math.random()<0.06) smoke.push({x:tx0-6,y:ty0-10,r:1.2,vx:0.05,vy:-0.22,a:0.22,ph:Math.random()*6.28,tea:true}); }   // steam — thin, white, slow
   house(210,235,"#c98a5a"); house(660,225,"#b8797a"); house(840,250,"#c9a35a");
   banana(905,410,now);
   market(560,505);
@@ -1016,7 +1030,7 @@ function drawScene(now){
     if(smoke.length){
       smoke=smoke.filter(function(q){ q.x+=(q.vx+Math.sin(now*0.002+q.ph)*0.15)*F; q.y+=q.vy*F; q.r+=0.06*F; q.a-=0.0035*F;
         if(q.a<=0) return false;
-        ctx.fillStyle="rgba(120,110,100,"+q.a.toFixed(3)+")"; ctx.beginPath(); ctx.arc(q.x,q.y,q.r,0,6.28); ctx.fill(); return true; }); }
+        ctx.fillStyle=(q.tea?"rgba(250,246,236,":"rgba(120,110,100,")+q.a.toFixed(3)+")"; ctx.beginPath(); ctx.arc(q.x,q.y,q.r,0,6.28); ctx.fill(); return true; }); }
   })();
 
 

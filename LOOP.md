@@ -100,13 +100,14 @@ synthesis and execute the transition without waiting — verdicts written by the
 grader**, never by the tick that ran the investigation. **Nine findings banked, all nine graded;
 the seventh (`fourth.js`) came back `new-argument`, the eighth (`tell.py`) and ninth (`walks.py`,
 the errand governor as a reading channel) `confirms-known` — exhaustion count 2 of 3; one more
-`confirms-known` and the synthesis runs.** ⚠ Since 2026-08-15 13:15 the owner runs a *separate*
-interactive session (`/loop 5m` — "add something more to the game, ignore the .md files") that
-edits `index.html`/`check.js` in this same working tree without committing; `done.sh` therefore
-reads "uncommitted work stranded" and forces Gear 1 every tick. **That diff is not this loop's
-work: never commit it, never revert it** — bank what is yours (verdicts, notes, landmines) with an
-explicit `git add` of your own files, and treat the red gate as owner-caused until they resolve
-it (commit that session's work, or point it at a branch/worktree). The bank: the ambient layer reads sparse and shares a
+`confirms-known` and the synthesis runs.** ⚠ The owner runs a *separate* interactive session (`/loop 5m` — "add something more to the
+game, ignore the .md files") in this same working tree; it committed 36 additions as `a235d3d`,
+which this loop shipped as **v0.29** on owner authority (version bump + changelog only — no review,
+no authorship). While that session runs, `done.sh` will keep going red on its uncommitted edits:
+**never commit or revert them** — bank only your own files with an explicit `git add`; when it
+commits, run `./gate.sh`, read it, bump the footer, write the changelog entry naming the provenance,
+push, verify live. Its additions are unreviewed and every standing directive is reductive: the next
+synthesis must weigh subtracting them. The bank: the ambient layer reads sparse and shares a
 2-slot queue with numeric stat floats; place-taps are stolen ~21% at the market; the attachment
 curve runs 1.16 → 0.49 → 0.04 at seasons 2/8/14, arguing against any era premised on writing more
 dialogue; the zero is **soft** (`idle` blooms 3.44 of 7; the band is blind to `schoolfirst`); the

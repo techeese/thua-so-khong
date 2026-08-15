@@ -1,5 +1,31 @@
 # Changelog — Thừa Số Không
 
+## v0.29 — 2026-08-15 — the owner's "add something" batch, shipped under owner authority
+
+Closes: the red `done.sh` gate *1 commit unpushed* left by the owner's separate interactive
+session (`/loop 5m` — "read the code and add something more to the game; ignore the .md files"),
+whose commit `a235d3d` landed 36 additions on `main` at 15:06 without a version bump, changelog
+entry, or push. **This loop did not author, review, or select any of that content** — the owner
+did, by running that session; this entry only makes the ship legible and verifiable.
+
+- **What landed (from the commit message):** a sixth year card 🌾 *Năm gió chướng* (fade 0.5,
+  momentum cap 0.15); three new bonds (📚 Mai×Hoa, 👜 Hoa×Liên, 🧧 Tết at seasons 4/8/12); weather
+  (rain, ripples, forecast curtain, birds, smoke), chickens, sprouts, stamp scars, Liên's sampan
+  in/out, the road-year ox-cart, hụi lanterns, market goods, breathing bubbles; rain bed, chirps,
+  finale voices, brand-tier lines, gossip, hỏi-thăm lines; season ledger dividers, card arc,
+  per-verb outcome hints, hands-per-bloom; fixes — F clamped ≥0, verb unlock guards, hụi load clamp
+  0–4 (closes the `cl(s.hui,0,3,0)` vs `huiMax()`=4 defect noted in `LOOP.md`), reunion-year clamps.
+  `check.js` mirrored (13 lines).
+  *Evidence:* `./gate.sh` on `a235d3d`, read by this loop before shipping — **band holds** (hunter
+  6.99 / spreader 6.28 / linker 6.78 / idle 3.52), syntax, fresh, nan-safe, 16-season VI+EN,
+  ambient voice `AMB_OK bubbles=2`. 🟢 all green.
+- **Not reviewed under clause (e).** These are additions with no grader proposal and no critic
+  pass; they ship on **owner words**, which outrank the ship budget. The next vigil ticks measure
+  them like anything else — the standing directives (*less narration · simple opening · ambient =
+  silent and numberless*) are the lens, and anything they contradict is a candidate for
+  subtraction at the next synthesis, not a defect to argue about here.
+- Footer version bumped 0.28 → 0.29 (the batch did not bump it). No other file touched.
+
 ## v0.28 — 2026-08-15 — the xóm gets its voice back
 
 Closes: the owner directive of 2026-08-15 in `OWNER-GATE.md` — *"fix the timing so the ambient
