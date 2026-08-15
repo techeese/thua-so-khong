@@ -173,7 +173,9 @@ cat <<EOF
 
 ▶ GEAR 3 — VIGIL. Do NOT ship and do NOT touch index.html.
   Watchdog first (a red gate re-opens Gear 1), then ONE focused lab investigation
-  in lab/, ending with a '**Verdict:** new-argument | confirms-known | dry' line.
-  That verdict is how the era learns it is finished — always write it honestly.
+  in lab/. Write the finding and the evidence — do NOT write its '**Verdict:**'
+  line. An independent grader (separate process, different model) appends that
+  after your tick, because an agent grading its own work always says it mattered,
+  and an era whose every tick self-grades 'new-argument' never ends.
 EOF
 exit 10

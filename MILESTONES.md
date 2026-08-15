@@ -64,11 +64,19 @@ because it costs nothing to ship and happens once per era.
 
 Under full autonomy the felt gate is **non-blocking**, so *exhausted* is the normal ending.
 
-**Measuring exhaustion.** Every `lab/NOTES.md` entry must end with a verdict line:
+**Measuring exhaustion.** Every `lab/NOTES.md` entry carries a verdict line:
 
 ```
 **Verdict:** new-argument | confirms-known | dry
+*Grader:* <one sentence naming the prior entry or candidate it does or does not duplicate>
 ```
+
+**The tick that ran the investigation does not write its own verdict.** An independent grader —
+a separate process on a different model (`claude-fable-5`), with no view of the investigator's
+reasoning — appends it after the tick ends, and is instructed to default to `confirms-known` when
+torn. This is the load-bearing safeguard for exhaustion: an agent asked whether its own work
+mattered says yes, so a self-graded loop would score every tick `new-argument`, never exhaust an
+era, and never transform the game. The grader lives in `.claude/tsk-loop-runner.sh`.
 
 `new-argument` = opens or strengthens a candidate era. `confirms-known` = re-measures something
 settled. `dry` = nothing worth recording. Three ticks without a `new-argument` means the cheap

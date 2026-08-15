@@ -32,6 +32,13 @@ that is now impossible because a gate catches it stays here, with the gate named
 - **The loop's continuity must live on disk.** v1 re-armed itself with `ScheduleWakeup`, which is
   session-scoped — when the session ended on 2026-07-02 the loop ended permanently and left no
   trace saying so. The `.improve-tsk-on` marker + Stop hook is what survives a session death.
+- **An agent grading its own work always says it mattered.** Era exhaustion is measured from the
+  `**Verdict:**` line on each lab entry, and the first three verdicts — written by the same session
+  that ran the investigations — were all `new-argument`. A self-graded loop never exhausts an era,
+  never synthesizes, and never transforms the game: the failure is silent, and looks like a busy,
+  healthy loop. The verdict is now written by an independent grader (separate process, different
+  model, no view of the investigator's reasoning, instructed to default to `confirms-known`).
+  Generalises: **never let the component that did the work score the work.**
 - **An owner directive must be machine-detectable or it will be silently ignored.** `done.sh`
   originally had no way to see a note in `OWNER-GATE.md`; the loop would read the directive, find
   every gate green, return CONVERGED and go back to vigil without doing the work. Open directives
