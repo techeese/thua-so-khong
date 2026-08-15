@@ -301,3 +301,95 @@ discounting it; the ending card becomes the arithmetic and nothing else; the tag
 frame; Gate 0 keeps every clause and gains a *capping* assertion; cadence untouched. It must be
 priced honestly (it changes balance the owner's loops just banded) and must survive its own
 critics like everything else.
+
+---
+
+# SYNTHESIS 2 — L2, second attempt · 2026-08-15 (afternoon) · `failed_syntheses=1`
+
+Read against the tree of this hour: v0.37 shipped (strangers walk their factor before you speak to
+them, cadence 4.5–9 s, Gate 15) and **v0.38 in flight under `/loop 3m`**: `ceilOf()` — the weakest
+factor sets the *ceiling* of `chance()` (1 → 0, 2 → 4 %/season, 3 → 8 %, 4 → 15 %, 5 → 25 %, from 6
+the product decides), with capping assertions added to Gate 0 (`chance(10,2,10) ≤ 0.04`,
+`tiers.maxer < 0.4·tiers.hunter`), and a gate-id uniqueness check in `done.sh`. The owner's two
+loops are consuming this synthesis's own brief within minutes of it being written.
+
+## 10. What changed since synthesis 1 — and what it means for L2
+
+The §9 brief's swing — *"Số không quyết định," the weakest factor caps a life* — is **shipped work**
+as of v0.38 (owner authority, `/loop 3m`). By the standard both review rounds applied ("do not
+define an era around done work"), it cannot be an era. Likewise B's channel is now built: walks for
+all three factors (v0.36), walks before `known` (v0.37).
+
+The structural fact: **any L2 candidate expressible as mechanic or graphics ticks is absorbed by the
+owner's loops before it can be an era.** That is not a failure of the candidates — it is the L2
+layer being executed at L1 speed by the owner. What remains for an *era* is work that a 3-minute
+tick cannot ship: changes to structure, run shape, and the frame — things a tick would not dare.
+
+## 11. Candidates
+
+### E · "Số không quyết định" — **excluded: shipped as v0.38** (recorded, not proposed)
+
+### F · REAL SWING — "Cuốn sổ nhớ" (the book remembers) — meta-progression
+
+**Intent:** the second run is a return, not a restart. The chronicle stops being a scoreboard and
+becomes memory: the people you failed last run are the ones the sampan brings first; their zero is
+the one you left; the xóm's fates carry as scars on the block. Playing becomes *coming back to a
+place*. **Adds:** authored return-arcs per fate (Ngân's letter from the city, Liên's second sampan,
+Chú Ba's craft in another's hands); a run-2 opening that names nothing but shows the scar.
+**Removes:** the chronicle's counters (endings seen 6/6, cards seen). **Gates:** run 2 seeded from
+run 1's fates in ≥ 3 measurable ways; no counter UI; band unchanged; a return-arc probe.
+**Cost / might ruin:** authored writing under *less narration*; risks a hero arc (charter §1: the
+one who comes back to save them) — must be written as the xóm remembering *you*, not you rescuing
+it. Not tick-shippable (touches save shape, cast seeding, endings, chronicle) — an era.
+
+### G · REDUCTIVE — "Tám mùa" (eight seasons)
+
+**Intent:** halve the run. The lab says the back half is slack: personal lines per villager fall
+1.16 (s2) → 0.49 (s8) → **0.04 (s14)** (`attach8.py`); the river reaches 10 in **100 %** of hunter
+runs (`fourth.js`); 68 % of the hunter's hands go to people with no low factor (`threefloors.js`) —
+polishing, because there is time to polish; every fate clock (Chú Ba s8, Ngân s9/s11, Liên's fade)
+lands in the half where attention has already gone. **Removes:** seasons 9–16; the slack that lets
+anti-diagnosis keep 98 % of tiers (`decide.js`). **Changes:** every clock and card re-timed to an
+8-season year (two years of four); hands stay 2–3/season; the flywheel and river rise re-derived so
+`von` reaches 10 in the *good* runs, not all of them; the finale at s8. **Gates (ratchet-up, all
+current kept):** band re-derived at 8 seasons with every existing clause and the v0.38 caps;
+`idle ≤ 4.0` still holds *and* `idle` blooms fall vs 16 (idle can't coast to the finale); river
+reaches 10 in ≤ 60 % of hunter runs (capital must be earned again); attachment: personal lines per
+villager at the final season ≥ 0.5 (up from 0.04); a full-run VI+EN 8-season gate replaces nothing —
+the 16-season gate stays as a legacy assertion on the old constant until the transition retires it
+*by adding* the 8-season one alongside. **Cost / might ruin:** the game the owner has been polishing
+all day gets half as long; a hunter's 6.98 blooms/7 becomes impossible by construction, so the band
+must be re-derived honestly (which is exactly why it cannot be a tick); the charter names *sixteen
+seasons* in its description of the game but explicitly lists "whether it is even still a
+sixteen-season game" as fair for eras. **Folds in H.**
+
+### H · REDUCTIVE — "Khung và kết" (the frame and the ending) — thesis critics' named surfaces
+
+**Intent:** the two places the lab proved the game *tells*: the sentence at t=0 (header subtitle +
+intro tagline) and the 150-word ending card with its unconditional great-man closing line.
+**Removes:** both; the ending becomes the arithmetic — seven rows, seven `×` lines, seven fates, and
+one line the xóm says. **Gates:** `tell.py` tells at t=0 = 0; ending ≤ 9 lines; no great-man string
+anywhere in the ending; ending never lists a person under the ceiling as bloomed. **Cost:** owner
+gate 3 becomes answerable only by play (the point); a tick could ship this — which is why it is
+folded into G, not proposed alone (the substance critic's charge against A).
+
+## 12. Pick — **G · "Tám mùa" (eight seasons), with H folded in**
+
+Why G over F: F is the bolder game, but it *adds* under a reductive directive and its return-arcs
+are authored narration by construction — the thesis critic's charge is waiting for it, and every
+standing owner directive here is reductive. G is the reductive era the protocol requires at least
+one of, it is the one candidate the owner's ticking loops cannot absorb (a run-length change
+re-derives every clock, card, gate and band at once — one commit, one revert), it answers three lab
+findings by subtraction (attachment decay, river-always-full, hands-to-polish), and it makes success
+*harder*: idle cannot coast, the river must be earned, the band is re-derived with every current
+clause plus the v0.38 caps rather than loosened. It carries H, so the frame stops telling and the
+ending is the arithmetic. It does not touch cadence.
+
+**Drift, pre-answered:** every existing gate clause is kept; new clauses only tighten (idle falls,
+river ≤ 60 %, attachment ≥ 0.5). **Thesis:** charter lists run length as fair game; §1–§4 untouched;
+the great-man line leaves the ending. **Substance:** a stranger notices — a run is a lunch break, and
+every season is one where someone's clock is running.
+
+**Review round 3 (this tick if time allows, else next):** three critics briefed to reject. Majority
+reject → `failed_syntheses=2` → **escalation to L3 is earned** (`LADDER.md`), and the next synthesis
+happens at FORM with 5 critics.
