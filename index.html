@@ -1988,7 +1988,7 @@ function nextSeason(){
   // The world already lifts GAN (a witnessed bloom) and TÀI (Cô Mai's class); this is its lift for BẠN — to the table, not to the market: a hand is still needed past 3.
   if((S.hui|0)>=1&&!conBan(1)&&S.season>=2){
     var lone=S.cast.filter(function(q){ return active(q)&&q.known&&!q.started&&!q.arriveT&&q.ban<=2; }).sort(function(a9,b9){return a9.ban-b9.ban;})[0];
-    if(lone){ lone.ban=Math.min(10,lone.ban+1); S._circleLift=lone;
+    if(lone){ lone.ban=Math.min(10,lone.ban+1); see(lone,"ban"); S._circleLift=lone;   // the world touched the number — it is seen now, not when the float lands
       if(!S.circleSeen){ S.circleSeen=true; logMsg("🪙 Vòng hụi cho gọi "+lone.name+" ra đình ngồi cùng — có mặt ở bàn là bước đầu của BẠN.","🪙 The hụi circle sends for "+lone.name+" to sit at the đình — a seat at the table is where ALLIES begins."); } }
   }
   // 🚌 the girl's clock: Bé Ngân's father has been filing papers all along — if her NERVE stays near zero, medicine wins.

@@ -1,5 +1,18 @@
 # Changelog — Thừa Số Không
 
+## v0.39 — 2026-08-15 — Gate 21 fix (engine, Gear 1): the circle's lift is seen when it lands
+
+Closes: a red machine gate in HEAD. Gate 21 (*the world is honest about the ceiling and lifts BẠN*)
+asserted `ba.seen.ban===true` synchronously after `nextSeason()`, but the only thing that marked the
+factor seen was the `+1 BẠN 🪙` float, which fires inside the deferred hụi-meeting `setTimeout` — so
+the lift landed (`ban` 2 → 3) and the reveal did not, and `done.sh` reported `WORLD_BAD … lifted=false`
+on a clean tree. Fix: `see(lone,"ban")` at the lift itself — the world touched the number and the log
+line names the factor, so it is seen then, not when the float lands (v0.33's rule, applied one
+statement earlier). One line; no balance, no gate text changed. *Evidence:* `WORLD_OK trials=12
+maiMom=0.00 vuMom=0.60 noLiftWithoutHui=true lifted=true notPast3=true`; all gates green,
+hash-bracketed. Footer stays v0.39 — the graphics session's v0.40 is in flight in the same tree and
+this commit carries none of it.
+
 ## v0.39 — 2026-08-15 — every verb answers with the same arithmetic
 
 Closes: under the owner's standing `/loop 3m` directive, a gap v0.38 opened in v0.32's verb — and
