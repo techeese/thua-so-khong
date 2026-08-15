@@ -177,3 +177,11 @@ that is now impossible because a gate catches it stays here, with the gate named
   `~/.claude/projects/-Users-Admin-Desktop-coding/` for the change) before treating a dirty tree as
   your own. Bank your files with an explicit `git add <file>` — never `git add -A` — and leave the
   gate red for the owner. Cost: one tick's Gear 1 spent on forensics instead of work.
+- **Two owner sessions co-editing `index.html` — hash the file around `gate.sh`, and re-run until
+  a green run brackets an unchanged hash.** 2026-08-15 (v0.30 tick): the `/loop 5m` "add something"
+  session wrote to `index.html` *during* this session's 20-second gate run, so the green result
+  belonged to a file that no longer existed. It also fixed a hint-overwrite bug at 15:18 that this
+  tick had found seconds earlier — a `python3` replace on the old text then failed its assertion.
+  Costs: one wasted gate run, one failed edit. Practice: `md5 → gate → md5`, commit only when equal
+  and green; re-read the diff right before committing, and name what the other session's hunks are
+  in the changelog rather than pretending they are yours.
