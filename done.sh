@@ -9,8 +9,10 @@
 #
 # Under full autonomy (LOOP.md v4) the owner's felt gate is ADVISORY and does not block an era;
 # an era ends by EXHAUSTION — three consecutive lab ticks with no 'new-argument' verdict.
-# Two gates exist to make that safe to leave running: the charter lock (the loop cannot change
-# what the game is for) and the gates ratchet (gates may be added, never removed).
+# Exhaustion never halts the loop; it ESCALATES one layer up the ladder (LADDER.md): era → form
+# → thesis. What keeps a self-modifying loop safe is no longer an unreachable charter but
+# AUDITABILITY + A RATCHET: gates may be added and never removed, and every thesis the artifact
+# has held stays on record in CHARTER-LINEAGE.md, each required to be no easier than the last.
 #
 # Usage: ./done.sh          full check (runs gate.sh, hits the network)
 #        ./done.sh --fast   skip gate.sh and the live-site check
@@ -34,6 +36,18 @@ if [ -f CHARTER.md ] && [ -f CHARTER.lock ]; then
   [ "$HAVE" = "$WANT" ] && ok "charter locked (unchanged)" \
     || no "CHARTER.md CHANGED — the loop must never edit it. Restore it (git checkout CHARTER.md) or, if the OWNER changed it, re-lock: shasum -a 256 CHARTER.md | cut -d' ' -f1 > CHARTER.lock"
 else no "charter lock missing (need CHARTER.md + CHARTER.lock)"; fi
+
+# 0a2. CHARTER LINEAGE — the loop MAY change the charter, but only at an L4 transition and only
+#      by appending the successor thesis to CHARTER-LINEAGE.md first. Requiring the live hash to
+#      appear there is what replaced the old absolute lock: the charter is no longer unreachable,
+#      it is auditable. A charter rewritten without a lineage entry is a red gate.
+# [gate:charter-lineage]
+if [ -f CHARTER.lock ] && [ -f CHARTER-LINEAGE.md ]; then
+  H=$(tr -dc 0-9a-f < CHARTER.lock)
+  grep -q "$H" CHARTER-LINEAGE.md \
+    && ok "charter lineage records the live thesis ($(grep -c '^## Thesis ' CHARTER-LINEAGE.md) thesis/es on record)" \
+    || no "CHARTER.md changed with NO lineage entry — append the successor thesis to CHARTER-LINEAGE.md (never edit a prior entry); see LADDER.md → L4"
+else no "charter lineage missing (need CHARTER.lock + CHARTER-LINEAGE.md)"; fi
 
 # 0b. GATES RATCHET — every gate ever added must still exist. Gates may be added, never removed.
 #     Each done.sh gate carries an inline `[gate:<id>]` marker, so deleting the gate deletes its
@@ -139,6 +153,22 @@ PY
 )
 EXHAUSTED=$(printf '%s' "$EXH" | cut -d' ' -f1); NVERD=$(printf '%s' "$EXH" | cut -d' ' -f2)
 
+# LADDER — exhaustion never halts, it escalates one layer up (LADDER.md).
+LSTATE=$(grep -o '<!-- STATE layer=[0-9]* failed_syntheses=[0-9]* -->' LADDER.md 2>/dev/null)
+LAYER=$(printf '%s' "$LSTATE" | grep -o 'layer=[0-9]*' | cut -d= -f2); LAYER=${LAYER:-2}
+FAILS=$(printf '%s' "$LSTATE" | grep -o 'failed_syntheses=[0-9]*' | cut -d= -f2); FAILS=${FAILS:-0}
+case "$LAYER" in
+  2) LNAME="L2 · ERA — a system, a pass, a direction";   LCRIT=3 ;;
+  3) LNAME="L3 · FORM — genre, structure, medium";       LCRIT=5 ;;
+  4) LNAME="L4 · THESIS — what the artifact is about";   LCRIT=7 ;;
+  *) LNAME="L$LAYER";                                    LCRIT=3 ;;
+esac
+if [ "$FAILS" -ge 2 ] && [ "$LAYER" -lt 4 ]; then
+  ESCALATE="  ⚑ ESCALATE: $FAILS consecutive syntheses produced no surviving candidate.
+    Move to L$((LAYER+1)) and synthesise THERE — update the STATE line in LADDER.md.
+    Escalation is earned, never chosen: the rejections must be on record in SYNTHESIS.md."
+else ESCALATE=""; fi
+
 echo
 if [ "$RED" = 1 ]; then
   echo "🔧 WORK REMAINS — machine gates are red. The loop has convergent work."
@@ -157,13 +187,16 @@ EOF
   exit 20
 fi
 if [ "$EXHAUSTED" = "1" ]; then
-  cat <<'EOF'
+  cat <<EOF
 🏁 ERA EXHAUSTED — gates green and the last 3 lab ticks produced no new argument.
    The frame itself is now the limit.
 
-▶ GEAR 2 — SYNTHESIZE. MILESTONES.md → the synthesis protocol. Read the game as a
-  stranger, separate load-bearing from decoration, find the unspent potential, and
-  write 3-4 candidate eras to SYNTHESIS.md — one reductive, one a real swing.
+▶ GEAR 2 — SYNTHESIZE at $LNAME
+  Read the game as a stranger, separate load-bearing from decoration, find the
+  unspent potential, write 3-4 candidates to SYNTHESIS.md — one reductive, one a
+  real swing — then face $LCRIT critics briefed to reject. Protocol: MILESTONES.md.
+  The loop NEVER halts: if nothing survives twice, escalate a layer (LADDER.md).
+$ESCALATE
 EOF
   exit 20
 fi

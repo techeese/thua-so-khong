@@ -1,13 +1,17 @@
 # CHARTER — what Thừa Số Không is, and what it may never become
 
-**This document is outside the loop's reach.** `done.sh` verifies its hash against `CHARTER.lock`
-and fails every gate if it has changed. Only the owner edits it, and only by editing the lock in
-the same commit. Eras may rewrite anything else — gates, roadmap, milestones, even the definition
-of done. They may not rewrite this.
+**This document is reachable only from the top of the ladder.** `done.sh` verifies its hash against
+`CHARTER.lock`, and verifies that hash appears in `CHARTER-LINEAGE.md`. Eras (L2) and form changes
+(L3) may rewrite anything else — gates, roadmap, milestones, even the definition of done — but they
+may not touch this. Only an **L4 · THESIS** transition may, and only by appending to the lineage
+first (`LADDER.md`).
 
-That asymmetry is deliberate. A loop that can redefine what success means will, over enough
-iterations, redefine it into something easy. The charter is the fixed point that makes the rest
-safe to automate.
+The old rule made this file permanently unreachable. That was a slower kind of stopping: an
+artifact that can never reconsider its own premise converges to a fixed point instead of improving
+forever. What guards against drift now is not unreachability but **auditability plus a ratchet** —
+every thesis the artifact has ever held stays permanently readable in the lineage, and a successor
+thesis must be *at least as demanding* as the one it replaces. A loop can still walk somewhere
+strange; it can no longer walk somewhere easy, and it can never walk anywhere unrecorded.
 
 ---
 
@@ -64,13 +68,18 @@ game that shouts in the background.
 
 ## Changing this document
 
-Owner only:
+**Owner, any time.** Edit freely, then re-key and record the lineage:
 
 ```bash
 $EDITOR CHARTER.md
 shasum -a 256 CHARTER.md | cut -d' ' -f1 > CHARTER.lock
+# append the new hash + claim to CHARTER-LINEAGE.md, then:
 git commit -am "charter: <what changed and why>"
 ```
 
-If a synthesis argues the charter itself is the limit, it says so in `SYNTHESIS.md` and stops.
-It does not edit this file. That conversation is the owner's.
+**Loop, at an L4 transition only.** If a synthesis argues the charter itself is the limit, that is
+no longer a stopping point — it is the entry condition for L4 (`LADDER.md`). The loop may then
+rewrite this file, but only after appending the successor thesis to `CHARTER-LINEAGE.md`, arguing
+that it is no easier than its predecessor, surviving seven critics, and tagging the commit
+`thesis-N-opened`. It executes without asking and announces loudly; the owner finds out by reading
+`HISTORY.md`, not by being asked.

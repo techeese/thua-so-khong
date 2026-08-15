@@ -18,6 +18,8 @@ this project's mechanism operates on.** Read it first, every tick.
 | `LOOP.md` | this contract | owner (and deliberate meta-sessions) |
 | `LANDMINES.md` | traps that already blew up once | **loop, append-only** |
 | `GATES-LEDGER.md` | the ratchet — gates may be added, never removed | **loop, append-only** |
+| `LADDER.md` | the four layers, escalation conditions, criticism scaling | loop (state line) |
+| `CHARTER-LINEAGE.md` | every thesis ever held | **loop, append-only, L4 only** |
 | `MILESTONES.md` | eras, synthesis protocol, transition manifest | loop |
 | `HISTORY.md` | one entry per era — the observation deck | loop, at transitions only |
 | `CHANGELOG.md` · `ROADMAP.md` · `lab/NOTES.md` | the running record | loop |
@@ -57,8 +59,9 @@ of the best rounds shipped.
 The loop closes eras, picks the next, and executes transitions on its own. It never waits.
 It cannot:
 
-1. **Change `CHARTER.md`.** Hash-locked. If a synthesis concludes the charter is the limit, it says
-   so in `SYNTHESIS.md` and stops — that conversation is the owner's.
+1. **Change `CHARTER.md` below L4.** Hash-locked at L1–L3. A synthesis concluding the charter is
+   the limit does not stop — it escalates to L4 (`LADDER.md`), where the thesis may be rewritten,
+   but only by appending to `CHARTER-LINEAGE.md` first and surviving seven critics.
 2. **Remove or weaken a gate.** `GATES-LEDGER.md` is append-only and verified every tick.
 3. **Open an era that survived no criticism.** Adversarial review must pass first
    (`MILESTONES.md` → transition manifest).

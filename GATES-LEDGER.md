@@ -34,7 +34,8 @@ Rules:
 
 | id | era | what it protects |
 |---|---|---|
-| `charter-lock` | 1 | `CHARTER.md` matches `CHARTER.lock` — the loop cannot rewrite what the game is for |
+| `charter-lock` | 1 | `CHARTER.md` matches `CHARTER.lock` |
+| `charter-lineage` | 1 | the live charter hash appears in `CHARTER-LINEAGE.md` — the loop may change the thesis at L4, but never unrecorded |
 | `gates-ledger` | 1 | every entry in this file still exists and still runs |
 | `release-gates` | 1 | `gate.sh` is green |
 | `tree-clean` | 1 | no work stranded uncommitted |

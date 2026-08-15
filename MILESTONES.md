@@ -1,22 +1,20 @@
 # Milestones — the eras of Thừa Số Không
 
-The loop is **convergent within an era and infinite across eras.** Each era has a name and a
-*closed* definition of done. When an era closes, the loop does not stop forever and it does not
-drift sideways — it runs a **synthesis** (see `SYNTHESIS.md` when one exists), the owner picks the
-next direction, and a new era opens with new gates.
-
-That is the whole design:
+The loop is **convergent within a layer and infinite across layers.** Each era has a name and a
+*closed* definition of done. When it closes, the loop runs a **synthesis**, picks a candidate,
+defends it against critics, and opens the next — and when a whole layer runs out of road, it
+escalates rather than halting (`LADDER.md`).
 
 ```
-   era opens ──▶ convergent iterations ──▶ done.sh says CONVERGED
+   layer opens ──▶ convergent iterations ──▶ done.sh: exhausted
         ▲                                          │
         │                                          ▼
-   owner picks ◀── SYNTHESIS: what is this game now, and what should it become?
+   critics pass ◀── SYNTHESIS ──▶ nothing survives twice ──▶ escalate a layer
 ```
 
 Drift is what happens when a compass rotates because the loop is bored. This is different: new
-work is opened **deliberately**, at a moment of reflection, by a human choice. Infinite
-development, finite iterations.
+work is opened **deliberately**, at a moment of reflection, and only after surviving criticism.
+Infinite development, finite iterations.
 
 ---
 
@@ -83,10 +81,18 @@ settled. `dry` = nothing worth recording. Three ticks without a `new-argument` m
 evidence is gone and the frame itself is now the limit. A rising ratio of *argues-against* to
 *argues-for* is the same signal, earlier.
 
+## Exhaustion escalates — it never halts
+
+An era that runs out of road hands the problem **one layer up the ladder** (`LADDER.md`): era →
+form → thesis. Two consecutive syntheses with no surviving candidate is the escalation signal, and
+escalation is *earned* — the rejections must be on record in `SYNTHESIS.md`, never chosen because a
+layer looked slow. Criticism scales with altitude: 3 critics at L2, 5 at L3, 7 at L4. "The charter
+is the limit" is no longer a stopping point; it is the entry condition for L4.
+
 ## Adversarial era review — what replaces the owner's signature
 
-Before a transition executes, spawn **3 independent critics** on the chosen candidate, each
-briefed to attack it and to **default to rejecting**:
+Before a transition executes, spawn independent critics on the chosen candidate — **3 at L2, 5 at
+L3, 7 at L4** (`LADDER.md`) — each briefed to attack it and to **default to rejecting**:
 
 1. *Does this era make success easier to achieve than the last one?* (the drift lens)
 2. *Does it abandon or route around a `CHARTER.md` constraint?* (the thesis lens)
@@ -94,8 +100,9 @@ briefed to attack it and to **default to rejecting**:
    get better, or just different?* (the substance lens)
 
 **Majority reject → the transition does not execute.** Record why in `SYNTHESIS.md`, pick the
-runner-up or re-synthesize, and try again next tick. A candidate that cannot survive three
-critics was never worth an era.
+runner-up or re-synthesize, and try again next tick. A candidate that cannot survive its critics
+was never worth an era. **Two consecutive syntheses with nothing surviving escalates a layer** —
+increment `failed_syntheses` in `LADDER.md`; the loop never halts for want of a candidate.
 
 ## The transition manifest — one commit, all of it
 
@@ -114,7 +121,9 @@ of the following in **one commit**, tagged `era-N-closed`:
 - [ ] `LOOP.md` — replaced `Next` pointer
 - [ ] `lab/NOTES.md` — mark the findings that fed the pick as spent
 - [ ] `SYNTHESIS.md` and `TRANSITION-PLAN.md` — deleted
-- [ ] `CHARTER.md` — **never touched.** Verify the lock still passes before committing.
+- [ ] `CHARTER.md` — **untouched at L2 and L3.** Verify the lock still passes before committing.
+      Only an **L4** transition may rewrite it, and only by appending to `CHARTER-LINEAGE.md`
+      first, re-keying `CHARTER.lock`, and tagging the commit `thesis-N-opened` (`LADDER.md`).
 
 Then re-run `./done.sh`; the new era should return Gear 1 with real work.
 
