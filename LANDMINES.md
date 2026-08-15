@@ -471,3 +471,8 @@ that is now impossible because a gate catches it stays here, with the gate named
   that refuses must say which condition refused, not keep advertising what it would have done: the
   ceiling (v0.52), the year's tied hand (v0.68), the pot's no-hụi year and unpaid circle (v0.69). When
   a verb has N gating conditions, count the branches in its hint — the pot had eight and six.
+- **The "name what stops you" sweep is COMPLETE — four controls carried it, all now fixed.** The ceiling
+  (v0.52), the year's tied hand (v0.68), the pot's no-hụi year and unpaid circle (v0.69), and hụi's
+  no-hụi year plus nghe ngóng's already-asked (v0.70). Tự xây and Che chắn were checked and are sound
+  (build shows ✓; shelter hides itself when there is no target). Do not re-sweep these; if a NEW control
+  appears, apply the method — count its gating conditions, count its hint branches, and compare.

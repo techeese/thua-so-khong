@@ -112,7 +112,7 @@ function run(strategy,seed){
     if(season+1>=13) cast.forEach(function(c){ if(c.arrives!==undefined&&!c.started&&c.ban<4&&!lienPaired) c.gone=true; });
     // age-based stamp risk (mirrors index.html): young workshops 15%, established 5%, only under a heavy sky
     // tier-based stamps (mirrors index.html): established workshops step down (owner gan−2), only tier-1 is erased
-    if(luat<4) cast.forEach(function(p){ if(p.started&&!p.born&&rnd()<(((p.age|0)<2)?0.15:0.05)){
+    if(luat<4) cast.forEach(function(p){ if(p.started&&!p.born&&rnd()<(((p.age|0)<2)?(yc===1?0.25:0.15):(yc===1?0.10:0.05))){   // v0.70: the strict year's stamps 25/10 (mirrors index.html stampOdds)
       if(tierOf(p,von)>=2){ p.gan=Math.max(0,p.gan-2); p.mom=0; }
       else { p.started=false; p.crushedOnce=true; p.gan=Math.max(0,p.gan-3); p.mom=0; } } });
     // the recycling flywheel now counts TIERS (mirrors index.html): sum(tier)>=4 → the river feeds itself

@@ -18,6 +18,30 @@ lands *before* the circle looks; the lift filter is `!started`, so `lifted` read
   why this is convergent work and not polish. Recorded in `GATES-LEDGER.md` → Tightenings and
   `LANDMINES.md`.
 
+## v0.70 — 2026-08-15 — hụi and nghe ngóng name what stops them
+
+A graphics round from the owner's `/loop 5m` session, finishing the sweep v0.69's pointer set out. The
+method it named worked exactly as written: **count a control's gating conditions, then count the
+branches in its hint.**
+
+- **🪙 Góp hụi: five conditions, two branches.** In a no-hụi year the button was disabled and still
+  quoted `(1⚡ · ×0.65→0.72)` — a river gain it cannot give. It now reads `🚫🪙 năm không hụi` /
+  `the no-hụi year`, from the existing `CONSTRAINTS` strings.
+- **🔍 Nghe ngóng: four conditions, two branches.** Once used this season the button was disabled and
+  still quoted its price. It now reads `mùa này đã nghe` / `asked this season`, matching the phrasing the
+  pot already uses for `phiên này đã hốt`.
+- **🛠 Tự xây and 🛡 Che chắn were checked and are sound** — build shows `✓` when done, and the shelter
+  button hides itself entirely when there is nothing to shelter rather than sitting there disabled. No
+  change to either; recorded so the sweep is not repeated.
+- *Evidence:* new **Gate 56**, bilingual on both new messages, and — the clause that keeps a refusal from
+  eating the answer — asserting the **working** states still quote themselves and the already-covered
+  `✓ 4/4` survives. Negative-tested with both branches removed: the tied year reads
+  `(1⚡ · ×0.65→0.72)` and the used probe reads `(miễn phí)`.
+
+That closes the fault this loop first met in v0.52. Four controls carried it — the ceiling, the tied
+hand, the pot, and now these two — and every one of them was the same sentence: a disabled control
+advertising what it would have done.
+
 ## v0.69 — 2026-08-15 — the pot names what stops it
 
 A graphics round from the owner's `/loop 5m` session. It opened by **paying a debt**: v0.68 shipped

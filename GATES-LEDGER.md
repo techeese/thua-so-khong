@@ -78,6 +78,7 @@ Rules:
 | `Gate 53` | 1 | a hand the year tied says so — a verb banned by the year's constraint names the constraint (`🚫📖 năm không dạy` / `the no-teaching year`) instead of advertising a `+2` it cannot deliver, in both languages and for the right constraint per verb; all four verb states (live · unaffordable · at its ceiling · tied) stay distinguishable (v0.68) |
 | `Gate 54` | 1 | the tier climb shows in the ledger — a season in which a bloomed roof's product crosses 300 ends with a divider carrying 🪜+1, and a season with no tier movement carries none (v0.68, `/loop 3m`; row added by the graphics loop after finding the gate present in `gate.sh` but absent here — `done.sh` only checks ledger→gate.sh) |
 | `Gate 55` | 1 | the pot names what stops it — the no-hụi year reads `🚫🪙 năm không hụi` and an unpaid circle reads `chưa góp hụi — góp rồi mới hốt được`, instead of both falling through to the generic `🌱 +6% · 1⚡` the button cannot deliver; bilingual, and the eligible state still shows its answer (v0.69) |
+| `Gate 56` | 1 | hụi and nghe ngóng name what stops them — 🪙 Góp hụi in a no-hụi year reads `🚫🪙 năm không hụi` and 🔍 Nghe ngóng once used reads `mùa này đã nghe`, instead of quoting a price they cannot honour; bilingual, and the working and already-covered states are untouched (v0.70) |
 
 ## Convergence gates — `done.sh`
 

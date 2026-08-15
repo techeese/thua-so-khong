@@ -634,7 +634,7 @@ window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
 setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-v1");
   document.getElementById("startBtn").click();
-  S.season=6; S.acts=3; S.un.probe=true; S.probeSeen=false;
+  S.season=6; S.acts=3; S.un.probe=true; S.probeSeen=false; S.yearCard=2;   // a plain year — the strict year's stamps read 25/10 since v0.70 (Gate 57 covers that)
   var mai=S.cast[2], vu=S.cast[3]; mai.known=true; vu.known=true; mai.started=true; vu.started=true;
   S.ships.push({x:420,y:300,owner:mai.name,pid:2,age:1,shel:0}); S.ships.push({x:300,y:420,owner:vu.name,pid:3,age:5,shel:0});
   S.luat=6; selectPerson(2); var clear=document.getElementById("multLine").textContent, noneClear=!/⬛|🛡/.test(clear);
@@ -1778,6 +1778,76 @@ open(tmp+"/pw.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOFPOTR
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=12000 --dump-dom "file://$TMP/pw.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "POTWHY_OK" && pass "the pot names what stops it: $T" || fail "the pot names what stops it: $T"
+
+# Gate 57: the strict year's stamps fall harder — under a heavy sky a young roof reads ⬛ 25% and an established one ⬛ 10% in the strict year (15/5 in
+# any other), and a roll of 0.20 stamps the young roof in the strict year but not in a plain one.
+python3 - "$TMP" <<'PYEOF55'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  function setup(yc){ fresh(); S.nudged=true; S.season=6; S.luat=2; S.luatNext=2; S.yearCard=yc; S.acts=3;
+    var mai=S.cast[2], vu=S.cast[3]; S.cast.forEach(function(q){ q.started=true; q.known=false; });
+    mai.known=true; mai.tai=5; mai.gan=6; mai.ban=5; vu.known=true; vu.tai=5; vu.gan=6; vu.ban=6;   // stalls
+    S.ships.length=0; S.ships.push({x:420,y:300,owner:mai.name,pid:2,age:1,shel:0}); S.ships.push({x:300,y:420,owner:vu.name,pid:3,age:5,shel:0}); return [mai,vu]; }
+  var st=setup(1); selectPerson(2); var y=document.getElementById("multLine").textContent, y25=/⬛ 25%/.test(y); selectPerson(3); var o=document.getElementById("multLine").textContent, o10=/⬛ 10%/.test(o);
+  var pl=setup(2); selectPerson(2); var y15=/⬛ 15%/.test(document.getElementById("multLine").textContent);
+  var R=Math.random; Math.random=function(){ return 0.20; };
+  setup(1); nextSeason(); var strictHit=(S.ships.filter(function(w){return w.pid===2;}).length===0);   // 0.20 < 0.25 → the young stall is erased
+  setup(2); nextSeason(); var plainHit=(S.ships.filter(function(w){return w.pid===2;}).length===0);    // 0.20 > 0.15 → it stands
+  Math.random=R;
+  var ok=y25&&o10&&y15&&strictHit&&!plainHit;
+  document.title=(ok?"STRICT_OK":"STRICT_BAD")+" young25="+y25+" old10="+o10+" plain15="+y15+" strictErased="+strictHit+" plainStands="+(!plainHit);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/strict.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF55
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=7000 --dump-dom "file://$TMP/strict.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "STRICT_OK" && pass "the strict year's stamps fall harder: $T" || fail "the strict year's stamps fall harder: $T"
+
+# Gate 56: hụi and nghe ngóng name what stops them — completing the sweep that found the same fault in
+# the ceiling (v0.52), the tied hand (v0.68) and the pot (v0.69). 🪙 Góp hụi in a no-hụi year still quoted
+# the river gain it cannot give; 🔍 Nghe ngóng, once used this season, still quoted its price. Method:
+# count a control's gating conditions, then count the branches in its hint — hụi had five and two, probe
+# had four and two. Asserts both silent states now speak, bilingually, and that the WORKING states are
+# untouched (a refusal message must not eat the answer).
+python3 - "$TMP" <<'PYEOFSWEEP'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<8;s++){ S.acts=3; S.nudged=true; nextSeason(); }
+  S.cast.forEach(function(p){ p.known=true; });
+  S.un.hui=true; S.un.probe=true; S.acts=3; S.constraint=0; S.probeSeen=false; S.hui=1; S.von=5;
+  selectPerson(1);
+  function hui(){ render(); renderSheet(); return document.getElementById("huiCost").textContent.trim(); }
+  function prb(){ render(); renderSheet(); return document.getElementById("probeCost").textContent.trim(); }
+  var huiLive=hui(), prbLive=prb();
+  S.constraint=1; var huiTied=hui();
+  S.constraint=0; S.probeSeen=true; var prbUsed=prb();
+  setLang("en"); S.constraint=1; var huiTiedEN=hui(); S.constraint=0; var prbUsedEN=prb(); setLang("vi");
+  S.probeSeen=false; S.hui=99; var huiFull=hui();
+  var ok = /⚡/.test(huiLive) && /⚡/.test(prbLive)                       // the working states still quote themselves
+        && /năm không hụi/.test(huiTied) && !/⚡/.test(huiTied)
+        && /đã nghe/.test(prbUsed) && !/⚡/.test(prbUsed)
+        && /no-hụi year/.test(huiTiedEN) && /asked this season/.test(prbUsedEN)
+        && /✓/.test(huiFull);                                            // the already-covered state survives
+  document.title=(ok?"SWEEP_OK":"SWEEP_BAD")+" huiLive='"+huiLive+"' huiTied='"+huiTied+"' huiFull='"+huiFull
+    +"' prbLive='"+prbLive+"' prbUsed='"+prbUsed+"' EN['"+huiTiedEN+"' | '"+prbUsedEN+"']";
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/sw.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOFSWEEP
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=12000 --dump-dom "file://$TMP/sw.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "SWEEP_OK" && pass "hụi and nghe ngóng name what stops them: $T" || fail "hụi and nghe ngóng name what stops them: $T"
 
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }

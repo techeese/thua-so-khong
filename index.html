@@ -226,7 +226,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.69</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.70</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -2004,9 +2004,10 @@ function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notic
 // NOTE: ships are never `born` while the player holds the controls (born is set and cleared within one nextSeason tick),
 // so the born checks below are belt-and-braces, not a reachable state. In a strict year, notices are posted — tarp EVERYTHING.
 // ⬛ the law's number, printed where it can be acted on: under a heavy sky a roof's stamp odds this season (young 15 %, established 5 %; a tarp 0 %; a newborn stands its first season)
+function stampOdds(young){ return (S.yearCard===1)?(young?0.25:0.10):(young?0.15:0.05); }   // v0.70: the strict year's stamps fall harder — notices are posted, tarp everything (one source: the roll and the sheet)
 function stormLine(p){ if(!p.started) return ""; var now=S.luat<4, next=!now&&S.probeSeen&&S.luatNext<4; if(!now&&!next) return "";   // v0.64: a paid forecast prints next season's odds — that is the roof you are deciding about
   var sh=null; S.ships.forEach(function(w){ if(w.pid===p.id) sh=w; }); if(!sh) return "";
-  var pct=(now&&sh.born)?0:(sh.shel|0)>0?0:((sh.age|0)<(now?2:1)?15:5);   // next season the roof is one season older and no longer newborn
+  var pct=(now&&sh.born)?0:(sh.shel|0)>0?0:Math.round(stampOdds((sh.age|0)<(now?2:1))*100);   // next season the roof is one season older and no longer newborn
   return " · "+((sh.shel|0)>0?"🛡 ":"⬛ ")+pct+"%"+(now?(L==="vi"?" mùa này":" this season"):(L==="vi"?" mùa tới":" next season"))+((sh.shel|0)>0?((L==="vi"?" · bạt còn ":" · tarp holds ")+(sh.shel|0)+(L==="vi"?" mùa":" season"+((sh.shel|0)===1?"":"s"))):""); }   // v0.50: how long the tarp holds
 function shelCovers(s){ return (s.shel|0)<=0 && !s.born; }   // v0.48: one hand tarps EVERY standing roof (a newborn stands its first season on its own) — the sheet prints ⬛ 5% on an established roof, so the hand must be able to answer it
 function shelTarget(){ var best=null; S.ships.forEach(function(s){ if(!shelCovers(s)) return; if(!best||(s.age|0)<(best.age|0)) best=s; }); return best; }
@@ -2128,7 +2129,7 @@ function nextSeason(){
   if(S.luat<4){
     S.ships.slice().forEach(function(s){
       if(s.born||s.shel>0) return;   // newborns stand one season; a tarp holds through the storm
-      var risk=(s.age|0)<2?0.15:0.05;
+      var risk=stampOdds((s.age|0)<2);
       if(Math.random()<risk){
         var tr=shipTier(s); _rc.stamp++; _rc.hit.push(String(s.owner).split(" ").pop());
         if(s.yours){ // your own product lives under the same sky — but you rebuild faster than the first time
@@ -2580,13 +2581,18 @@ function render(){
   el("buildBtn").style.display=S.un.build?"":"none";
   el("probeBtn").style.display=S.un.probe?"":"none";
   el("probeLbl").textContent=t("probe"); el("shelLbl").textContent=t("shel");
-  el("probeCost").textContent=(S.yearCard===1)?(L==="vi"?"(miễn phí)":"(free)"):"(1⚡)";
+  // already asked this season: the button was disabled but still quoted its price
+  el("probeCost").textContent=S.probeSeen?(L==="vi"?"mùa này đã nghe":"asked this season")
+    :(S.yearCard===1)?(L==="vi"?"(miễn phí)":"(free)"):"(1⚡)";
   // shelter appears when a storm is VISIBLE (current sky, or a paid forecast) and something young stands exposed
   var shelOk=S.un.probe&&(S.probeSeen?(S.luatNext<4||S.luat<4):(S.luat<4))&&shelTarget()&&!S.over;
   el("shelBtn").style.display=shelOk?"":"none";
   el("shelBtn").disabled=S.acts<=0;
   var shN=S.ships.filter(shelCovers).length; el("shelCost").textContent="(1⚡ · "+shN+(L==="vi"?" mái":" roof"+(shN===1?"":"s"))+")";   // what one hand covers — the same answer every other verb gives
-  el("huiCost").textContent=S.hui>=huiMax()?("✓ "+huiMax()+"/"+huiMax()):(S.von>=10?"(1⚡)":("(1⚡ · ×"+vonMul().toFixed(2)+"→"+(0.3+0.7*Math.min(10,S.von+1)/10).toFixed(2)+")"));   // one coin: the river's multiplier before → after, the same answer every other verb gives
+  // the year that forbids hụi left this button advertising a river gain it cannot give — same fault
+  // as the pot (v0.69), the tied hand (v0.68) and the ceiling (v0.52): name what stops you.
+  el("huiCost").textContent=conBan(1)?(CONSTRAINTS[1].g+" "+(L==="vi"?CONSTRAINTS[1].nv:CONSTRAINTS[1].ne))
+    :S.hui>=huiMax()?("✓ "+huiMax()+"/"+huiMax()):(S.von>=10?"(1⚡)":("(1⚡ · ×"+vonMul().toFixed(2)+"→"+(0.3+0.7*Math.min(10,S.von+1)/10).toFixed(2)+")"));   // one coin: the river's multiplier before → after, the same answer every other verb gives
   el("huiBtn").disabled=S.acts<=0||S.hui>=huiMax()||S.over||conBan(1);
   el("huiBtn").style.textDecoration=conBan(1)?"line-through 2px #C1443C":""; el("huiBtn").style.opacity="";
   el("buildBtn").disabled=S.acts<=0||S.built||S.over;
@@ -2843,8 +2849,8 @@ function renderHelp(){
          vi?"Mỗi mùa 3⚡ (mùa giông 2⚡, sau ba mùa giông liền lại 3⚡). 📖 Dạy +2 TÀI · 🏮 Đêm thất bại +2 GAN (người từng ngã đến nghe, +1) · 🤝 Kết nối +2 BẠN cho mối đầu, +1 mối sau · 🪙 Góp hụi +1 sông (đã góp thì vòng hụi mỗi mùa gọi người ít bạn nhất ra đình: +1 BẠN, tối đa 3) · 🧧 Hốt hụi (đã góp rồi): sông −1, mầm của một người nhú +6% — cả vòng góp cho một nhà · 🛠 Tự xây 4 lần thì xong · 🔍 Nghe ngóng biết trời mùa tới · 🛡 Che chắn: một tay chằng bạt mọi mái hai mùa (xưởng mới mở tự đứng mùa đầu)."
            :"3⚡ per season (storm 2⚡; after three storm seasons in a row, back to 3⚡). 📖 Teach +2 SKILL · 🏮 Failure night +2 NERVE (those who fell come listen, +1) · 🤝 Connect +2 ALLIES first bond, +1 after · 🪙 Hụi +1 river (once you've paid in, the circle sends for the loneliest neighbour each season: +1 ALLIES, up to 3) · 🧧 Take the pot (once you've paid in): river −1, one person's sprout +6% — the whole circle pays one member · 🛠 Build 4 times to ship · 🔍 Ask around for next season's sky · 🛡 Shelter: one hand tarps every roof for two seasons (a newborn stands its first season on its own).");
   h+=sec(vi?"Trời và sông":"Sky and river",
-         vi?"Bầu trời là <b>luật</b> — ngoài tầm tay. Trời nặng (&lt;4): mưa, 2⚡, con dấu có thể rơi xuống xưởng (xưởng non 15%, xưởng vững 5%; bậc 2–3 chỉ tụt bậc). Dòng sông là <b>vốn</b> — thừa số thứ tư, của cả xóm: mầm nhân với sông (1/10 → ×0.37 · 10/10 → ×1.0), và sông cạn giữ xưởng ở bậc thấp (≤3 chỉ gánh hàng · ≤6 tối đa xưởng). Mỗi năm dâng một chút, hụi và hàng ra chợ dâng thêm; đủ ≥4 bậc xưởng thì sông tự đầy."
-           :"The sky is <b>the law</b> — beyond your hands. Heavy (&lt;4): rain, 2⚡, and the stamp may fall on a workshop (young 15%, established 5%; tier 2–3 only step down). The river is <b>capital</b> — the fourth factor, and it belongs to everyone: sprouts multiply by the river (1/10 → ×0.37 · 10/10 → ×1.0), and a low river holds workshops down (≤3 stalls only · ≤6 shop at most). It rises a little each year, more from the hụi and market trips; with ≥4 workshop tiers standing it fills itself.");
+         vi?"Bầu trời là <b>luật</b> — ngoài tầm tay. Trời nặng (&lt;4): mưa, 2⚡, con dấu có thể rơi xuống xưởng (xưởng non 15%, xưởng vững 5% — năm xét kỹ 📋: 25%/10%; bậc 2–3 chỉ tụt bậc). Dòng sông là <b>vốn</b> — thừa số thứ tư, của cả xóm: mầm nhân với sông (1/10 → ×0.37 · 10/10 → ×1.0), và sông cạn giữ xưởng ở bậc thấp (≤3 chỉ gánh hàng · ≤6 tối đa xưởng). Mỗi năm dâng một chút, hụi và hàng ra chợ dâng thêm; đủ ≥4 bậc xưởng thì sông tự đầy."
+           :"The sky is <b>the law</b> — beyond your hands. Heavy (&lt;4): rain, 2⚡, and the stamp may fall on a workshop (young 15%, established 5% — the strict year 📋: 25%/10%; tier 2–3 only step down). The river is <b>capital</b> — the fourth factor, and it belongs to everyone: sprouts multiply by the river (1/10 → ×0.37 · 10/10 → ×1.0), and a low river holds workshops down (≤3 stalls only · ≤6 shop at most). It rises a little each year, more from the hụi and market trips; with ≥4 workshop tiers standing it fills itself.");
   h+=sec(vi?"Phai":"Fading",
          vi?"Vun mà chưa nở thì mỗi mùa phai về bản tính ("+(S.yearCard===3?"17.5%":S.yearCard===5?"50%":"35%")+" mỗi thừa số). Tập trung vào một người cho đến khi nở — rải mỏng thì gió cuốn đi."
            :"Tending that hasn't bloomed fades back toward nature each season ("+(S.yearCard===3?"17.5%":S.yearCard===5?"50%":"35%")+" per factor). Concentrate on one person until they bloom — spread thin, the wind takes it.");
