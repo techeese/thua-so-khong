@@ -509,3 +509,111 @@ charter-required by two thesis critics; tick-sized; not the loop's to approve fo
 
 **Next tick (Gear 2, L3 · FORM, 5 critics):** a form synthesis — what kind of game — read against
 that morning's tree.
+
+---
+
+# SYNTHESIS 3 — **L3 · FORM**, first attempt · 2026-08-15 (evening) · `layer=3 failed_syntheses=0`
+
+**Burden of proof, stated first.** LADDER demands L3 evidence "spanning ≥ 2 completed eras". There
+is one era, closed by exhaustion without a transition. This synthesis argues from what exists — one
+era, ten lab investigations, twelve recorded rejections at L2 — and says so here so the critics can
+weigh it. Read against the tree of this hour: v0.39 shipped (every verb answers with the ceiling's
+arithmetic, Gate 20); v0.40 in flight (`WORLD_*` gate, "the world is honest about the ceiling").
+
+## 17. What the L2 record says about the *form*
+
+- **The game is a 16-season lunch-break sim of a seven-person xóm, played by one neighbour with
+  2–3 hands a season.** Everything the owner's loops ship strengthens that form: more of the world
+  answers with the arithmetic (v0.38 ceilings, v0.39 verbs), more of it walks its factor
+  (v0.36–v0.37), more of it has a fate (v0.35).
+- **Attention is spread thin by the form itself.** The hunter touches 6.68 of 7 people per run
+  (`decide.js`); personal lines per villager fall 1.16 → 0.49 → 0.04 across the run
+  (`attach8.py`); a real watcher sees 1.8–4.5 informative errands per run at play speed
+  (`walks.py`). Owner gate 2 — *care about someone by season 8* — is a claim about attention, and
+  the seven-at-once form dilutes it by construction.
+- **The information channel the owner just built needs time the form doesn't give.** Walks are
+  real-time (cadence 4.5–9 s); a session is minutes. Charter §4 forbids raising the volume; the
+  form caps the *duration*. Every L2 attempt to fix legibility hit the same wall: rate is reserved,
+  runtime is fixed → the channel cannot grow at L2.
+- **The band gate cannot see information or attention.** `check.js` is an act-slot sim with no
+  time and no walks. Every L2 candidate that changed information or attention was rejected as
+  "no gate can fail on it". At L2 that was correct; it is also a statement that the *instrument*
+  is form-bound.
+
+## 18. Candidates (form)
+
+### P · REDUCTIVE FORM — "Bảy đời" (seven lives) — the anthology
+
+**What playing becomes:** one life at a time. Each run is one villager's four seasons, you their
+neighbour; the xóm is the frame between lives (the block persists, the others walk in the
+background, silent). Seven vignettes make the fable; a life is 3–4 minutes.
+**Changes:** structure (run = one life), run length (4 seasons), what the band measures (a hunter
+vs a spreader *within one life* is meaningless — the instrument becomes: for each authored zero,
+does the neighbour who raises the weakest factor bloom the life and the one who polishes the strong
+not — `ceilOf` measured per life; idle loses every life; the ceiling gate per person).
+**Removes:** the seven-at-once sheet; the roster as a task list; the 150-word card (each life ends
+in one `×` line).
+**Keeps:** every verb, the river, the sky, the walks, Đông Hồ, bilingual, ambient silent.
+**Gates (ratchet-up, all current kept where they still bind; none removed):** per-life ceiling
+band (raise-the-weakest blooms ≥ 3× polish-the-strong on every authored zero; idle 0/7); attention:
+personal lines per life ≥ 3 with no new strings (the 44 unseen lines finally have room); the
+16-season VI/EN gate stays as the anthology-of-seven full run.
+**Cost / might ruin:** the xóm-as-organism — hụi as *the circle*, the school, the flywheel — become
+background; the neighbour of one person edges toward the saviour of one person (charter §1 —
+mitigated because the neighbour's verbs are unchanged and the ceiling still decides). Not
+tick-shippable: it re-derives structure, band, endings, sheet.
+
+### Q · SWING FORM — "Mỗi ngày một mùa" (one season a day) — the daily xóm
+
+**What playing becomes:** a season advances by the calendar. You visit once a day, spend your
+hands, and the xóm lives between visits — walks, storms, fates, the sampan — silently. A run is
+sixteen days. Attention becomes *returning*, and the ambient channel gets the one thing the charter
+lets it have: time.
+**Changes:** medium/rhythm (asynchronous, real-time-clocked); what "playing" means (checking on a
+place); between-visit simulation and a silent morning state (no summary text; the block shows what
+changed).
+**Removes:** the "MÙA SAU ▶" button as the clock (a season cannot be rushed; sky and river are
+literally beyond your hands).
+**Gates:** the band unchanged *and* extended with an absent player (skips k days) who must not
+beat the present idle; a between-visit probe (walks and fates fire while away, silently); no
+notification, no streak, no counter UI; the ambient rate per *minute* untouched.
+**Cost / might ruin:** a lunch-break player never sees an ending; playtest cadence collapses (the
+owner's own felt gate is a 5-minute test); PWA/offline becomes load-bearing (owner device gates
+open); the owner's ticking loops keep shipping into a form that would now be measured across days.
+
+### R · SWING FORM — "Hai bàn tay" (two hands) — pass-and-play
+
+**What playing becomes:** two neighbours, one xóm, alternating seasons on one phone. The fate is a
+product of two players' hands — charter §1 embodied instead of asserted; diagnosis is *argued*
+between people. **Changes:** structure (two seats), the sheet (whose hand), the ending (two
+neighbours read the same arithmetic). **Gates:** two-seat band (two hunters ≥ one; hunter+idle
+< hunter alone — the absent hand costs the xóm); no seat can win alone. **Cost:** most play is
+solitary; a phone passed is a design assumption; the great-man risk moves from one player to a
+pair.
+
+### S · REDUCTIVE FORM — "Đồ chơi" (the toy) — no run, no ending
+
+Remove the sixteen-season run and the endings; the xóm just runs and you tend it. **Rejected by
+the synthesis itself before review:** the thesis needs an *outcome* to be felt (a life's product
+is a result, v0.13 "the game can be lost"); the toy removes the sentence's verb. Recorded as the
+reductive extreme, not proposed.
+
+## 19. Pick — **P · "Bảy đời" (seven lives)**
+
+Why P: it is the reductive form (the protocol requires one), it answers the L2 record's three
+form-level findings by subtraction (attention per person, time per channel, an instrument that can
+fail on the thing the game is about), it needs no new authored strings, and it is the one form the
+owner's loops cannot ship as a tick. Q is the bolder rhythm but makes the owner's own felt gate
+un-runnable and turns the loop's playtests into a sixteen-day wait. R is charter §1 made literal but
+solves a problem the lab never measured.
+
+**Drift, pre-answered:** the per-life band replaces a race no information change can move with a
+per-zero assertion the ceiling can fail; idle 0/7 is stricter than idle ≤ 4.0; every current gate
+that still binds stays. **Thesis:** §1–§4 untouched — one neighbour, no lecture, the ceiling
+decides per life, ambient silent; the charter names cast size and run length as fair game.
+**Substance:** a stranger meets one person and one zero, and finishes a life.
+**Owner reality:** the owner's mechanic loop ships arithmetic-honesty ticks that P inherits whole.
+
+**Next tick:** **five** critics briefed to reject — drift · thesis · substance · *form-necessity*
+(could an era have done this?) · *owner-reality* (does it survive two live owner loops and the
+open device/felt gates?). Majority reject → `failed_syntheses=1` at L3; a second failure earns L4.
