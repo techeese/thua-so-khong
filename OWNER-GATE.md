@@ -28,6 +28,12 @@ Anything you write under here is read at Step 0 of every iteration and outranks 
 
 ## 2026-08-15 — fix `chatter()`, then stop
 
+> RESOLVED v0.28 — the roll now waits on `beatUntil` instead of a fixed +1100ms; same probe, same
+> harness, 8 paced runs each side: 120/120 calls preempted and 0 bubbles before, 0/120 preempted
+> and 36 bubbles (4.5 per run) after, with all four seasonal lines and three storm voices heard.
+> Timing only — no line written or retuned. `gate.sh` Gate 6 now holds it. Rate note in the tick
+> report: the layer reads sparse, not chatty.
+
 The vigil found that `nextSeason()` rolls ambient chatter at +1100ms while `banner()` holds its
 beat for 2200ms, so the roll is always preempted — 15 of 15 calls, 0 bubbles ever produced. 22
 authored bilingual strings (every villager's `chatS` storm voice, all four `CHAT_SEASONAL` lines)

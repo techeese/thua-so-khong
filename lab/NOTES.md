@@ -118,3 +118,50 @@ than letting the villager pass win by proximity; or make the places visibly tapp
 390px and eclipse is at zero. That worry is now retired with a number.
 
 **Not shipped, per Gear 3.** `index.html` untouched. Harnesses live in `lab/` (gitignored).
+
+## 2026-08-15 — the ambient layer, measured after the fix (`chatprobe.py`)
+
+The owner's directive authorised the timing fix; this is the measurement that justified shipping it
+and the numbers that should inform any later decision about the *rate* (which was NOT touched).
+
+**Harness note, and it is the reason two earlier attempts read zero.** Counting ambient bubbles in
+headless needs two artifacts defeated. (1) **Pacing** — the release gate advances all 16 seasons in
+one synchronous loop, so every season's chatter timer fires at the same virtual instant and the
+`bubbles.length>=2` guard eats them all. (2) **The render loop** — under `--virtual-time-budget`
+the clock fast-forwards between timers and rAF is starved: **10 `drawScene` calls across 112
+virtual seconds**. Bubbles are pruned only in the draw loop (`index.html:844`), so they accumulate
+(measured `bubbles.length` of 40–74) and the same guard stays permanently tripped. Driving
+`drawScene` by hand at 10fps fixes it; 60fps gives the same answer (4.33 vs 4.67 per run — noise),
+so 10fps is the cheap fidelity.
+
+**A/B, 8 paced 16-season runs each side, identical harness:**
+
+| | calls | preempted by a beat | ambient bubbles |
+|---|---|---|---|
+| v0.27 (fixed +1100ms) | 120 | **120** | **0** |
+| v0.28 (waits on `beatUntil`) | 120 | **0** | **36** (4.5/run) |
+
+**What is now heard:** 20 distinct authored lines across 8 runs — all four `CHAT_SEASONAL` lines
+(Tết / harvest / mid-autumn / the cold), three villagers' `chatS` storm voices (Bé Ngân, Anh Tú,
+Chú Ba, plus Anh Vũ's in a later sample), and both `PAIR_TALK` openers of the 0-1 apprenticeship.
+Every one of these had a lifetime play count of zero before this round.
+
+**The rate, for the owner — reported, not tuned.** 4.5 bubbles per 16-season run is **~0.28 per
+season**, i.e. the xóm speaks unprompted about once every 3–4 seasons. The risk the directive
+warned about (chatty) did not materialise; the opposite is the live question. Where the calls go,
+weighted over 120: **53 blocked by `bubbles.length>=2`**, ~27 by the deliberate `Math.random()<0.4`
+mute roll, 36 spoke. The blocking figure is partly this harness (it fires all of a season's acts in
+one burst, so stat floats — which share the same `bubbles` array via `floatOn`, `index.html:1208` —
+are still on screen when chatter rolls), but not entirely: in real play a season's resolution
+floats are also synchronous. **If the owner ever wants the xóm louder, the honest lever is not more
+writing and not the mute roll — it is that ambient speech competes for a 2-slot queue with numeric
+stat floats, which are not speech.** Separating those two arrays would roughly double the rate
+without touching a single probability.
+
+**Two visual observations, neither fixed (timing-only round):**
+- At the true 390 canvas (480 CSS px wide, reproduced with `--window-size=500`), the longest
+  ambient line wraps to two lines and stays inside the frame. Fine.
+- Bubbles clip at the canvas top edge when the speaker stands in the upper band, and two
+  simultaneous bubbles can overlap at 480px. Both are pre-existing `drawBubble` placement
+  behaviour shared with arrival quotes — but the ambient layer will now surface them far more
+  often than it used to. Candidate work, not this round's.

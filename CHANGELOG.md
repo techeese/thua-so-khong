@@ -1,5 +1,37 @@
 # Changelog — Thừa Số Không
 
+## v0.28 — 2026-08-15 — the xóm gets its voice back
+
+Closes: the owner directive of 2026-08-15 in `OWNER-GATE.md` — *"fix the timing so the ambient
+layer actually plays, and ship it"*. Timing only; no line was written, rewritten, or retuned.
+
+- **`chatter()` waits for the beat instead of a stopwatch.** `nextSeason()` rolled the season's one
+  ambient line at a fixed +1100ms, but the `banner()` on the line above holds a beat for
+  `1600+600` = 2200ms — so the roll always landed inside a named moment and `chatter()`'s own first
+  guard correctly refused it, every season, in every version up to v0.27. The roll now schedules
+  itself off `beatUntil` (min 3000ms, +600ms of settle) and re-waits up to 6 times if a banner, an
+  arrival or Cô Liên's sampan is still holding the screen. Ambient still yields to beats — it just
+  no longer yields to one that has already ended.
+  *Evidence:* same probe, same harness, 8 paced 16-season runs either side of the change —
+  **before: 120 of 120 calls preempted, 0 bubbles ever produced. After: 0 of 120 preempted,
+  36 bubbles, 4.5 per run (~0.28 per season).** 20 distinct authored lines were heard, including
+  all four `CHAT_SEASONAL` lines and three villagers' `chatS` storm voices — content that had
+  never reached a player. `lab/chatprobe.py`.
+
+- **Gate 6 — "the xóm has a voice."** A paced 16-season run now asserts the ambient layer actually
+  produces bubbles (`preempted===0 && bubbles>=1`). Two artifacts had to be defeated for the
+  assertion to mean anything: the existing gates advance seasons in a tight synchronous loop, so
+  every chatter timer fires at one virtual instant and the `bubbles>=2` guard eats them all; and
+  headless virtual time starves rAF (~10 frames across 112 virtual seconds), so bubbles never
+  expire and that same guard stays tripped. The gate paces the seasons and drives the real render
+  loop by hand.
+  *Evidence:* red on the pre-fix file (`AMB_BAD calls=15 preempted=15 bubbles=0`), green after
+  (`AMB_OK calls=15 preempted=0 bubbles=5`).
+
+- **One dead line removed** in `chatter()`'s pair branch: `var set=PAIR_TALK[…]` was computed and
+  never read, while the pair key was independently re-rolled on the next line.
+  *Evidence:* `set` had no reference anywhere in the function.
+
 ## v0.27 — 2026-08-14 — the stranded round, shipped; and the loop rebuilt as convergent
 
 Closes: a working tree left dirty on 2026-07-02 · the v0.25 errand-governor's chaser bug ·

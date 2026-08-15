@@ -130,7 +130,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.27</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.28</span></div>
 </div>
 
 <!-- intro -->
@@ -333,7 +333,6 @@ function chatter(){
   if(S.over||performance.now()<beatUntil||bubbles.length>=2||Math.random()<0.4) return;   // the xóm doesn't perform on demand — and never over a named moment
   var pairsHere=S.pairs.map(function(pr){return pr[0]+"-"+pr[1];}).filter(function(k){return PAIR_TALK[k];});
   if(pairsHere.length&&Math.random()<0.45){
-    var set=PAIR_TALK[pairsHere[Math.floor(Math.random()*pairsHere.length)]];
     pairTalkAt(pairsHere[Math.floor(Math.random()*pairsHere.length)],true);
     return;
   }
@@ -1401,7 +1400,14 @@ function nextSeason(){
       if(eligible.indexOf(mai8)>=0) bubble(mai8,(L==="vi")?"“Đến phiên hụi nhà ai rồi nhỉ?”":"“Whose turn in the hụi is it now?”"); }
   },4200); })(); }
   gong(S.luat<4?147:[220,262,196,220][S.season%4],0.9,0.03);   // the sky tunes the bell — a heavy year rings low
-  (function(){ var ctok=runTok; setTimeout(function(){ if(runTok===ctok) chatter(); },1100); })();   // after the season banner settles, the xóm talks
+  // after the season's named moments have finished, the xóm talks — the beat says when, not a fixed delay
+  (function(){ var ctok=runTok, tries=0;
+    (function waitQuiet(){ setTimeout(function(){
+      if(S.over||runTok!==ctok) return;
+      if(performance.now()<beatUntil&&++tries<6){ waitQuiet(); return; }   // a banner, an arrival, a boat — ambient waits its turn
+      chatter();
+    },Math.max(3000,beatUntil-performance.now()+600)); })();
+  })();
   render(); renderSheet(); save();
 }
 

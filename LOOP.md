@@ -80,13 +80,15 @@ for permission to build.
 - **choosing the next era** — never ship-then-veto, always the owner's call
 
 ## Next (one paragraph — REPLACE it each round, never append)
-Era 1 machine gates are green as of v0.27; what remains is the owner's felt gate in
-`OWNER-GATE.md` (three playtest questions + real-device PWA/share/390px checks), so the loop is in
-Gear 3 vigil and does not ship. Two vigil ticks have banked evidence in `lab/NOTES.md`: 390px tap
-reachability (eclipse 0, but place-taps stolen ~21% of the time at the market), and the attachment
-curve — personal voice per present villager falls 1.16 → 0.49 → 0.04 across seasons 2 / 8 / 14,
-because `chatter()` is unreachable (`nextSeason` rolls it at +1100ms inside the banner's own
-2200ms beat), leaving 22 authored bilingual strings dead. **The chatter defect is the one thing
-awaiting an owner verdict** — it qualifies under ship-budget (c) but Gear 3 may not fix it.
-Standing owner directives if any round does open: less narration · simple opening · buildings mean
+v0.28 shipped the one round the owner's 2026-08-15 directive authorised: `chatter()`'s roll now
+waits on `beatUntil` instead of a fixed +1100ms, so the ambient layer plays for the first time —
+0/120 calls preempted where it was 120/120, 4.5 bubbles per run, and 20 authored lines heard that
+no player had ever reached. `gate.sh` Gate 6 ("the xóm has a voice") holds it, red on the pre-fix
+file. That directive is now RESOLVED, which returns the loop to **Gear 3 vigil**: era 1's machine
+gates are green and all that remains is the owner's felt gate in `OWNER-GATE.md` (three playtest
+questions + real-device PWA/share/390px checks), now to be answered on a build whose xóm speaks.
+Two things wait for an owner word, neither shippable in vigil: the ambient **rate** reads sparse
+(one line every 3–4 seasons; a third of calls are also blocked by stat floats sharing the
+`bubbles` array), and the 390px place-tap occlusion measured at ~21% of market taps. Standing
+owner directives if any round does open: less narration · simple opening · buildings mean
 something · ambient = silent and numberless.

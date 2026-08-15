@@ -101,6 +101,41 @@ T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=20000 
 echo "$T" | grep -q "FULL_OK" && pass "full-run($LANG5): $T" || fail "full-run($LANG5): $T"
 done
 
+# Gate 6: the xóm has a voice — a PACED run must actually produce ambient bubbles.
+# Two ways this layer dies silently: the roll lands inside the season banner's beat (it did, for
+# every version up to v0.27 — 15/15 calls preempted, 0 bubbles), or chatter() stops being reached.
+# Paced because a tight sync loop fires every season's timer at one virtual instant; and the render
+# loop is driven by hand because headless virtual time starves rAF (~10 frames in 112s), which
+# leaves stale bubbles on screen and trips chatter's own bubbles>=2 guard. Both are artifacts.
+python3 - "$TMP" <<'PYEOF6'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r'''
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+var CALLS=0,PRE=0,AMB=0;
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1"); localStorage.removeItem("thua-so-khong-chronicle");
+  document.getElementById("startBtn").click();
+  setInterval(function(){ try{ drawScene(performance.now()); }catch(e){} },100);
+  var _c=window.chatter;
+  window.chatter=function(){ CALLS++; if(performance.now()<beatUntil) PRE++;
+    var n0=bubbles.length; try{ return _c.apply(this,arguments); } finally{ AMB+=Math.max(0,bubbles.length-n0); } };
+  (function step(i){
+    if(S.over||i>=16){ document.title=(PRE===0&&AMB>=1?"AMB_OK":"AMB_BAD")+" calls="+CALLS+" preempted="+PRE+" bubbles="+AMB; return; }
+    for(var k=0;k<7;k++){ var c=S.cast[k]; if(c&&!c.known&&(c.arrives===undefined||S.season>=c.arrives)&&!c.gone) selectPerson(k); }
+    var un=S.cast.filter(function(p){return p.known&&!p.started&&!p.gone;});
+    if(un.length){ selectPerson(un[0].id); actNerve(); }
+    S.nudged=true; nextSeason();
+    setTimeout(function(){ step(i+1); },7000);
+  })(0);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>'''
+open(tmp+"/a.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF6
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=140000 --dump-dom "file://$TMP/a.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "AMB_OK" && pass "ambient voice: $T" || fail "ambient voice: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."
