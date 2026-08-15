@@ -93,25 +93,25 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.30 made a factor at 1 a literal zero (Gate 7); v0.31 made the river the fourth factor (Gate 8);
-v0.32 made the print fit a phone and gated it (Gate 9) — header wraps, bubbles never print over each
-other and yield rather than wall, the banner scales with `LKF`, and a carved far bank replaces the
-sky/ground seam.** The owner's `/loop 5m` session is now a **graphics** loop (*"review it and make
-some upgrade/change/adjustment in the graphic, regardless how large or how small"*); `/loop 3m`
-stays mechanic/gameplay. Both edit `index.html`, both ship under owner authority, each commit
-brackets `gate.sh` with a hash check and names what it carried from the other — and, since v0.32,
-writes its changelog entry against what is actually in HEAD, because the other session may ship your
-in-tree work inside its own commit first. Next for the graphics loop, in order: **person labels and
-the `số không: X` tags overlap each other and the palm on the right bank** when three villagers
-stand close — the same de-overlap treatment bubbles just got, applied to `haloText`; the far bank is
-tasteful but nearly invisible under a heavy sky — decide whether that is the point or too timid; the
-roster strip scrolls with no affordance that it scrolls. Remaining
-mechanic bank, in order: **a price for being wrong** (a wrong factor costs ~8% of tiers, a wrong
-person costs nothing — with the zero literal and the river biting, measure again before designing);
-the ending card calling a ≤3-factor person "bloomed" beside its own `×` arithmetic, and whether
-`zeroOf()`'s ≤3 label should tighten now that 1 is the zero; `schoolfirst`, a fair `spreaderU`, and
-a hunter-with-hụi in `check.js` (the sim's hunter never contributes, so the river's new weight is
-untested as a *strategy*). Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the
-autonomous engine loop keeps vigil concurrently and must never commit or revert either owner
-session's uncommitted edits. Standing owner directives: less narration · simple opening · buildings
-mean something · ambient = silent and numberless.
+**v0.30 literal zero (Gate 7) · v0.31 river as fourth factor (Gate 8) · v0.32 shipped two rounds in
+one commit — the print fits a phone (Gate 9: header wraps, bubbles never overlap and yield rather
+than wall, banner scales with `LKF`, a carved far bank replaces the sky/ground seam) and hốt hụi,
+the pot pays out (Gate 10); "price for being wrong" re-measured and found paid by the zero (inverted
+3.99/5.0 vs hunter 6.98/16.1).** The owner runs TWO interactive sessions in this tree — `/loop 5m`,
+now a **graphics** loop (*"review it and make some upgrade/change/adjustment in the graphic,
+regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
+**all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
+carried from the other. Next for the graphics loop, in order: **person labels and the `số không: X`
+tags overlap each other and the palm on the right bank** when three villagers stand close — the
+de-overlap treatment bubbles just got, applied to `haloText`; the far bank is tasteful but nearly
+invisible under a heavy sky — decide whether that is the point or too timid; the roster strip
+scrolls with no affordance that it scrolls. Remaining mechanic bank: a **hunter-with-hụi / pot strategy in `check.js`** so the river's
+weight and the pot are tested as *strategies* (the sim's hunter never contributes — the pot could
+be a spam channel; measure before the next verb); the ending card calling a ≤3-factor person
+"bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; and — now that the
+hunter still saturates at 6.98/7 — whether the *diagnosing* player has any tension left (hands 3
+→ 2? tighter fade? a river that can fall?) — measure the hunter's variance before touching it.
+Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop
+keeps vigil concurrently and must never commit or revert either owner session's uncommitted edits.
+Standing owner directives: less narration · simple opening · buildings mean something · ambient =
+silent and numberless.
