@@ -150,7 +150,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.29</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.30</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -452,7 +452,7 @@ function fresh(){
      build:0, built:false, pairs:[], apprentice:false, duo:false, gtm:false, gtmPaid:false, maiHoa:false, hoaLien:false, hoaLienPaid:false,
      linking:null, banner:null, banners:[], luatNext:3, probeSeen:false, baFade:false,
      un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false, stormSeen:false, tierTaught:false, lienNgan:false, stormCount:0, stormStreak:0, classSeen:false, revealSeen:false,
-     log:[], over:false, scars:[], hands:0};
+     log:[], over:false, scars:[], hands:0, hist:[]};
   lanterns=[]; runTok++;      // invalidate ALL deferred callbacks from the previous run
   parts=[]; stamps=[]; glows=[]; bubbles=[]; amb=[]; pendQ=[]; motes=[]; rain=[]; ripples=[]; flock=null; smoke=[]; boat=null; gossipQ=[]; cart=null;
   beatUntil=0; nextErrandAt=0; _chaser=null;
@@ -493,7 +493,9 @@ function fresh(){
     :{vi:YEAR_CARDS[S.yearCard].fv,en:YEAR_CARDS[S.yearCard].fe});
 }
 function prod(p){ return p.tai*p.gan*p.ban; }
-function chance(p){ return Math.min(0.85, prod(p)/1000*0.9*(0.6+0.4*S.von/10)+(p.mom||0)); }   // mom = a tended sprout pushing at the soil
+function hasZero(p){ return Math.min(p.tai,p.gan,p.ban)<=1; }   // a factor at 1 IS the zero — mười nhân với không vẫn bằng không
+function chance(p){ if(hasZero(p)) return 0;   // the zero bites: no amount of the other two factors carries a sprout past it
+  return Math.min(0.85, prod(p)/1000*0.9*(0.6+0.4*S.von/10)+(p.mom||0)); }   // mom = a tended sprout pushing at the soil
 function driftLuat(l){ var r=Math.random();
   if(l<4){ if(r<0.25) return l+1; if(r<0.33) return Math.max(1,l-1); return l; }   // storms are arcs you dig out of, not identities
   if(S&&S.yearCard===1){ if(r<0.10) return Math.min(10,l+1); if(r<0.25) return Math.max(1,l-1); return l; }   // the strict year: clear skies don't last
@@ -564,7 +566,7 @@ function cl(v,lo,hi,fb){ return fin(v)?Math.max(lo,Math.min(hi,v)):fb; }
 function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({v:2,   // NOTE: every NEW save field MUST get a fin()-guarded default in load()
   meta:{lang:L,muted:!!META.muted},
   s:{season:S.season,acts:S.acts,luat:S.luat,von:S.von,hui:S.hui,build:S.build,built:!!S.built,
-     gtmPaid:!!S.gtmPaid,hlp:!!S.hoaLienPaid,hs:S.hands|0,pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
+     gtmPaid:!!S.gtmPaid,hlp:!!S.hoaLienPaid,hs:S.hands|0,hist:(S.hist||[]).map(function(v){return v|0;}),pairs:S.pairs,luatNext:S.luatNext,probeSeen:!!S.probeSeen,
      arr:S.cast[6].arrives,baf:S.baFadeStart,sc:S.stormCount|0,ss:S.stormStreak|0,yc:S.yearCard|0,gp:S.gtmPays|0,cn:S.constraint|0,
      cast:S.cast.map(function(p){return {tai:p.tai,gan:p.gan,ban:p.ban,bt:p.btai,bg:p.bgan,bb:p.bban,known:!!p.known,started:!!p.started,crushCount:p.crushCount|0,gone:!!p.gone,mom:p.mom||0};}),
      ships:S.ships.map(function(w){return {x:w.x,y:w.y,owner:w.owner,pid:w.pid,yours:!!w.yours,age:w.age|0,shel:w.shel|0};}),
@@ -593,7 +595,7 @@ function load(){
     S.scars=Array.isArray(s.scars)?s.scars.filter(function(c){return c&&fin(c.x)&&fin(c.y)&&fin(c.s);}).map(function(c){return {x:c.x,y:c.y,s:cl(c.s,0,15,0)};}).slice(-8):[];
     if(Array.isArray(s.log)) S.log=s.log.filter(function(m){return m&&(typeof m.vi==="string"||typeof m.en==="string");});
     // a returning player has already been introduced — recompute unlocks/flags from state, skip the teaching beats
-    S.apprentice=pairExists(0,1); S.duo=pairExists(3,5); S.gtm=pairExists(1,4); S.maiHoa=pairExists(2,4); S.hoaLien=pairExists(4,6); S.gtmPaid=!!s.gtmPaid; S.hoaLienPaid=!!s.hlp; S.hands=fin(s.hs)?cl(s.hs,0,64,0):0;
+    S.apprentice=pairExists(0,1); S.duo=pairExists(3,5); S.gtm=pairExists(1,4); S.maiHoa=pairExists(2,4); S.hoaLien=pairExists(4,6); S.gtmPaid=!!s.gtmPaid; S.hoaLienPaid=!!s.hlp; S.hands=fin(s.hs)?cl(s.hs,0,64,0):0; S.hist=Array.isArray(s.hist)?s.hist.slice(0,16).map(function(v){return fin(v)?cl(v,0,15,0):0;}):[];
     S.un={link:S.cast.filter(function(p){return p.known;}).length>=2||S.pairs.length>0,
           hui:S.season>=2, build:S.season>=4||S.build>0||S.built,
           probe:S.ships.length>0||S.season>2};
@@ -695,10 +697,11 @@ function execBeh(p,beh,now){
     if(!sh2) beh=1; else { dx=sh2.x-30; dy=sh2.y+22; } }
   else if(beh===7){ dx=BEN.x+26; dy=peopleFloor(); }
   else if(beh===8){ if(!S.ships.length) beh=1; else { var sh3=S.ships[(p.id+S.season)%S.ships.length]; dx=sh3.x-40; dy=sh3.y+26; } }
+  else if(beh===10){ dx=p.hx+6; dy=p.hy+14; dur=5000+Math.random()*2000; }   // beside their own sprout
   else if(beh===9){ var c2=chicks[0],bd=1e9; chicks.forEach(function(c3){ var dd=Math.hypot(c3.x-p.x,c3.y-p.y); if(dd<bd){bd=dd;c2=c3;} });
     dx=c2.x; dy=c2.y-6; }
   if(beh===1){ dx=p.hx; dy=p.hy; }
-  visit(p,dx+(Math.random()-0.5)*(beh===3?4:30),dy,dur);
+  visit(p,dx+(Math.random()-0.5)*((beh===3||beh===10)?4:30),dy,dur);
   if(beh===9) _chaser=p;   // assigned AFTER visit() — a story visit clears it, so re-arm here
   p.amb=1; p.beh=beh;
   if(beh===3) p.chain=1;   // faltering always turns back home
@@ -712,6 +715,7 @@ function pickBeh(p){
   w.push([7,p.ban<=2?3.5:0.25]);
   if(!p.started&&S.ships.length) w.push([8,0.6+0.12*p.tai]);
   if(p.young||p.gan>=8) w.push([9,1.1]);
+  if(!p.started&&(p.mom||0)>0) w.push([10,1.6+(p.mom||0)*20]);   // 10 TEND — a pushing sprout draws its owner to the doorstep; the closer, the oftener
   var tot=0,i2; for(i2=0;i2<w.length;i2++) tot+=w[i2][1];
   var r=Math.random()*tot;
   for(i2=0;i2<w.length;i2++){ r-=w[i2][1]; if(r<=0) return w[i2][0]; }
@@ -787,6 +791,7 @@ var rain=[], ripples=[];   // storm-season rain and the rings it leaves on the r
 var flock=null, nextFlockAt=12000;   // one V of birds at a time, on a clear sky
 var smoke=[];   // kiln and hearth smoke
 var cart=null, nextCartAt=6000;   // 🛤 the market-road year's ox-cart
+var nightAt=-1e9;   // when the last season turned — drives the dusk→dawn wipe
 var boat=null;  // the sampan that brings Cô Liên in and, unheld, takes her away — {t0,dur,x0,x1,col}
 var LKF=1, _lkfLast=-1, FONT_LBL="700 11px sans-serif", FONT_HINT="10px sans-serif";  // label compensation + cached font strings
 function haloText(txt,x,y){ ctx.strokeStyle="#EAD9B8"; ctx.lineWidth=3; ctx.lineJoin="round"; ctx.strokeText(txt,x,y); ctx.fillText(txt,x,y); }
@@ -1094,6 +1099,14 @@ function drawScene(now){
     ctx.fillStyle=q.col; ctx.beginPath(); ctx.ellipse(0,0,q.r,q.r*0.6,0,0,6.28); ctx.fill(); ctx.restore();
     return q.y<H+10 && q.x<W+24; });   // wind-blown drift leaves the frame sideways too — cull it, don't accumulate
 
+  // --- the night between seasons: an indigo wash that deepens and lifts over ~1.4s, with lamps in the windows at its darkest ---
+  (function(){ var nk=(now-nightAt)/1400; if(nk<0||nk>=1||S.over) return; var dark=Math.sin(nk*Math.PI);
+    ctx.fillStyle="rgba(28,30,64,"+(0.42*dark).toFixed(3)+")"; ctx.fillRect(0,0,W,H);
+    if(dark>0.5){ var la=(dark-0.5)*2; ctx.fillStyle="rgba(255,196,90,"+(0.85*la).toFixed(3)+")";
+      [[210,235],[660,225],[840,250]].forEach(function(hh){ ctx.fillRect(hh[0]-28,hh[1]+30,12,10); ctx.fillRect(hh[0]+16,hh[1]+30,12,10); });   // house windows (either side of the door)
+      ctx.fillRect(424,198,22,20); ctx.fillRect(494,198,22,20);   // the đình's two windows (dinh(470,158): x±46/24, y+40)
+      S.ships.forEach(function(sh){ ctx.fillRect(sh.x-6,sh.y+8,12,10); }); }   // and every workshop keeps a lamp
+  })();
   // --- seasonal tint (subtle) ---
   var tints=["rgba(217,124,142,.04)","rgba(227,166,59,.05)","rgba(193,68,60,.05)","rgba(110,130,165,.08)"];
   ctx.fillStyle=tints[seas]; ctx.fillRect(0,0,W,H);
@@ -1187,6 +1200,8 @@ function dinh(x,y){ // the communal house (đình) — with the upturned đao co
 }
 function house(x,y,col){
   ink(3); ctx.fillStyle=col;
+  // ☁️ three storm seasons in and the roofs are lashed — the reason the hand comes back to 3⚡ is on the buildings
+  var braced=S.luat<4&&(S.stormStreak|0)>=3;
   ctx.beginPath(); ctx.moveTo(x-46,y+22); ctx.quadraticCurveTo(x-50,y+20,x-52,y+14);
   ctx.quadraticCurveTo(x-48,y+18,x-44,y+18); ctx.lineTo(x,y-12); ctx.lineTo(x+44,y+18);
   ctx.quadraticCurveTo(x+48,y+18,x+52,y+14); ctx.quadraticCurveTo(x+50,y+20,x+46,y+22); ctx.closePath(); ctx.fill(); ctx.stroke();
@@ -1196,6 +1211,10 @@ function house(x,y,col){
   ink(3);
   ctx.fillStyle="#efe2c2"; ctx.fillRect(x-36,y+22,72,38); ctx.strokeRect(x-36,y+22,72,38);
   ctx.fillStyle="#8a6642"; ctx.fillRect(x-8,y+34,16,26); ctx.strokeRect(x-8,y+34,16,26);
+  if(braced){ ctx.strokeStyle="rgba(122,90,58,.85)"; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(x-40,y+20); ctx.lineTo(x-14,y-8); ctx.moveTo(x-14,y-8); ctx.lineTo(x+14,y-8); ctx.moveTo(x+14,y-8); ctx.lineTo(x+40,y+20); ctx.stroke();   // the ridge rope
+    ctx.beginPath(); ctx.moveTo(x-30,y+16); ctx.lineTo(x-30,y+62); ctx.moveTo(x+30,y+16); ctx.lineTo(x+30,y+62); ctx.stroke();   // stakes to the ground
+    ctx.fillStyle="#7a5a3a"; ctx.fillRect(x-33,y+60,6,4); ctx.fillRect(x+27,y+60,6,4); }
 }
 function market(x,y){
   ink(3);
@@ -1297,6 +1316,9 @@ function person(p,now){
       ctx.strokeStyle="rgba(160,130,80,.6)"; ctx.lineWidth=3.4; ctx.beginPath(); ctx.moveTo(x-15+sw2,y+16); ctx.lineTo(x-17+sw2,y+20); ctx.stroke(); }
     else if(beh===2){ ink(2);                                 // seated: folded legs
       ctx.beginPath(); ctx.moveTo(x-8,y+18); ctx.lineTo(x+8,y+18); ctx.stroke(); }
+    else if(beh===10){ ink(2.2);                               // tending: crouched, one hand to the sprout, a drop now and then
+      ctx.beginPath(); ctx.moveTo(x+8,y-2); ctx.quadraticCurveTo(x+14,y+2,x+16,y+9); ctx.stroke();
+      if(Math.sin(now*0.004+p.ph)>0.9){ ctx.fillStyle="rgba(46,74,98,.6)"; ctx.beginPath(); ctx.arc(x+16+Math.sin(now*0.02)*1.5,y+12+((now*0.05+p.ph*10)%8),1.4,0,6.28); ctx.fill(); } }
     else if(beh===7 && Math.sin(now*0.0015+p.ph)>0.995){      // a ripple watched alone
       ctx.strokeStyle="rgba(46,74,98,.4)"; ctx.lineWidth=1.5;
       ctx.beginPath(); ctx.arc(x,y+26,7,0.2,2.9); ctx.stroke(); }
@@ -1314,7 +1336,7 @@ function person(p,now){
     if(p.known && !p.started){
       var z=zeroOf(p);
       ctx.font=FONT_HINT; ctx.fillStyle="#C1443C";
-      haloText(z? ((L==="vi"?"số không: ":"zero: ")+z) : (Math.round(chance(p)*100)+"% "+t("sprout")), x, p.y+48+(LKF-1)*10);
+      haloText(z? ((hasZero(p)?"×0 ":"")+(L==="vi"?"số không: ":"zero: ")+z) : (Math.round(chance(p)*100)+"% "+t("sprout")), x, p.y+48+(LKF-1)*10);   // ×0: a factor at 1 — nothing blooms until it moves
     }
   }
   ctx.textAlign="left";
@@ -1617,7 +1639,7 @@ function nextSeason(){
                      "🔍 You can now ASK AROUND at the commune office about next season's sky (new button)."); }
       if(!S.tierTaught){ S.tierTaught=true; }   // the tier pill + the card teach this now — no narrator
     }
-    else if(prod(p)>=100){ p.mom=Math.min((S.yearCard===5)?0.15:0.09,(p.mom||0)+((S.yearCard===5)?0.05:0.03)); }   // a tended-but-unlucky sprout pushes harder (capped — no free inevitability); the restless wind pushes it harder still
+    else if(prod(p)>=100&&!hasZero(p)){ p.mom=Math.min((S.yearCard===5)?0.15:0.09,(p.mom||0)+((S.yearCard===5)?0.05:0.03)); }   // a tended-but-unlucky sprout pushes harder (capped — no free inevitability); the restless wind pushes it harder still — but nothing pushes past a zero
   });
   // the law can crush (untouchable lock 3) — only while the sky is heavy, and young workshops are the most exposed
   if(S.luat<4){
@@ -1701,8 +1723,10 @@ function nextSeason(){
       return b.length?(" · "+b.join(" ")):""; }
     var yr=" "+(2026+Math.floor(S.season/4));
     S.log.unshift({vi:"── "+STR.seasons.vi[S.season%4]+yr+bits("vi")+" ──",en:"── "+STR.seasons.en[S.season%4]+yr+bits("en")+" ──",div:true});
+    S.hist=(S.hist||[]).slice(0,S.season); S.hist[S.season]=(Math.min(3,_rc.bloom)*4)+Math.min(3,_rc.stamp);   // one small int per season: blooms×4 + stamps — the run's timeline, for the ending
     S.log=S.log.slice(0,24); renderLog(); })();
   S.season++;
+  nightAt=performance.now();   // a night passes between seasons — the print dims, lamps show, the new season dawns
   // ☁️ storm tax: under a heavy sky the xóm spends a hand bracing roofs — but after two seasons the roofs are braced
   if(S.luat<4){ S.stormCount=(S.stormCount|0)+1; S.stormStreak=(S.stormStreak|0)+1; } else { S.stormStreak=0; }
   S.acts=(S.luat<4 && S.stormStreak<=2)?2:3;
@@ -1760,6 +1784,13 @@ function nextSeason(){
              "🕯 Chú Ba's eyes dim, his hands tremble — the craft has no heir yet."); }
   }
   banner(STR.seasons[L][S.season%4]+" "+(2026+Math.floor(S.season/4)),1600);
+  // the clock is visible: the last year is announced once, and the last season once — the harvest is sixteen seasons, not forever
+  if(S.season===12){ banner((L==="vi")?"🏮 Năm cuối":"🏮 Last year",1700);
+    logMsg("🏮 Năm cuối — còn bốn mùa. Xưởng nào chưa nở, tay nào chưa xoay — giờ là lúc.",
+           "🏮 The last year — four seasons left. Whatever hasn't bloomed, whatever hand hasn't turned — now."); }
+  if(S.season===15){ banner((L==="vi")?"🏮 Mùa cuối":"🏮 Last season",1700);
+    logMsg("🏮 Mùa cuối. Sau mùa này xóm thắp đèn cho những gì còn đứng.",
+           "🏮 The last season. After this, the xóm lights lanterns for what still stands."); }
   // 🧧 Tết — every new calendar year the xóm gathers at the đình; lì xì is a push, not a gift: only a sprout already pushing takes it
   if(S.season>0&&S.season%4===0){
     banner("🧧 Tết "+(2026+Math.floor(S.season/4)),2000);
@@ -1871,6 +1902,13 @@ function endGame(){
     +" · "+(S.hands|0)+"⚡"+(nB>0?((L==="vi")?(" — "+((S.hands|0)/nB).toFixed(1)+"⚡ mỗi mầm"):(" — "+((S.hands|0)/nB).toFixed(1)+"⚡ per bloom")):"")   // hands spent, and what each bloom cost — diagnosis is cheap, spreading is not
     +(S.constraint?(" · ⛓ "+((L==="vi")?CONSTRAINTS[S.constraint].nv:CONSTRAINTS[S.constraint].ne)):"")+"</small>";
   b.appendChild(lead);
+  // the run as a strip — sixteen cells, one per season: 🌸 for each bloom that season, ⬛ for a stamp, · for a quiet one; the year gaps show
+  (function(){ var hst=S.hist||[]; if(!hst.some(function(v){return v>0;})) return;
+    var cells=[]; for(var si=0;si<16;si++){ var v=hst[si]|0, bl=v>>2, st=v&3, c="";
+      for(var bi=0;bi<bl;bi++) c+="🌸"; for(var ti2=0;ti2<st;ti2++) c+="⬛"; cells.push(c||"·"); }
+    var strip=document.createElement("div"); strip.style.cssText="font-size:12px;letter-spacing:.06em;text-align:center;color:#4d4335;margin:-4px 0 8px;line-height:1.7";
+    strip.textContent=(L==="vi"?"mười sáu mùa: ":"sixteen seasons: ")+cells.slice(0,4).join("")+" │ "+cells.slice(4,8).join("")+" │ "+cells.slice(8,12).join("")+" │ "+cells.slice(12,16).join("");
+    b.appendChild(strip); })();
   // 📜 write this run into the village book — and show the book right here, where the itch lives
   var ch=loadChron(); ch.push({ti:ti,tv:tv,te:te,yc:S.yearCard|0,cn:S.constraint|0,nB:nB,ts:ts,wk:wk.name,then:wk.btai*wk.bgan*wk.bban,now:prod(wk),hs:S.hands|0}); saveChron(ch);
   var seen={}; ch.forEach(function(r){ if(r&&r.ti) seen[r.ti]=1; }); var nSeen=Object.keys(seen).length;
@@ -1987,7 +2025,8 @@ function render(){
   el("lblTai").textContent=t("tai"); el("lblGan").textContent=t("gan"); el("lblBan").textContent=t("ban");
   el("teachBtn").querySelector("span").textContent=t("teach");
   el("nerveLbl").textContent=t("nerve"); el("linkLbl").textContent=t("link");
-  el("teachHint").textContent=STR.teachH[L]; el("nerveHint").textContent=STR.nerveH[L]; el("linkHint").textContent=STR.linkH[L];
+  var cp=cur(); if(!(cp&&cp.known)){ el("teachHint").textContent=STR.teachH[L]; el("nerveHint").textContent=STR.nerveH[L]; el("linkHint").textContent=STR.linkH[L]; }   // with a person on the card, renderSheet owns the hints (per-verb outcomes)
+  else if(typeof renderSheet==="function"&&!render._inSheet){ render._inSheet=true; try{ renderSheet(); }finally{ render._inSheet=false; } }   // render() alone must not leave stale hints behind (selectPerson calls renderSheet THEN render)
 }
 function renderSheet(){
   renderRoster();   // selection / linking / pairs all show on the roster too
@@ -2008,7 +2047,8 @@ function renderSheet(){
   el("multLine").innerHTML=p.tai+" × "+p.gan+" × "+p.ban+" = <b>"+pr+"</b>"
     +"<small>"+(p.started
       ?((L==="vi"?"bậc ":"tier ")+trNow+"/3"+(trNow<3?(L==="vi"?" · vun tiếp để lên bậc":" · keep tending to rise"):(L==="vi"?" · một thương hiệu":" · a brand")))
-      :(t("sprout")+" ~"+pc+"% "+t("perSeason")
+      :((hasZero(p)?(t("sprout")+" 0% · "+(L==="vi"?"thừa số "+zeroOf(p)+" bằng không":zeroOf(p)+" is zero"))   // the arithmetic says it before the narrator would
+        :(t("sprout")+" ~"+pc+"% "+t("perSeason")))
       +(L==="vi"?" · sông ":" · river ")+S.von+"/10"
       +((p.mom||0)>0?(L==="vi"?" · mầm đang nhú 🌱":" · pushing at the soil 🌱"):"")
 ))
@@ -2039,7 +2079,7 @@ function renderRoster(){
   var box=el("roster"); if(!box) return; var h="";
   S.cast.forEach(function(p){ if(!active(p)) return;
     var cls="rc"+(p.known?"":" unk")+(S.sel===p.id?" sel":"")+((S.linking!=null&&S.linking!==p.id&&p.known&&!pairExists(S.linking,p.id))?" cand":"");
-    var z=(p.known&&!p.started)?zeroOf(p):null, tag=p.started?(tierOf(p)>=3?"🪜🪜🪜":tierOf(p)===2?"🪜🪜":"🌸"):(z?("<small>"+z+"</small>"):((p.known&&(p.mom||0)>0)?"🌱":""));
+    var z=(p.known&&!p.started)?zeroOf(p):null, tag=p.started?(tierOf(p)>=3?"🪜🪜🪜":tierOf(p)===2?"🪜🪜":"🌸"):(z?("<small>"+(hasZero(p)?"×0 ":"")+z+"</small>"):((p.known&&(p.mom||0)>0)?"🌱":""));
     var nm=p.known?p.name:(L==="vi"?"?":"?");
     h+="<div class=\""+cls+"\" data-id=\""+p.id+"\"><i style=\"background:"+p.color+"\"></i>"+nm+(tag?" "+tag:"")+"</div>"; });
   if(box.innerHTML!==h) box.innerHTML=h;
@@ -2111,8 +2151,8 @@ function renderHelp(){
   function sec(t,body){ return "<p style=\"margin:8px 0 2px\"><b>"+t+"</b></p><div class=\"small\" style=\"font-size:12.5px;color:#4d4335\">"+body+"</div>"; }
   var h="";
   h+=sec(vi?"Phép nhân":"The multiplication",
-         vi?"Mỗi người là <b>TÀI × GAN × BẠN</b>. Thừa số nào bằng không, tích bằng không. Việc của bạn là <b>chẩn đoán</b>: tìm thừa số thấp nhất và nâng đúng nó. Tích ≥100 thì mầm bắt đầu nhú (🌱), càng cao càng dễ nở xưởng."
-           :"Each person is <b>SKILL × NERVE × ALLIES</b>. Any factor at zero zeroes the product. Your job is <b>diagnosis</b>: find the lowest factor and raise exactly that. Product ≥100 and a sprout starts pushing (🌱); higher means likelier to open a workshop.");
+         vi?"Mỗi người là <b>TÀI × GAN × BẠN</b>. Thừa số nào ở mức <b>1</b> là số không — người đó không nở (0%), dù hai thừa số kia có cao đến đâu. Việc của bạn là <b>chẩn đoán</b>: tìm thừa số thấp nhất và nâng đúng nó. Tích ≥100 thì mầm bắt đầu nhú (🌱), càng cao càng dễ nở xưởng."
+           :"Each person is <b>SKILL × NERVE × ALLIES</b>. A factor at <b>1</b> is a zero — that person cannot bloom (0%), however high the other two stand. Your job is <b>diagnosis</b>: find the lowest factor and raise exactly that. Product ≥100 and a sprout starts pushing (🌱); higher means likelier to open a workshop.");
   h+=sec(vi?"Tay (⚡)":"Hands (⚡)",
          vi?"Mỗi mùa 3⚡ (mùa giông 2⚡, sau ba mùa giông liền lại 3⚡). 📖 Dạy +2 TÀI · 🏮 Đêm thất bại +2 GAN (người từng ngã đến nghe, +1) · 🤝 Kết nối +2 BẠN cho mối đầu, +1 mối sau · 🪙 Góp hụi +1 sông · 🛠 Tự xây 4 lần thì xong · 🔍 Nghe ngóng biết trời mùa tới · 🛡 Che chắn xưởng non."
            :"3⚡ per season (storm 2⚡; after three storm seasons in a row, back to 3⚡). 📖 Teach +2 SKILL · 🏮 Failure night +2 NERVE (those who fell come listen, +1) · 🤝 Connect +2 ALLIES first bond, +1 after · 🪙 Hụi +1 river · 🛠 Build 4 times to ship · 🔍 Ask around for next season's sky · 🛡 Shelter young workshops.");

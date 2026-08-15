@@ -93,43 +93,18 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-Era 1's machine gates are green as of v0.28 and nothing is legitimate to ship; the felt gate is
-unanswered and, under full autonomy, **non-blocking** — so era 1 ends by *exhaustion*: keep vigil,
-bank lab evidence, and when three consecutive ticks produce no `new-argument` verdict, run the
-synthesis and execute the transition without waiting — verdicts written by the **independent
-grader**, never by the tick that ran the investigation. **Nine findings banked, all nine graded;
-the seventh (`fourth.js`) came back `new-argument`, the eighth (`tell.py`) and ninth (`walks.py`,
-the errand governor as a reading channel) `confirms-known` — exhaustion count 2 of 3; one more
-`confirms-known` and the synthesis runs.** ⚠ The owner runs a *separate* interactive session (`/loop 5m` — "add something more to the
-game, ignore the .md files") in this same working tree; it committed 36 additions as `a235d3d`,
-which this loop shipped as **v0.29** on owner authority (version bump + changelog only — no review,
-no authorship). While that session runs, `done.sh` will keep going red on its uncommitted edits:
-**never commit or revert them** — bank only your own files with an explicit `git add`; when it
-commits, run `./gate.sh`, read it, bump the footer, write the changelog entry naming the provenance,
-push, verify live. Its additions are unreviewed and every standing directive is reductive: the next
-synthesis must weigh subtracting them. The bank: the ambient layer reads sparse and shares a
-2-slot queue with numeric stat floats; place-taps are stolen ~21% at the market; the attachment
-curve runs 1.16 → 0.49 → 0.04 at seasons 2/8/14, arguing against any era premised on writing more
-dialogue; the zero is **soft** (`idle` blooms 3.44 of 7; the band is blind to `schoolfirst`); the
-zero is **unwitnessed** (0.0% of hunter runs meet a literal 0, the elder's clock is invisible to
-every "someone fell" system, and "số không" is printed for any factor ≤3); the zero is **priceless
-in the wrong sense** (a wrong factor costs ~8% of tiers, a wrong person costs nothing or pays, an
-inverted player keeps 98%); **the fourth factor is not a factor** (the river enters the math once
-as a 0.64–1.0 multiplier that cannot zero anyone; the hụi verb costs 0.70 tiers for 0.00 blooms;
-`riverLow` promises a mechanic that does not exist); and **the thesis is told, not felt, at the
-frame and the ending** — the full sentence sits in the header from t=0 for all sixteen seasons,
-play itself is nearly silent on it (1.2 tell-lines in 383 narrator words per hunter run, 0.0 in
-bubbles — the "less narration" directive has landed mid-run), 65% of the hunter's narrator beats
-carry ≥2 lines and 21% carry 4–6, and the 155-word ending card states the thesis in words while,
-for an idle player, listing as bloomed 62% people whose weakest factor is ≤3 and printing a `× 1`
-beside "bloomed" in 6/6 runs. The next synthesis should weigh a **reductive** era on the zero —
-floors that bite (which would also make the ending's arithmetic agree with its sentence), a surface
-that distinguishes 0 from 3 as it happens, a **price for being wrong**, **either make capital a
-factor or stop presenting it as one**, and **subtract the tagline from the header** so the sentence
-can arrive instead of being announced — against the voice, place-legibility, attachment and
-endings-pass candidates; note that `schoolfirst`, a fair `spreaderU`, and a capital that bites each
-turn the band gate red on the first commit and carry a balance decision. Small defects with
-evidence, unshipped per Gear 3, for a Gear 1 tick or the owner: `cl(s.hui,0,3,0)` vs `huiMax()`=4
-in a flood year; the `riverLow` copy; the ending card calling a ≤3-factor person bloomed beside its
-own `×` arithmetic. Standing owner directives: less narration · simple opening · buildings mean
-something · ambient = silent and numberless.
+**v0.30 shipped the first bite of the reductive-zero bank: a factor at 1 is a literal zero
+(`chance()`=0, no momentum, sheet reads 0%, wrong verbs read "→ 0%"), Gate 7 guards it.** The owner
+now runs TWO interactive sessions in this tree — `/loop 5m` "add something more" and `/loop 3m`
+"changes/upgrades regarding mechanic and gameplay" — both edit `index.html`, both ship under owner
+authority; each commit names what it carried from the other. Remaining bank, in order the next
+mechanic ticks should take it: **a price for being wrong** (a wrong factor costs ~8% of tiers, a
+wrong person costs nothing); **either make capital a factor or stop presenting it as one** (the
+river is a 0.64–1.0 multiplier; `riverLow` copy promises a mechanic that does not exist); the
+ending card calling a ≤3-factor person "bloomed" beside its own `×` arithmetic — and now, with the
+zero literal at 1, decide whether `zeroOf()`'s ≤3 label should tighten or become "gần số không";
+`schoolfirst`, a fair `spreaderU`, and a capital that bites each turn the band gate red on the first
+commit and carry a balance decision. Era-1 exhaustion count stands at 2 of 3 `confirms-known`
+verdicts; the autonomous engine loop (`tsk-loop-runner.sh`) keeps vigil concurrently and must
+never commit or revert either owner session's uncommitted edits. Standing owner directives: less
+narration · simple opening · buildings mean something · ambient = silent and numberless.

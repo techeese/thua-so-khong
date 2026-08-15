@@ -29,6 +29,7 @@ Rules:
 | `Gate 3` | 1 | a poisoned save is sanitized, not fatal |
 | `Gate 5` | 1 | full 16-season playthrough VI and EN — ends, chronicle written, zero errors |
 | `Gate 6` | 1 | the xóm has a voice — a PACED run must actually produce ambient bubbles (v0.28) |
+| `Gate 7` | 1 | the zero bites — a factor at 1 reads 0% on the sheet and in the per-verb hints and cannot bloom until raised (v0.30) |
 
 ## Convergence gates — `done.sh`
 

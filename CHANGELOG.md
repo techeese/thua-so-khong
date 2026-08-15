@@ -1,5 +1,31 @@
 # Changelog — Thừa Số Không
 
+## v0.30 — 2026-08-15 — the zero bites
+
+Closes: the owner's in-session directive of 2026-08-15 (`/loop 3m` — *"read the code and make some
+changes/upgrade regarding mechanic and gameplay"*), and the first item of the standing bank in
+`LOOP.md` → *floors that bite* — the zero was **soft**: a factor at 1 still bloomed ~3%/season, so an
+idle player harvested 3.5 workshops and the sentence "mười nhân với không vẫn bằng không" was true on
+the card and false in the dice.
+
+- **`chance()` returns 0 when any factor is 1** (`hasZero`). Momentum (🌱) no longer accrues past a
+  zero either, so no sprout "pushes at the soil" it cannot break. The sheet reads
+  *mầm 0% · thừa số GAN bằng không* instead of a percentage, and the per-verb readouts — which now
+  survive `render()` (a hint-overwrite bug found while probing; the concurrent owner session landed
+  the same fix at 15:18) — show **→ 0%** for the two wrong hands and a real number for the right one.
+  That is the diagnosis asked as a choice, with no narrator. `check.js` mirrored (chance + momentum).
+  *Evidence:* Gate 0 band — hunter **6.99** / spreader 6.07 / linker 6.74 / idle **3.03** (was 3.52),
+  tiers hunter 15.7 · spreader 10.8 · linker 14.3 · idle 3.0 — the band holds and widens toward the
+  hunter. New **Gate 7** (`ZERO_OK c0=0 rolls=0/400 sheet0=true teachHint="→ 0%" nerveHint="→ 22%"
+  c1=0.22`): a 9×1×9 person at river 10 rolls 400 seasons without blooming, then nerve alone lifts
+  her to 22%. Help card (Sổ tay) rewritten to state the rule as it now is.
+- **Provenance note.** The owner's separate `/loop 5m` session was editing the same file during
+  this tick; its in-tree additions (season-strip `hist` on the ending card, a *tend* errand for
+  pushing sprouts, storm-braced roofs after three storm seasons, "🏮 Năm cuối / Mùa cuối" banners
+  at seasons 12 and 15, the hint-render fix) were gate-green and ship in this commit unreviewed,
+  under owner authority — same standing as v0.29.
+- `./gate.sh` 🟢 all eight gates green on the committed tree.
+
 ## v0.29 — 2026-08-15 — the owner's "add something" batch, shipped under owner authority
 
 Closes: the red `done.sh` gate *1 commit unpushed* left by the owner's separate interactive

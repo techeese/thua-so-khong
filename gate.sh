@@ -136,6 +136,30 @@ PYEOF6
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=140000 --dump-dom "file://$TMP/a.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "AMB_OK" && pass "ambient voice: $T" || fail "ambient voice: $T"
 
+# Gate 7: the zero bites — a factor at 1 reads 0% on the sheet and in the per-verb hints, and cannot bloom until it is raised.
+python3 - "$TMP" <<'PYEOF7'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  var ng=S.cast[0]; ng.tai=9; ng.gan=1; ng.ban=9; S.von=10;   // nine times zero times nine — teach and link both have room, both still read 0%
+  selectPerson(0);
+  var c0=chance(ng), sheet0=document.getElementById("multLine").textContent, hint0=document.getElementById("teachHint").textContent, hintN=document.getElementById("nerveHint").textContent;
+  var blooms=0; for(var i=0;i<400;i++){ if(Math.random()<chance(ng)) blooms++; }
+  actNerve(); var c1=chance(ng);
+  var ok = c0===0 && blooms===0 && /0%/.test(sheet0) && /→ 0%/.test(hint0) && !/→ 0%/.test(hintN) && c1>0;
+  document.title=(ok?"ZERO_OK":"ZERO_BAD")+" c0="+c0+" rolls="+blooms+" sheet0="+(/0%/.test(sheet0))+" teachHint="+hint0.slice(-6)+" nerveHint="+hintN.slice(-6)+" c1="+c1.toFixed(2);
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/z.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF7
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/z.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "ZERO_OK" && pass "zero bites: $T" || fail "zero bites: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

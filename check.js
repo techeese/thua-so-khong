@@ -22,7 +22,8 @@ function makeCast(rnd){ return [
   return o; }); }
 function activeSim(c,season){ return !c.gone && (c.arrives===undefined||season>=c.arrives); }
 
-function chance(p,von){ return Math.min(0.85,(p.tai*p.gan*p.ban)/1000*0.9*(0.6+0.4*von/10)+(p.mom||0)); }
+function chance(p,von){ if(Math.min(p.tai,p.gan,p.ban)<=1) return 0;   // the zero bites (mirrors index.html hasZero)
+  return Math.min(0.85,(p.tai*p.gan*p.ban)/1000*0.9*(0.6+0.4*von/10)+(p.mom||0)); }
 
 function lcg(seed){ var s=seed>>>0; return function(){ s=(1103515245*s+12345)>>>0; return s/4294967296; }; }
 
@@ -84,7 +85,7 @@ function run(strategy,seed){
       if(rnd()<chance(p,von)){ p.started=true; p.age=0; p.born=true; p.mom=0;
         // inspiration reaches only people you've met — active strategies know everyone PRESENT, idle knows no one
         if(strategy!=="idle") cast.forEach(function(o){ if(o!==p&&activeSim(o,season)) o.gan=Math.min(10,o.gan+1); }); }
-      else if(p.tai*p.gan*p.ban>=100){ p.mom=Math.min((yc===5)?0.15:0.09,(p.mom||0)+((yc===5)?0.05:0.03)); }   // restless-wind year: a sprout near the surface pushes harder
+      else if(p.tai*p.gan*p.ban>=100&&Math.min(p.tai,p.gan,p.ban)>1){ p.mom=Math.min((yc===5)?0.15:0.09,(p.mom||0)+((yc===5)?0.05:0.03)); }   // restless-wind year: a sprout near the surface pushes harder
     });
     // the returnee leaves if unrooted (mirrors index.html post-increment timing; a pair roots her too)
     if(season+1>=13) cast.forEach(function(c){ if(c.arrives!==undefined&&!c.started&&c.ban<4&&!lienPaired) c.gone=true; });
