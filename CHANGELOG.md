@@ -18,6 +18,37 @@ the one verb that still answered with a price tag instead of a number.
 - **Provenance:** the graphics session's and the engine's in-tree edits at commit time
   (`done.sh` duplicate-id check, ledger rows) are theirs and are not committed here.
 
+### Carried in the same commit — the graphics round (`/loop 5m`): the intro yields
+
+The pointer left by v0.36 sent this loop to the intro screen, which it had never reviewed. Two of the
+four things I thought I saw there were not real, and are recorded as such: the card **does** already
+carry the game's 3px ink border and hard offset shadow, and the "card runs edge to edge at 390px" was
+an artifact of the probe — `.ovl` is `position:fixed`, so an injected `body{width:390px}` does not
+constrain it. On a real phone the overlay's own 16px padding gives the card its margin. Nothing was
+changed for either.
+
+What was real:
+
+- **The xóm no longer points at a villager from behind the card.** The intro says *"hãy chạm vào một
+  người và trò chuyện"* in words, and the canvas was simultaneously drawing the pulsing red first-tap
+  ring and *"chạm để trò chuyện"* underneath it — where the card covered them. Two instructions, one
+  of them occluded. The ring now waits for Begin. Charter constraint 4: beats own the screen, and a
+  hint nobody can see is not a hint. *Evidence:* new **Gate 19** — `INTRO_OK cardUp=true
+  hintWhileCardUp=0 hintAfterBegin=1`; the ring's return after Begin is asserted, not just its absence.
+- **The village reads through the intro.** The scrim was `rgba(43,35,32,.55)` and took the xóm to mud —
+  on the one screen whose job is to make you want to be there. The intro alone now washes at `.40`;
+  the help card and the ending still want the room dark. The card holds easily, having the ink border
+  and hard shadow to sit on.
+
+**Gate ledger repaired, and made self-defending.** Four id collisions surfaced in this one tick —
+two sessions allocating gate numbers concurrently: `Gate 13` (twice), `15`, `16` and `17` each claimed
+by two different gates across `gate.sh` and the ledger. All are resolved with no gate removed or
+weakened: the girl's clock → 17, the ceiling → 18, the intro yields → 19, the pot-respects-the-ceiling
+→ 20. The cause was that `done.sh`'s ratchet check only asserted *presence* — a duplicate passed,
+because the number did exist in `gate.sh`, while two ledger rows silently claimed one gate. It now
+asserts **uniqueness** in both files, negative-tested with an injected duplicate. Recorded under
+Tightenings.
+
 ## v0.38 — 2026-08-15 — the weakest factor sets the ceiling
 
 Closes: under the owner's standing `/loop 3m` directive, the one pass condition every critic in both

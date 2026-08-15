@@ -122,13 +122,16 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop, in order: **the crowding item is
-parked, not done** — 61% of ordinary frames draw two villagers on top of each other and only ~4.2 of
-~6.1 get named, but a target-rejection fix moved nothing (110 → 113 overlap frames) and, decisively,
-three runs of near-identical code gave avgNamed 4.15 / 4.58 / 3.77, so **any crowding work must first
-get a seeded or multi-run harness** (copy `check.js`'s method) or its numbers are meaningless; the far
-bank fading to nothing under a heavy sky is **decided, not pending** — a closed sky is meant to close
-the far shore; then the intro screen, which this loop has never reviewed. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop, in order: the intro screen is
+**done** (v0.39: the first-tap ring waits for Begin, the scrim lightened to .40 so the village reads;
+two suspected defects there were probe artifacts and are recorded as such). Next: **the crowding item
+is still parked and still needs a seeded or multi-run harness first** — 61% of ordinary frames draw
+two villagers on top of each other and only ~4.2 of ~6.1 get named, but three runs of near-identical
+code gave avgNamed 4.15 / 4.58 / 3.77, so copy `check.js`'s method before touching it; then the
+ending card, which this loop has not reviewed; then the help card (Sổ tay), likewise. The far bank
+fading under a heavy sky is **decided, not pending**. Before adding any gate, run `./done.sh` and take
+the next id above the highest in BOTH `gate.sh` and the ledger — id uniqueness is now enforced there.
+Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

@@ -20,6 +20,8 @@ function makeCast(rnd){ return [
   if(idx===6) o.arrives=5+Math.floor(rnd()*4);
   if(idx===3) o.arrives=1; if(idx===1) o.arrives=2; if(idx===4) o.arrives=3; if(idx===5) o.arrives=4;   // the xóm gathers (mirrors index.html)
   return o; }); }
+// v0.40: the hụi circle lifts BẠN (+1/season for the loneliest known neighbour, up to 3) only once the player has paid in —
+// no banded strategy contributes to the hụi, so the sim carries no such lift; it is a world-lift like the class (TÀI) and witnessing (GAN).
 // v0.33: the game hides each factor until a hand touches it — the sim's hunter keeps perfect information on purpose:
 // it is the player who reads every quote right, and the band asks whether THAT player beats spreading and idling.
 function activeSim(c,season){ return !c.gone && (c.arrives===undefined||season>=c.arrives); }
@@ -102,7 +104,7 @@ function run(strategy,seed){
       if(rnd()<chance(p,von)){ p.started=true; p.age=0; p.born=true; p.mom=0;
         // inspiration reaches only people you've met — active strategies know everyone PRESENT, idle knows no one
         if(strategy!=="idle") cast.forEach(function(o){ if(o!==p&&activeSim(o,season)) o.gan=Math.min(10,o.gan+1); }); }
-      else if(p.tai*p.gan*p.ban>=100&&Math.min(p.tai,p.gan,p.ban)>1){ p.mom=Math.min((yc===5)?0.15:0.09,(p.mom||0)+((yc===5)?0.05:0.03)); }   // restless-wind year: a sprout near the surface pushes harder
+      else if(p.tai*p.gan*p.ban>=100&&Math.min(p.tai,p.gan,p.ban)>1&&chance(p,von)<ceilOf(Math.min(p.tai,p.gan,p.ban))-1e-9){ p.mom=Math.min((yc===5)?0.15:0.09,(p.mom||0)+((yc===5)?0.05:0.03)); }   // restless-wind year: a sprout near the surface pushes harder
     });
     // the girl leaves if her nerve stays near zero (mirrors index.html: season ≥11 after the increment, GAN <3, not bloomed)
     if(season+1>=11 && !cast[0].started && !cast[0].gone && cast[0].gan<3) cast[0].gone=true;

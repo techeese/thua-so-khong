@@ -540,6 +540,37 @@ PYEOF17
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/pc.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "POTCEIL_OK" && pass "the pot respects the ceiling: $T" || fail "the pot respects the ceiling: $T"
 
+# Gate 21: the world is honest about the ceiling and lifts BẠN — a sprout the ceiling binds gains no momentum over a season while one with
+# room does; and once you have paid into the hụi, the circle raises the loneliest known neighbour's BẠN by 1 (never past 3), and not before.
+python3 - "$TMP" <<'PYEOF21'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.nudged=true; S.season=3; S.von=10; S.luat=6; S.luatNext=6; S.hui=0; S.constraint=0;
+  var mai=S.cast[2], vu=S.cast[3], ba=S.cast[1]; [mai,vu,ba].forEach(function(q){ q.known=true; q.started=false; q.arriveT=0; q.mom=0; });
+  mai.tai=10; mai.gan=3; mai.ban=10;      // capped at 8 % — no room for momentum
+  vu.tai=6; vu.gan=5; vu.ban=7;           // min 5: ceiling 25 %, base ~19 % — room
+  ba.ban=2; ba.tai=9; ba.gan=3;           // the loneliest
+  var trials=0, maiMom=0, vuMom=0, baBan0=ba.ban;
+  // roll many season ticks on frozen copies of the same state to average the dice: momentum only accrues on a failed roll
+  for(var i=0;i<12;i++){ mai.mom=0; vu.mom=0; mai.started=false; vu.started=false; S.hui=0; nextSeason(); if(S.over) break; trials++; maiMom+=mai.mom||0; vuMom+=vu.mom||0; S.season=3; }
+  var noLiftWithoutHui=(ba.ban===baBan0);
+  S.hui=1; ba.ban=2; ba.started=false; ba.known=true; nextSeason(); var lifted=(ba.ban===3&&ba.seen.ban===true);
+  ba.ban=3; nextSeason(); var notPast3=(ba.ban===3);
+  var ok = trials>=6 && maiMom===0 && vuMom>0 && noLiftWithoutHui && lifted && notPast3;
+  document.title=(ok?"WORLD_OK":"WORLD_BAD")+" trials="+trials+" maiMom="+maiMom.toFixed(2)+" vuMom="+vuMom.toFixed(2)+" noLiftWithoutHui="+noLiftWithoutHui+" lifted="+lifted+" notPast3="+notPast3;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/w.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF21
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=9000 --dump-dom "file://$TMP/w.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "WORLD_OK" && pass "the world is honest about the ceiling: $T" || fail "the world is honest about the ceiling: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."

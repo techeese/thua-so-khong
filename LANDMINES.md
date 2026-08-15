@@ -207,3 +207,15 @@ that is now impossible because a gate catches it stays here, with the gate named
   entirely (it read the canvas frame and returned identical numbers for three different states,
   which looks exactly like "the change did nothing"). Assert the DOM state in the dump run; use the
   screenshot only for reading with your eyes.
+- **Two sessions allocating gate numbers concurrently WILL collide, and the ratchet check did not
+  catch it.** Four collisions surfaced in one tick (`Gate 13` twice, `15`, `16`, `17`). `done.sh`'s
+  gates-ledger check only asserted that every ledger id *exists* in `gate.sh` — a duplicate passes
+  that, because the number does exist, while two rows silently claim one gate. Fixed in v0.37 by
+  asserting id uniqueness in both files. **Before adding a gate, run `./done.sh` first** and take the
+  next id above the highest in BOTH `gate.sh` and the ledger; the other session may have taken yours
+  since you last looked.
+- **`position:fixed` overlays ignore an injected `body{width:390px}`.** The 390px probe recipe
+  constrains the body, not the viewport, so a `.ovl`/modal still lays out at the real window width and
+  looks edge-to-edge in the screenshot. Two "defects" in the intro card were this artifact. For fixed
+  overlays, size the window itself (and remember Chrome floors it near 500px), or read the computed
+  padding instead of trusting the picture.

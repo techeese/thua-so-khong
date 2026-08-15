@@ -584,6 +584,7 @@ function renderBook(box){
     var ttl=((L==="vi")?r.tv:r.te)||"—";
     var trav=(r.wk&&fin(r.then)&&fin(r.now))?(" · "+r.wk+" "+r.then+"→"+r.now):"";
     if(fin(r.hs)) trav+=" · "+(r.hs|0)+"⚡";
+    if(fin(r.sc)&&(r.sc|0)>0) trav+=" · ☁️"+(r.sc|0); if(fin(r.st)&&(r.st|0)>0) trav+=" ⬛"+(r.st|0);   // how the sky treated that year
     d.innerHTML="<span>"+(c.length-i)+".</span> "+yc.em+cn+" <b>"+ttl+"</b> <span>· "+(r.nB|0)+(L==="vi"?" xưởng · ":" workshops · ")+(r.ts|0)+(L==="vi"?" bậc":" tiers")+trav+"</span>";
     box.appendChild(d); });
 }
@@ -983,6 +984,15 @@ function drawScene(now){
       ctx.moveTo(tx,ty); ctx.quadraticCurveTo(tx-2+sw2*0.4,ty-hgt*0.5,tx-3+sw2,ty-hgt*0.8); ctx.stroke();
       if(stage===2){ ctx.fillStyle="#E3A63B"; ctx.beginPath(); ctx.arc(tx+sw2+ph2*0.1,ty-hgt-1,1.6,0,6.28); ctx.fill(); } }   // the grain
   })();
+  // 🛠 your own product, going up: the frame at the landing grows with each hand — posts, then beams, then a roof frame — until the fourth makes it a roof
+  if(S.un.build&&!S.built&&(S.build|0)>0&&!S.over){ var bx0=120, by0=470, bstep=S.build|0;
+    ctx.save(); ink(2.2); ctx.strokeStyle="#7a5a3a";
+    [[-27,0],[27,0],[-27,30],[27,30]].forEach(function(pt){ ctx.beginPath(); ctx.moveTo(bx0+pt[0],by0+pt[1]); ctx.lineTo(bx0+pt[0],by0+pt[1]-28); ctx.stroke(); });   // 1: four posts
+    if(bstep>=2){ ctx.beginPath(); ctx.moveTo(bx0-27,by0-28); ctx.lineTo(bx0+27,by0-28); ctx.moveTo(bx0-27,by0+2); ctx.lineTo(bx0+27,by0+2); ctx.stroke(); }   // 2: beams
+    if(bstep>=3){ ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(bx0-34,by0-28); ctx.lineTo(bx0,by0-52); ctx.lineTo(bx0+34,by0-28); ctx.stroke(); ctx.setLineDash([]); }   // 3: the roof, sketched
+    ctx.fillStyle="rgba(43,35,32,.55)"; ctx.font=FONT_HINT; ctx.textAlign="center"; ctx.fillText(bstep+"/4",bx0,by0+44); ctx.textAlign="left";
+    if(bstep>=1&&Math.sin(now*0.011)>0.94){ ink(2); ctx.beginPath(); ctx.moveTo(bx0+30,by0-32); ctx.lineTo(bx0+36,by0-38); ctx.stroke(); }   // the hammer, now and then
+    ctx.restore(); }
   banyan(80,240,now);
   // the dirt road the xóm arrives by — two wavering ochre strokes from the frame edge to the đình yard
   ctx.strokeStyle="rgba(160,130,80,.25)"; ctx.lineWidth=7; ctx.lineCap="round";
@@ -1840,7 +1850,7 @@ function nextSeason(){
                      "🔍 You can now ASK AROUND at the commune office about next season's sky (new button)."); }
       if(!S.tierTaught){ S.tierTaught=true; }   // the tier pill + the card teach this now — no narrator
     }
-    else if(prod(p)>=100&&!hasZero(p)){ p.mom=Math.min((S.yearCard===5)?0.15:0.09,(p.mom||0)+((S.yearCard===5)?0.05:0.03)); }   // a tended-but-unlucky sprout pushes harder (capped — no free inevitability); the restless wind pushes it harder still — but nothing pushes past a zero
+    else if(prod(p)>=100&&!hasZero(p)&&chance(p)<ceilOf(Math.min(p.tai,p.gan,p.ban))-1e-9){ p.mom=Math.min((S.yearCard===5)?0.15:0.09,(p.mom||0)+((S.yearCard===5)?0.05:0.03)); }   // a tended-but-unlucky sprout pushes harder (capped — no free inevitability); the restless wind pushes it harder still — but nothing pushes past a zero
   });
   // the law can crush (untouchable lock 3) — only while the sky is heavy, and young workshops are the most exposed
   if(S.luat<4){
@@ -1974,6 +1984,13 @@ function nextSeason(){
       banner("🛶 …",1800); gong(147,1.0,0.04);
       gossip("“Cô Liên đi rồi. Xóm mình chẳng giữ được.”","“Cô Liên's gone. We couldn't hold her.”",6); }
   }
+  // 🪙 the circle lifts BẠN: once you have paid in, the hụi sends for the loneliest known neighbour each season — +1 BẠN, up to 3.
+  // The world already lifts GAN (a witnessed bloom) and TÀI (Cô Mai's class); this is its lift for BẠN — to the table, not to the market: a hand is still needed past 3.
+  if((S.hui|0)>=1&&!conBan(1)&&S.season>=2){
+    var lone=S.cast.filter(function(q){ return active(q)&&q.known&&!q.started&&!q.arriveT&&q.ban<=2; }).sort(function(a9,b9){return a9.ban-b9.ban;})[0];
+    if(lone){ lone.ban=Math.min(10,lone.ban+1); S._circleLift=lone;
+      if(!S.circleSeen){ S.circleSeen=true; logMsg("🪙 Vòng hụi cho gọi "+lone.name+" ra đình ngồi cùng — có mặt ở bàn là bước đầu của BẠN.","🪙 The hụi circle sends for "+lone.name+" to sit at the đình — a seat at the table is where ALLIES begins."); } }
+  }
   // 🚌 the girl's clock: Bé Ngân's father has been filing papers all along — if her NERVE stays near zero, medicine wins.
   // Each zero now has a face: TÀI → the elder's craft dies · GAN → Ngân goes to the city · BẠN → Liên goes back south.
   var ngan=S.cast[0];
@@ -2032,6 +2049,7 @@ function nextSeason(){
                        .sort(function(a8,b8){return b8.ban-a8.ban;}).slice(0,3);
     eligible.forEach(function(p8,ei){ visit(p8,DINH.x-30+ei*30,DINH.y+6,5200); });
     if(motes.length<6) motes.push({x0:DINH.x-22,y0:DINH.y-6,x1:DINH.x+22,y1:DINH.y-6,t:-3.2,g:"🪙"});   // the coin hops WITHIN the circle — the river didn't rise
+    if(S._circleLift){ var cl8=S._circleLift; S._circleLift=null; visit(cl8,DINH.x+34,DINH.y+14,5200); floatOn(cl8,"+1 "+t("ban")+" 🪙","#6C8F3D"); }   // …and the one the circle sent for sits at its edge
     if(S.season===1&&!S.huiSeen){ S.huiSeen=true; var mai8=S.cast[2];
       if(eligible.indexOf(mai8)>=0) bubble(mai8,(L==="vi")?"“Đến phiên hụi nhà ai rồi nhỉ?”":"“Whose turn in the hụi is it now?”"); }
   },4200); })(); }
@@ -2137,7 +2155,8 @@ function endGame(){
     strip.textContent=(L==="vi"?"mười sáu mùa: ":"sixteen seasons: ")+cells.slice(0,4).join("")+" │ "+cells.slice(4,8).join("")+" │ "+cells.slice(8,12).join("")+" │ "+cells.slice(12,16).join("");
     b.appendChild(strip); })();
   // 📜 write this run into the village book — and show the book right here, where the itch lives
-  var ch=loadChron(); ch.push({ti:ti,tv:tv,te:te,yc:S.yearCard|0,cn:S.constraint|0,nB:nB,ts:ts,wk:wk.name,then:wk.btai*wk.bgan*wk.bban,now:prod(wk),hs:S.hands|0}); saveChron(ch);
+  var stN=(S.hist||[]).reduce(function(a,v){return a+((v|0)&3);},0), scN=S.stormCount|0;   // the sky's part of the year: stamps that fell, storm seasons endured
+  var ch=loadChron(); ch.push({ti:ti,tv:tv,te:te,yc:S.yearCard|0,cn:S.constraint|0,nB:nB,ts:ts,wk:wk.name,then:wk.btai*wk.bgan*wk.bban,now:prod(wk),hs:S.hands|0,st:stN,sc:scN}); saveChron(ch);
   var seen={}; ch.forEach(function(r){ if(r&&r.ti) seen[r.ti]=1; }); var nSeen=Object.keys(seen).length;
   var row=""; for(var li2=1;li2<=6;li2++) row+=(seen[li2]?"🏮":"○");
   var HINTS={1:{vi:"Mùa vàng cần năm mầm, mười hai bậc — và chính tay bạn.",en:"The golden season takes five blooms, twelve tiers — and your own hands."},
@@ -2441,8 +2460,8 @@ function renderHelp(){
          vi?"Mỗi người là <b>TÀI × GAN × BẠN</b>. Thừa số nào ở mức <b>1</b> là số không — người đó không nở (0%), dù hai thừa số kia có cao đến đâu. Việc của bạn là <b>chẩn đoán</b>: con số ẩn cho đến khi tay bạn chạm vào — lời họ nói là manh mối; đoán thừa số thấp nhất và nâng đúng nó. Tích ≥100 thì mầm bắt đầu nhú (🌱), càng cao càng dễ nở xưởng — nhưng thừa số thấp nhất đặt <b>trần</b>: 2 → tối đa 4%/mùa · 3 → 8% · 4 → 15% · 5 → 25%; hai thừa số kia cao đến đâu cũng không vượt qua."
            :"Each person is <b>SKILL × NERVE × ALLIES</b>. A factor at <b>1</b> is a zero — that person cannot bloom (0%), however high the other two stand. Your job is <b>diagnosis</b>: the numbers stay hidden until your hand touches them — their words are the clue; guess the lowest factor and raise exactly that. Product ≥100 and a sprout starts pushing (🌱); higher means likelier to open a workshop — but the weakest factor sets a <b>ceiling</b>: 2 → at most 4%/season · 3 → 8% · 4 → 15% · 5 → 25%; however high the other two stand, they do not lift it past that.");
   h+=sec(vi?"Tay (⚡)":"Hands (⚡)",
-         vi?"Mỗi mùa 3⚡ (mùa giông 2⚡, sau ba mùa giông liền lại 3⚡). 📖 Dạy +2 TÀI · 🏮 Đêm thất bại +2 GAN (người từng ngã đến nghe, +1) · 🤝 Kết nối +2 BẠN cho mối đầu, +1 mối sau · 🪙 Góp hụi +1 sông · 🧧 Hốt hụi (đã góp rồi): sông −1, mầm của một người nhú +6% — cả vòng góp cho một nhà · 🛠 Tự xây 4 lần thì xong · 🔍 Nghe ngóng biết trời mùa tới · 🛡 Che chắn xưởng non."
-           :"3⚡ per season (storm 2⚡; after three storm seasons in a row, back to 3⚡). 📖 Teach +2 SKILL · 🏮 Failure night +2 NERVE (those who fell come listen, +1) · 🤝 Connect +2 ALLIES first bond, +1 after · 🪙 Hụi +1 river · 🧧 Take the pot (once you've paid in): river −1, one person's sprout +6% — the whole circle pays one member · 🛠 Build 4 times to ship · 🔍 Ask around for next season's sky · 🛡 Shelter young workshops.");
+         vi?"Mỗi mùa 3⚡ (mùa giông 2⚡, sau ba mùa giông liền lại 3⚡). 📖 Dạy +2 TÀI · 🏮 Đêm thất bại +2 GAN (người từng ngã đến nghe, +1) · 🤝 Kết nối +2 BẠN cho mối đầu, +1 mối sau · 🪙 Góp hụi +1 sông (đã góp thì vòng hụi mỗi mùa gọi người ít bạn nhất ra đình: +1 BẠN, tối đa 3) · 🧧 Hốt hụi (đã góp rồi): sông −1, mầm của một người nhú +6% — cả vòng góp cho một nhà · 🛠 Tự xây 4 lần thì xong · 🔍 Nghe ngóng biết trời mùa tới · 🛡 Che chắn xưởng non."
+           :"3⚡ per season (storm 2⚡; after three storm seasons in a row, back to 3⚡). 📖 Teach +2 SKILL · 🏮 Failure night +2 NERVE (those who fell come listen, +1) · 🤝 Connect +2 ALLIES first bond, +1 after · 🪙 Hụi +1 river (once you've paid in, the circle sends for the loneliest neighbour each season: +1 ALLIES, up to 3) · 🧧 Take the pot (once you've paid in): river −1, one person's sprout +6% — the whole circle pays one member · 🛠 Build 4 times to ship · 🔍 Ask around for next season's sky · 🛡 Shelter young workshops.");
   h+=sec(vi?"Trời và sông":"Sky and river",
          vi?"Bầu trời là <b>luật</b> — ngoài tầm tay. Trời nặng (&lt;4): mưa, 2⚡, con dấu có thể rơi xuống xưởng (xưởng non 15%, xưởng vững 5%; bậc 2–3 chỉ tụt bậc). Dòng sông là <b>vốn</b> — thừa số thứ tư, của cả xóm: mầm nhân với sông (1/10 → ×0.37 · 10/10 → ×1.0), và sông cạn giữ xưởng ở bậc thấp (≤3 chỉ gánh hàng · ≤6 tối đa xưởng). Mỗi năm dâng một chút, hụi và hàng ra chợ dâng thêm; đủ ≥4 bậc xưởng thì sông tự đầy."
            :"The sky is <b>the law</b> — beyond your hands. Heavy (&lt;4): rain, 2⚡, and the stamp may fall on a workshop (young 15%, established 5%; tier 2–3 only step down). The river is <b>capital</b> — the fourth factor, and it belongs to everyone: sprouts multiply by the river (1/10 → ×0.37 · 10/10 → ×1.0), and a low river holds workshops down (≤3 stalls only · ≤6 shop at most). It rises a little each year, more from the hụi and market trips; with ≥4 workshop tiers standing it fills itself.");

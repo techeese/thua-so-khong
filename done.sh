@@ -61,8 +61,14 @@ done
 for k in $(grep -oE '^\| `[a-z][a-z-]+`' GATES-LEDGER.md 2>/dev/null | tr -d '|` '); do
   grep -q "\[gate:$k\]" done.sh || MISSING="$MISSING $k"
 done
-[ -z "$MISSING" ] && ok "gates ratchet intact (nothing removed)" \
-                  || no "GATE(S) REMOVED:$MISSING — the ledger is append-only; restore them"
+# a duplicate id passes the presence check above (the number DOES exist in gate.sh) while two ledger
+# rows silently claim one gate — that has now happened three times with two sessions allocating
+# numbers concurrently, so uniqueness is checked, not assumed.
+DUPL=$(grep -oE '^\| `Gate [0-9]+`' GATES-LEDGER.md 2>/dev/null | grep -oE '[0-9]+' | sort -n | uniq -d | tr '\n' ' ')
+DUPG=$(grep -oE '^# Gate [0-9]+:' gate.sh 2>/dev/null | grep -oE '[0-9]+' | sort -n | uniq -d | tr '\n' ' ')
+[ -n "$DUPL$DUPG" ] && MISSING="$MISSING duplicate-id(ledger:${DUPL:--} gate.sh:${DUPG:--})"
+[ -z "$MISSING" ] && ok "gates ratchet intact (nothing removed, no duplicate ids)" \
+                  || no "GATE LEDGER BROKEN:$MISSING — the ledger is append-only and ids are unique"
 
 # 0c. LOOP STRUCTURE — the engine must stay mechanism-only and every loop document must be in git.
 # [gate:loop-structure]
