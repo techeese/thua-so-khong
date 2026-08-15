@@ -144,22 +144,27 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **the last three ticks each found a
-real defect that no amount of looking would have caught, and all three came from measuring a dimension
-nobody had measured before.** v0.54: tap targets aimed at `p.x` while the nudge moved `drawX`. v0.56:
-a modal taller than a short viewport with no scroll — found only by varying HEIGHT. v0.57: a landscape
-media query that had never once applied, because `fit()`'s inline height beat the stylesheet — found
-only by checking whether the rule changed anything. The lesson is now the pointer: **pick a dimension
-the loop has never varied and measure it.** Ones still unvaried: device pixel ratio (retina/2×, where
-the backing-store maths in `fit()` is the obvious suspect), a genuinely narrow phone (320px, not 390),
-very long villager names in EN, and a run left idle for many minutes (timer/beat accumulation). Every
-drawing surface is done and float density is closed as measured-not-a-defect. **If a tick finds only
-cosmetic preference, ship nothing and say so** — the ship budget allows it and *"it's ART's turn on
-the compass" is not sufficient cause*. Rules earned the hard way: no seeded whole-run gate (v0.45);
-never let a gate reimplement the logic it tests (Gate 35's first draft passed on the broken build);
-negative-test every new gate against a deliberately broken copy; check modals at short HEIGHTS; and
-"scroll to the bottom and look" is not a reachability test — use `scrollIntoView` per element. Give
-each gate a unique heredoc tag. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop: **v0.58's tick shipped nothing, on
+purpose, and that is the result — not a gap.** The pointer's method (pick a dimension the loop has
+never varied and measure it) was applied to three of them and all three came back clean:
+**device pixel ratio** — the backing store scales exactly at 1×/2×/3×, same aspect, no distortion, no
+DPR-specific bug; **320px width** — `bodySW=320`, zero elements over the edge, and the same at 360;
+**English at 320px**, the longest strings on the narrowest screen — also clean (the four "overflows"
+that probe reports are the known `position:fixed` overlay artifact, already a landmine: `.ovl` spans
+the viewport, not an injected body width). One real thing was measured and **declined**: the world's
+bottom edge lands 2.3 logical px past the backing store, because `aspect-ratio` governs the border box
+while the raster is sized from the content box — it clips a sliver of the river under the rounded
+border, it is invisible, and it is **pre-existing** (identical on v0.56), so fixing it would be
+preference, not repair. Dimensions still unvaried: a run left idle for many minutes (timer/beat
+accumulation), a save restored mid-run at a different viewport, and reduced-motion / high-contrast
+system settings. **If a tick finds only cosmetic preference, ship nothing and say so** — the ship
+budget allows it and *"it's ART's turn on the compass" is not sufficient cause*; that clause is what
+turned cycles 9–15 into drift. Rules earned the hard way: no seeded whole-run gate (v0.45); never let
+a gate reimplement the logic it tests (Gate 35's first draft passed on the broken build); negative-test
+every new gate against a deliberately broken copy; check modals at short HEIGHTS; "scroll to the bottom
+and look" is not a reachability test (use `scrollIntoView`); an inline style set by JS silently kills a
+media query (v0.57); and sizing a responsive element from JS freezes it. Give each gate a unique
+heredoc tag. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

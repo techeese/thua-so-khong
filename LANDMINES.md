@@ -340,3 +340,14 @@ that is now impossible because a gate catches it stays here, with the gate named
   gate, because a px width only updates on `resize` while `width:100%` tracks every layout change.
   Prefer letting CSS own the box (`aspect-ratio` + a `max-width` cap) and let JS size only the backing
   store. If JS must write a dimension, re-run it on more than `resize`.
+- **Negative results are worth recording, or the loop re-measures them forever.** v0.58 varied three
+  untried dimensions and found nothing shippable: device pixel ratio (store scales exactly at 1×/2×/3×,
+  same aspect), 320px and 360px width (`bodySW` exact, zero overflow), and English at 320px (longest
+  strings, narrowest screen). Also measured and deliberately DECLINED: the world's bottom edge falls
+  2.3 logical px past the backing store because `aspect-ratio` governs the border box while the raster
+  is sized from the content box — a sliver of river under the rounded border, invisible, and identical
+  on v0.56, so it is pre-existing and cosmetic. Do not re-open any of these without a new reason.
+- **The `position:fixed` overlay artifact recurs in every narrow-width probe.** `.ovl` spans the
+  viewport, so an injected `body{width:Npx}` never constrains it and the probe reports `helpOvl`,
+  `.card`, `helpTtl`, `helpClose` as "overflowing". Exclude fixed-position subtrees from width probes,
+  or you will chase the same four elements again (this is the second time).
