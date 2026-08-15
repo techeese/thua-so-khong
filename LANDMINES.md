@@ -246,3 +246,9 @@ that is now impossible because a gate catches it stays here, with the gate named
   and show each was reviewed or is tick-shippable; **a red counter earned by candidate selection is
   not exhaustion**. And under two live owner loops, no candidate expressible as ticks survives —
   propose only what a tick cannot ship, or say nothing survives *because* of the process, not the game.
+- **A gate that hard-codes a count the world computes will flake.** Gate 23 asserted the shelter
+  button reads "1 roof" while the button prints the live covered-roof count — observed as 1, 1, then 2
+  on identical code, because which roofs `shelCovers()` picks depends on drifting world state. Assert
+  the *relationship* (printed === the real count) rather than the number. Third instance of this class
+  in three ticks, with Gates 21 and 23; when writing a gate, ask what the world can change underneath
+  it before writing a literal.

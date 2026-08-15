@@ -1,5 +1,32 @@
 # Changelog — Thừa Số Không
 
+## v0.42 — 2026-08-15 — the Sổ tay keeps its way out
+
+A graphics round from the owner's `/loop 5m` session, on the help card — the third and last of the
+game's three overlays, and the one this loop had not reviewed.
+
+- **The Sổ tay had no visible way out.** The whole card was one scroller, so the heading *and* the
+  `Đóng / Close` button scrolled away with the text. Measured: 1025px of card in an 813px window put
+  the close button at **y=1009 — off-screen at every scroll position** (`closeVisible=false` at 900,
+  760 and 620px tall), leaving the undiscoverable margin-tap as the only visible exit, on a card whose
+  content runs 320–566px past the fold. The body scrolls now; the title stays at the top and the
+  button at the bottom.
+- **The body says it has more.** Its live edge fades into the paper — bottom only at the top, both in
+  the middle, top only at the end — the vertical twin of the roster strip's cue from v0.36, and the
+  same reason: content sliced by a rounded card edge reads as content that has ended.
+- *Evidence:* new **Gate 24** — `SOTAY_OK more=339 top=-B mid=TB end=T- exitAlwaysVisible=true`, with
+  the exit's visibility asserted at all three scroll positions, not just at rest.
+
+**Gate 23 (`the law's number is printed`) was failing on a stale magic number, not a bug.** It
+asserted the shelter button reads *"1 roof"*, while `actShel()` tarps **every** covered roof and the
+button prints the live count — which is 2 in the gate's own two-ship harness. The count also varies
+between runs (`1 mái`, `1`, `2` observed on identical code), so the assertion passed or failed on
+luck. It now asserts the stated intent — the printed number equals the number one hand would actually
+cover — which is both stricter and stable. Three consecutive `LAW_OK`. Game behaviour untouched.
+
+That is the third gate in three ticks whose harness asserted a constant where the world supplies a
+variable (Gates 21, 23) or failed to isolate its subject. The pattern is now in `LANDMINES.md`.
+
 ## v0.40 — 2026-08-15 — the ending card owns the screen; Gate 21 made deterministic
 
 A graphics round from the owner's `/loop 5m` session. It opened on a **red release gate** sitting on
@@ -24,6 +51,23 @@ that came first.
   `ENDQUIET_OK cardUp=true pushed=2 afterWithCard=0 afterCardDown=1`. Asserted non-vacuously: bubbles
   pushed while the card is up are cleared, and the identical push with the card hidden survives, so
   the guard is conditional and not a blanket mute.
+
+## v0.41 — 2026-08-15 — the law's number is printed
+
+Closes: under the owner's standing `/loop 3m` directive, the last surface where a number the player can
+act on was not printed. Measured first (`check.js`, 1200 runs): ~6 of 16 seasons are storm seasons,
+yet the hunter loses only 0.35 roofs and takes 0.9 step-downs per run — the sky is felt as a hand
+tax and rain, and the probe → shelter decision is invisible because a started person's sheet never
+says what the storm will roll against their roof.
+
+- **The sheet prints the stamp's odds.** Under a heavy sky a bloomed person's line carries
+  *· ⬛ 15% mùa này* (young roof) or *⬛ 5%* (established), *🛡 0%* once tarped, nothing when the
+  sky is clear or the roof is newborn — the same arithmetic every verb gives, for the one force
+  the neighbour cannot command. Shelter's value is now legible without a word of narration.
+- **The shelter button says what it covers** — *(1⚡ · 2 mái)* — like the hụi's *×0.65→0.72* and
+  the sheet's *→ N%*.
+- *Evidence:* new **Gate 23** (`LAW_OK clear=true young15=true old5=true shelCost="(1⚡ · 1 mái)"
+  tarped0=true`). Twenty-four gates green, hash-bracketed; no balance changed.
 
 ## v0.40 — 2026-08-15 — the world keeps the ceiling's word, and lifts BẠN (the mechanic half of v0.40)
 

@@ -113,6 +113,15 @@
   .card .tag{text-align:center;font-style:italic;color:var(--red);font-weight:700;margin-bottom:12px}
   .card p{font-size:14px;margin:8px 0}
   .card .go{width:100%;background:var(--red);color:#fff;margin-top:10px;padding:12px;font-size:16px}
+  /* The Sổ tay was ONE long scroller: the heading and the Đóng button scrolled away with the text.
+     1025px of card in an 813px window put the only way out at y=1009 — off-screen — leaving the
+     undiscoverable margin-tap as the only visible exit. Now the body scrolls and the title and the
+     button stay put; the body's live edge fades so it says it has more, as the roster strip does. */
+  #helpOvl .card{display:flex;flex-direction:column;overflow:hidden}
+  #helpBody{overflow-y:auto;flex:1 1 auto;min-height:0}
+  #helpBody.mB{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 26px),transparent)}
+  #helpBody.mT{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 26px);mask-image:linear-gradient(to bottom,transparent,#000 26px)}
+  #helpBody.mT.mB{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 26px,#000 calc(100% - 26px),transparent);mask-image:linear-gradient(to bottom,transparent,#000 26px,#000 calc(100% - 26px),transparent)}
   .endline{font:700 15px Georgia,serif;text-align:center;margin-top:12px;padding-top:10px;border-top:2px dashed var(--ink)}
   .small{font-size:12px;color:var(--dim)}
   .bookTap{cursor:pointer;text-decoration:underline dotted}
@@ -143,7 +152,7 @@
 
   <div class="bar">
     <button id="probeBtn" style="display:none">🔍 <span id="probeLbl">Nghe ngóng</span> <small id="probeCost">(1⚡)</small></button>
-    <button id="shelBtn" style="display:none">🛡 <span id="shelLbl">Che chắn</span> <small>(1⚡)</small></button>
+    <button id="shelBtn" style="display:none">🛡 <span id="shelLbl">Che chắn</span> <small id="shelCost">(1⚡)</small></button>
     <button id="huiBtn">🪙 <span id="huiLbl">Góp hụi</span> <small id="huiCost">(1⚡)</small></button>
     <button id="buildBtn">🛠 <span id="buildLbl">Tự xây</span> <span id="buildProg">0/4</span></button>
     <span class="spacer"></span>
@@ -167,7 +176,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.40</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.42</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -197,7 +206,7 @@
 
 <!-- sổ tay — the help card, generated from the live rules -->
 <div class="ovl" id="helpOvl">
-  <div class="card" style="max-height:88vh;overflow-y:auto">
+  <div class="card" style="max-height:88vh">
     <h2 id="helpTtl">Sổ tay</h2>
     <div id="helpBody" style="font-size:13.5px;line-height:1.5"></div>
     <button class="go" id="helpClose">Đóng / Close</button>
@@ -549,7 +558,11 @@ function flushPend(force){ if(!pendQ.length) return; var now=performance.now();
 var CHRON_KEY="thua-so-khong-chronicle";
 function loadChron(){ try{ var c=JSON.parse(localStorage.getItem(CHRON_KEY)||"[]"); return Array.isArray(c)?c:[]; }catch(e){ return []; } }
 function saveChron(c){ try{ localStorage.setItem(CHRON_KEY,JSON.stringify(c.slice(-10))); }catch(e){} }
+// 🏆 the full book: all six endings seen. The corner seal turns gold and the intro says so — the one collection reward, quiet, in the print itself.
+function allEndingsSeen(){ try{ var seen={}; loadChron().forEach(function(r){ if(r&&r.ti) seen[r.ti]=1; }); return Object.keys(seen).length>=6; }catch(e){ return false; } }
+var _goldSeal=false;
 function renderChron(){
+  _goldSeal=allEndingsSeen();
   var el2=document.getElementById("chronLine"); if(!el2) return;
   var c=loadChron();
   var cr=document.getElementById("conRow"); if(cr) cr.style.display=c.length?"block":"none";
@@ -570,6 +583,7 @@ function renderChron(){
   el2.textContent=(L==="vi"?"📜 Sổ xóm — mùa trước: ":"📜 Village book — last time: ")
     +((L==="vi"?last.tv:last.te)||"—")+" · "+(last.nB|0)+(L==="vi"?" xưởng":" workshops")
     +" · "+(L==="vi"?"kết đã thấy ":"endings seen ")+row+" "+n+"/6 · "+ycRow2+cnRow2s
+    +(_goldSeal?(L==="vi"?" · 🏆 trọn sáu kết":" · 🏆 all six endings"):"")
     +(L==="vi"?" · mở sổ ▾":" · open ▾");
   el2.classList.add("bookTap");
   var bk=document.getElementById("bookIntro"); if(bk&&bk.style.display!=="none") renderBook(bk);   // re-render an open book on language flip
@@ -766,6 +780,7 @@ function execBeh(p,beh,now){
   else if(beh===7){ dx=BEN.x+26; dy=peopleFloor(); }
   else if(beh===8){ if(!S.ships.length) beh=1; else { var sh3=S.ships[(p.id+S.season)%S.ships.length]; dx=sh3.x-40; dy=sh3.y+26; } }
   else if(beh===10){ dx=p.hx+6; dy=p.hy+14; dur=5000+Math.random()*2000; }   // beside their own sprout
+  else if(beh===12){ dx=668+Math.random()*170; dy=438; dur=6000+Math.random()*2500; }   // at the paddy's edge
   else if(beh===11){ var ms=learnMaster(p); if(!ms) beh=1; else { var msh=null; S.ships.forEach(function(sh){ if(sh.pid===ms.id) msh=sh; });
     dx=(msh?msh.x:ms.hx)+(p.hx<ms.hx?-34:34); dy=(msh?msh.y+24:ms.hy+8); dur=6500+Math.random()*2500; } }   // 11 LEARN — a low-TÀI neighbour goes to watch the most skilled pair of hands at work
   else if(beh===9){ var c2=chicks[0],bd=1e9; chicks.forEach(function(c3){ var dd=Math.hypot(c3.x-p.x,c3.y-p.y); if(dd<bd){bd=dd;c2=c3;} });
@@ -788,6 +803,7 @@ function pickBeh(p){
   if(!p.started&&S.ships.length) w.push([8,0.6+0.12*p.tai]);
   if(p.young||p.gan>=8) w.push([9,1.1]);
   if(!p.started&&(p.mom||0)>0) w.push([10,1.6+(p.mom||0)*20]);   // 10 TEND — a pushing sprout draws its owner to the doorstep; the closer, the oftener
+  if(S.season%4===2&&S.luat>=4) w.push([12,1.4]);                  // 12 HARVEST — in a clear autumn the paddy calls whoever is idle; the year's work is not only the xóm's
   var tot=0,i2; for(i2=0;i2<w.length;i2++) tot+=w[i2][1];
   var r=Math.random()*tot;
   for(i2=0;i2<w.length;i2++){ r-=w[i2][1]; if(r<=0) return w[i2][0]; }
@@ -1246,7 +1262,7 @@ function drawScene(now){
   // --- the printed frame + the ×0 seal (a woodblock print signs its corner) ---
   ctx.strokeStyle="rgba(58,42,30,.5)"; ctx.lineWidth=2.5; ctx.strokeRect(9,9,W-18,H-18);
   ctx.strokeStyle="rgba(58,42,30,.22)"; ctx.lineWidth=1; ctx.strokeRect(14,14,W-28,H-28);
-  ctx.fillStyle="rgba(193,68,60,.88)"; ctx.fillRect(W-48,H-48,32,32);
+  ctx.fillStyle=_goldSeal?"rgba(227,166,59,.92)":"rgba(193,68,60,.88)"; ctx.fillRect(W-48,H-48,32,32);   // gold once the book holds all six endings
   ctx.strokeStyle="rgba(245,234,208,.7)"; ctx.lineWidth=1.5; ctx.strokeRect(W-45,H-45,26,26);
   ctx.fillStyle="#f5ead0"; ctx.font="700 14px Georgia"; ctx.textAlign="center"; ctx.fillText("×0",W-32,H-27); ctx.textAlign="left";
 
@@ -1471,6 +1487,10 @@ function person(p,now){
       ctx.strokeStyle="rgba(160,130,80,.6)"; ctx.lineWidth=3.4; ctx.beginPath(); ctx.moveTo(x-15+sw2,y+16); ctx.lineTo(x-17+sw2,y+20); ctx.stroke(); }
     else if(beh===2){ ink(2);                                 // seated: folded legs
       ctx.beginPath(); ctx.moveTo(x-8,y+18); ctx.lineTo(x+8,y+18); ctx.stroke(); }
+    else if(beh===12){ ink(2.2);                               // harvesting: bent to the paddy, the sickle's small arc
+      var sk=Math.sin(now*0.012+p.ph); ctx.beginPath(); ctx.moveTo(x+7,y-2); ctx.lineTo(x+13+sk*2,y+8); ctx.stroke();
+      ctx.strokeStyle="#8a7a5f"; ctx.lineWidth=1.6; ctx.beginPath(); ctx.arc(x+15+sk*2,y+9,4,Math.PI*0.9,Math.PI*1.9); ctx.stroke();
+      if(sk>0.92&&parts.length<60) parts.push({x:x+16,y:y+8,vx:0.6,vy:-0.6,r:1.6,rot:0,vr:0.1,life:0.6,col:"#C9A23B"}); }   // a grain flies
     else if(beh===10){ ink(2.2);                               // tending: crouched, one hand to the sprout, a drop now and then
       ctx.beginPath(); ctx.moveTo(x+8,y-2); ctx.quadraticCurveTo(x+14,y+2,x+16,y+9); ctx.stroke();
       if(Math.sin(now*0.004+p.ph)>0.9){ ctx.fillStyle="rgba(46,74,98,.6)"; ctx.beginPath(); ctx.arc(x+16+Math.sin(now*0.02)*1.5,y+12+((now*0.05+p.ph*10)%8),1.4,0,6.28); ctx.fill(); } }
@@ -1759,6 +1779,10 @@ function actProbe(){ var free=(S.yearCard===1);   // the strict year posts notic
   render(); save(); }
 // NOTE: ships are never `born` while the player holds the controls (born is set and cleared within one nextSeason tick),
 // so the born checks below are belt-and-braces, not a reachable state. In a strict year, notices are posted — tarp EVERYTHING.
+// ⬛ the law's number, printed where it can be acted on: under a heavy sky a roof's stamp odds this season (young 15 %, established 5 %; a tarp 0 %; a newborn stands its first season)
+function stormLine(p){ if(!p.started||S.luat>=4) return ""; var sh=null; S.ships.forEach(function(w){ if(w.pid===p.id) sh=w; }); if(!sh) return "";
+  var pct=sh.born?0:(sh.shel|0)>0?0:((sh.age|0)<2?15:5);
+  return " · "+((sh.shel|0)>0?"🛡 ":"⬛ ")+pct+"%"+(L==="vi"?" mùa này":" this season"); }
 function shelCovers(s){ return (s.shel|0)<=0 && (S.yearCard===1 || (s.age|0)<2) && !s.born; }
 function shelTarget(){ var best=null; S.ships.forEach(function(s){ if(!shelCovers(s)) return; if(!best||(s.age|0)<(best.age|0)) best=s; }); return best; }
 function actShel(){ if(S.acts<=0||S.over||!shelTarget()) return; if(!spend("shel"))return;
@@ -2177,6 +2201,8 @@ function endGame(){
   var stN=(S.hist||[]).reduce(function(a,v){return a+((v|0)&3);},0), scN=S.stormCount|0;   // the sky's part of the year: stamps that fell, storm seasons endured
   var ch=loadChron(); ch.push({ti:ti,tv:tv,te:te,yc:S.yearCard|0,cn:S.constraint|0,nB:nB,ts:ts,wk:wk.name,then:wk.btai*wk.bgan*wk.bban,now:prod(wk),hs:S.hands|0,st:stN,sc:scN}); saveChron(ch);
   var seen={}; ch.forEach(function(r){ if(r&&r.ti) seen[r.ti]=1; }); var nSeen=Object.keys(seen).length;
+  var wasGold=_goldSeal; _goldSeal=nSeen>=6;
+  if(_goldSeal&&!wasGold){ var gl=document.createElement("p"); gl.style.cssText="text-align:center;color:#E3A63B;font-weight:700;margin:4px 0"; gl.textContent=(L==="vi")?"🏆 Sổ xóm đã trọn sáu kết — dấu ×0 ở góc tranh nay mạ vàng.":"🏆 The book holds all six endings — the ×0 seal in the corner is gold now."; b.appendChild(gl); }
   var row=""; for(var li2=1;li2<=6;li2++) row+=(seen[li2]?"🏮":"○");
   var HINTS={1:{vi:"Mùa vàng cần năm mầm, mười hai bậc — và chính tay bạn.",en:"The golden season takes five blooms, twelve tiers — and your own hands."},
              2:{vi:"Xóm thức khi bốn mầm nở và xưởng đã vững.",en:"The xóm wakes when four bloom and the workshops stand firm."},
@@ -2289,6 +2315,7 @@ function render(){
   var shelOk=S.un.probe&&(S.probeSeen?(S.luatNext<4||S.luat<4):(S.luat<4))&&shelTarget()&&!S.over;
   el("shelBtn").style.display=shelOk?"":"none";
   el("shelBtn").disabled=S.acts<=0;
+  var shN=S.ships.filter(shelCovers).length; el("shelCost").textContent="(1⚡ · "+shN+(L==="vi"?" mái":" roof"+(shN===1?"":"s"))+")";   // what one hand covers — the same answer every other verb gives
   el("huiCost").textContent=S.hui>=huiMax()?("✓ "+huiMax()+"/"+huiMax()):(S.von>=10?"(1⚡)":("(1⚡ · ×"+vonMul().toFixed(2)+"→"+(0.3+0.7*Math.min(10,S.von+1)/10).toFixed(2)+")"));   // one coin: the river's multiplier before → after, the same answer every other verb gives
   el("huiBtn").disabled=S.acts<=0||S.hui>=huiMax()||S.over||conBan(1);
   el("huiBtn").style.textDecoration=conBan(1)?"line-through 2px #C1443C":""; el("huiBtn").style.opacity="";
@@ -2329,7 +2356,7 @@ function renderSheet(){
         +"<small>"+(L==="vi"?"lời họ nói là manh mối — thừa số nào gần không? Tay chạm vào đâu, con số hiện ra ở đó":"their words are the clue — which factor is near zero? Where your hand lands, that number shows")
         +(L==="vi"?" · sông ":" · river ")+S.von+"/10</small>"))
     +(all?"<small>"+(p.started
-      ?((L==="vi"?"bậc ":"tier ")+trNow+"/3"+(held?(L==="vi"?" · sông "+S.von+"/10 giữ bậc — cả xóm góp thêm":" · river "+S.von+"/10 holds it — the xóm must pour in"):trNow<3?(L==="vi"?" · vun tiếp để lên bậc":" · keep tending to rise"):(L==="vi"?" · một thương hiệu":" · a brand")))
+      ?((L==="vi"?"bậc ":"tier ")+trNow+"/3"+stormLine(p)+(held?(L==="vi"?" · sông "+S.von+"/10 giữ bậc — cả xóm góp thêm":" · river "+S.von+"/10 holds it — the xóm must pour in"):trNow<3?(L==="vi"?" · vun tiếp để lên bậc":" · keep tending to rise"):(L==="vi"?" · một thương hiệu":" · a brand")))
       :((hasZero(p)?(t("sprout")+" 0% · "+(L==="vi"?"thừa số "+zeroOf(p)+" bằng không":zeroOf(p)+" is zero"))   // the arithmetic says it before the narrator would
         :(t("sprout")+" ~"+pc+"% "+t("perSeason")
           +((prod(p)/1000*0.9*vonMul()+(p.mom||0))>ceilOf(weakest(p).m)+1e-9?((L==="vi"?" · "+t(weakest(p).k)+" "+weakest(p).m+" chặn ở ":" · "+t(weakest(p).k)+" "+weakest(p).m+" caps it at ")+Math.round(ceilOf(weakest(p).m)*100)+"%"):"")))
@@ -2511,7 +2538,13 @@ function renderHelp(){
   el("helpBody").innerHTML=h;
 }
 function helpToggle(force){ var o=el("helpOvl"), open=o.classList.contains("show"), want=(force===undefined)?!open:!!force;
-  if(want===open) return; if(want){ renderHelp(); o.classList.add("show"); beep(523,0.05); } else { o.classList.remove("show"); beep(392,0.05); } }
+  if(want===open) return; if(want){ renderHelp(); o.classList.add("show"); el("helpBody").scrollTop=0; helpEdges(); beep(523,0.05); } else { o.classList.remove("show"); beep(392,0.05); } }
+// which way the Sổ tay still has pages — the vertical twin of rosterEdges()
+function helpEdges(){ var b=el("helpBody"); if(!b) return;
+  var more=b.scrollHeight-b.clientHeight;
+  b.classList.toggle("mT", more>2 && b.scrollTop>2);
+  b.classList.toggle("mB", more>2 && b.scrollTop<more-2); }
+el("helpBody").addEventListener("scroll",helpEdges,{passive:true});
 el("helpBtn").onclick=function(){ helpToggle(); }; el("helpClose").onclick=function(){ helpToggle(false); };
 el("helpOvl").addEventListener("click",function(ev){ if(ev.target===el("helpOvl")) helpToggle(false); });   // tap the paper margin to close
 // ---------- keyboard (desktop play) ----------

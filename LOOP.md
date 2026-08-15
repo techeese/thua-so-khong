@@ -93,7 +93,11 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.40 (mechanic half): momentum stops at the ceiling; the hụi circle lifts BẠN (+1/season for the loneliest
+**v0.41: the law's number is printed — a bloomed person's sheet says ⬛ 15%/5%/🛡 0% under a heavy sky and
+the shelter button says how many roofs one hand covers (Gate 23); measured: ~6 storm seasons a run,
+0.35 erasures + 0.9 step-downs for the hunter. The engine is at L3 (form), candidate P "seven lives"
+under five critics — mechanic ticks ship only what P would inherit whole (arithmetic honesty).
+v0.40 (mechanic half): momentum stops at the ceiling; the hụi circle lifts BẠN (+1/season for the loneliest
 known neighbour, up to 3, only once you have paid in) — the world now has a lift for each factor (Gate 21).
 v0.39: the pot respects the ceiling and the hụi button prints its multiplier delta (Gate 20 — the graphics session renumbers gates live; check `done.sh` duplicate-id before committing) —
 every verb now answers with the same arithmetic. The engine's synthesis 2 has G rejected and F
@@ -124,15 +128,16 @@ now a **graphics** loop (*"review it and make some upgrade/change/adjustment in 
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
 carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
-scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop, in order: the intro (v0.39) and the
-ending card (v0.40) are **done** — both were the same charter-4 fault, the world still shouting
-behind a card that owns the screen. Next: the **help card (Sổ tay)**, which this loop has not
-reviewed, and which is the third and last such overlay; then **crowding, still parked** — 61% of
-ordinary frames draw two villagers on top of each other and only ~4.2 of ~6.1 get named, but three
-runs of near-identical code gave avgNamed 4.15 / 4.58 / 3.77, so build a seeded or multi-run harness
-(copy `check.js`) *before* touching it. The far bank fading under a heavy sky is **decided, not
-pending**. Before adding any gate, run `./done.sh` and take the next id above the highest in BOTH
-`gate.sh` and the ledger — uniqueness is enforced there since v0.39. Remaining mechanic bank: the ending card calling a ≤3-factor person
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop, in order: all three overlays are
+**done** — intro (v0.39), ending card (v0.40), Sổ tay (v0.42); the first two were the same charter-4
+fault (the world still shouting behind a card that owns the screen), the third had no visible way out
+at all. Next: **crowding, still parked** — 61% of ordinary frames draw two villagers on top of each
+other and only ~4.2 of ~6.1 get named, but three runs of near-identical code gave avgNamed
+4.15 / 4.58 / 3.77, so build a seeded or multi-run harness (copy `check.js`) *before* touching it —
+that harness is now the single highest-value thing this loop could build, because three separate gate
+flakes (21, 23) have come from the same root. Then: the log panel and the verb row, neither reviewed.
+The far bank fading under a heavy sky is **decided, not pending**. Before adding any gate, run
+`./done.sh` and take the next id above the highest in BOTH `gate.sh` and the ledger. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop

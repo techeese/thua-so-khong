@@ -45,6 +45,8 @@ Rules:
 | `Gate 20` | 1 | the pot respects the ceiling — a row a 3 already caps refuses the pot and names the capping factor, a row with room takes it, and the hụi button prints what one coin does to the river's multiplier (v0.39) |
 | `Gate 22` | 1 | the ending card owns the screen — with the card up, speech bubbles pushed behind it are cleared before they paint; with the card down the same push survives, so the guard is conditional (v0.40) |
 | `Gate 21` | 1 | the world is honest about the ceiling and lifts BẠN — a sprout the ceiling binds gains no momentum over a season while one with room does; once you have paid into the hụi the circle raises the loneliest known neighbour's BẠN by 1 a season, never past 3, and not before (v0.40) |
+| `Gate 23` | 1 | the law's number is printed — under a heavy sky a young roof's sheet says ⬛ 15% this season, an established one 5%, a tarped one 🛡 0%, nothing under a clear sky; the shelter button says how many roofs one hand covers (v0.42) |
+| `Gate 24` | 1 | the Sổ tay keeps its way out — the heading and the Đóng button stay in view at every scroll position, and the body's live edge fades: bottom only at the top, both in the middle, top only at the end (v0.42) |
 
 ## Convergence gates — `done.sh`
 

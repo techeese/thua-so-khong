@@ -616,6 +616,74 @@ PYEOF22
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=24000 --dump-dom "file://$TMP/e.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "ENDQUIET_OK" && pass "the ending card owns the screen: $T" || fail "the ending card owns the screen: $T"
 
+# Gate 23: the law's number is printed — under a heavy sky a young roof's sheet says ⬛ 15% this season, an established one 5%, a tarped one 🛡 0%;
+# under a clear sky nothing; and the shelter button says how many roofs one hand covers.
+python3 - "$TMP" <<'PYEOF23'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.season=6; S.acts=3; S.un.probe=true; S.probeSeen=false;
+  var mai=S.cast[2], vu=S.cast[3]; mai.known=true; vu.known=true; mai.started=true; vu.started=true;
+  S.ships.push({x:420,y:300,owner:mai.name,pid:2,age:1,shel:0}); S.ships.push({x:300,y:420,owner:vu.name,pid:3,age:5,shel:0});
+  S.luat=6; selectPerson(2); var clear=document.getElementById("multLine").textContent, noneClear=!/⬛|🛡/.test(clear);
+  S.luat=2; render(); selectPerson(2); var young=document.getElementById("multLine").textContent, y15=/⬛ 15%/.test(young);
+  selectPerson(3); var old=document.getElementById("multLine").textContent, o5=/⬛ 5%/.test(old);
+  // the button prints the LIVE count of covered roofs (actShel tarps every one), and this harness
+  // pushes two ships — so "1 roof" was a stale magic number. Assert the stated intent instead:
+  // the number on the button equals the number one hand would actually cover.
+  var cost0=document.getElementById("shelCost").textContent;
+  var realN=S.ships.filter(shelCovers).length;
+  var printedN=parseInt((cost0.match(/·\s*(\d+)/)||[0,-1])[1],10);
+  var covers1=(realN>=1 && printedN===realN);
+  actShel(); selectPerson(2); var tarped=document.getElementById("multLine").textContent, t0=/🛡 0%/.test(tarped);
+  var ok=noneClear&&y15&&o5&&covers1&&t0;
+  document.title=(ok?"LAW_OK":"LAW_BAD")+" clear="+noneClear+" young15="+y15+" old5="+o5+" shelCost="+cost0+" printed="+printedN+" real="+realN+" tarped0="+t0;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/law.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF23
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/law.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "LAW_OK" && pass "the law's number is printed: $T" || fail "the law's number is printed: $T"
+
+# Gate 24: the Sổ tay keeps its way out — the card was one long scroller, so the heading and the
+# Đóng button scrolled away with the text: 1025px of card in an 813px window left the only exit at
+# y=1009, off-screen, and the undiscoverable margin-tap as the only visible way out. The body scrolls,
+# the title and the button stay, and the body's live edge fades so it says it has more.
+python3 - "$TMP" <<'PYEOF24'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<5;s++){ try{ S.acts=3; nextSeason(); }catch(e){} }
+  helpToggle(true);
+  setTimeout(function(){
+    var b=document.getElementById("helpBody"), cl=document.getElementById("helpClose"), h2=document.getElementById("helpTtl");
+    function inView(e){ var r=e.getBoundingClientRect(); return r.top>=0 && r.bottom<=innerHeight+1 && r.height>0; }
+    function at(t){ b.scrollTop=t; helpEdges(); return (b.classList.contains("mT")?"T":"-")+(b.classList.contains("mB")?"B":"-"); }
+    var more=b.scrollHeight-b.clientHeight;
+    var top=at(0),        vT=inView(cl)&&inView(h2);
+    var mid=at(Math.round(more/2)), vM=inView(cl)&&inView(h2);
+    var end=at(b.scrollHeight),     vE=inView(cl)&&inView(h2);
+    var ok = more>80 && top==="-B" && mid==="TB" && end==="T-" && vT && vM && vE;
+    document.title=(ok?"SOTAY_OK":"SOTAY_BAD")+" more="+more+" top="+top+" mid="+mid+" end="+end
+      +" exitAlwaysVisible="+(vT&&vM&&vE);
+  },600);
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/h.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF24
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=9000 --dump-dom "file://$TMP/h.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "SOTAY_OK" && pass "the Sổ tay keeps its way out: $T" || fail "the Sổ tay keeps its way out: $T"
+
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }
 echo; echo "🟢 ALL GATES GREEN."
