@@ -36,7 +36,9 @@ Rules:
 | `Gate 11` | 1 | the factors are hidden until touched — a fresh talk shows `? × ? × ?` and no per-verb answer, one hand on GAN reveals GAN alone, answers appear only once the row is known, a bloom shows everything (v0.33) |
 | `Gate 12` | 1 | a hand in the wrong place gets an answer — teach Bé Ngân on her strongest factor while GAN sits at 1 and she says so in her own voice once, ~0.9s after the float; a second teach says nothing more; nerve (the zero) draws no such line (v0.34) |
 | `Gate 13` | 1 | the names stay readable — six villagers jammed into 150px of the far bank produce no label printed over another villager's label and no label crossing the printed frame; overlap measured on the true ink box, not an estimate (v0.34) |
-| `Gate 13` | 1 | the girl's clock — Bé Ngân with NERVE under 3 at season 11 walks to the road and is gone; with NERVE ≥3 she stays (v0.35) |
+| `Gate 15` | 1 | the girl's clock — Bé Ngân with NERVE under 3 at season 11 walks to the road and is gone; with NERVE ≥3 she stays (v0.35) |
+| `Gate 16` | 1 | the strip says it scrolls — on a 390px phone the roster is wider than its box, and the chips at a live edge fade into the paper: right edge only at the start, both in the middle, left edge only at the end (v0.36) |
+| `Gate 14` | 1 | the TÀI zero walks — a low-TÀI neighbour picks the LEARN errand ≥20% of the time and it carries them to the most skilled pair of hands; a high-TÀI neighbour never picks it (v0.36) |
 
 ## Convergence gates — `done.sh`
 

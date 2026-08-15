@@ -1,5 +1,54 @@
 # Changelog — Thừa Số Không
 
+## v0.36 — 2026-08-15 — the TÀI zero walks
+
+Closes: under the owner's standing `/loop 3m` directive, a gap the engine's own synthesis names
+(`SYNTHESIS.md` §1: *"no low-TÀI walk exists"*; `walks.py`: an observer names a GAN zero from walks
+82 % of the time, BẠN 65 %, TÀI never). Since v0.33 the row is hidden and the road is one of the two
+places a stranger can read a person before a hand is spent — and it was silent on one factor of
+three. Chosen because it does not collide with Era A's manifest (which reconciles thresholds and
+removes tells) and is exactly the channel Era B would need.
+
+- **Errand 11 — LEARN.** An un-bloomed neighbour with TÀI ≤2 keeps going to watch the most skilled
+  pair of hands in the xóm (`learnMaster`: highest TÀI ≥6, a standing workshop breaking ties) — to
+  the workshop if it stands, else the door — and stands a little apart, hands clasped behind the
+  back, leaning in. Weight 3.0 beside home's 3.0, so it is a habit, not a tic. Motion only: no
+  number, no line (charter §4). GAN already faltered at the đình steps and BẠN already lingered at
+  the landing; now all three zeros have a walk.
+- Also measured this tick: **the fates are reachable and fair** — Ngân leaves in 0 % of hunter and
+  misreader runs, 5 % spreader, 10 % linker, 100 % idle; Liên 0 / 0 / 59 / 4 / 100 %; Chú Ba's craft
+  dies in ≤7 % anywhere the sim can bloom him. The people, not the numbers, now separate the
+  neglectful from the careful.
+- *Evidence:* new **Gate 14** (`LEARN_OK tuShare=0.28 nganShare=0.00 master=Chú Ba beh=11
+  near=true`). Seventeen gates green, hash-bracketed; no math changed, band untouched.
+
+### Carried in the same commit — the graphics round (`/loop 5m`): the strip says it scrolls
+
+The `LOOP.md` pointer named the roster strip's missing scroll affordance and, above it, the crowding
+question. Both were taken; only one shipped.
+
+- **The roster strip now says it scrolls.** On a 390px phone it is 746px of chips in a 370px box, and
+  a chip sliced by the box edge reads as a chip that is cut off, not as *there is more of the xóm this
+  way*. The chips at a live edge now fade into the paper — right edge only at the start, both in the
+  middle, left edge only at the end. The classic CSS background-shadow trick was written first and
+  thrown away: the chips are opaque and cover the background, so the cue has to be a mask on the
+  content itself, driven by real scroll position (`rosterEdges()`, called on render, scroll and
+  resize). *Evidence:* new **Gate 16** — `STRIP_OK more=356 atStart=-R mid=LR atEnd=L-`, plus a read
+  screenshot of the faded edge at the end of the strip.
+- **Gate numbering repaired.** v0.35 added a second `Gate 13`, colliding with v0.34's label gate in
+  both `gate.sh` and the ledger — a duplicate id in an append-only ratchet is a defect in the record
+  itself. The girl's clock is now **Gate 15**; nothing was removed or weakened.
+
+**Shipped nothing on the crowding item, deliberately.** The pointer asked whether the bank should
+label fewer people, label on demand, or spread the crowd. Measured first, over 192 sampled frames of
+an ordinary 16-season run: **~6.1 villagers on screen, ~4.2 named — and two figures drawn on top of
+each other in 117 of 192 frames (61%)**. So the labels were the symptom and the sprites are the
+cause. A fix was written — villagers rejecting a wander target that another villager already occupies
+— and **reverted**: overlap frames went 110 → 113, i.e. nothing. Then the real obstacle surfaced:
+three runs of near-identical code returned avgNamed **4.15 / 4.58 / 3.77**, so this measurement is
+noise-dominated and cannot resolve an effect that size at all. Crowding is parked with that finding
+rather than shipped on a number that means nothing.
+
 ## v0.35 — 2026-08-15 — every zero has a face
 
 Closes: under the owner's standing `/loop 3m` directive, the open owner gate *"You care about someone by

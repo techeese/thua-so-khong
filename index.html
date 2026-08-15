@@ -42,20 +42,15 @@
   button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
   button,.pill{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
   /* roster — who is in the xóm right now, one chip each; the map is the place, this is the index */
-  /* the strip scrolls but said so nowhere: a cut-off chip at the edge reads as a cut-off chip, not as
-     "there is more of the xóm this way". Two ink edges that appear only when there IS more that way
-     and fade out at either end — pure CSS via background-attachment: local vs scroll, no JS, no
-     scrollbar. `local` layers ride the content (so they slide away once you reach an end); `scroll`
-     layers stay pinned to the box and are what you actually see. */
-  .roster{display:flex;gap:5px;margin-top:6px;overflow-x:auto;padding:2px 1px;scrollbar-width:none;
-    background:
-      linear-gradient(to right, var(--paper) 40%, rgba(234,217,184,0)) left center,
-      linear-gradient(to left,  var(--paper) 40%, rgba(234,217,184,0)) right center,
-      radial-gradient(farthest-side at 0 50%, rgba(43,35,32,.20), rgba(43,35,32,0)) left center,
-      radial-gradient(farthest-side at 100% 50%, rgba(43,35,32,.20), rgba(43,35,32,0)) right center;
-    background-repeat:no-repeat;
-    background-size:26px 100%, 26px 100%, 11px 100%, 11px 100%;
-    background-attachment:local, local, scroll, scroll}
+  /* the strip scrolls but said so nowhere: a chip cut off by the edge reads as a cut-off chip, not as
+     "there is more of the xóm this way". The chips at a live edge fade into the paper instead — the
+     classic background-shadow trick is useless here because the chips are opaque and cover it, so the
+     cue has to be a mask on the content itself. .mL/.mR are set from real scroll position, so each
+     edge shows only while there is actually more that way. */
+  .roster{display:flex;gap:5px;margin-top:6px;overflow-x:auto;padding:2px 1px;scrollbar-width:none}
+  .roster.mR{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 30px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 30px),transparent)}
+  .roster.mL{-webkit-mask-image:linear-gradient(to right,transparent,#000 30px);mask-image:linear-gradient(to right,transparent,#000 30px)}
+  .roster.mL.mR{-webkit-mask-image:linear-gradient(to right,transparent,#000 30px,#000 calc(100% - 30px),transparent);mask-image:linear-gradient(to right,transparent,#000 30px,#000 calc(100% - 30px),transparent)}
   .roster::-webkit-scrollbar{display:none}
   .roster .rc{flex:0 0 auto;display:flex;align-items:center;gap:5px;border:2px solid var(--ink);border-radius:12px;background:#f5ead0;padding:3px 8px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:2px 2px 0 var(--ink);white-space:nowrap;-webkit-user-select:none;user-select:none}
   .roster .rc:active{transform:translate(2px,2px);box-shadow:none}
@@ -166,7 +161,7 @@
   </div>
 
   <div class="log" id="log"></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.35</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.36</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -477,7 +472,7 @@ function fresh(){
      un:{link:false,hui:false,build:false,probe:false}, nudged:false, hintDone:false, lawSeen:false, fadeSeen:false, lienWarned:false, flySeen:false, nightSeen:false, stormSeen:false, tierTaught:false, lienNgan:false, stormCount:0, stormStreak:0, classSeen:false, revealSeen:false,
      log:[], over:false, scars:[], hands:0, vb:{}, hist:[], potSeason:false, potSeen:false};
   lanterns=[]; runTok++;      // invalidate ALL deferred callbacks from the previous run
-  parts=[]; stamps=[]; glows=[]; bubbles=[]; amb=[]; pendQ=[]; motes=[]; rain=[]; ripples=[]; flock=null; smoke=[]; boat=null; gossipQ=[]; cart=null;
+  parts=[]; stamps=[]; glows=[]; bubbles=[]; amb=[]; pendQ=[]; motes=[]; rain=[]; ripples=[]; flock=null; smoke=[]; boat=null; gossipQ=[]; cart=null; bus=null;
   beatUntil=0; nextErrandAt=0; _chaser=null;
   S.cast.forEach(function(p9){ p9.amb=0; p9.beh=0; p9.legs=0; p9.dwl=0; p9.chain=0; p9.behForce=0; p9.bfAt=0; });
   S.cast[2].behForce=2; S.cast[2].bfAt=performance.now()+8000;    // Mai sits at the đình — what the hall is FOR
@@ -746,6 +741,8 @@ function execBeh(p,beh,now){
   else if(beh===7){ dx=BEN.x+26; dy=peopleFloor(); }
   else if(beh===8){ if(!S.ships.length) beh=1; else { var sh3=S.ships[(p.id+S.season)%S.ships.length]; dx=sh3.x-40; dy=sh3.y+26; } }
   else if(beh===10){ dx=p.hx+6; dy=p.hy+14; dur=5000+Math.random()*2000; }   // beside their own sprout
+  else if(beh===11){ var ms=learnMaster(p); if(!ms) beh=1; else { var msh=null; S.ships.forEach(function(sh){ if(sh.pid===ms.id) msh=sh; });
+    dx=(msh?msh.x:ms.hx)+(p.hx<ms.hx?-34:34); dy=(msh?msh.y+24:ms.hy+8); dur=6500+Math.random()*2500; } }   // 11 LEARN — a low-TÀI neighbour goes to watch the most skilled pair of hands at work
   else if(beh===9){ var c2=chicks[0],bd=1e9; chicks.forEach(function(c3){ var dd=Math.hypot(c3.x-p.x,c3.y-p.y); if(dd<bd){bd=dd;c2=c3;} });
     dx=c2.x; dy=c2.y-6; }
   if(beh===1){ dx=p.hx; dy=p.hy; }
@@ -754,8 +751,10 @@ function execBeh(p,beh,now){
   p.amb=1; p.beh=beh;
   if(beh===3) p.chain=1;   // faltering always turns back home
 }
+function learnMaster(p){ var best=null; S.cast.forEach(function(q){ if(q===p||!active(q)||q.tai<6) return; if(!best||q.tai>best.tai||(q.tai===best.tai&&q.started&&!best.started)) best=q; }); return best; }
 function pickBeh(p){
   var w=[[1,3.0]];
+  if(!p.started&&p.tai<=2&&learnMaster(p)) w.push([11,3.0]);   // the TÀI zero on the road: they keep going to watch someone who can — the walk GAN and BẠN already had
   w.push([p.gan<=2?3:2, 0.5+0.35*p.ban]);
   var wm=(S.von<=2?0:0.8)+((!p.started&&p.tai>=7)?2.5:0)+(p.id===4?1.5:0); if(wm>0) w.push([4,wm]);
   var wf=pairCount(p.id); if(wf>0) w.push([5,wf]);
@@ -839,6 +838,7 @@ var rain=[], ripples=[];   // storm-season rain and the rings it leaves on the r
 var flock=null, nextFlockAt=12000;   // one V of birds at a time, on a clear sky
 var smoke=[];   // kiln and hearth smoke
 var cart=null, nextCartAt=6000;   // 🛤 the market-road year's ox-cart
+var bus=null;   // 🚌 the xe đò that takes Bé Ngân to the city — {t0,wait,dur}
 var nightAt=-1e9;   // when the last season turned — drives the dusk→dawn wipe
 var boat=null;  // the sampan that brings Cô Liên in and, unheld, takes her away — {t0,dur,x0,x1,col}
 var LKF=1, _lkfLast=-1, FONT_LBL="700 11px sans-serif", FONT_HINT="10px sans-serif";  // label compensation + cached font strings
@@ -972,6 +972,28 @@ function drawScene(now){
   ctx.strokeStyle="rgba(160,130,80,.25)"; ctx.lineWidth=7; ctx.lineCap="round";
   ctx.beginPath(); ctx.moveTo(W+4,336); ctx.quadraticCurveTo(760,346,560,318); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(W+4,348); ctx.quadraticCurveTo(770,360,566,330); ctx.stroke();
+  // foreshadowing, drawn: from season 9 an un-dared Ngân has a faded bus waiting at the road's end; from season 10 an unheld Liên has the sampan
+  // waiting at the landing. The threat is visible on the print for two seasons before it falls — the same way tomorrow's arrival is a figure on the road.
+  if(!S.over&&!bus){ var ng0=S.cast[0];
+    if(S.season>=9&&active(ng0)&&!ng0.started&&!ng0.leaving&&ng0.gan<3){ ctx.save(); ctx.globalAlpha=0.28+0.06*Math.sin(now*0.003); ctx.translate(W-30,336);
+      ink(1.5); ctx.fillStyle="#c9a35a"; ctx.fillRect(-16,-15,32,15); ctx.strokeRect(-16,-15,32,15); ctx.fillStyle="#EAD9B8"; [-12,-3,6].forEach(function(wx4){ ctx.fillRect(wx4,-12,6,5); });
+      ctx.fillStyle="#3a2a1e"; ctx.beginPath(); ctx.arc(-9,1,2.6,0,6.28); ctx.arc(9,1,2.6,0,6.28); ctx.fill(); ctx.restore(); } }
+  if(!S.over&&!boat){ var ln0=S.cast[6];
+    if(S.season>=10&&active(ln0)&&!ln0.started&&ln0.ban<4&&!S.pairs.some(function(pr){return pr[0]===6||pr[1]===6;})){ ctx.save(); ctx.globalAlpha=0.3+0.06*Math.sin(now*0.003+1);
+      var byy0=(H-(26+S.von*5.5))+11+Math.sin(now*0.004)*1.2, bxx0=48;
+      ink(2); ctx.fillStyle="#8a6642"; ctx.beginPath(); ctx.moveTo(bxx0-20,byy0); ctx.quadraticCurveTo(bxx0,byy0+8,bxx0+20,byy0); ctx.lineTo(bxx0+15,byy0-4); ctx.lineTo(bxx0-15,byy0-4); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.restore(); } }
+  // 🚌 the xe đò: waits at the road's end while Ngân walks, then leaves with her at the window — the road that brought everyone in takes one away
+  if(bus){ var be=now-bus.t0;
+    if(be>bus.wait+bus.dur){ bus=null; }
+    else { var bxx=W-44+(be>bus.wait?((be-bus.wait)/bus.dur)*140:0), byy=336+Math.sin(now*0.02)*0.5, aboard=be>bus.wait;
+      ctx.save(); ctx.translate(bxx,byy);
+      ink(2); ctx.fillStyle="#c9a35a"; ctx.beginPath(); ctx.roundRect?ctx.roundRect(-22,-20,44,20,3):ctx.rect(-22,-20,44,20); ctx.fill(); ctx.stroke();   // the body
+      ctx.fillStyle="#EAD9B8"; [-16,-4,8].forEach(function(wx3){ ctx.fillRect(wx3,-17,9,7); ctx.strokeRect(wx3,-17,9,7); });                             // windows
+      if(aboard){ ctx.fillStyle="#D97C8E"; ctx.fillRect(-14,-16,5,5); }                                                                                 // her, at the window
+      ctx.fillStyle="#3a2a1e"; ctx.beginPath(); ctx.arc(-13,1,3.5,0,6.28); ctx.arc(13,1,3.5,0,6.28); ctx.fill();                                        // wheels
+      if(aboard&&smoke.length<40&&Math.random()<0.4) smoke.push({x:bxx-24,y:byy-4,r:1.6,vx:-0.5,vy:-0.15,a:0.25,ph:Math.random()*6.28});               // exhaust
+      ctx.restore(); } }
   // 🛤 the market-road year has traffic: an ox-cart comes down the new road to the đình yard and back, every so often
   if(S.yearCard===2&&!S.over){
     if(!cart&&now>nextCartAt) cart={t0:now,dur:16000};
@@ -1390,6 +1412,8 @@ function person(p,now){
     else if(beh===10){ ink(2.2);                               // tending: crouched, one hand to the sprout, a drop now and then
       ctx.beginPath(); ctx.moveTo(x+8,y-2); ctx.quadraticCurveTo(x+14,y+2,x+16,y+9); ctx.stroke();
       if(Math.sin(now*0.004+p.ph)>0.9){ ctx.fillStyle="rgba(46,74,98,.6)"; ctx.beginPath(); ctx.arc(x+16+Math.sin(now*0.02)*1.5,y+12+((now*0.05+p.ph*10)%8),1.4,0,6.28); ctx.fill(); } }
+    else if(beh===11){ ink(2);                                // learning: hands clasped behind the back, leaning in
+      ctx.beginPath(); ctx.moveTo(x-6,y+2); ctx.quadraticCurveTo(x,y+8,x+6,y+2); ctx.stroke(); }
     else if(beh===7 && Math.sin(now*0.0015+p.ph)>0.995){      // a ripple watched alone
       ctx.strokeStyle="rgba(46,74,98,.4)"; ctx.lineWidth=1.5;
       ctx.beginPath(); ctx.arc(x,y+26,7,0.2,2.9); ctx.stroke(); }
@@ -1924,6 +1948,7 @@ function nextSeason(){
       logMsg("Bé Ngân nhắc chuyện trường Y — thừa số GAN của em vẫn gần số không.","Bé Ngân talks of medical school — her NERVE factor still sits near zero."); }
     if(S.season>=11&&!dared){ ngan.leaving=true;
       visit(ngan,W-40,346,5200);   // she walks to the road's end, the whole xóm watching, and is gone
+      bus={t0:performance.now(),wait:4800,dur:2600};   // 🚌 the xe đò idles at the road's end while she walks; it pulls out the moment she's aboard
       (function(){ var ctok=runTok; setTimeout(function(){ if(runTok!==ctok) return; ngan.gone=true; ngan.leaving=false; if(S.sel===0){ S.sel=-1; renderSheet(); } render(); save(); },4800); })();
       logMsg("🚌 Bé Ngân lên tỉnh học Y — bố em đã thắng. Không ai giúp em dám.","🚌 Bé Ngân left for medical school in the city — her father won. No one helped her dare.");
       banner("🚌 …",1800); gong(147,1.0,0.04);
@@ -2261,7 +2286,13 @@ function renderRoster(){
     var dots=(p.known&&!p.started)?("<span class=\"sd\" title=\"TÀI · GAN · BẠN\">"+["tai","gan","ban"].map(function(k){ return (p.seen&&p.seen[k])?"●":"○"; }).join("")+"</span>"):"";
     h+="<div class=\""+cls+"\" data-id=\""+p.id+"\"><i style=\"background:"+p.color+"\"></i>"+nm+dots+(tag?" "+tag:"")+"</div>"; });
   if(box.innerHTML!==h) box.innerHTML=h;
+  rosterEdges();
 }
+// which edges of the strip have more xóm behind them — re-read on every render, scroll and resize
+function rosterEdges(){ var b=el("roster"); if(!b) return;
+  var more=b.scrollWidth-b.clientWidth;
+  b.classList.toggle("mL", more>2 && b.scrollLeft>2);
+  b.classList.toggle("mR", more>2 && b.scrollLeft<more-2); }
 function renderLog(){
   el("log").innerHTML=S.log.map(function(m){return "<div"+(m.div?' class="ldiv"':"")+">"+(m[L]||m.vi)+"</div>";}).join("")||"<div>"+t("talkFirst")+"</div>";
 }
@@ -2305,6 +2336,8 @@ el("roster").addEventListener("click",function(ev){ var c=ev.target.closest?ev.t
   var id=+c.getAttribute("data-id"); if(!fin(id)) return;
   if(S.linking!=null){ if(id!==S.linking) completeLink(id); return; }   // the roster is a tap surface like the map
   selectPerson(id); });
+el("roster").addEventListener("scroll",rosterEdges,{passive:true});
+addEventListener("resize",rosterEdges);
 // the pills answer when tapped — the year card scrolls out of the log by season 3, the tier total hides which roofs it counts
 el("seasonPill").style.cursor="pointer"; el("tierPill").style.cursor="pointer"; el("actPill").style.cursor="pointer";
 el("seasonPill").onclick=function(){ if(!S||S.over) return;

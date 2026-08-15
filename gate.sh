@@ -354,7 +354,7 @@ PYEOF12
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=600,900 --virtual-time-budget=9000 --dump-dom "file://$TMP/l.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "LABEL_OK" && pass "the names stay readable: $T" || fail "the names stay readable: $T"
 
-# Gate 13: the girl's clock — Bé Ngân with NERVE under 3 at season 11 walks to the road and is gone; with NERVE ≥3 she stays.
+# Gate 15: the girl's clock — Bé Ngân with NERVE under 3 at season 11 walks to the road and is gone; with NERVE ≥3 she stays.
 python3 - "$TMP" <<'PYEOF13'
 import sys
 tmp=sys.argv[1]; html=open("index.html").read()
@@ -378,6 +378,62 @@ open(tmp+"/c.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOF13
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=14000 --dump-dom "file://$TMP/c.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "CLOCK_OK" && pass "the girl's clock: $T" || fail "the girl's clock: $T"
+
+# Gate 14: the TÀI zero walks — a low-TÀI neighbour (Anh Tú at 2) picks the LEARN errand often and it carries him to the most
+# skilled pair of hands; a high-TÀI neighbour (Bé Ngân at 8) never picks it.
+python3 - "$TMP" <<'PYEOF14'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  S.season=5; var tu=S.cast[5], ng=S.cast[0]; tu.known=true; tu.tai=2; tu.started=false; ng.tai=8;
+  var n=3000, c11=0, c11ng=0;
+  for(var i=0;i<n;i++){ if(pickBeh(tu)===11) c11++; if(pickBeh(ng)===11) c11ng++; }
+  var ms=learnMaster(tu); execBeh(tu,11,performance.now());
+  var msh=null; S.ships.forEach(function(sh){ if(sh.pid===ms.id) msh=sh; });
+  var ex=(msh?msh.x:ms.hx)+(tu.hx<ms.hx?-34:34), near=Math.abs(tu.tx-ex)<40;
+  var ok = c11/n>0.2 && c11ng===0 && tu.beh===11 && !!ms && ms.tai>=6 && near;
+  document.title=(ok?"LEARN_OK":"LEARN_BAD")+" tuShare="+(c11/n).toFixed(2)+" nganShare="+(c11ng/n).toFixed(2)+" master="+(ms?ms.name:"none")+" beh="+tu.beh+" near="+near;
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/l.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF14
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=5000 --dump-dom "file://$TMP/l.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "LEARN_OK" && pass "the TÀI zero walks: $T" || fail "the TÀI zero walks: $T"
+
+# Gate 16: the strip says it scrolls — the roster is wider than a phone, and a chip cut off by the box
+# edge reads as a cut-off chip, not as "there is more of the xóm this way". The chips at a live edge
+# fade into the paper; each edge shows ONLY while there is more that way. Asserted as the three states
+# a player can be in, because the cue is a mask driven by real scroll position.
+python3 - "$TMP" <<'PYEOF16'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<style>body{width:390px;margin:0 auto}</style>
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-v1");
+  document.getElementById("startBtn").click();
+  for(var s=0;s<8;s++){ try{ S.acts=3; nextSeason(); }catch(e){} }
+  S.cast.forEach(function(p){ p.known=true; });
+  render();
+  var r=document.getElementById("roster"), more=r.scrollWidth-r.clientWidth;
+  function st(sl){ r.scrollLeft=sl; rosterEdges();
+    return (r.classList.contains("mL")?"L":"-")+(r.classList.contains("mR")?"R":"-"); }
+  var a=st(0), b=st(Math.round(more/2)), c=st(r.scrollWidth);
+  var ok = more>40 && a==="-R" && b==="LR" && c==="L-";
+  document.title=(ok?"STRIP_OK":"STRIP_BAD")+" more="+more+" atStart="+a+" mid="+b+" atEnd="+c;
+}catch(e){ document.title="THREW: "+e.message; } },700);
+</script>"""
+open(tmp+"/s.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF16
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=600,900 --virtual-time-budget=9000 --dump-dom "file://$TMP/s.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "STRIP_OK" && pass "the strip says it scrolls: $T" || fail "the strip says it scrolls: $T"
 
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }

@@ -93,7 +93,11 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.35: every zero has a face — Bé Ngân leaves for medical school at season 11 if NERVE stays under
+**v0.36: the TÀI zero walks — errand 11 LEARN sends a low-TÀI neighbour to watch the most skilled
+hands (Gate 14); all three zeros now have a walk, and the fates measure as reachable and fair
+(Ngân leaves 0 % hunter · 5 % spreader · 100 % idle). The engine's `SYNTHESIS.md` has closed Era 1
+and provisionally picked Era A (one zero, one word — reductive); mechanic ticks now choose work
+that A's manifest does not touch and B would need. v0.35: every zero has a face — Bé Ngân leaves for medical school at season 11 if NERVE stays under
 3 (Gate 13), the ending shows every row, and `check.js` bands the misreader (6.97/15.9: the hidden
 row costs a fair player one hand per misread). v0.34: a hand in the wrong place is answered in the person's own voice, once, no number (Gate 12);
 Anh Vũ's opening line now carries his BẠN clue. v0.33 hides every factor until a hand touches it (Gate 11) — diagnosis is now a guess from the
@@ -107,13 +111,14 @@ the pot pays out (Gate 10); "price for being wrong" re-measured and found paid b
 now a **graphics** loop (*"review it and make some upgrade/change/adjustment in the graphic,
 regardless how large or how small"*), and `/loop 3m` "mechanic/gameplay upgrades" — and has said
 **all loops keep running**; each commit brackets `gate.sh` with a hash check and names what it
-carried from the other. Label de-overlap **shipped in v0.34** (Gate 13: cross-overlaps 4 → 0, frame
-bleed 2 → 0 on a six-villager jam). Next for the graphics loop, in order: **the bank is denser than
-it can label** — in that same jam only 3 of 6 villagers get a name, the rest still yield; decide
-whether the answer is a quieter tag, labels on demand, or spreading the crowd, and note that v0.33's
-hidden factors already cut how much there is to print; the far bank is tasteful but nearly invisible
-under a heavy sky — decide whether that is the point or too timid; the roster strip scrolls with no
-affordance that it scrolls. Remaining mechanic bank: the ending card calling a ≤3-factor person
+carried from the other. Label de-overlap shipped in v0.34 (Gate 13); the roster's
+scroll cue shipped in v0.36 (Gate 16). Next for the graphics loop, in order: **the crowding item is
+parked, not done** — 61% of ordinary frames draw two villagers on top of each other and only ~4.2 of
+~6.1 get named, but a target-rejection fix moved nothing (110 → 113 overlap frames) and, decisively,
+three runs of near-identical code gave avgNamed 4.15 / 4.58 / 3.77, so **any crowding work must first
+get a seeded or multi-run harness** (copy `check.js`'s method) or its numbers are meaningless; the far
+bank fading to nothing under a heavy sky is **decided, not pending** — a closed sky is meant to close
+the far shore; then the intro screen, which this loop has never reviewed. Remaining mechanic bank: the ending card calling a ≤3-factor person
 "bloomed" beside its own `×` arithmetic; `schoolfirst` and a fair `spreaderU`; the misreader is banded (done); and whether the *first*
 talk should reveal one factor for free on run 1 (the book remembers on run 2+) if real players stall.
 Era-1 exhaustion count stands at 2 of 3 `confirms-known` verdicts; the autonomous engine loop
