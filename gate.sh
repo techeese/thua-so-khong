@@ -574,10 +574,14 @@ setTimeout(function(){ try{
   // in the lift season sets started=true BEFORE the circle looks — the lift filter is !started, so lifted read
   // false on identical code about one run in 25. Only ba's roll is pinned; every other roll in the season is live.
   var C0=chance; chance=function(q){ return q===ba?0:C0(q); };
-  S.hui=1; ba.ban=2; ba.started=false; ba.known=true; nextSeason(); var lifted=(ba.ban===3&&ba.seen.ban===true);
-  ba.ban=3; nextSeason(); var notPast3=(ba.ban===3); chance=C0;
+  // v0.76: since v0.75 the xóm makes friends on its own (quen: BẠN 3–6 +1, 35 %/season) — once the circle has lifted Ba to 3 the same tick can quen him to 4. A different lift, read from the
+  // persisted pair list (S._quenNow is nulled inside the tick); ≤2 is never quen-lifted, so ban 4 with a fresh quen pair naming Ba still means the circle did exactly +1.
+  function quenBaNow(n0){ var q=S.quen||[]; return q.length>n0&&q[q.length-1].indexOf(ba.id)>=0; }
+  var qn1=(S.quen||[]).length; S.hui=1; ba.ban=2; ba.started=false; ba.known=true; nextSeason(); var quenBa1=quenBaNow(qn1); var lifted=(ba.ban===3||(ba.ban===4&&quenBa1))&&ba.seen.ban===true;
+  var qn2=(S.quen||[]).length; ba.ban=3; nextSeason(); var quenBa=quenBaNow(qn2);
+  var notPast3=(ba.ban===3)||(ba.ban===4&&quenBa); chance=C0;
   var ok = trials>=6 && maiMom===0 && vuMom>0 && noLiftWithoutHui && lifted && notPast3;
-  document.title=(ok?"WORLD_OK":"WORLD_BAD")+" trials="+trials+" maiMom="+maiMom.toFixed(2)+" vuMom="+vuMom.toFixed(2)+" noLiftWithoutHui="+noLiftWithoutHui+" lifted="+lifted+" notPast3="+notPast3;
+  document.title=(ok?"WORLD_OK":"WORLD_BAD")+" trials="+trials+" maiMom="+maiMom.toFixed(2)+" vuMom="+vuMom.toFixed(2)+" noLiftWithoutHui="+noLiftWithoutHui+" lifted="+lifted+" notPast3="+notPast3+" quenBa="+quenBa1+"/"+quenBa;
 }catch(e){ document.title="THREW: "+e.message; } },600);
 </script>"""
 open(tmp+"/w.html","w").write(html.replace("</body>",drv+"</body>"))
@@ -2145,7 +2149,7 @@ drv=r"""
 window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
 var R={}; function tipB(){ return (_tipCur&&el("tip").classList.contains("show"))?_tipCur.b:0; }
 setTimeout(function(){ try{
-  localStorage.removeItem("thua-so-khong-v1"); localStorage.setItem("thua-so-khong-chronicle","[]"); window._pendYc=3;
+  localStorage.removeItem("thua-so-khong-v1"); localStorage.setItem("thua-so-khong-chronicle","[]"); localStorage.removeItem("thua-so-khong-lessons"); window._pendYc=3;   // v0.76: lessons are per-device — a fresh device for a fresh-run probe
   R.intro=el("inP2").textContent.indexOf("TÀI × GAN × BẠN")>=0;
   document.getElementById("startBtn").click();
   R.vet=!S.vet; R.tip0=(S.tip|0)===0;
@@ -2265,6 +2269,46 @@ open(tmp+"/bld.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOF68
 T=$("$CHROME" --headless --disable-gpu --no-sandbox --window-size=1000,900 --virtual-time-budget=22000 --dump-dom "file://$TMP/bld.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "BLD_OK" && pass "the buildings are for something: $T" || fail "the buildings are for something: $T"
+
+# Gate 69: a lesson is owed once per DEVICE, vet or not (v0.76) — with a non-empty book (a vet) and no lessons key: no tip ever shows, yet the hụi
+# lesson lands at season 2, the first coin's line on paying in, the pot names itself, and "where the rules live" lands after the first turn; a second
+# vet run on the same device repeats none of them; the key survives fresh(). Negative: with the key full, a fresh first-run device hears nothing.
+python3 - "$TMP" <<'PYEOF69'
+import sys
+tmp=sys.argv[1]; html=open("index.html").read()
+drv=r"""
+<script>
+window.onerror=function(m,s,l){document.title="JSERR: "+m+" @"+l;};
+var R={}; function has(re){ return S.log.some(function(m){return re.test(m.vi);}); } function tipB(){ return (typeof _tipCur!=="undefined"&&_tipCur&&el("tip").classList.contains("show"))?_tipCur.b:0; }
+function vetRun(){ localStorage.removeItem("thua-so-khong-v1"); localStorage.setItem("thua-so-khong-chronicle",JSON.stringify([{ti:3,tv:"x",te:"x",yc:2,cn:0,nB:1,ts:1}])); window._pendYc=2; window._pendCon=0;
+  fresh(); document.getElementById("startBtn").click(); S.nudged=true; S.yearCard=2; }
+setTimeout(function(){ try{
+  localStorage.removeItem("thua-so-khong-lessons");
+  vetRun(); R.vet=S.vet===true;
+  selectPerson(0); S.acts=3; actTeach(); flushPend(true); nextSeason(); flushPend(true);
+  R.helpNudge1=has(/^📖 Quên luật/); R.tipQuiet1=tipB()===0;
+  selectPerson(2); nextSeason(); flushPend(true);
+  R.huiLesson1=has(/^🪙 HỤI là vốn/); R.tipQuiet2=tipB()===0;
+  S.acts=3; actHui(); R.coin1=has(/^🪙 Bạn góp một tay vào hụi/);
+  var pp=S.cast.filter(function(q){return active(q)&&!q.started&&!q.arriveT&&!q.gone;})[0]; selectPerson(pp.id); render(); renderSheet(); R.pot1=has(/^🧧 Nút mới/);
+  R.mask=lesMask()===(LES.hui|LES.coin|LES.pot|LES.help|(lesMask()&LES.link)|(lesMask()&LES.places)|(lesMask()&LES.build));
+  // second vet run, same device
+  vetRun(); R.vet2=S.vet===true; R.keyKept=lesMask()>0;
+  selectPerson(0); S.acts=3; actTeach(); flushPend(true); nextSeason(); flushPend(true); selectPerson(2); nextSeason(); flushPend(true); S.acts=3; actHui();
+  R.noHui2=!has(/^🪙 HỤI là vốn/); R.noHelp2=!has(/^📖 Quên luật/); R.noCoin2=!has(/^🪙 Bạn góp một tay vào hụi/);
+  // negative: a fresh device (empty book) that has "heard everything" hears nothing
+  localStorage.setItem("thua-so-khong-lessons","127"); localStorage.setItem("thua-so-khong-chronicle","[]"); localStorage.removeItem("thua-so-khong-v1"); window._pendYc=2; fresh(); document.getElementById("startBtn").click(); S.nudged=true; S.yearCard=2;
+  R.fresh=S.vet!==true; selectPerson(0); S.acts=3; actTeach(); flushPend(true); nextSeason(); flushPend(true); selectPerson(2); nextSeason(); flushPend(true);
+  R.fullQuiet=!has(/^🪙 HỤI là vốn/)&&!has(/^📖 Quên luật/);
+  localStorage.removeItem("thua-so-khong-lessons"); localStorage.setItem("thua-so-khong-chronicle","[]"); localStorage.removeItem("thua-so-khong-v1");   // leave the profile as found
+  var ok=Object.keys(R).every(function(k){return R[k]===true;});
+  document.title=(ok?"LESSON_OK ":"LESSON_BAD ")+Object.keys(R).map(function(k){return k+"="+R[k];}).join(" ");
+}catch(e){ document.title="THREW: "+e.message; } },600);
+</script>"""
+open(tmp+"/lesson.html","w").write(html.replace("</body>",drv+"</body>"))
+PYEOF69
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=9000 --dump-dom "file://$TMP/lesson.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+echo "$T" | grep -q "LESSON_OK" && pass "a lesson is owed once per device: $T" || fail "a lesson is owed once per device: $T"
 
 rm -rf "$TMP"
 [ "$FAIL" -ne 0 ] && { echo; echo "🚫 GATES FAILED — DO NOT SHIP."; exit 1; }

@@ -93,7 +93,12 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.74 shipped: the narrative layer keeps its voice (Gate 63; Gate 12 tightened) — an owner-directed tick from an
+**v0.76 shipped: a lesson is owed once per device (Gate 69; Gate 66 setup tightened) — owner-directed (`/loop 5m`, "I didn't
+see the explanation for hụi"). Root cause: `S.vet` (any book) gated all of v0.75's lessons, so the owner's device never
+heard one; `lessonDue/lessonSaid` on a per-device bitmask replaces `!S.vet` at seven sites, tips stay off for vets
+(Gate 66). Watch on the next ticks: whether the owner now sees the hụi paragraph at season 2 and "Quên luật? Chạm ?"
+after the first turn; if the complaint persists, the next suspects are the huiBtn hint (`×0.37→0.44` is arithmetic,
+not an explanation) and the intro's density (`inP2` is four sentences).** **v0.74 shipped: the narrative layer keeps its voice (Gate 63; Gate 12 tightened) — an owner-directed tick from an
 in-session review of story / dialogue / text presentation / language. Register (`reg:"em"` on Ngân and Tú, `inReg`
 on every shared answer-to-a-hand line), tap-answers kept in the log (`say`), read-time bubbles (`bubDur` 3–6.2 s),
 the street's grief gate = the card's, four i18n edges (chơi lại · Aa title · roster tooltip · `ownerOf`), a jitter

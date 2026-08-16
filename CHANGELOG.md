@@ -1,5 +1,34 @@
 # Changelog — Thừa Số Không
 
+## v0.76 — 2026-08-16 — a lesson is owed once per device, not once per first run
+
+Closes: **owner directive in session (`/loop 5m`, 2026-08-16)** — *"I didn't see the explanation for hụi, or [for]
+general gameplay … make this better."* On the owner's own device — and on any device with a village book —
+**none of v0.75's onboarding ever showed.** The book sets `S.vet` for any browser with a chronicle ("no
+training wheels on run 2+", a v0.2x rule), and v0.75 gated *every* lesson on `!S.vet`: the hụi paragraph
+(`unHui`), the first coin's ×a→×b line, the pot naming itself, "where the rules live" (the pointer to Sổ tay's
+"Hụi là gì?" / "Cách chơi"), the new-verb lines, the places. A player whose thirty runs predate the lessons was,
+by that gate, someone who had already heard them. Root cause verified in code (`S.vet`, `index.html:671`) and
+by Gate 69's negative run (`huiLesson1=false` with the old gate).
+
+- **Fix — per-device memory for lessons.** `LES` (link · hui · build · places · coin · pot · help), a fin-guarded
+  bitmask in `localStorage` (`thua-so-khong-lessons`, its own key, never a save field). `lessonDue(bit)` replaces
+  `!S.vet` at all seven sites; `lessonSaid(bit)` marks at the moment the line lands. Paying into the hụi at all
+  marks the hụi lesson learned (the flood-year opening line has no other place to be marked). A vet who has
+  heard a lesson never hears it again; a vet who never did hears it once — the same rule for everyone, and
+  strictly *less* narration than per-run.
+- **Tips stay off for vets.** Gate 66 pins `vetQuiet`; a gate is never weakened. The log lessons *are* the
+  explanation (the tip only points); the vet still has the ? button, and now hears where it leads.
+- *Evidence:* **Gate 69** — `vet=true helpNudge1 tipQuiet1 huiLesson1 tipQuiet2 coin1 pot1 mask vet2 keyKept
+  noHui2 noHelp2 noCoin2 fresh fullQuiet` all true; negative-tested red on the `!S.vet` gate. Gate 66's setup
+  clears the new key (Tightenings). Full suite green before commit.
+- **Gate 21 repaired on the way** (release gates were red on committed v0.75, one run in six): since the remake the
+  xóm's own friendships (quen) can lift Ba 3 → 4 in the tick right after the circle lifted him 2 → 3; the probe
+  read that as the circle lifting past 3. It now attributes the lift through the persisted `S.quen` list
+  (`S._quenNow` is nulled inside the tick). 12/12 green, one with quen firing. Tightenings.
+- Not done: nothing else moved. The huiBtn hint (`×0.37→0.44`) and the intro's length were left as v0.75 wrote
+  them — the owner's words were about not *seeing* the explanation, and that is what was broken.
+
 ## v0.75 — 2026-08-16 — the big remake: nobody appears out of nowhere · the game teaches itself · buildings with purpose · the xóm makes friends on its own · trades that look like trades
 
 Owner directive (2026-08-15, five factors, "run a big re-make"): (1) characters appeared out of nowhere, (2) no

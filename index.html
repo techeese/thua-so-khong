@@ -244,7 +244,7 @@
 
   <div class="log" id="log"></div>
   <div id="tip" role="status" aria-live="polite"><span id="tipTxt"></span><b>✕</b></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.75</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.76</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -381,6 +381,14 @@ function say(p,ln){ if(!p||!ln) return; bubble(p,ln[L]||ln.vi||"");
   if(ln.vi&&ln.en){ var st=function(x){ return String(x).replace(/^“|”$/g,"").replace(/^"|"$/g,""); }; logMsg("💬 "+p.name+": "+st(ln.vi),"💬 "+p.name+": "+st(ln.en)); } }
 // v0.74 — the name a roof answers to, in the language on screen: your own roof was saved as "bạn"/"you" at build time and read back verbatim after a language flip
 function ownerOf(sh){ return sh.yours?(L==="vi"?"bạn":"you"):sh.owner; }
+// v0.76 — a LESSON (what a hụi is, what the first coin opened, the pot naming itself, where the rules live, the new verbs, the places) is said
+// once per DEVICE, not once per first run. The book made every returning player a "vet", and a vet heard no lesson at all — including a
+// player whose thirty runs predate the lessons. Tips stay off for vets (Gate 66); the lessons in the log are the explanation, and each is
+// owed once. Fin-guarded, its own key — never a save field.
+var LES_KEY="thua-so-khong-lessons", LES={link:1,hui:2,build:4,places:8,coin:16,pot:32,help:64};
+function lesMask(){ try{ var v=parseInt(localStorage.getItem(LES_KEY)||"0",10); return fin(v)?v:0; }catch(e){ return 0; } }
+function lessonDue(bit){ return !(lesMask()&bit); }
+function lessonSaid(bit){ try{ localStorage.setItem(LES_KEY,String(lesMask()|bit)); }catch(e){} }
 
 // ---------- the cast (authored people, each embodying a zero) ----------
 function makeCast(){ return [
@@ -674,7 +682,7 @@ function fresh(){
   if(S.yearCard===1) S.un.probe=true;                     // the strict year posts notices from day one
   if(S.yearCard===4){ S.cast[6].arrives=2; S.baFadeStart=5; }   // the reunion year: both people-clocks come early
   S.luatNext=driftLuat(S.luat);
-  if(S.yearCard===0&&!S.vet&&(S.constraint|0)!==1) S.log.unshift({vi:STR.unHui.vi,en:STR.unHui.en});   // the flood year opens with the hụi already running — say what a hụi is, under the year card
+  if(S.yearCard===0&&lessonDue(LES.hui)&&(S.constraint|0)!==1) S.log.unshift({vi:STR.unHui.vi,en:STR.unHui.en});   // v0.76: due to anyone who has not heard it (marked when the hand is paid, or the lesson lands)   // the flood year opens with the hụi already running — say what a hụi is, under the year card
   S.log.unshift((S.yearCard===0&&(S.constraint|0)===1)
     ?{vi:"🌊 Năm lũ — sông không tự đầy, mà năm nay bạn không góp hụi. Chỉ rễ sâu mới gọi được nước.",
       en:"🌊 A flood year — and you've sworn off the hụi. Only deep roots call the water now."}
@@ -2118,12 +2126,12 @@ function selectPerson(id){
 }
 // verbs arrive one at a time, as the story needs them — never all at once
 function unlockCheck(){
-  if(!S.un.link && S.cast.filter(function(p){return p.known;}).length>=2){ S.un.link=true; if(!S.vet) logMsg(STR.unLink.vi,STR.unLink.en); beep(784,0.08,0.02); }
+  if(!S.un.link && S.cast.filter(function(p){return p.known;}).length>=2){ S.un.link=true; if(lessonDue(LES.link)){ lessonSaid(LES.link); logMsg(STR.unLink.vi,STR.unLink.en); } beep(784,0.08,0.02); }
   var dl=(S._arrivedNow&&S._arrivedNow.length)?7200:2800;   // a lesson waits for the walker to reach the door and speak
-  if(!S.un.hui && S.season>=2){ S.un.hui=true; if(!S.vet) pendLog(dl,STR.unHui.vi,STR.unHui.en); }   // after the newcomer has spoken
-  if(!S.un.build && S.season>=4){ S.un.build=true; if(!S.vet) pendLog(dl,STR.unBuild.vi,STR.unBuild.en); }
+  if(!S.un.hui && S.season>=2){ S.un.hui=true; if(lessonDue(LES.hui)){ lessonSaid(LES.hui); pendLog(dl,STR.unHui.vi,STR.unHui.en); } }   // after the newcomer has spoken
+  if(!S.un.build && S.season>=4){ S.un.build=true; if(lessonDue(LES.build)){ lessonSaid(LES.build); pendLog(dl,STR.unBuild.vi,STR.unBuild.en); } }
   // the places can be asked — said once, on a first run, after the second season's arrival has spoken (the sky, river, đình, market, banyan, paddy and road all answer)
-  if(!S.placesTold && S.season>=3 && !S.vet){ S.placesTold=true;
+  if(!S.placesTold && S.season>=3 && lessonDue(LES.places)){ S.placesTold=true; lessonSaid(LES.places);
     pendLog(dl+600,"👉 Không chỉ người — chạm vào sông, đình, chợ, cây đa, ruộng, con đường hay bầu trời: hàng xóm gần nhất sẽ ra kể.",
                  "👉 Not only people — tap the river, the đình, the market, the banyan, the paddy, the road or the sky: the nearest neighbour comes to tell you."); }
 }
@@ -2220,11 +2228,11 @@ function riverRise(n,sx,sy,dly){ if(S.von>=10) return;
   if(S.von>=10&&!S.fullSaid){ S.fullSaid=true; gossip("“Sông đầy rồi. Xưởng nào cũng lên được bậc.”","“The river's full. Any roof can climb now.”",-1); }   // the water reaching the top is a thing the xóm says once
   if(motes.length<6) motes.push({x0:sx,y0:sy,x1:W/2,y1:H-58,t:-(dly||0.4),g:"🪙"}); }
 function huiMax(){ return (S.yearCard===0)?4:3; }   // a flood year leans harder on the hụi
-function actHui(){ if(!S.un.hui||S.over||S.acts<=0||S.hui>=huiMax()||conBan(1)) return; if(!spend("hui"))return;
+function actHui(){ if(!S.un.hui||S.over||S.acts<=0||S.hui>=huiMax()||conBan(1)) return; if(!spend("hui"))return; lessonSaid(LES.hui);   // v0.76: paid in once — the lesson is learned by doing
   S.hui++; beep(392,0.1); riverRise(1,DINH.x,DINH.y-10,0.9);
   S.cast.filter(function(p){return active(p)&&p.known;}).forEach(function(p){ visit(p,DINH.x+(Math.random()-0.5)*70,DINH.y,5200);
     if(!p.started) floatOn(p,"🌱 "+Math.round(chance(p)*100)+"%","#2E4A62"); });   // the circle meets — and every named sprout visibly rises
-  if(!(S.tf&1)&&!S.vet){ S.tf|=1; var m0=(0.3+0.7*Math.min(10,S.von-1)/10).toFixed(2), m1=vonMul().toFixed(2);   // the first coin explains itself: what rose, and what it opened
+  if(!(S.tf&1)&&lessonDue(LES.coin)){ S.tf|=1; lessonSaid(LES.coin); var m0=(0.3+0.7*Math.min(10,S.von-1)/10).toFixed(2), m1=vonMul().toFixed(2);   // the first coin explains itself: what rose, and what it opened
     logMsg(STR.huiFirst.vi.replace("{a}",m0).replace("{b}",m1),STR.huiFirst.en.replace("{a}",m0).replace("{b}",m1)); }
   else logMsg(STR.huiDone.vi,STR.huiDone.en);
   render(); save(); }
@@ -2302,7 +2310,7 @@ function nextSeason(){
   if(S.over) return;
   S.linking=null;
   flushPend(true);   // any pending lessons land BEFORE this season's burst, not inside it
-  if(S.season===0&&!S.vet&&!(S.tf&4)){ S.tf|=4; pendLog(6200,STR.helpNudge.vi,STR.helpNudge.en); }   // after the first season turns: where the rules live
+  if(S.season===0&&!(S.tf&4)&&lessonDue(LES.help)){ S.tf|=4; lessonSaid(LES.help); pendLog(6200,STR.helpNudge.vi,STR.helpNudge.en); }   // after the first season turns: where the rules live
   var _preActive=S.cast.filter(active).map(function(p){return p.id;});
   var _rc={von0:S.von, tb:S._tb||{}, bloom:0, stamp:0, fade:0, sky:S.luat<4?"☁️":(S.luat>=7?"☀️":""), who:[], hit:[]};   // the season's ledger — one recap line closes each season in the log; the sky it ran under is part of it
   if(S.acts>0){ S.idle=(S.idle|0)+S.acts; _rc.idle=S.acts; }   // hands left on the table this season — counted, shown at the end, never carried
@@ -2986,7 +2994,7 @@ function renderSheet(){
   el("linkBtn").style.textDecoration=conBan(2)?"line-through 2px #C1443C":""; el("linkBtn").style.opacity="";
   el("linkBtn").classList.toggle("armed",S.linking!=null);
   var pb=el("potBtn"); pb.style.display=(S.un.hui&&(S.hui|0)>=1&&!p.started&&!conBan(1))?"":"none";
-  if(pb.style.display!=="none"&&!(S.tf&2)&&!S.vet){ S.tf|=2; logMsg(STR.potNew.vi,STR.potNew.en); }   // the pot button names itself the first time it shows   // the pot exists once you have paid in — the button appears with it
+  if(pb.style.display!=="none"&&!(S.tf&2)&&lessonDue(LES.pot)){ S.tf|=2; lessonSaid(LES.pot); logMsg(STR.potNew.vi,STR.potNew.en); }   // the pot button names itself the first time it shows   // the pot exists once you have paid in — the button appears with it
   pb.disabled=!potOk(p)||S.acts<=0||S.over; el("potLbl").textContent=t("pot");
   el("potHint").textContent=potOk(p)?(t("potH")+" → "+Math.round(potAfter(p)*100)+"%"+potPrice())
                               :(!seenAll(p)?(L==="vi"?"chưa hiểu người ta":"you don't know them yet")

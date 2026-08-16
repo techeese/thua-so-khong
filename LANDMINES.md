@@ -530,3 +530,13 @@ that is now impossible because a gate catches it stays here, with the gate named
   — `simUntouched=false`, `p.x` off by ~1 px despite the per-frame `p.tx=p.x` wander pin, roughly one run in
   four — which is a different mechanism (something in `drawScene`/behaviour still writes `p.x`) and is the
   open item for the next tick that finds it red.
+- **`S.vet` is every returning player — including the owner.** Anything gated on `!S.vet` is invisible on any device
+  with a village book, so an "explanation" shipped behind that gate is one the owner will never see (v0.75's whole
+  onboarding; found by the owner, v0.76). Test onboarding **as a vet** too: seed a one-row chronicle before
+  `startBtn`. Lessons are per-device now (`thua-so-khong-lessons`); a probe that asserts a lesson line must clear
+  that key in its setup, the way Gate 66 clears the chronicle — headless runs share a profile.
+- **`S._quenNow` is dead by the time `nextSeason()` returns.** It is set mid-tick and nulled at the end of the same
+  tick (after scheduling the scene), so a probe that reads it after the call always sees `null` and blames the
+  wrong mechanism — one instrumented run read "circle lifted, quen=null, ban=4". Read the persisted `S.quen`
+  pair list (length before → after) instead. Cost: three probe rounds on Gate 21 (v0.76).
+
