@@ -2284,11 +2284,19 @@ function vetRun(){ localStorage.removeItem("thua-so-khong-v1"); localStorage.set
   fresh(); document.getElementById("startBtn").click(); S.nudged=true; S.yearCard=2; }
 setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-lessons");
+  // v0.77: the season-1 circle scene is timed (+4200 ms, the answer +1900 ms after) and any later fresh() cancels it — so it gets its own step first
+  vetRun(); selectPerson(0); S.acts=3; actTeach(); nextSeason();
+  var sc0=document.querySelector(".roster .rc.soon"); if(sc0) sc0.click();   // v0.77: season 1 keeps a seat for Chú Ba — tap it
+  setTimeout(function(){ try{ R.soonSaid=has(/^💬 .+: Mai lại có người về xóm đấy\./); R.circleNgan=has(/^💬 Bé Ngân: Bà em bảo: Mỗi nhà góp một ít/);   // the season-1 answer, in her register, kept in the log
+  localStorage.removeItem("thua-so-khong-lessons");
   vetRun(); R.vet=S.vet===true;
   selectPerson(0); S.acts=3; actTeach(); flushPend(true); nextSeason(); flushPend(true);
   R.helpNudge1=has(/^📖 Quên luật/); R.tipQuiet1=tipB()===0;
+  R.arrivalVu=has(/^🚶 Anh Vũ về xóm theo đường cái — nhà anh mở cửa lại\./)&&!S.log.some(function(m){return /nhà  /.test(m.vi);});   // v0.77: the arrival line names whose house — no blank
+  var sc=document.querySelector(".roster .rc.soon"); R.soonChip=!!sc&&sc.getAttribute("tabindex")==="0"; if(sc) sc.click(); R.soonNoThrow=true;   // v0.77: the kept seat is focusable and operable (a tap used to reach selectPerson(-1) and throw)
   selectPerson(2); nextSeason(); flushPend(true);
   R.huiLesson1=has(/^🪙 HỤI là vốn/); R.tipQuiet2=tipB()===0;
+  R.arrivalBa=has(/^🚶 Chú Ba về xóm theo đường cái — nhà chú mở cửa lại\./);
   S.acts=3; actHui(); R.coin1=has(/^🪙 Bạn góp một tay vào hụi/);
   var pp=S.cast.filter(function(q){return active(q)&&!q.started&&!q.arriveT&&!q.gone;})[0]; selectPerson(pp.id); render(); renderSheet(); R.pot1=has(/^🧧 Nút mới/);
   R.mask=lesMask()===(LES.hui|LES.coin|LES.pot|LES.help|(lesMask()&LES.link)|(lesMask()&LES.places)|(lesMask()&LES.build));
@@ -2303,11 +2311,12 @@ setTimeout(function(){ try{
   localStorage.removeItem("thua-so-khong-lessons"); localStorage.setItem("thua-so-khong-chronicle","[]"); localStorage.removeItem("thua-so-khong-v1");   // leave the profile as found
   var ok=Object.keys(R).every(function(k){return R[k]===true;});
   document.title=(ok?"LESSON_OK ":"LESSON_BAD ")+Object.keys(R).map(function(k){return k+"="+R[k];}).join(" ");
+  }catch(e){ document.title="THREW: "+e.message; } },6600);
 }catch(e){ document.title="THREW: "+e.message; } },600);
 </script>"""
 open(tmp+"/lesson.html","w").write(html.replace("</body>",drv+"</body>"))
 PYEOF69
-T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=9000 --dump-dom "file://$TMP/lesson.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
+T=$("$CHROME" --headless --disable-gpu --no-sandbox --virtual-time-budget=16000 --dump-dom "file://$TMP/lesson.html" 2>/dev/null | grep -o "<title>[^<]*</title>")
 echo "$T" | grep -q "LESSON_OK" && pass "a lesson is owed once per device: $T" || fail "a lesson is owed once per device: $T"
 
 rm -rf "$TMP"

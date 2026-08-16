@@ -539,4 +539,14 @@ that is now impossible because a gate catches it stays here, with the gate named
   tick (after scheduling the scene), so a probe that reads it after the call always sees `null` and blames the
   wrong mechanism — one instrumented run read "circle lifted, quen=null, ban=4". Read the persisted `S.quen`
   pair list (length before → after) instead. Cost: three probe rounds on Gate 21 (v0.76).
+- **`fresh()` cancels every timed scene of the run before it.** It bumps `runTok`, and every deferred beat checks
+  `runTok===ctok`, so a probe that reseeds and re-runs synchronously never sees the previous run's timers fire —
+  the season-1 circle answer read `false` for a harness reason, not a game one. Give a timed assertion its own
+  step before any reseed (Gate 69, v0.77).
+- **A template that inserts "" prints a double space.** `"nhà "+(x?"em":"")+" mở"` — read the log for `/  /` after
+  any string change; Gate 69 now does.
+- **A roster chip with `data-id=-1` reaches `selectPerson(-1)`.** The click handler checked `fin(id)` — and −1 is
+  finite. The v0.75 "soon" seat threw on tap for a day; the "gone" chips would have too. Any non-person chip
+  needs the handler to refuse it, and Gate 44 counts every `.rc` as a chip, so it must be focusable *and* operable
+  or not on the strip (v0.77).
 

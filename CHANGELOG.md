@@ -1,5 +1,33 @@
 # Changelog — Thừa Số Không
 
+## v0.77 — 2026-08-16 — the vet's first three seasons, read back
+
+Closes: the same owner directive (`/loop 5m`, "I didn't see the explanation for hụi … make this better"), second
+tick. v0.76 had been live four minutes, so this tick **played the first three seasons as a vet** (seeded book, real
+timers, log dumped each season) and read what actually printed. The lessons land in order — "Quên luật? Chạm ?"
+after the first turn, the 🪙 HỤI paragraph 7.2 s into season 2 (it waits for the newcomer to reach the door), the
+first coin's ×a→×b, the pot naming itself. Two lines in that sequence were wrong; both fixed.
+
+- **"nhà  mở cửa lại" — a blank where the house's owner should be.** v0.75's arrival line built
+  `"nhà "+(p.reg==="em"?"em":"")+" mở cửa lại"`, so every tôi-register neighbour walked home to a double space.
+  `kinOf(p)`: *em* for the young, else the honorific from the name — nhà chú · nhà cô · nhà anh · nhà chị.
+- **The hụi is defined by Bé Ngân, every run.** In season 1 the circle answers Cô Mai's question, and the only
+  other neighbour present is Ngân (Anh Vũ is still walking in), so a teenager defines the village savings circle
+  for her teacher. She now says it as what she was told — “Bà em bảo: mỗi nhà góp một ít…” — via `inReg`, and
+  the line gains the curly quotes every other bubble carries. English unchanged.
+- **The kept seat threw on tap, and was invisible to a keyboard.** v0.75's dashed "soon" chip (next season's
+  arrival) is an `.rc` with `data-id=-1` and no `tabindex`: a tap reached `selectPerson(-1)` and threw on
+  `p.inside=0`; Tab skipped it, so **Gate 44 was red on committed v0.75 whenever the seat was showing** (one run in
+  five). The roster's own rule — *focusable but not operable would be worse than not focusable* — so it is now
+  both: `tabindex=0 role=button`, and a tap or Enter sends the neighbour nearest the road to say the road's line
+  (“Mai lại có người về xóm đấy.”), once a season, kept in the log (`soonAsk`). The click handler also refuses
+  any negative id (a *gone* chip used to reach `selectPerson` the same way).
+- *Evidence:* Gate 44 6/6 `chips=7/7` with the seat on the strip (was 7/6). Gate 69 gains `soonChip`, `soonSaid`, `arrivalVu` (…— nhà anh mở cửa lại. and no `nhà  ` anywhere), `arrivalBa` (nhà chú),
+  `circleNgan` (💬 Bé Ngân: Bà em bảo…, checked in its own timed step — a later `fresh()` cancels the scene's
+  timers). Full suite green before commit.
+- Read and left alone: Sổ tay's "🎮 Cách chơi" and "🪙 Hụi là gì?" are clear and complete; the huiBtn hint
+  (`×0.51→0.58`) stays as the graphics loop audited it. Nothing else moved.
+
 ## v0.76 — 2026-08-16 — a lesson is owed once per device, not once per first run
 
 Closes: **owner directive in session (`/loop 5m`, 2026-08-16)** — *"I didn't see the explanation for hụi, or [for]

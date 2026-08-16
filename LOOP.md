@@ -93,7 +93,11 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.76 shipped: a lesson is owed once per device (Gate 69; Gate 66 setup tightened) — owner-directed (`/loop 5m`, "I didn't
+**v0.77 shipped: the vet's first three seasons read back (Gate 69 +3) — arrival line "nhà  mở cửa lại" blank fixed
+(`kinOf`), the season-1 hụi definition in Ngân's register (“Bà em bảo…”). The lesson sequence for a vet is now verified
+end-to-end: rules pointer after turn 1 → HỤI paragraph 7.2 s into season 2 → first coin ×a→×b → pot names itself. Owner
+has not yet reported back on v0.76/v0.77; the loop's next ticks should NOT stack more onboarding text — wait for the
+report, or ship nothing. Parked suspects unchanged: huiBtn hint arithmetic; intro density.** **v0.76 shipped: a lesson is owed once per device (Gate 69; Gate 66 setup tightened) — owner-directed (`/loop 5m`, "I didn't
 see the explanation for hụi"). Root cause: `S.vet` (any book) gated all of v0.75's lessons, so the owner's device never
 heard one; `lessonDue/lessonSaid` on a per-device bitmask replaces `!S.vet` at seven sites, tips stay off for vets
 (Gate 66). Watch on the next ticks: whether the owner now sees the hụi paragraph at season 2 and "Quên luật? Chạm ?"

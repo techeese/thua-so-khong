@@ -244,7 +244,7 @@
 
   <div class="log" id="log"></div>
   <div id="tip" role="status" aria-live="polite"><span id="tipTxt"></span><b>✕</b></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.76</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.77</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -381,6 +381,7 @@ function say(p,ln){ if(!p||!ln) return; bubble(p,ln[L]||ln.vi||"");
   if(ln.vi&&ln.en){ var st=function(x){ return String(x).replace(/^“|”$/g,"").replace(/^"|"$/g,""); }; logMsg("💬 "+p.name+": "+st(ln.vi),"💬 "+p.name+": "+st(ln.en)); } }
 // v0.74 — the name a roof answers to, in the language on screen: your own roof was saved as "bạn"/"you" at build time and read back verbatim after a language flip
 function ownerOf(sh){ return sh.yours?(L==="vi"?"bạn":"you"):sh.owner; }
+function kinOf(p){ return reg(p)==="em"?"em":String(p.name||"").split(" ")[0].toLowerCase(); }   // v0.77: how the xóm refers to their house — nhà em · nhà chú · nhà cô · nhà anh · nhà chị (was a blank for everyone but the young)
 // v0.76 — a LESSON (what a hụi is, what the first coin opened, the pot naming itself, where the rules live, the new verbs, the places) is said
 // once per DEVICE, not once per first run. The book made every returning player a "vet", and a vet heard no lesson at all — including a
 // player whose thirty runs predate the lessons. Tips stay off for vets (Gate 66); the lessons in the log are the explanation, and each is
@@ -2501,7 +2502,7 @@ function nextSeason(){
       p.arriveT=now0; beat(Math.min(3600,nd+200+p.arriveDur+800));
       p.behForce=({3:2, 1:4, 4:4, 5:9})[p.id]||1; p.bfAt=p.arriveStart+p.arriveDur+2600;   // each newcomer's first errand teaches a building — after the door
       S._arrivedNow.push(p);
-      logMsg("🚶 "+p.name+" về xóm theo đường cái — nhà "+(p.reg==="em"?"em":"")+" mở cửa lại.","🚶 "+p.name+" comes home down the road — the shutters come off.");
+      logMsg("🚶 "+p.name+" về xóm theo đường cái — nhà "+kinOf(p)+" mở cửa lại.","🚶 "+p.name+" comes home down the road — the shutters come off.");
       (function(pp){ var ctok=runTok; setTimeout(function(){
         if(!S.over&&runTok===ctok){ pp.arriveT=0; pp.arrivePath=null;   // at the door: shutters open, and they say the first thing anyone says coming home
           if(pp.qd) say(pp,pp.qd); else bubble(pp,quoteFor(pp)); beep(294,0.07,0.03); setTimeout(function(){voice(pp,0.09);},120);
@@ -2656,8 +2657,9 @@ function nextSeason(){
     if(S.season===1&&!S.huiSeen){ S.huiSeen=true; var mai8=S.cast[2];
       if(eligible.indexOf(mai8)>=0) bubble(mai8,(L==="vi")?"“Đến phiên hụi nhà ai rồi nhỉ?”":"“Whose turn in the hụi is it now?”");
       var oth=eligible.filter(function(q8){return q8!==mai8;})[0];   // someone in the circle answers — what a hụi IS, said in the yard where it meets
+      // v0.77: in season 1 the only other voice present is Bé Ngân's — she repeats what she was told (“Bà em bảo…”), in her register (inReg)
       if(oth){ var ctok2=runTok; setTimeout(function(){ if(S.over||runTok!==ctok2) return;
-        say(oth,{vi:"Mỗi nhà góp một ít, gom một mối. Ai kẹt thì hốt phiên này — phiên sau đến người khác.",en:"Each house puts in a little, one pot. Whoever's stuck takes it this round — next round, someone else."}); },1900); } }
+        say(oth,inReg(oth,{vi:"“Mỗi nhà góp một ít, gom một mối. Ai kẹt thì hốt phiên này — phiên sau đến người khác.”",em:"“Bà em bảo: Mỗi nhà góp một ít, gom một mối. Ai kẹt thì hốt phiên này — phiên sau đến người khác.”",en:"“Each house puts in a little, one pot. Whoever's stuck takes it this round — next round, someone else.”"})); },1900); } }
   },4200); })(); }
   gong(S.luat<4?147:[220,262,196,220][S.season%4],0.9,0.03);   // the sky tunes the bell — a heavy year rings low
   // after the season's named moments have finished, the xóm talks — the beat says when, not a fixed delay
@@ -3049,7 +3051,7 @@ function renderRoster(){
     h+="<div class=\""+cls+"\" tabindex=\"0\" role=\"button\" data-id=\""+p.id+"\"><i style=\"background:"+p.color+"\"></i>"+nm+dots+(tag?" "+tag:"")+(doing?(" <span class=\"do\" title=\""+(L==="vi"?"đang bận":"busy")+"\">"+doing+"</span>"):"")+"</div>"; });
   // 🚶 someone comes home next season: a placeholder at the end of the strip says so before they are on the print
   var soonP=S.cast.filter(function(q){ return !q.gone&&fin(q.arrives)&&q.arrives===S.season+1; });
-  if(soonP.length&&!S.over) h+="<div class=\"rc soon\" data-id=\"-1\" title=\""+(L==="vi"?"mùa sau có người về xóm":"someone comes home next season")+"\">"+(soonP[0].id===6?"🛶":"🚶")+" …</div>";
+  if(soonP.length&&!S.over) h+="<div class=\"rc soon\" data-id=\"-1\" tabindex=\"0\" role=\"button\" title=\""+(L==="vi"?"mùa sau có người về xóm":"someone comes home next season")+"\">"+(soonP[0].id===6?"🛶":"🚶")+" …</div>";
   if(box.innerHTML!==h) box.innerHTML=h;
   rosterEdges();
 }
@@ -3152,9 +3154,15 @@ el("log").addEventListener("click",function(ev){ if(ev.target.closest&&ev.target
     if(hit){ if(S.linking!=null&&S.linking!==hit.id) completeLink(hit.id); else selectPerson(hit.id); line.style.background="rgba(227,166,59,.35)"; setTimeout(function(){ line.style.background=""; },350); return; } }
   el("log").classList.toggle("tall"); logEdges(); setTimeout(logEdges,280); beep(el("log").classList.contains("tall")?523:392,0.04); });   // re-read after the max-height transition settles   // the log opens to a page when tapped — 24 lines are kept, only 4 showed
 el("roster").addEventListener("click",function(ev){ var c=ev.target.closest?ev.target.closest(".rc"):null; if(!c||!S||S.over) return;
-  var id=+c.getAttribute("data-id"); if(!fin(id)) return;
+  if(c.classList.contains("soon")){ soonAsk(); return; }   // v0.77: the kept seat is a tap surface too — someone says who the road brings
+  var id=+c.getAttribute("data-id"); if(!fin(id)||id<0||!S.cast[id]) return;   // v0.77: a gone chip (−1) used to reach selectPerson and throw
   if(S.linking!=null){ if(id!==S.linking) completeLink(id); return; }   // the roster is a tap surface like the map
   selectPerson(id); });
+// v0.77 — the dashed seat on the strip: tap it (or Enter) and the neighbour nearest the road says what the road zone says — once a season
+function soonAsk(){ if(!S||S.over) return; S.looked=S.looked||{}; if(S.looked.soon===S.season) return;
+  var near=null,nd=1e9; S.cast.forEach(function(p){ if(!active(p)||!p.known||p.away) return; var d=Math.hypot(p.x-820,p.y-352); if(d<nd){nd=d;near=p;} });
+  if(!near) return; S.looked.soon=S.season; visit(near,820,352,6000); voice(near,0.06); beep(523,0.05);
+  (function(pp){ var ctok=runTok; setTimeout(function(){ if(!S.over&&runTok===ctok) say(pp,{vi:"“Mai lại có người về xóm đấy.”",en:"“Someone comes home tomorrow.”"}); },1400); })(near); }
 el("roster").addEventListener("scroll",rosterEdges,{passive:true});
 el("roster").addEventListener("keydown",function(ev){ if(ev.key!=="Enter"&&ev.key!==" "&&ev.key!=="Spacebar") return;
   var c=ev.target&&ev.target.closest?ev.target.closest(".rc"):null; if(!c) return;
