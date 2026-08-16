@@ -93,7 +93,9 @@ Owner words > red machine gates > reviewed defects > named era work > synthesis 
 
 ## Next (one paragraph — REPLACE it each round, never append)
 
-**v0.77 shipped: the vet's first three seasons read back (Gate 69 +3) — arrival line "nhà  mở cửa lại" blank fixed
+**v0.78 shipped: the ? wears "mới" until Sổ tay is opened once per device (Gate 69 +2) — a non-text answer to the owner's
+"didn't see the explanation" while the report is still pending. The onboarding thread has now had three ticks (v0.76 per-device
+lessons · v0.77 vet sequence read back · v0.78 the ? badge); the loop should ship NOTHING more on it until the owner reports.** **v0.77 shipped: the vet's first three seasons read back (Gate 69 +3) — arrival line "nhà  mở cửa lại" blank fixed
 (`kinOf`), the season-1 hụi definition in Ngân's register (“Bà em bảo…”). The lesson sequence for a vet is now verified
 end-to-end: rules pointer after turn 1 → HỤI paragraph 7.2 s into season 2 → first coin ×a→×b → pot names itself. Owner
 has not yet reported back on v0.76/v0.77; the loop's next ticks should NOT stack more onboarding text — wait for the

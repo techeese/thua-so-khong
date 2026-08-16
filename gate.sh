@@ -2292,6 +2292,7 @@ setTimeout(function(){ try{
   vetRun(); R.vet=S.vet===true;
   selectPerson(0); S.acts=3; actTeach(); flushPend(true); nextSeason(); flushPend(true);
   R.helpNudge1=has(/^📖 Quên luật/); R.tipQuiet1=tipB()===0;
+  badges(); R.helpBadge=el("helpBtn").classList.contains("nb"); helpToggle(true); helpToggle(false); R.helpBadgeGone=!el("helpBtn").classList.contains("nb")&&!!(lesMask()&LES.helpSeen);   // v0.78: the ? wears mới until Sổ tay is opened once on this device
   R.arrivalVu=has(/^🚶 Anh Vũ về xóm theo đường cái — nhà anh mở cửa lại\./)&&!S.log.some(function(m){return /nhà  /.test(m.vi);});   // v0.77: the arrival line names whose house — no blank
   var sc=document.querySelector(".roster .rc.soon"); R.soonChip=!!sc&&sc.getAttribute("tabindex")==="0"; if(sc) sc.click(); R.soonNoThrow=true;   // v0.77: the kept seat is focusable and operable (a tap used to reach selectPerson(-1) and throw)
   selectPerson(2); nextSeason(); flushPend(true);
@@ -2299,7 +2300,7 @@ setTimeout(function(){ try{
   R.arrivalBa=has(/^🚶 Chú Ba về xóm theo đường cái — nhà chú mở cửa lại\./);
   S.acts=3; actHui(); R.coin1=has(/^🪙 Bạn góp một tay vào hụi/);
   var pp=S.cast.filter(function(q){return active(q)&&!q.started&&!q.arriveT&&!q.gone;})[0]; selectPerson(pp.id); render(); renderSheet(); R.pot1=has(/^🧧 Nút mới/);
-  R.mask=lesMask()===(LES.hui|LES.coin|LES.pot|LES.help|(lesMask()&LES.link)|(lesMask()&LES.places)|(lesMask()&LES.build));
+  R.mask=lesMask()===(LES.hui|LES.coin|LES.pot|LES.help|LES.helpSeen|(lesMask()&LES.link)|(lesMask()&LES.places)|(lesMask()&LES.build));
   // second vet run, same device
   vetRun(); R.vet2=S.vet===true; R.keyKept=lesMask()>0;
   selectPerson(0); S.acts=3; actTeach(); flushPend(true); nextSeason(); flushPend(true); selectPerson(2); nextSeason(); flushPend(true); S.acts=3; actHui();

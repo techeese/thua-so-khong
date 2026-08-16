@@ -244,7 +244,7 @@
 
   <div class="log" id="log"></div>
   <div id="tip" role="status" aria-live="polite"><span id="tipTxt"></span><b>✕</b></div>
-  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.77</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
+  <div class="small" style="text-align:center;margin-top:6px"><span id="foot">bầu trời là luật — ngoài tầm tay · dòng sông là vốn — cả xóm cùng góp</span> · <a href="#" id="resetLink" style="color:inherit">chơi lại</a> · <span style="opacity:.55">v0.78</span><span id="keysHint" style="display:none;opacity:.55"> · ⌨ 1–7 · D N L · H O B P S · ␣</span></div>
 </div>
 
 <!-- intro -->
@@ -386,7 +386,7 @@ function kinOf(p){ return reg(p)==="em"?"em":String(p.name||"").split(" ")[0].to
 // once per DEVICE, not once per first run. The book made every returning player a "vet", and a vet heard no lesson at all — including a
 // player whose thirty runs predate the lessons. Tips stay off for vets (Gate 66); the lessons in the log are the explanation, and each is
 // owed once. Fin-guarded, its own key — never a save field.
-var LES_KEY="thua-so-khong-lessons", LES={link:1,hui:2,build:4,places:8,coin:16,pot:32,help:64};
+var LES_KEY="thua-so-khong-lessons", LES={link:1,hui:2,build:4,places:8,coin:16,pot:32,help:64,helpSeen:128};   // helpSeen (v0.78): Sổ tay opened once on this device — the ? wears "mới" until then
 function lesMask(){ try{ var v=parseInt(localStorage.getItem(LES_KEY)||"0",10); return fin(v)?v:0; }catch(e){ return 0; } }
 function lessonDue(bit){ return !(lesMask()&bit); }
 function lessonSaid(bit){ try{ localStorage.setItem(LES_KEY,String(lesMask()|bit)); }catch(e){} }
@@ -3112,7 +3112,7 @@ function tipTick(now){ if(!S||S.over||S.vet) { if(_tipCur) tipHide(false); retur
 el("tip").onclick=function(){ tipHide(true); };
 // "mới" on a verb that has arrived but never been used — the button says it is new until you have pressed it once
 function badges(){ if(!S) return; var vb=S.vb||{};
-  [["huiBtn",S.un.hui&&!vb.hui],["buildBtn",S.un.build&&!vb.build&&!S.built],["probeBtn",S.un.probe&&!vb.probe],["shelBtn",!vb.shel&&el("shelBtn").style.display!=="none"],["linkBtn",S.un.link&&!vb.link],["potBtn",!vb.pot&&el("potBtn").style.display!=="none"]]
+  [["helpBtn",lessonDue(LES.helpSeen)],["huiBtn",S.un.hui&&!vb.hui],["buildBtn",S.un.build&&!vb.build&&!S.built],["probeBtn",S.un.probe&&!vb.probe],["shelBtn",!vb.shel&&el("shelBtn").style.display!=="none"],["linkBtn",S.un.link&&!vb.link],["potBtn",!vb.pot&&el("potBtn").style.display!=="none"]]
     .forEach(function(r){ el(r[0]).classList.toggle("nb",!!r[1]&&!S.over); }); }
 function setLang(x){ L=x; document.documentElement.lang=x;
   el("resetLink").textContent=t("reset"); el("bigBtn").title=t("bigT");   // v0.74: two strings that never followed the language
@@ -3277,6 +3277,7 @@ function renderHelp(){
   el("helpBody").innerHTML=h;
 }
 function helpToggle(force){ var o=el("helpOvl"), open=o.classList.contains("show"), want=(force===undefined)?!open:!!force;
+  if(want&&!open){ lessonSaid(LES.helpSeen); try{ badges(); }catch(e){} }   // v0.78: the notes have been found on this device — the ? drops its "mới"
   if(want===open) return; if(want){ renderHelp(); o.classList.add("show"); el("helpBody").scrollTop=0; helpEdges(); beep(523,0.05); } else { o.classList.remove("show"); beep(392,0.05); } }
 // which way a vertical strip still has more — the Sổ tay body and the log both use it
 function edgeFadeY(b){ if(!b) return; var more=b.scrollHeight-b.clientHeight;

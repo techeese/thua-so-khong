@@ -1,5 +1,17 @@
 # Changelog — Thừa Số Không
 
+## v0.78 — 2026-08-16 — the ? wears "mới" until the notes have been opened once
+
+Closes: the same owner directive (`/loop 5m`, "I didn't see the explanation for hụi … general gameplay"), sixth
+tick, no report yet. Not another line of text: v0.75 already gives every new verb a *mới* tag until first use, but
+the **?** — where "🪙 Hụi là gì?" and "🎮 Cách chơi" actually live — carried nothing, and a vet gets no tip pointing
+at it. Now the ? button wears the same red *mới*/*new* pill until Sổ tay has been opened once **on this device**
+(`LES.helpSeen`, the per-device lessons mask); opening it drops the tag for good. Zero narration added.
+
+- *Evidence:* Gate 69 gains `helpBadge` (a vet with an empty lessons key sees `#helpBtn.nb`) and `helpBadgeGone`
+  (after one open, no `.nb` and bit 128 set); screenshot at 430 px read — the pill sits on the ? like on the verbs.
+  Full suite green before commit.
+
 ## v0.77 — 2026-08-16 — the vet's first three seasons, read back
 
 Closes: the same owner directive (`/loop 5m`, "I didn't see the explanation for hụi … make this better"), second
